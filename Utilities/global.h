@@ -9,7 +9,7 @@ struct Endpoint
     unsigned short port;
 };
 
-enum ServiceType
+enum class ServiceType
 {
     kServiceRegistry = 0,
     kMessageBroker,
@@ -22,7 +22,7 @@ enum ServiceType
     kNone = 101
 };
 
-enum ActionType
+enum class ActionType
 {
     kAuth = 0,
     kSelect,
@@ -40,7 +40,7 @@ enum ActionType
     kInvalid = 100
 };
 
-enum ResolverActionType
+enum class ResolverActionType
 {
     kInsertion = 0,
     kDeletion,

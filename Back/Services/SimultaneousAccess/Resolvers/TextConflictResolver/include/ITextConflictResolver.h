@@ -12,6 +12,10 @@ class IData;
 
 struct TextAction
 {
+    constexpr bool operator==(const TextAction&) const noexcept
+    {
+        return true;
+    }
     ResolverActionType type;
     std::chrono::time_point<std::chrono::system_clock> time;
     int posStart;
