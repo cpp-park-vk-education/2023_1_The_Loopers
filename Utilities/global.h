@@ -3,12 +3,14 @@
 
 #include <string>
 
-struct Endpoint {
+struct Endpoint
+{
     std::string address;
     unsigned short port;
 };
 
-enum ServiceType {
+enum ServiceType
+{
     kServiceRegistry = 0,
     kMessageBroker,
     kApiGateway,
@@ -20,7 +22,8 @@ enum ServiceType {
     kNone = 101
 };
 
-enum ActionType {
+enum ActionType
+{
     kAuth = 0,
     kSelect,
     kDeselect,
@@ -32,9 +35,18 @@ enum ActionType {
     kWriteText,
     kDeleteText,
     kFormatText,
-    kEndOwnSession
+    kEndOwnSession,
+
+    kInvalid = 100
 };
 
-enum ResolverActionType { kInsertion = 0, kDeletion, kFormat, kSelect, kDeselect }
+enum ResolverActionType
+{
+    kInsertion = 0,
+    kDeletion,
+    kFormat,
+    kSelect,
+    kDeselect
+};
 
 #endif  // _GLOBAL_H_
