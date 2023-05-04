@@ -34,6 +34,6 @@ enum ActionType {
     kDeleteText,
     kFormatText,
     kEndOwnSession
-}
+};
 
 #endif  // _GLOBAL_H_
