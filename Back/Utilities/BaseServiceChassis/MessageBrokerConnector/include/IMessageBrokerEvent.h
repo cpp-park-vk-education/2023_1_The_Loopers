@@ -31,6 +31,7 @@ class IMessageBrokerSignal {
 
   protected:
     std::shared_ptr<ICommonConnection> m_connectionToMsgBroker;
+    std::function <void(int, const std::string&,ClientSession* > m_doOnNotified;
 };
 
 #endif  // _IMESSAGEBROKEREVENT_H_
