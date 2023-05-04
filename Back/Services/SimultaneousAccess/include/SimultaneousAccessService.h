@@ -23,7 +23,7 @@ class SimultaneousAccessService {
   private:
     virtual void DoOnConnect() {
     }
-    virtual void DoOnRead(const string&, IServerSession*) {
+    virtual void DoOnRead(const string&, IServiceSession*) {
     }
     virtual void DoOnWrite() {
     }

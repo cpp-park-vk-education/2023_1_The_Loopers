@@ -13,43 +13,57 @@
 #include "ISerializer.h"
 #include "IServiceRegistrator.h"
 
-class IBaseServiceChassis {
+class IBaseServiceChassis
+{
   public:
     virtual ~IBaseServiceChassis() = default;
 
-    virtual void LogDebug(const std::string&) {
+    virtual void LogDebug(const std::string&)
+    {
     }
 
-    virtual void init(ServiceType, name : string, Endpoint) {
+    virtual void init(ServiceType, name : string, Endpoint)
+    {
     }
 
     // Service register
-    virtual bool register(ServiceType, Endpoint) {
+    virtual bool register(ServiceType, Endpoint)
+    {
     }
-    virtual std::vector<Endpoint> GetEndpoints(ServiceType) {
+    virtual std::vector<Endpoint> GetEndpoints(ServiceType)
+    {
     }
     // local registry
-    virtual void AddService(ServiceType, Endpoint) {
+    virtual void AddService(ServiceType, Endpoint)
+    {
     }
-    virtual std::vector<Endpoint> GetServices(ServiceType) {
+    virtual std::vector<Endpoint> GetServices(ServiceType)
+    {
     }
 
     // message broker
-    virtual void SetReqResCommonConnection(CommonConnection*) {
+    virtual void SetReqResCommonConnection(CommonConnection*)
+    {
     }
-    virtual void Request(body : string, Endpoint) {
+    virtual void Request(body : string, Endpoint)
+    {
     }
-    virtual void SetPubSubCommonConnection(CommonConnection*) {
+    virtual void SetPubSubCommonConnection(CommonConnection*)
+    {
     }
-    virtual void Publish(event : int, body : string, ServiceType = None) {
+    virtual void Publish(event : int, body : string, ServiceType = None)
+    {
     }
-    virtual void Subscribe(event : int, self : Endpoint) {
+    virtual void Subscribe(event : int, self : Endpoint)
+    {
     }
 
     // sessions manager
-    virtual void AddSession(SessionDescriptor, Session*) {
+    virtual void AddSession(SessionDescriptor, Session*)
+    {
     }
-    virtual void RemoveSession(SessionDescriptor) {
+    virtual void RemoveSession(SessionDescriptor)
+    {
     }
 
     std::shared_ptr<ILoggerAdapter> m_logger;
@@ -68,5 +82,3 @@ class IBaseServiceChassis {
 };
 
 #endif  // _IBASESERVICECHASSIS_H_
-
-IBaseServiceChassis

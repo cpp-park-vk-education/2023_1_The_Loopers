@@ -1,1 +1,10 @@
-[ 10%] Building CXX object _deps/googletest-build/googletest/CMakeFiles/gtest.dir/src/gtest-all.cc.o
+Consolidate compiler generated dependencies of target gtest
+[ 20%] Built target gtest
+Consolidate compiler generated dependencies of target gmock
+[ 40%] Built target gmock
+Consolidate compiler generated dependencies of target gmock_main
+[ 60%] Built target gmock_main
+Consolidate compiler generated dependencies of target gtest_main
+[ 80%] Built target gtest_main
+Consolidate compiler generated dependencies of target test
+[100%] Built target test

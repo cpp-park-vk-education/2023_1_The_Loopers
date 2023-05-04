@@ -5,6 +5,10 @@
 
 struct Endpoint
 {
+    bool operator==(const Endpoint& rhs) const noexcept
+    {
+        return (address == rhs.address) && (port == rhs.port);
+    }
     std::string address;
     unsigned short port;
 };
