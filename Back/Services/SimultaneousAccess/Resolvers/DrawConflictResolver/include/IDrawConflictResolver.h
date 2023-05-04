@@ -8,16 +8,22 @@
 
 #include "global.h"
 
-struct DrawAction {
+class IData;
+
+struct DrawAction
+{
     ResolverActionType type;
     std::chrono::time_point<std::chrono::system_clock> time;
-}
+    IData* data;
+};
 
-class IDrawConflictResolver {
+class IDrawConflictResolver
+{
   public:
     virtual ~IDrawConflictResolver() = default;
 
-    virtual std::vector<DrawAction> resolve(std::vector<DrawAction>) {
+    virtual std::vector<DrawAction> resolve(std::vector<DrawAction>)
+    {
     }
 };
 

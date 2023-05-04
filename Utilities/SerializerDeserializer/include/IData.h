@@ -3,14 +3,17 @@
 
 #include <string>
 
-class IData {
+class IData
+{
   public:
-    virtual ~ISerializer() = default;
+    virtual ~IData() = default;
 
-    virtual std::string ToString(std::string) {
+    virtual std::string ToString(std::string)
+    {
     }
 
-    virtual std::string& operator[](std::string) {
+    virtual std::string& operator[](std::string)
+    {
     }
 };
 

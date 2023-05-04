@@ -8,18 +8,24 @@
 
 #include "global.h"
 
-struct TextAction {
+class IData;
+
+struct TextAction
+{
     ResolverActionType type;
     std::chrono::time_point<std::chrono::system_clock> time;
     int posStart;
     int posEnd;
-}
+    IData* data;
+};
 
-class ITextConflictResolver {
+class ITextConflictResolver
+{
   public:
     virtual ~ITextConflictResolver() = default;
 
-    virtual std::vector<TextAction> resolve(std::vector<TextAction>) {
+    virtual std::vector<TextAction> resolve(std::vector<TextAction>)
+    {
     }
 };
 
