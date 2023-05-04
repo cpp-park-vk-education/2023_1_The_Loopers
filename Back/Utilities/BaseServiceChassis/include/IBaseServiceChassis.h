@@ -10,6 +10,7 @@
 #include "ILogger.h"
 #include "IMessageBrokerEvent.h"
 #include "IMessageBrokerSignal.h"
+#include "ISerializer.h"
 #include "IServiceRegistrator.h"
 
 class IBaseServiceChassis {
@@ -53,6 +54,7 @@ class IBaseServiceChassis {
 
     std::shared_ptr<ILoggerAdapter> m_logger;
     std::shared_ptr<IListener> m_listener;
+    std::shared_ptr<ISerializer> m_serializer;
     std::shared_ptr<IServiceRegistrator> m_register;
     std::shared_ptr<IMessageBrokerSignal> m_signalBroker;
     std::shared_ptr<IMessageBrokerEvent> m_eventBroker;
