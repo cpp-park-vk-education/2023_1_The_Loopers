@@ -1,7 +1,6 @@
 #ifndef _GLOBAL_H_
 #define _GLOBAL_H_
 
-#include <memory>
 #include <string>
 
 struct Endpoint {
@@ -35,5 +34,7 @@ enum ActionType {
     kFormatText,
     kEndOwnSession
 };
+
+enum ResolverActionType { kInsertion = 0, kDeletion, kFormat, kSelect, kDeselect }
 
 #endif  // _GLOBAL_H_
