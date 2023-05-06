@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "IData.h"
+#include "idata.h"
 
 class ISerializer {
   public:

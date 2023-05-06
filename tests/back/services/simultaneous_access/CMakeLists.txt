@@ -1,19 +1,19 @@
-set(TEST_EXECUTABLE test_SimultaneousAccess)
+set(TEST_EXECUTABLE test_simultaneous_access)
 
 add_executable(${TEST_EXECUTABLE} "")
 
 # add_subdirectory(ProtocolDecoder)
-add_subdirectory(Resolvers)
+add_subdirectory(resolvers)
 
 # target_sources(${TEST_EXECUTABLE}
 # PRIVATE
 # "test_SimultaneousAccessService.cpp"
 # )
 set(PRIVATE_INCLUDE_DIRECTORIES
-    "${PROJECT_SOURCE_DIR}/Back/Services/SimultaneousAccess/Resolvers/DrawConflictResolver/include"
-    "${PROJECT_SOURCE_DIR}/Back/Services/SimultaneousAccess/Resolvers/TextConflictResolver/include"
-    "${PROJECT_SOURCE_DIR}/Utilities"
-    "${PROJECT_SOURCE_DIR}/SerializerDeserializer/include"
+    "${PROJECT_SOURCE_DIR}/back/services/simultaneous_access/resolvers/draw_conflict_resolver/include"
+    "${PROJECT_SOURCE_DIR}/back/services/simultaneous_access/resolvers/text_conflict_resolver/include"
+    "${PROJECT_SOURCE_DIR}/utls"
+    "${PROJECT_SOURCE_DIR}/serializer_deserializer/include"
 )
 
 target_include_directories(${TEST_EXECUTABLE} PRIVATE ${PRIVATE_INCLUDE_DIRECTORIES})

@@ -1,1 +1,1 @@
-add_subdirectory(SimultaneousAccess)
+add_subdirectory(simultaneous_access)

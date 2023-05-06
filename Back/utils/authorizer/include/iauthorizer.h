@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-#include "ITokenValidator.h"
+#include "itoken_validator.h"
 
 class IAuthorizer {
   public:

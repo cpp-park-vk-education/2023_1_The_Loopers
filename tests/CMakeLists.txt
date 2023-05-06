@@ -1,3 +1,3 @@
 enable_testing()
 
-add_subdirectory(Back)
+add_subdirectory(back)
