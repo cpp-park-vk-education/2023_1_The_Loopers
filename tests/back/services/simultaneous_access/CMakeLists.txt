@@ -12,7 +12,7 @@ add_subdirectory(resolvers)
 set(PRIVATE_INCLUDE_DIRECTORIES
     "${PROJECT_SOURCE_DIR}/back/services/simultaneous_access/resolvers/draw_conflict_resolver/include"
     "${PROJECT_SOURCE_DIR}/back/services/simultaneous_access/resolvers/text_conflict_resolver/include"
-    "${PROJECT_SOURCE_DIR}/utls"
+    "${PROJECT_SOURCE_DIR}/utils"
     "${PROJECT_SOURCE_DIR}/serializer_deserializer/include"
 )
 
