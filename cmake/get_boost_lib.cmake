@@ -1,5 +1,5 @@
 # find third party libraries (boost:: beast, asio, system)
-find_package(Boost)
+find_package(Boost 1.82)
 
 if(${Boost_FOUND})
 else()
