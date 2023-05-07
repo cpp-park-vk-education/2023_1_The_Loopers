@@ -11,19 +11,24 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(cmake/get_boost_lib.cmake)
 
+option(ENABLE_BACK "Set to \"ON\" to build back" ON)
+option(ENABLE_FRONT "Set to \"ON\" to build front" ON)
+
+option(CLEAR_CACHE "Set to \"ON\" to clear cache" ON)
+
 option(ENABLE_TEST "Set to \"ON\" for test build" ON)
-option(ENABLE_CLANG_TIDY "Set to \"ON\" to enable clang-tidy" OFF)
+
 option(ENABLE_CLANG_FORMAT "Set to \"ON\" to add clang-format build target" OFF)
+
+option(ENABLE_CLANG_TIDY "Set to \"ON\" to enable clang-tidy" OFF)
 option(ENABLE_CPPLINT "Set to \"ON\" to enable cpplint" OFF)
 option(ENABLE_CPPCHECK "Set to \"ON\" to enable cppcheck" OFF)
+
 option(ENABLE_SANITIZER "Set to \"ON\" to enable sanitizer in debug build" OFF)
 
 set(UTILS_DIR "${PROJECT_SOURCE_DIR}/utils")
 
 include(cmake/apply_options.cmake)
-
-option(ENABLE_BACK "Set to \"ON\" to build back" ON)
-option(ENABLE_FRONT "Set to \"ON\" to build front" ON)
 
 # add_subdirectory(Back)
 # add_subdirectory(Utilities)
