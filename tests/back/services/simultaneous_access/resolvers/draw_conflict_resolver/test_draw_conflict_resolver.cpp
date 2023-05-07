@@ -1,23 +1,21 @@
 #include <chrono>
 #include <vector>
 
-#include "idraw_conflict_resolver.h"
 #include "global.h"
 #include "gtest/gtest.h"
+#include "idraw_conflict_resolver.h"
 
 using namespace std::chrono_literals;
 
 // Test fixture to be used in the tests
-class DrawConflictResolverTest : public testing::Test
-{
+class DrawConflictResolverTest : public testing::Test {
   protected:
     IDrawConflictResolver* resolver_;
     IData* data_{nullptr};
     std::vector<DrawAction> input_;
     std::vector<DrawAction> expected_output_;
 
-    void SetUp() override
-    {
+    void SetUp() override {
         // Create a new instance of the resolver before each test
         resolver_ = create_resolver();
 
@@ -35,14 +33,10 @@ class DrawConflictResolverTest : public testing::Test
         // Initialize the expected output vector with the input vector sorted by time
         expected_output_ = input_;
         std::sort(expected_output_.begin(), expected_output_.end(),
-                  [](const DrawAction& a, const DrawAction& b)
-                  {
-                      return a.time < b.time;
-                  });
+                  [](const DrawAction& a, const DrawAction& b) { return a.time < b.time; });
     }
 
-    void TearDown() override
-    {
+    void TearDown() override {
         // Destroy the resolver after each test
         delete resolver_;
     }
@@ -52,27 +46,23 @@ class DrawConflictResolverTest : public testing::Test
 };
 
 // Test case for resolver that sorts the actions by time
-class TimeBasedDrawConflictResolverTest : public DrawConflictResolverTest
-{
+class TimeBasedDrawConflictResolverTest : public DrawConflictResolverTest {
   protected:
-    IDrawConflictResolver* create_resolver() const override
-    {
+    IDrawConflictResolver* create_resolver() const override {
         // Create a new instance of the time-based resolver
         return new IDrawConflictResolver();
     }
 };
 
 // Test case for empty input vector
-TEST_F(TimeBasedDrawConflictResolverTest, TestEmptyVector)
-{
+TEST_F(TimeBasedDrawConflictResolverTest, TestEmptyVector) {
     std::vector<DrawAction> input;
     auto output = resolver_->resolve(input);
     EXPECT_EQ(output.size(), 0);
 }
 
 // Test case for vector with one element
-TEST_F(TimeBasedDrawConflictResolverTest, TestSingleElementVector)
-{
+TEST_F(TimeBasedDrawConflictResolverTest, TestSingleElementVector) {
     std::vector<DrawAction> input{
             {ResolverActionType::kInsertion, std::chrono::system_clock::now(), data_}};
     auto output = resolver_->resolve(input);
@@ -80,8 +70,7 @@ TEST_F(TimeBasedDrawConflictResolverTest, TestSingleElementVector)
 }
 
 // Test case for vector with multiple elements
-TEST_F(TimeBasedDrawConflictResolverTest, TestMultipleElementsVector)
-{
+TEST_F(TimeBasedDrawConflictResolverTest, TestMultipleElementsVector) {
     auto output = resolver_->resolve(input_);
     EXPECT_EQ(output[0], expected_output_[0]);
 }

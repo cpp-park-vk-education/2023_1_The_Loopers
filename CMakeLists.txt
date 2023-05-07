@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 cmake_policy(SET CMP0076 NEW)
 
-project(inkLink VERSION 0.1.0)
+project(inklink VERSION 0.1.0)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -13,7 +13,10 @@ option(ENABLE_CPPLINT "Set to \"ON\" to enable cpplint" OFF)
 option(ENABLE_CPPCHECK "Set to \"ON\" to enable cppcheck" OFF)
 option(ENABLE_SANITIZER "Set to \"ON\" to enable sanitizer in debug build" OFF)
 
+set(UTILS_FOLDER "${PROJECT_SOURCE_DIR}/utils")
+
 include(cmake/apply_options.cmake)
+
 
 # add_subdirectory(Back)
 # add_subdirectory(Utilities)

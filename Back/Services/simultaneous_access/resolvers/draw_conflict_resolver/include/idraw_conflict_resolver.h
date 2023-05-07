@@ -10,10 +10,8 @@
 
 class IData;
 
-struct DrawAction
-{
-    constexpr bool operator==(const DrawAction&) const noexcept
-    {
+struct DrawAction {
+    constexpr bool operator==(const DrawAction&) const noexcept {
         return true;
     }
     ResolverActionType type;
@@ -21,13 +19,11 @@ struct DrawAction
     IData* data;
 };
 
-class IDrawConflictResolver
-{
+class IDrawConflictResolver {
   public:
     virtual ~IDrawConflictResolver() = default;
 
-    virtual std::vector<DrawAction> resolve(std::vector<DrawAction>)
-    {
+    virtual std::vector<DrawAction> resolve(std::vector<DrawAction>) {
         return {};
     }
 };

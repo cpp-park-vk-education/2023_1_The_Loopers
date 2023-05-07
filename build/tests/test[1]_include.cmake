@@ -1,5 +1,0 @@
-if(EXISTS "E:/repositories/vk_park/2023_1_The_Loopers/build/tests/test[1]_tests.cmake")
-  include("E:/repositories/vk_park/2023_1_The_Loopers/build/tests/test[1]_tests.cmake")
-else()
-  add_test(test_NOT_BUILT test_NOT_BUILT)
-endif()

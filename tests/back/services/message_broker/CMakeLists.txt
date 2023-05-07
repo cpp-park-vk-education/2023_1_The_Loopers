@@ -1,17 +1,14 @@
-set(TEST_EXECUTABLE test_simultaneous_access)
+set(TEST_EXECUTABLE test_message_broker)
 
 add_executable(${TEST_EXECUTABLE} "")
 
 target_sources(${TEST_EXECUTABLE}
 PRIVATE
-    "resolvers/draw_conflict_resolver/test_draw_conflict_resolver.cpp"
+    # "resolvers/draw_conflict_resolver/test_draw_conflict_resolver.cpp"
 )
 
 set(PRIVATE_INCLUDE_DIRECTORIES
-    "${PROJECT_SOURCE_DIR}/back/services/simultaneous_access/resolvers/draw_conflict_resolver/include"
-    "${PROJECT_SOURCE_DIR}/back/services/simultaneous_access/resolvers/text_conflict_resolver/include"
     "${UTILS_FOLDER}/include"
-    "${PROJECT_SOURCE_DIR}/serializer_deserializer/include"
 )
 
 target_include_directories(${TEST_EXECUTABLE} PRIVATE ${PRIVATE_INCLUDE_DIRECTORIES})
