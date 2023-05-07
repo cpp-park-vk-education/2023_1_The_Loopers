@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.13)
 cmake_policy(SET CMP0076 NEW)
+if (${CMAKE_VERSION} VERSION_GREATER "3.24")
+    cmake_policy(SET CMP0135 OLD)
+endif()
 
 project(inklink VERSION 0.1.0)
 
@@ -18,6 +21,9 @@ option(ENABLE_SANITIZER "Set to \"ON\" to enable sanitizer in debug build" OFF)
 set(UTILS_DIR "${PROJECT_SOURCE_DIR}/utils")
 
 include(cmake/apply_options.cmake)
+
+option(ENABLE_BACK "Set to \"ON\" to build back" ON)
+option(ENABLE_FRONT "Set to \"ON\" to build front" ON)
 
 # add_subdirectory(Back)
 # add_subdirectory(Utilities)
