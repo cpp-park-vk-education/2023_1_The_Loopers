@@ -8,7 +8,7 @@ PRIVATE
 )
 
 set(PRIVATE_INCLUDE_DIRECTORIES
-    "${UTILS_FOLDER}/include"
+    "${UTILS_DIR}/include"
 )
 
 target_include_directories(${TEST_EXECUTABLE} PRIVATE ${PRIVATE_INCLUDE_DIRECTORIES})

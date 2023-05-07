@@ -9,7 +9,7 @@ PRIVATE
 )
 
 set(PUBLIC_INCLUDE_DIRECTORIES
-    "${UTILS_FOLDER}/include"
+    "${UTILS_DIR}/include"
     "include"
     "token_validator/include"
 )

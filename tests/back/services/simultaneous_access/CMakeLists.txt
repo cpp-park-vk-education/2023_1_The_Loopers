@@ -8,10 +8,10 @@ PRIVATE
 )
 
 set(PRIVATE_INCLUDE_DIRECTORIES
-    "${PROJECT_SOURCE_DIR}/back/services/simultaneous_access/resolvers/draw_conflict_resolver/include"
-    "${PROJECT_SOURCE_DIR}/back/services/simultaneous_access/resolvers/text_conflict_resolver/include"
-    "${UTILS_FOLDER}/include"
-    "${PROJECT_SOURCE_DIR}/serializer_deserializer/include"
+    "${SERVICES_DIR}/simultaneous_access/resolvers/draw_conflict_resolver/include"
+    "${SERVICES_DIR}/simultaneous_access/resolvers/text_conflict_resolver/include"
+    "${UTILS_DIR}/include"
+    "${UTILS_DIR}/serializer_deserializer/include"
 )
 
 target_include_directories(${TEST_EXECUTABLE} PRIVATE ${PRIVATE_INCLUDE_DIRECTORIES})

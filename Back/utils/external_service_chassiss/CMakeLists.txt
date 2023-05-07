@@ -9,7 +9,7 @@ PRIVATE
 )
 
 # set(PRIVATE_INCLUDE_DIRECTORIES
-# "${UTILS_FOLDER}/include"
+# "${UTILS_DIR}/include"
 # )
 
 set(PUBLIC_INCLUDE_DIRECTORIES

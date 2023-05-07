@@ -8,7 +8,7 @@ add_executable(${MESSAGE_BROKER_SERVICE} "")
 # )
 
 set(PRIVATE_INCLUDE_DIRECTORIES
-    "${UTILS_FOLDER}/include"
+    "${UTILS_DIR}/include"
     "events_handler/include"
     "signal_handler/include"
     "include"

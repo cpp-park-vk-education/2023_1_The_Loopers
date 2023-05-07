@@ -104,6 +104,11 @@ if(ENABLE_TEST)
         FetchContent_MakeAvailable(googletest)
     endif()
 
+    enable_testing()
+
+    set(SERVICES_DIR "${PROJECT_SOURCE_DIR}/back/services")
+    set(BACK_UTILS_DIR "${PROJECT_SOURCE_DIR}/back/utils")
+
     add_subdirectory(tests)
 endif()
 

@@ -15,7 +15,7 @@ option(ENABLE_CPPLINT "Set to \"ON\" to enable cpplint" OFF)
 option(ENABLE_CPPCHECK "Set to \"ON\" to enable cppcheck" OFF)
 option(ENABLE_SANITIZER "Set to \"ON\" to enable sanitizer in debug build" OFF)
 
-set(UTILS_FOLDER "${PROJECT_SOURCE_DIR}/utils")
+set(UTILS_DIR "${PROJECT_SOURCE_DIR}/utils")
 
 include(cmake/apply_options.cmake)
 

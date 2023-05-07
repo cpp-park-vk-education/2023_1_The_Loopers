@@ -8,7 +8,7 @@ add_executable(${SIMULTANEOUS_ACCESS_SERVICE} "")
 # )
 
 set(PRIVATE_INCLUDE_DIRECTORIES
-    "${UTILS_FOLDER}/include"
+    "${UTILS_DIR}/include"
     "protocol_decoder/include"
     "resolvers/draw_conflict_resolver/include"
     "resolvers/text_conflict_resolver/include"
