@@ -6,6 +6,8 @@ project(inklink VERSION 0.1.0)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+include(cmake/get_boost_lib.cmake)
+
 option(ENABLE_TEST "Set to \"ON\" for test build" ON)
 option(ENABLE_CLANG_TIDY "Set to \"ON\" to enable clang-tidy" OFF)
 option(ENABLE_CLANG_FORMAT "Set to \"ON\" to add clang-format build target" OFF)
@@ -16,7 +18,6 @@ option(ENABLE_SANITIZER "Set to \"ON\" to enable sanitizer in debug build" OFF)
 set(UTILS_FOLDER "${PROJECT_SOURCE_DIR}/utils")
 
 include(cmake/apply_options.cmake)
-
 
 # add_subdirectory(Back)
 # add_subdirectory(Utilities)

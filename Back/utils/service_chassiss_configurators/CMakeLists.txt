@@ -1,0 +1,26 @@
+set(ENV{CHASSISS_CONFIGURATOR} ${PROJECT_NAME}_services_chassiss_configurator)
+
+add_library($ENV{CHASSISS_CONFIGURATOR} STATIC "")
+
+target_sources($ENV{CHASSISS_CONFIGURATOR}
+PRIVATE
+# "src/main.cpp"
+# "src/solve_hw1.cpp"
+)
+
+# set(PRIVATE_INCLUDE_DIRECTORIES
+# "${UTILS_FOLDER}/include"
+# )
+
+set(PUBLIC_INCLUDE_DIRECTORIES
+    "include"
+)
+
+target_include_directories($ENV{CHASSISS_CONFIGURATOR} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
+
+set(PUBLIC_LINK_LIBRARIES
+    "$ENV{BASE_SERVICE_CHASSISS}"
+    "$ENV{EXTERNAL_SERVICE_CHASSISS}"
+)
+
+target_link_libraries($ENV{CHASSISS_CONFIGURATOR} PUBLIC ${PUBLIC_LINK_LIBRARIES})
