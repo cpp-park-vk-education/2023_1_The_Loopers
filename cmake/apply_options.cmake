@@ -63,6 +63,7 @@ else()
         set(SANITIZERS_FLAGS
             "-fsanitize=address"
             "-fsanitize=undefined"
+            "-fsanitize=leak"
         )
 
         add_compile_options(${SANITIZERS_FLAGS})
