@@ -1,4 +1,4 @@
-set(ENV{BASE_SERVICE_CHASSISS} ${PROJECT_NAME}_base_service_chassiss PARENT_SCOPE)
+set(ENV{BASE_SERVICE_CHASSISS} ${PROJECT_NAME}_base_service_chassiss)
 
 add_library($ENV{BASE_SERVICE_CHASSISS} SHARED "")
 
@@ -30,7 +30,7 @@ if(${spdlog_FOUND})
     set(PRIVATE_LINK_LIBRARIES "spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>")
 else()
     include(FetchContent)
-#https://github.com/gabime/spdlog/releases/download/v1.11.0/spdlog.tar.xz
+
     FetchContent_Declare(spdlog URL https://github.com/gabime/spdlog/archive/refs/tags/v1.11.0.zip)
     FetchContent_MakeAvailable(spdlog)
 

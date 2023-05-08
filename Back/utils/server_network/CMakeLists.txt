@@ -1,4 +1,4 @@
-set(ENV{SERVER_NETWORK} ${PROJECT_NAME}_server_network PARENT_SCOPE)
+set(ENV{SERVER_NETWORK} ${PROJECT_NAME}_server_network)
 
 add_library($ENV{SERVER_NETWORK} SHARED "")
 

@@ -1,4 +1,4 @@
-set(ENV{EXTERNAL_SERVICE_CHASSISS} ${PROJECT_NAME}_external_service_chassiss PARENT_SCOPE)
+set(ENV{EXTERNAL_SERVICE_CHASSISS} ${PROJECT_NAME}_external_service_chassiss)
 
 add_library($ENV{EXTERNAL_SERVICE_CHASSISS} SHARED "")
 

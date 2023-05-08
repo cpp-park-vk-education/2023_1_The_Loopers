@@ -12,7 +12,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 include(cmake/get_boost_lib.cmake)
 
 option(ENABLE_BACK "Set to \"ON\" to build back" ON)
-option(ENABLE_FRONT "Set to \"ON\" to build front" ON)
+option(ENABLE_FRONT "Set to \"ON\" to build front" OFF)
 
 option(CLEAR_CACHE "Set to \"ON\" to clear cache" ON)
 
@@ -30,24 +30,10 @@ set(UTILS_DIR "${PROJECT_SOURCE_DIR}/utils")
 
 include(cmake/apply_options.cmake)
 
-# add_subdirectory(Back)
-# add_subdirectory(Utilities)
-
-# add_executable(${PROJECT_NAME} "")
-# target_sources(${PROJECT_NAME}
-# PRIVATE
-# "src/main.cpp"
-# "src/solve_hw1.cpp"
-# )
-
-# set(PRIVATE_INCLUDE_DIRECTORIES
-# "include"
-# )
-
-# target_include_directories(${PROJECT_NAME} PRIVATE ${PRIVATE_INCLUDE_DIRECTORIES})
-
-# set(PRIVATE_LINK_LIBRARIES
-# "imdb_top_movies"
-# )
-
-# target_link_libraries(${PROJECT_NAME} PRIVATE ${PRIVATE_LINK_LIBRARIES})
+add_subdirectory(${UTILS_DIR})
+if (ENABLE_BACK)
+    add_subdirectory(back)
+endif()
+if (ENABLE_FRONT)
+    add_subdirectory(front)
+endif()
