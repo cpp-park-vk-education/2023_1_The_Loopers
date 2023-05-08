@@ -5,7 +5,7 @@
 
 TEST(FileHolder, Save) {
     std::string path1("");
-    std::string path2("fileHolderTest.txt");
+    std::string path2("file_holder_test.txt");
     std::string changes("SomeChanges");
     FileHolder fileHolder;
 
@@ -16,7 +16,7 @@ TEST(FileHolder, Save) {
 
 TEST(FileHolder, Read) {
     std::string path1("");
-    std::string path2("fileHolderTest.txt");
+    std::string path2("file_holder_test.txt");
     std::string excpected("SomeChanges");
     std::string errorMessage("Uncorrect file path");
     FileHolder fileHolder;
@@ -28,7 +28,7 @@ TEST(FileHolder, Read) {
 
 TEST(FileHolder, Delete) {
     std::string path1("");
-    std::string path2("fileHolderTest.txt");
+    std::string path2("file_holder_test.txt");
     FileHolder fileHolder;
 
     ASSERT_FALSE(fileHolder.Delete(path1));
