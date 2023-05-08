@@ -17,6 +17,7 @@ set(PUBLIC_LINK_LIBRARIES
 target_link_libraries($ENV{NETWORK_ADAPTER} PUBLIC ${PUBLIC_LINK_LIBRARIES})
 
 set(PUBLIC_INCLUDE_DIRECTORIES
+    "include"
 
     # TODO (a.novak): because boost::system::error_code.hpp and I don't know how to add only
     # boost::system::error_code.hpp include folder such that it will be available through full path

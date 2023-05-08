@@ -1,11 +1,11 @@
 #ifndef _IBASESERVICECHASSISS_H_
 #define _IBASESERVICECHASSISS_H_
 
+#include <ilistener.h>
+
 #include <memory>
 #include <string>
 #include <vector>
-
-#include <ilistener.h>
 
 #include "iinternal_sessions_manager.h"
 #include "ilocal_service_registry.h"
@@ -80,7 +80,7 @@ public:
 protected:
     ServiceType m_selfType;
     std::string m_name;
-    const Endpoint& m_selfEndpoint;
+    Endpoint m_selfEndpoint;
 };
 
 #endif  // _IBASESERVICECHASSISS_H_

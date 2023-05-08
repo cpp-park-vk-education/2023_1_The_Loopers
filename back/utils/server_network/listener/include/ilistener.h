@@ -6,15 +6,19 @@
 
 #include "isessions_factory.h"
 
-class IListener {
-  public:
+class IListener
+{
+public:
     virtual ~IListener() = default;
 
-    virtual void run() {
+    virtual void run()
+    {
     }
-    virtual void async_run() {
+    virtual void async_run()
+    {
     }
-    virtual void SetSessionFactory(ISessionFactory*) {
+    virtual void SetSessionFactory(ISessionsFactory*)
+    {
     }
 };
 

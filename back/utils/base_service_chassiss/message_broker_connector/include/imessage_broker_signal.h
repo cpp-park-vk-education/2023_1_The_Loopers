@@ -5,27 +5,29 @@
 #include <memory>
 #include <string>
 
+#include "global.h"
 #include "iclient_session.h"
 #include "icommon_connection.h"
-#include "global.h"
 
-class IMessageBrokerSignal {
-  public:
+class IMessageBrokerSignal
+{
+public:
     virtual ~IMessageBrokerSignal() = default;
 
-    virtual void SetCommonConnection(ICommonConnection*)) {
+    virtual void SetCommonConnection(ICommonConnection*)
+    {
     }
 
-    virtual void SetDoOnRead(std::function < void(
-                                                     const std::string&,
-                                                     ClientSession* > = [](const std::string&,
-                                                                           IClientSession*) {})) {
+    virtual void SetDoOnRead(std::function<void(const std::string&, IClientSession*)> =
+                                     [](const std::string&, IClientSession*) {})
+    {
     }
 
-    virtual void Request(const std::string&,const Endpoint&) {
+    virtual void Request(const std::string&, const Endpoint&)
+    {
     }
 
-  protected:
+protected:
     std::shared_ptr<ICommonConnection> m_connectionToMsgBroker;
 };
 
