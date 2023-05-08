@@ -8,7 +8,9 @@ target_sources($ENV{SERVER_NETWORK} PRIVATE
 )
 
 set(PUBLIC_LINK_LIBRARIES
-    "Boost::system"
+    ${Boost_LIBRARIES}
+
+    # "Boost::system"
 )
 
 set(PRIVATE_LINK_LIBRARIES
@@ -17,7 +19,6 @@ set(PRIVATE_LINK_LIBRARIES
 
 target_link_libraries($ENV{SERVER_NETWORK} PUBLIC ${PUBLIC_LINK_LIBRARIES})
 target_link_libraries($ENV{SERVER_NETWORK} PRIVATE ${PRIVATE_LINK_LIBRARIES})
-
 
 set(PUBLIC_INCLUDE_DIRECTORIES
     "${UTILS_DIR}/include"

@@ -4,13 +4,6 @@ add_executable(${TEST_EXECUTABLE} "")
 
 set(MESSAGE_BROKER_DIR "${PROJECT_SOURCE_DIR}/back/services/message_broker")
 
-target_sources(${TEST_EXECUTABLE}
-PRIVATE
-    "events_handler/test_events_handler.cpp"
-    "signal_handler/test_signal_handler.cpp"
-    # "${MESSAGE_BROKER_DIR}/events_handler/src/..."
-)
-
 set(PRIVATE_INCLUDE_DIRECTORIES
     "${UTILS_DIR}/include"
     "${MESSAGE_BROKER_DIR}/events_handler/include"
@@ -26,6 +19,14 @@ set(PRIVATE_LINK_LIBRARIES
 )
 
 target_link_libraries(${TEST_EXECUTABLE} PRIVATE ${PRIVATE_LINK_LIBRARIES})
+
+target_sources(${TEST_EXECUTABLE}
+    PRIVATE
+    "events_handler/test_events_handler.cpp"
+    "signal_handler/test_signal_handler.cpp"
+
+    # "${MESSAGE_BROKER_DIR}/events_handler/src/..."
+)
 
 include(GoogleTest)
 gtest_discover_tests(${TEST_EXECUTABLE})
