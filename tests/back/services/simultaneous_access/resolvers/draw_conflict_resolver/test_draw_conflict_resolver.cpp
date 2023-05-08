@@ -8,14 +8,16 @@
 using namespace std::chrono_literals;
 
 // Test fixture to be used in the tests
-class DrawConflictResolverTest : public testing::Test {
-  protected:
+class DrawConflictResolverTest : public testing::Test
+{
+protected:
     IDrawConflictResolver* resolver_;
     IData* data_{nullptr};
     std::vector<DrawAction> input_;
-    std::vector<DrawAction> expected_output_;
+    std::vector<DrawAction> expected_;
 
-    void SetUp() override {
+    void SetUp() override
+    {
         // Create a new instance of the resolver before each test
         resolver_ = create_resolver();
 
@@ -26,17 +28,21 @@ class DrawConflictResolverTest : public testing::Test {
         //           {kSelect, std::chrono::system_clock::now() + 5s},
         //           {kDeselect, std::chrono::system_clock::now() + 10s}};
 
-        input_ = {{ResolverActionType::kInsertion, std::chrono::system_clock::now() - 10s, data_},
-                  {ResolverActionType::kInsertion, std::chrono::system_clock::now(), data_},
-                  {ResolverActionType::kInsertion, std::chrono::system_clock::now() - 5s, data_}};
+        input_ = {{ResolverActionType::kInsertion, "id1", "u1",
+                   std::chrono::system_clock::now() - 10s, data_},
+                  {ResolverActionType::kInsertion, "id1", "u1", std::chrono::system_clock::now(),
+                   data_},
+                  {ResolverActionType::kInsertion, "id1", "u1",
+                   std::chrono::system_clock::now() - 5s, data_}};
 
         // Initialize the expected output vector with the input vector sorted by time
-        expected_output_ = input_;
+        expected_ = input_;
         std::sort(expected_output_.begin(), expected_output_.end(),
                   [](const DrawAction& a, const DrawAction& b) { return a.time < b.time; });
     }
 
-    void TearDown() override {
+    void TearDown() override
+    {
         // Destroy the resolver after each test
         delete resolver_;
     }
@@ -46,31 +52,43 @@ class DrawConflictResolverTest : public testing::Test {
 };
 
 // Test case for resolver that sorts the actions by time
-class TimeBasedDrawConflictResolverTest : public DrawConflictResolverTest {
-  protected:
-    IDrawConflictResolver* create_resolver() const override {
+class TimeBasedDrawConflictResolverTest : public DrawConflictResolverTest
+{
+protected:
+    IDrawConflictResolver* create_resolver() const override
+    {
         // Create a new instance of the time-based resolver
         return new IDrawConflictResolver();
     }
 };
 
 // Test case for empty input vector
-TEST_F(TimeBasedDrawConflictResolverTest, TestEmptyVector) {
-    std::vector<DrawAction> input;
-    auto output = resolver_->resolve(input);
-    EXPECT_EQ(output.size(), 0);
+TEST_F(TimeBasedDrawConflictResolverTest, TestEmptyVector)
+{
+    std::vector<DrawAction> expected;
+    auto actual = resolver_->resolve(expected);
+
+    EXPECT_EQ(actual.size(), 0);
 }
 
 // Test case for vector with one element
-TEST_F(TimeBasedDrawConflictResolverTest, TestSingleElementVector) {
-    std::vector<DrawAction> input{
-            {ResolverActionType::kInsertion, std::chrono::system_clock::now(), data_}};
-    auto output = resolver_->resolve(input);
-    EXPECT_EQ(output[0], input[0]);
+TEST_F(TimeBasedDrawConflictResolverTest, TestSingleElementVector)
+{
+    std::vector<DrawAction> expected{
+            {ResolverActionType::kInsertion, "id1", "u1", std::chrono::system_clock::now(), data_}};
+    auto actual = resolver_->resolve(expected);
+
+    EXPECT_EQ(actual[0], expected[0]);
 }
 
 // Test case for vector with multiple elements
-TEST_F(TimeBasedDrawConflictResolverTest, TestMultipleElementsVector) {
-    auto output = resolver_->resolve(input_);
-    EXPECT_EQ(output[0], expected_output_[0]);
+TEST_F(TimeBasedDrawConflictResolverTest, TestMultipleElementsVector)
+{
+    auto actual = resolver_->resolve(input_);
+
+    ASSERT_EQ(actions.size(), expected_.size());
+    for (size_t i = 0; i < actions.size(); ++i)
+    {
+        EXPECT_EQ(actions[i], expected_[i]);
+    }
 }

@@ -12,20 +12,29 @@ class IData;
 
 struct TextAction
 {
-    constexpr bool operator==(const TextAction&) const noexcept
-    {
-        return true;
-    }
     ResolverActionType type;
+    std::string figureId;
+    Endpoint endpoint;
     std::chrono::time_point<std::chrono::system_clock> time;
     int posStart;
     int posEnd;
-    IData* data;
+    IData *data;
+
+    bool operator==(const TextAction &other) const
+    {
+        return type == other.type && figureId == other.figureId && userLogin == other.userLogin &&
+               time == other.time && posStart == other.posStart && posEnd == other.posEnd &&
+               data == other.data;
+    }
+    bool operator!=(const TextAction &other) const
+    {
+        return !(*this == other);
+    }
 };
 
 class ITextConflictResolver
 {
-  public:
+public:
     virtual ~ITextConflictResolver() = default;
 
     virtual std::vector<TextAction> resolve(std::vector<TextAction>)
