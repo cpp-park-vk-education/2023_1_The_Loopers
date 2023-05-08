@@ -9,11 +9,11 @@
 #include "icommon_connection.h"
 #include "global.h"
 
-class IMessageBrokerSignal {
+class IMessageBrokerEvent {
   public:
-    virtual ~IMessageBrokerSignal() = default;
+    virtual ~IMessageBrokerEvent() = default;
 
-    virtual void SetCommonConnection(ICommonConnection*)) {
+    virtual void SetCommonConnection(ICommonConnection*) {
     }
 
     virtual void SetDoOnNotified(std::function <
@@ -26,12 +26,12 @@ class IMessageBrokerSignal {
     virtual void Publish(int event, const std::string&, ServiceType = ServiceType::kNone) {
     }
 
-    virtual void Subscribe(int event, Endpoint) {
+    virtual void Subscribe(int event,const Endpoint&) {
     }
 
   protected:
     std::shared_ptr<ICommonConnection> m_connectionToMsgBroker;
-    std::function <void(int, const std::string&,ClientSession* > m_doOnNotified;
+    std::function <void(int, const std::string&, IClientSession* > m_doOnNotified;
 };
 
 #endif  // _IMESSAGEBROKEREVENT_H_

@@ -15,14 +15,14 @@
 
 class IBaseServiceChassis
 {
-  public:
+public:
     virtual ~IBaseServiceChassis() = default;
 
     virtual void LogDebug(const std::string&)
     {
     }
 
-    virtual void init(ServiceType, name : string, Endpoint)
+    virtual void init(ServiceType, name : string, const Endpoint&)
     {
     }
 
@@ -75,7 +75,7 @@ class IBaseServiceChassis
     std::shared_ptr<ILocalServiceRegistry> m_localServiceRegistry;
     std::shared_ptr<InternalSessionsManager> m_internalSessionsManager;
 
-  protected:
+protected:
     ServiceType m_selfType;
     std::string m_name;
     Endpoint m_selfEndpoint;

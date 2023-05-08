@@ -4,10 +4,10 @@
 
 #include "iinternal_sessions_manager.h"
 
-class ServiceSession_Mock : public IServiceSession
+class ServiceSession_Fake : public IServiceSession
 {
 public:
-    ServiceSession_Mock(Endpoint endpoint) : m_endpoint{std::move(endpoint)}
+    ServiceSession_Fake(Endpoint endpoint) : m_endpoint{std::move(endpoint)}
     {
     }
 
@@ -38,7 +38,7 @@ protected:
                                         {.address = "10.62.0.4", .port = 80}};
         for (int i{0}; i < 4; ++i)
         {
-            sessions.emplace_back(std::make_unique<ServiceSession_Mock>(endpoints[i]));
+            sessions.emplace_back(std::make_unique<ServiceSession_Fake>(endpoints[i]));
             sessionsManager->AddSession(docs[i], sessions[i].get());
         }
     }
@@ -63,7 +63,7 @@ TEST_F(SessionsManagerTest, AddSessionWithDuplicatedEndpoint)
     Endpoint existingEndpoint{sessions[0]->GetClientEndpoint()};
     IInternalSessionsManager::DocSessionDescriptor descriptor{.documentId = "different",
                                                               .login = "u1"};
-    IServiceSession* session = new ServiceSession_Mock(existingEndpoint);
+    IServiceSession* session = new ServiceSession_Fake(existingEndpoint);
 
     EXPECT_THROW(sessionsManager->AddSession(descriptor, session), std::runtime_error);
 
@@ -73,7 +73,7 @@ TEST_F(SessionsManagerTest, AddSessionWithDuplicatedEndpoint)
 TEST_F(SessionsManagerTest, AddSessionWithDuplicatedDescriptor)
 {
     IInternalSessionsManager::DocSessionDescriptor descriptor{.documentId = "d1", .login = "u1"};
-    IServiceSession* session = new ServiceSession_Mock({"new ip", 8080});
+    IServiceSession* session = new ServiceSession_Fake({"new ip", 8080});
 
     EXPECT_THROW({ sessionsManager->AddSession(descriptor, sessions[0].get()); },
                  std::runtime_error);

@@ -10,7 +10,7 @@ class ILocalServiceRegistry {
   public:
     virtual ~ILocalServiceRegistry() = default;
 
-    virtual void AddService(ServiceType, Endpoint) {
+    virtual void AddService(ServiceType,const Endpoint&) {
     }
 
     virtual std::vector<Endpoint> GetServices(ServiceType) {

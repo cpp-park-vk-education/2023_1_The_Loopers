@@ -7,20 +7,24 @@
 #include "global.h"
 #include "iclient_session.h"
 
-class ICommonConnection {
-  public:
+class ICommonConnection
+{
+public:
     virtual ~ICommonConnection() = default;
 
-    virtual void Init(ServiceType, Endpoint self, Endpoint other) {
+    virtual void Init(ServiceType, const Endpoint& self, const Endpoint& other)
+    {
     }
 
-    virtual void ChangeConnection(ServiceType, Endpoint self, Endpoint other) {
+    virtual void ChangeConnection(ServiceType, const Endpoint& self, const Endpoint& other)
+    {
     }
 
-    virtual std::shared_ptr<IClientSession> GetSession() {
+    virtual std::shared_ptr<IClientSession> GetSession()
+    {
     }
 
-  protected:
+protected:
     std::shared_ptr<IClientSession> m_session;
     bool connected{false};
     ServiceType m_serviceType;

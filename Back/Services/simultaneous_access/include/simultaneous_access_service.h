@@ -5,7 +5,7 @@
 #include <string>
 
 #include "idb_adapter.h"
-#include "iexternal_service_chassis.h"
+#include "iexternal_service_chassiss.h"
 #include "iresolvers_factory.h"
 
 class SimultaneousAccessService {

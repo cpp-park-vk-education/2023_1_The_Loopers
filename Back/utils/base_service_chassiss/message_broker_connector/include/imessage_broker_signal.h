@@ -22,7 +22,7 @@ class IMessageBrokerSignal {
                                                                            IClientSession*) {})) {
     }
 
-    virtual void Request(const std::string&, Endpoint) {
+    virtual void Request(const std::string&,const Endpoint&) {
     }
 
   protected:

@@ -16,9 +16,9 @@ class IServiceRegistrator {
     virtual void SetConnection(IClientSession*) {
     }
 
-    virtual bool Register(ServiceType, Endpoint) {
+    virtual bool Register(ServiceType,const Endpoint&) {
     }
-    virtual void Deregister(ServiceType, Endpoint) {
+    virtual void Deregister(ServiceType,const Endpoint&) {
     }
     virtual std::vector<Endpoint> GetEndpoints(ServiceType) {
     }

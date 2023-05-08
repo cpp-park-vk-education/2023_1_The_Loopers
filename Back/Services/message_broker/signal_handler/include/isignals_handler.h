@@ -5,15 +5,15 @@
 #include <unordered_map>
 #include <vector>
 
-#include "ibase_service_chassis.h"
 #include "global.h"
+#include "ibase_service_chassiss.h"
 
 class ISignalsHandler
 {
-  public:
+public:
     virtual ~ISignalsHandler() = default;
 
-    virtual void SetServiceChassis(BaseServiceChassis*)
+    virtual void SetServiceChassis(std::shared_ptr<IBaseServiceChassis>)
     {
     }
 
@@ -21,8 +21,8 @@ class ISignalsHandler
     {
     }
 
-  protected:
-    std::shared_ptr<BaseServiceChassis> m_serviceChassis;
+protected:
+    std::shared_ptr<IBaseServiceChassis> m_serviceChassis;
 };
 
 #endif  // _ISIGNALSHANDLER_H_

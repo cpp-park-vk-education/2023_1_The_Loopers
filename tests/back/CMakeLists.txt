@@ -1,2 +1,3 @@
 add_subdirectory(services/simultaneous_access)
+add_subdirectory(services/message_broker)
 add_subdirectory(utils/base_service_chassiss)
