@@ -109,17 +109,4 @@ if(ENABLE_TEST)
 
     set(SERVICES_DIR "${PROJECT_SOURCE_DIR}/back/services")
     set(BACK_UTILS_DIR "${PROJECT_SOURCE_DIR}/back/utils")
-
-    add_subdirectory(tests)
-endif()
-
-if (CLEAR_CACHE)
-    unset(ENABLE_TEST CACHE)
-
-    unset(ENABLE_CLANG_FORMAT CACHE)
-    unset(ENABLE_CPPLINT CACHE)
-    unset(ENABLE_CLANG_TIDY CACHE)
-    unset(ENABLE_CPPCHECK CACHE)
-    
-    unset(ENABLE_SANITIZER CACHE)
 endif()
