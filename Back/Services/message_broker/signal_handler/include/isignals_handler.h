@@ -17,7 +17,7 @@ public:
     {
     }
 
-    virtual void SendMessage(Endpoint, const std::string&)
+    virtual void Send(Endpoint, const std::string&)
     {
     }
 

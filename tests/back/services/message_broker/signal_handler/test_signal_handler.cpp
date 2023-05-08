@@ -1,28 +1,64 @@
-#ifndef _ISIGNALSHANDLER_H_
-#define _ISIGNALSHANDLER_H_
+#include <gmock/gmock.h>
+#include <gtest/gtest.h>
 
-#include <memory>
-#include <unordered_map>
-#include <vector>
+#include "isignals_handler.h"
 
-#include "ibase_service_chassiss.h"
-#include "global.h"
-
-class ISignalsHandler
+class ServiceSession_Fake : public IServiceSession
 {
-  public:
-    virtual ~ISignalsHandler() = default;
-
-    virtual void SetServiceChassis(BaseServiceChassis*)
+public:
+    ServiceSession_Fake(Endpoint endpoint) : m_endpoint{std::move(endpoint)}
     {
     }
 
-    virtual void SendMessage(Endpoint, const std::string&)
+    Endpoint GetClientEndpoint() override
     {
+        return m_endpoint;
     }
 
-  protected:
-    std::shared_ptr<BaseServiceChassis> m_serviceChassis;
+private:
+    Endpoint m_endpoint;
 };
 
-#endif  // _ISIGNALSHANDLER_H_
+class IServiceSessionMock : public ServiceSession_Fake
+{
+public:
+    MOCK_METHOD(void, send, (const std::string&), (override));
+};
+
+class SignalsHandlerTest : public ::testing::Test
+{
+protected:
+    void SetUp() override
+    {
+        handler = std::make_unique<ISignalsHandler>();
+
+        sessionMock = std::make_shared<IServiceSessionMock>(realEndpoint);
+
+        m_chassiss = std::make_shared<IBaseServiceChassis>();
+        m_chassiss->m_internalSessionsManager->AddSession({"d1", "u1"}, sessionMock.get());
+        handler->SetServiceChassis(m_chassiss);
+    }
+
+    Endpoint realEndpoint{.address = "127.0.0.1", .port = 8080};
+    std::unique_ptr<ISignalsHandler> handler;
+    std::shared_ptr<IServiceSessionMock> sessionMock;
+    std::shared_ptr<IBaseServiceChassis> m_chassiss;
+};
+
+TEST_F(SignalsHandlerTest, Send)
+{
+    std::string msg = "Event Data";
+
+    EXPECT_CALL(*sessionMock, send(testing::_)).Times(1);
+
+    handler->Send(realEndpoint, msg);
+}
+
+TEST_F(SignalsHandlerTest, SendToNonExisting)
+{
+    std::string msg = "Event Data";
+
+    EXPECT_CALL(*sessionMock, send(testing::_)).Times(0);
+
+    handler->Send({.address = "NonExisting", .port = 8080}, msg);
+}
