@@ -73,15 +73,20 @@ else()
     set(DEBUG_MESSAGE "${DEBUG_MESSAGE}${ResetColor}\n")
     message(${DEBUG_MESSAGE})
 
-    set(WARNINGS_FLAGS
-        "-Werror"
-        "-Wall"
-        "-Wextra"
-        "-Wpedantic"
-    )
-
-    if(NOT ENABLE_CLANG_TIDY)
-        list(APPEND ${WARNINGS_FLAGS} "-Wabi=${CMAKE_CXX_STANDARD}")
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC") 
+        set(WARNINGS_FLAGS
+            "-Wall"
+        )
+    else()
+        set(WARNINGS_FLAGS
+            "-Werror"
+            "-Wall"
+            "-Wextra"
+            "-Wpedantic"
+        )
+        if(NOT ENABLE_CLANG_TIDY)
+            list(APPEND ${WARNINGS_FLAGS} "-Wabi=${CMAKE_CXX_STANDARD}")
+        endif()
     endif()
 
     add_compile_options(${WARNINGS_FLAGS})
