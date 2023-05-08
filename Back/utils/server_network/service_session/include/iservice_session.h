@@ -4,20 +4,26 @@
 #include <memory>
 #include <string>
 
-#include "iauthorizer.h"
-
+class IAuthorizer;
 class IInternalSessionsManager;
 class INetworkStreamAdapter;
 
-class IServiceSession {
-  public:
+class IServiceSession
+{
+public:
     virtual ~IServiceSession() = default;
 
-    virtual void SetManager(IInternalSessionsManager*) {
+    virtual void SetManager(IInternalSessionsManager*)
+    {
     }
-    virtual void SetAuthorizer(IAuthorizer*) {
+    virtual void SetAuthorizer(IAuthorizer*)
+    {
     }
-    virtual void SetNetworkAdapter(INetworkStreamAdapter*) {
+    virtual void SetNetworkAdapter(INetworkStreamAdapter*)
+    {
+    }
+    virtual Endpoint GetClientEndpoint()
+    {
     }
 
     virtual void run() {
