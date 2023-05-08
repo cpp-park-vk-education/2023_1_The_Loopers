@@ -206,7 +206,7 @@ TEST_F(IInternalSessionsManagerTest, AddSessionTest)
 {
     // Create a mock server session and a doc session descriptor
     auto mockSession = std::make_unique<MockServerSession>();
-    IInternalSessionsManager::DocSessionDescriptor descriptor = {"doc1", "user1"};
+    DocSessionDescriptor descriptor = {"doc1", "user1"};
 
     // Add the session to the manager
     m_manager->AddSession(descriptor, mockSession.get());
@@ -219,7 +219,7 @@ TEST_F(IInternalSessionsManagerTest, RemoveSessionTest)
 {
     // Create a mock server session and a doc session descriptor
     auto mockSession = std::make_unique<MockServerSession>();
-    IInternalSessionsManager::DocSessionDescriptor descriptor = {"doc1", "user1"};
+    DocSessionDescriptor descriptor = {"doc1", "user1"};
 
     // Add the session to the manager
     m_manager->AddSession(descriptor, mockSession.get());
@@ -236,7 +236,7 @@ TEST_F(IInternalSessionsManagerTest, GetSessionsTest)
     // Create mock server sessions and a doc session descriptor
     auto mockSession1 = std::make_unique<MockServerSession>();
     auto mockSession2 = std::make_unique<MockServerSession>();
-    IInternalSessionsManager::DocSessionDescriptor descriptor = {"doc1", "user1"};
+    DocSessionDescriptor descriptor = {"doc1", "user1"};
 
     // Add the sessions to the manager
     m_manager->AddSession(descriptor, mockSession1.get());

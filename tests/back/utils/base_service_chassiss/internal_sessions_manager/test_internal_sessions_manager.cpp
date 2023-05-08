@@ -27,7 +27,7 @@ protected:
     {
         sessionsManager = std::make_unique<IInternalSessionsManager>();
 
-        std::vector<IInternalSessionsManager::DocSessionDescriptor> docs{
+        std::vector<DocSessionDescriptor> docs{
                 {.documentId = "d1", .login = "u1"},
                 {.documentId = "d2", .login = "u1"},
                 {.documentId = "d3", .login = "u1"},
@@ -51,7 +51,7 @@ namespace add_existing
 {
 TEST_F(SessionsManagerTest, AddExistingSession)
 {
-    IInternalSessionsManager::DocSessionDescriptor descriptor{.documentId = "different",
+    DocSessionDescriptor descriptor{.documentId = "different",
                                                               .login = "u1"};
 
     EXPECT_THROW({ sessionsManager->AddSession(descriptor, sessions[0].get()); },
@@ -61,7 +61,7 @@ TEST_F(SessionsManagerTest, AddExistingSession)
 TEST_F(SessionsManagerTest, AddSessionWithDuplicatedEndpoint)
 {
     Endpoint existingEndpoint{sessions[0]->GetClientEndpoint()};
-    IInternalSessionsManager::DocSessionDescriptor descriptor{.documentId = "different",
+    DocSessionDescriptor descriptor{.documentId = "different",
                                                               .login = "u1"};
     IServiceSession* session = new ServiceSession_Fake(existingEndpoint);
 
@@ -72,7 +72,7 @@ TEST_F(SessionsManagerTest, AddSessionWithDuplicatedEndpoint)
 
 TEST_F(SessionsManagerTest, AddSessionWithDuplicatedDescriptor)
 {
-    IInternalSessionsManager::DocSessionDescriptor descriptor{.documentId = "d1", .login = "u1"};
+    DocSessionDescriptor descriptor{.documentId = "d1", .login = "u1"};
     IServiceSession* session = new ServiceSession_Fake({"new ip", 8080});
 
     EXPECT_THROW({ sessionsManager->AddSession(descriptor, sessions[0].get()); },
@@ -94,7 +94,7 @@ TEST_F(SessionsManagerTest, GetSessionByEndpoint)
 
 TEST_F(SessionsManagerTest, GetSessionsByDocDescriptor)
 {
-    IInternalSessionsManager::DocSessionDescriptor descriptor{.documentId = "d1", .login = "u1"};
+    DocSessionDescriptor descriptor{.documentId = "d1", .login = "u1"};
 
     IServiceSession* expected = sessions[0].get();
     IServiceSession* actual = sessionsManager->GetSession(descriptor);
@@ -136,7 +136,7 @@ TEST_F(SessionsManagerTest, GetMultipleSessionsByDoc)
 
 TEST_F(SessionsManagerTest, GetSessionByEndpointAfterRemovalByDescriptor)
 {
-    IInternalSessionsManager::DocSessionDescriptor descriptor{.documentId = "d2", .login = "u1"};
+    DocSessionDescriptor descriptor{.documentId = "d2", .login = "u1"};
     sessionsManager->RemoveSession(descriptor);
 
     IServiceSession* expected = sessions[0].get();
@@ -147,10 +147,10 @@ TEST_F(SessionsManagerTest, GetSessionByEndpointAfterRemovalByDescriptor)
 
 TEST_F(SessionsManagerTest, GetSessionsByDocDescriptorAfterRemovalByDescriptor)
 {
-    IInternalSessionsManager::DocSessionDescriptor delDescriptor{.documentId = "d2", .login = "u1"};
+    DocSessionDescriptor delDescriptor{.documentId = "d2", .login = "u1"};
     sessionsManager->RemoveSession(delDescriptor);
 
-    IInternalSessionsManager::DocSessionDescriptor descriptor{.documentId = "d1", .login = "u1"};
+    DocSessionDescriptor descriptor{.documentId = "d1", .login = "u1"};
 
     IServiceSession* expected = sessions[0].get();
     IServiceSession* actual = sessionsManager->GetSession(descriptor);
@@ -160,7 +160,7 @@ TEST_F(SessionsManagerTest, GetSessionsByDocDescriptorAfterRemovalByDescriptor)
 
 TEST_F(SessionsManagerTest, GetSessionsByUserAfterRemovalByDescriptor)
 {
-    IInternalSessionsManager::DocSessionDescriptor descriptor{.documentId = "d2", .login = "u1"};
+    DocSessionDescriptor descriptor{.documentId = "d2", .login = "u1"};
     sessionsManager->RemoveSession(descriptor);
 
     std::vector<IServiceSession*> expected{sessions[3].get()};
@@ -172,7 +172,7 @@ TEST_F(SessionsManagerTest, GetSessionsByUserAfterRemovalByDescriptor)
 
 TEST_F(SessionsManagerTest, GetSessionsByDocAfterRemovalByDescriptor)
 {
-    IInternalSessionsManager::DocSessionDescriptor descriptor{.documentId = "d1", .login = "u1"};
+    DocSessionDescriptor descriptor{.documentId = "d1", .login = "u1"};
     sessionsManager->RemoveSession(descriptor);
 
     std::vector<IServiceSession*> expected{sessions[1].get()};
@@ -196,7 +196,7 @@ TEST_F(SessionsManagerTest, GetSessionsByDocDescriptorAfterRemovalBySessionPoint
 {
     sessionsManager->RemoveSession(sessions[1].get());
 
-    IInternalSessionsManager::DocSessionDescriptor descriptor{.documentId = "d1", .login = "u1"};
+    DocSessionDescriptor descriptor{.documentId = "d1", .login = "u1"};
 
     IServiceSession* expected = sessions[0].get();
     IServiceSession* actual = sessionsManager->GetSession(descriptor);
@@ -249,14 +249,14 @@ TEST_F(SessionsManagerTest, DoubleRemovalByPointer)
 
 TEST_F(SessionsManagerTest, DeleteNonExistingByDescriptor)
 {
-    IInternalSessionsManager::DocSessionDescriptor descriptor{.documentId = "non existing",
+    DocSessionDescriptor descriptor{.documentId = "non existing",
                                                               .login = "u1"};
     EXPECT_NO_THROW(sessionsManager->RemoveSession(descriptor));
 }
 
 TEST_F(SessionsManagerTest, DoubleRemovalByDescriptor)
 {
-    IInternalSessionsManager::DocSessionDescriptor descriptor{.documentId = "d1", .login = "u1"};
+    DocSessionDescriptor descriptor{.documentId = "d1", .login = "u1"};
     sessionsManager->RemoveSession(descriptor);
     EXPECT_NO_THROW(sessionsManager->RemoveSession(descriptor));
 }
@@ -274,7 +274,7 @@ TEST_F(SessionsManagerTest, NoSessionByEndpoint)
 
 TEST_F(SessionsManagerTest, NoSessionsByDocDescriptor)
 {
-    IInternalSessionsManager::DocSessionDescriptor descriptor{.documentId = "non existing",
+    DocSessionDescriptor descriptor{.documentId = "non existing",
                                                               .login = "u1"};
 
     IServiceSession* expected = nullptr;
@@ -301,7 +301,7 @@ TEST_F(SessionsManagerTest, NoSessionsByDoc)
 
 TEST_F(SessionsManagerTest, NoSessionByEndpointAfterRemovalByDescriptor)
 {
-    IInternalSessionsManager::DocSessionDescriptor descriptor{.documentId = "d1", .login = "u1"};
+    DocSessionDescriptor descriptor{.documentId = "d1", .login = "u1"};
     sessionsManager->RemoveSession(descriptor);
 
     IServiceSession* expected = nullptr;
@@ -312,7 +312,7 @@ TEST_F(SessionsManagerTest, NoSessionByEndpointAfterRemovalByDescriptor)
 
 TEST_F(SessionsManagerTest, NoSessionsByDocDescriptorAfterRemovalByDescriptor)
 {
-    IInternalSessionsManager::DocSessionDescriptor descriptor{.documentId = "d1", .login = "u1"};
+    DocSessionDescriptor descriptor{.documentId = "d1", .login = "u1"};
     sessionsManager->RemoveSession(descriptor);
 
     IServiceSession* expected = nullptr;
@@ -324,7 +324,7 @@ TEST_F(SessionsManagerTest, NoSessionsByDocDescriptorAfterRemovalByDescriptor)
 TEST_F(SessionsManagerTest, NoSessionsByUserAfterRemovalByDescriptor)
 {
     // Remove a session
-    IInternalSessionsManager::DocSessionDescriptor descriptor{.documentId = "d1", .login = "u2"};
+    DocSessionDescriptor descriptor{.documentId = "d1", .login = "u2"};
     sessionsManager->RemoveSession(descriptor);
 
     std::vector<IServiceSession*> expected{};
@@ -336,7 +336,7 @@ TEST_F(SessionsManagerTest, NoSessionsByUserAfterRemovalByDescriptor)
 TEST_F(SessionsManagerTest, NoSessionsByDocAfterRemovalByDescriptor)
 {
     // Remove a session
-    IInternalSessionsManager::DocSessionDescriptor descriptor{.documentId = "d2", .login = "u1"};
+    DocSessionDescriptor descriptor{.documentId = "d2", .login = "u1"};
     sessionsManager->RemoveSession(descriptor);
 
     std::vector<IServiceSession*> expected{};
@@ -357,7 +357,7 @@ TEST_F(SessionsManagerTest, NoSessionByEndpointAfterRemovalBySessionPointer)
 
 TEST_F(SessionsManagerTest, NoSessionsByDocDescriptorAfterRemovalBySessionPointer)
 {
-    IInternalSessionsManager::DocSessionDescriptor descriptor{.documentId = "d1", .login = "u1"};
+    DocSessionDescriptor descriptor{.documentId = "d1", .login = "u1"};
     sessionsManager->RemoveSession(sessions[0].get());
 
     IServiceSession* expected = nullptr;

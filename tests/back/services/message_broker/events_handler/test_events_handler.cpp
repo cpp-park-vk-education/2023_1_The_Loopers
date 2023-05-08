@@ -22,6 +22,10 @@ private:
 class IServiceSessionMock : public ServiceSession_Fake
 {
 public:
+    IServiceSessionMock(Endpoint endpoint) : ServiceSession_Fake(std::move(endpoint))
+    {
+    }
+
     MOCK_METHOD(void, send, (const std::string&), (override));
 };
 

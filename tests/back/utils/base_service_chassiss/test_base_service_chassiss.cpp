@@ -57,7 +57,7 @@ protected:
     {
         sessionsManager = std::make_unique<IInternalSessionsManager>();
 
-        std::vector<IInternalSessionsManager::DocSessionDescriptor> docs{
+        std::vector<DocSessionDescriptor> docs{
                 {.documentId = "d1", .login = "u1"},
                 {.documentId = "d2", .login = "u1"},
                 {.documentId = "d3", .login = "u1"},

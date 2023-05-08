@@ -59,10 +59,10 @@ public:
     }
 
     // sessions manager
-    virtual void AddSession(IInternalSessionsManager::DocSessionDescriptor, IServiceSession*)
+    virtual void AddSession(DocSessionDescriptor, IServiceSession*)
     {
     }
-    virtual void RemoveSession(IInternalSessionsManager::DocSessionDescriptor)
+    virtual void RemoveSession(DocSessionDescriptor)
     {
     }
 
