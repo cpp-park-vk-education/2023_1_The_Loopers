@@ -2,10 +2,8 @@ set(ENV{DB_ADAPTER} ${PROJECT_NAME}_db_adapter)
 
 add_library($ENV{DB_ADAPTER} SHARED "")
 
-target_sources($ENV{DB_ADAPTER}
-PRIVATE
-# "src/main.cpp"
-# "src/solve_hw1.cpp"
+target_sources($ENV{DB_ADAPTER} PRIVATE
+    "src/trash.cpp"
 )
 
 # set(PRIVATE_INCLUDE_DIRECTORIES

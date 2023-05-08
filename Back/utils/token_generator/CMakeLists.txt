@@ -2,11 +2,10 @@ set(ENV{TOKEN_GENERATOR} ${PROJECT_NAME}_token_generator)
 
 add_library($ENV{TOKEN_GENERATOR} STATIC "")
 
-target_sources($ENV{TOKEN_GENERATOR}
-PRIVATE
-# "src/main.cpp"
-# "src/solve_hw1.cpp"
+target_sources($ENV{TOKEN_GENERATOR} PRIVATE
+    "src/trash.cpp"
 )
+
 
 # set(PRIVATE_INCLUDE_DIRECTORIES
 # "${UTILS_DIR}/include"

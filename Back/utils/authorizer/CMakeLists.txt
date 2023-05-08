@@ -2,10 +2,8 @@ set(ENV{AUTHORIZER} ${PROJECT_NAME}_authorizer)
 
 add_library($ENV{AUTHORIZER} STATIC "")
 
-target_sources($ENV{AUTHORIZER}
-PRIVATE
-# "src/main.cpp"
-# "src/solve_hw1.cpp"
+target_sources($ENV{AUTHORIZER} PRIVATE
+    "src/trash.cpp"
 )
 
 set(PUBLIC_INCLUDE_DIRECTORIES

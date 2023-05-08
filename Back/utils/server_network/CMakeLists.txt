@@ -2,10 +2,8 @@ set(ENV{SERVER_NETWORK} ${PROJECT_NAME}_server_network)
 
 add_library($ENV{SERVER_NETWORK} SHARED "")
 
-target_sources($ENV{SERVER_NETWORK}
-PRIVATE
-# "src/main.cpp"
-# "src/solve_hw1.cpp"
+target_sources($ENV{SERVER_NETWORK} PRIVATE
+    "src/trash.cpp"
 )
 
 set(PUBLIC_LINK_LIBRARIES

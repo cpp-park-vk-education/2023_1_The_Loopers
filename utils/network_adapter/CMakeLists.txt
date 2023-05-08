@@ -2,10 +2,8 @@ set(ENV{NETWORK_ADAPTER} ${PROJECT_NAME}_network_adapter)
 
 add_library($ENV{NETWORK_ADAPTER} SHARED "")
 
-target_sources($ENV{NETWORK_ADAPTER}
-PRIVATE
-# "src/main.cpp"
-# "src/solve_hw1.cpp"
+target_sources($ENV{NETWORK_ADAPTER} PRIVATE
+    "src/trash.cpp"
 )
 
 set(PUBLIC_LINK_LIBRARIES

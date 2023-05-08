@@ -1,11 +1,11 @@
 set(MESSAGE_BROKER_SERVICE service_${PROJECT_NAME}_message_broker)
 
 add_executable(${MESSAGE_BROKER_SERVICE} "")
-# target_sources(${PROJECT_NAME}
-# PRIVATE
-# "src/main.cpp"
-# "src/solve_hw1.cpp"
-# )
+
+target_sources(${MESSAGE_BROKER_SERVICE}
+PRIVATE
+    "src/main.cpp"
+)
 
 set(PRIVATE_INCLUDE_DIRECTORIES
     "${UTILS_DIR}/include"

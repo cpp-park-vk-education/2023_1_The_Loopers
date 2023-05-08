@@ -2,11 +2,10 @@ set(ENV{CHASSISS_CONFIGURATOR} ${PROJECT_NAME}_services_chassiss_configurator)
 
 add_library($ENV{CHASSISS_CONFIGURATOR} STATIC "")
 
-target_sources($ENV{CHASSISS_CONFIGURATOR}
-PRIVATE
-# "src/main.cpp"
-# "src/solve_hw1.cpp"
+target_sources($ENV{CHASSISS_CONFIGURATOR} PRIVATE
+    "src/trash.cpp"
 )
+
 
 # set(PRIVATE_INCLUDE_DIRECTORIES
 # "${UTILS_DIR}/include"

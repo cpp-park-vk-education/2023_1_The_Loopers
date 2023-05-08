@@ -1,11 +1,11 @@
 set(SIMULTANEOUS_ACCESS_SERVICE service_${PROJECT_NAME}_simultaneous_access)
 
 add_executable(${SIMULTANEOUS_ACCESS_SERVICE} "")
-# target_sources(${SIMULTANEOUS_ACCESS_SERVICE}
-# PRIVATE
-# "src/main.cpp"
-# "src/solve_hw1.cpp"
-# )
+
+target_sources(${SIMULTANEOUS_ACCESS_SERVICE}
+PRIVATE
+    "src/main.cpp"
+)
 
 set(PRIVATE_INCLUDE_DIRECTORIES
     "${UTILS_DIR}/include"

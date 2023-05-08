@@ -2,6 +2,10 @@ set(ENV{CLIENT_NETWORK} ${PROJECT_NAME}_client_network)
 
 add_library($ENV{CLIENT_NETWORK} SHARED "")
 
+target_sources($ENV{CLIENT_NETWORK} PRIVATE
+    "src/trash.cpp"
+)
+
 set(PUBLIC_LINK_LIBRARIES
     "Boost::system"
 )

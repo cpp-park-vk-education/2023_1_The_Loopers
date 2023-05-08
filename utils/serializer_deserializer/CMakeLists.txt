@@ -2,10 +2,8 @@ set(ENV{SERIALIZER} ${PROJECT_NAME}_serializer)
 
 add_library($ENV{SERIALIZER} SHARED "")
 
-target_sources($ENV{SERIALIZER}
-PRIVATE
-# "src/main.cpp"
-# "src/solve_hw1.cpp"
+target_sources($ENV{SERIALIZER} PRIVATE
+    "src/trash.cpp"
 )
 
 set(PUBLIC_INCLUDE_DIRECTORIES

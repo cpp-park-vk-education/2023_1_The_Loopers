@@ -2,15 +2,9 @@ set(ENV{BASE_SERVICE_CHASSISS} ${PROJECT_NAME}_base_service_chassiss)
 
 add_library($ENV{BASE_SERVICE_CHASSISS} SHARED "")
 
-target_sources($ENV{BASE_SERVICE_CHASSISS}
-PRIVATE
-# "src/main.cpp"
-# "src/solve_hw1.cpp"
+target_sources($ENV{BASE_SERVICE_CHASSISS} PRIVATE
+    "src/trash.cpp"
 )
-
-# set(PRIVATE_INCLUDE_DIRECTORIES
-# "${UTILS_DIR}/include"
-# )
 
 set(PUBLIC_INCLUDE_DIRECTORIES
     "${UTILS_DIR}/include"

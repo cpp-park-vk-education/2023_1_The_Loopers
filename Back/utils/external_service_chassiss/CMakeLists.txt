@@ -2,10 +2,8 @@ set(ENV{EXTERNAL_SERVICE_CHASSISS} ${PROJECT_NAME}_external_service_chassiss)
 
 add_library($ENV{EXTERNAL_SERVICE_CHASSISS} SHARED "")
 
-target_sources($ENV{EXTERNAL_SERVICE_CHASSISS}
-PRIVATE
-# "src/main.cpp"
-# "src/solve_hw1.cpp"
+target_sources($ENV{EXTERNAL_SERVICE_CHASSISS} PRIVATE
+    "src/trash.cpp"
 )
 
 # set(PRIVATE_INCLUDE_DIRECTORIES
