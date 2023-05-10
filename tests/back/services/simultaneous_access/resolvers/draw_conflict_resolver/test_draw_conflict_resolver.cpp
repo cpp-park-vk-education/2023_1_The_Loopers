@@ -11,40 +11,39 @@ using namespace std::chrono_literals;
 class DrawConflictResolverTest : public testing::Test
 {
 protected:
-    IDrawConflictResolver* resolver_;
-    IData* data_{nullptr};
-    std::vector<DrawAction> input_;
-    std::vector<DrawAction> expected_;
+    IDrawConflictResolver* m_resolver;
+    IData* m_data{nullptr};
+    std::vector<DrawAction> m_inputInsertionsOnly;
+    std::vector<DrawAction> m_expectedInsertionsOnly;
 
     void SetUp() override
     {
-        // Create a new instance of the resolver before each test
-        resolver_ = create_resolver();
+        m_resolver = create_resolver();
 
-        // Initialize the input vector with some random actions and times
-        // input_ = {{ResolverActionType::kInsertion, std::chrono::system_clock::now() - 10s},
+        // m_inputInsertionsOnly = {{ResolverActionType::kInsertion,
+        // std::chrono::system_clock::now() - 10s},
         //           {kDeletion, std::chrono::system_clock::now() - 5s},
         //           {kFormat, std::chrono::system_clock::now()},
         //           {kSelect, std::chrono::system_clock::now() + 5s},
         //           {kDeselect, std::chrono::system_clock::now() + 10s}};
 
-        input_ = {{ResolverActionType::kInsertion, "id1", "u1",
-                   std::chrono::system_clock::now() - 10s, data_},
-                  {ResolverActionType::kInsertion, "id1", "u1", std::chrono::system_clock::now(),
-                   data_},
-                  {ResolverActionType::kInsertion, "id1", "u1",
-                   std::chrono::system_clock::now() - 5s, data_}};
+        m_inputInsertionsOnly = {{ResolverActionType::kInsertion, "figure1", "endpoint1",
+                                  std::chrono::system_clock::now() - 10s, m_data},
+                                 {ResolverActionType::kInsertion, "figure1", "endpoint2",
+                                  std::chrono::system_clock::now(), m_data},
+                                 {ResolverActionType::kInsertion, "figure1", "endpoint1",
+                                  std::chrono::system_clock::now() - 5s, m_data}};
 
         // Initialize the expected output vector with the input vector sorted by time
-        expected_ = input_;
-        std::sort(expected_output_.begin(), expected_output_.end(),
+        m_expectedInsertionsOnly = m_inputInsertionsOnly;
+        std::sort(m_expectedInsertionsOnlyoutput_.begin(), m_expectedInsertionsOnlyoutput_.end(),
                   [](const DrawAction& a, const DrawAction& b) { return a.time < b.time; });
     }
 
     void TearDown() override
     {
         // Destroy the resolver after each test
-        delete resolver_;
+        delete m_resolver;
     }
 
     // Helper function to create an instance of the resolver
@@ -66,7 +65,7 @@ protected:
 TEST_F(TimeBasedDrawConflictResolverTest, TestEmptyVector)
 {
     std::vector<DrawAction> expected;
-    auto actual = resolver_->resolve(expected);
+    auto actual = m_resolver->resolve(expected);
 
     EXPECT_EQ(actual.size(), 0);
 }
@@ -74,9 +73,9 @@ TEST_F(TimeBasedDrawConflictResolverTest, TestEmptyVector)
 // Test case for vector with one element
 TEST_F(TimeBasedDrawConflictResolverTest, TestSingleElementVector)
 {
-    std::vector<DrawAction> expected{
-            {ResolverActionType::kInsertion, "id1", "u1", std::chrono::system_clock::now(), data_}};
-    auto actual = resolver_->resolve(expected);
+    std::vector<DrawAction> expected{{ResolverActionType::kInsertion, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now(), m_data}};
+    auto actual = m_resolver->resolve(expected);
 
     EXPECT_EQ(actual[0], expected[0]);
 }
@@ -84,11 +83,11 @@ TEST_F(TimeBasedDrawConflictResolverTest, TestSingleElementVector)
 // Test case for vector with multiple elements
 TEST_F(TimeBasedDrawConflictResolverTest, TestMultipleElementsVector)
 {
-    auto actual = resolver_->resolve(input_);
+    auto actual = m_resolver->resolve(m_inputInsertionsOnly);
 
-    ASSERT_EQ(actions.size(), expected_.size());
+    ASSERT_EQ(actions.size(), m_expectedInsertionsOnly.size());
     for (size_t i = 0; i < actions.size(); ++i)
     {
-        EXPECT_EQ(actions[i], expected_[i]);
+        EXPECT_EQ(actions[i], m_expectedInsertionsOnly[i]);
     }
 }
