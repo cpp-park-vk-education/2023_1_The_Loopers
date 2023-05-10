@@ -47,15 +47,20 @@ public:
     virtual std::vector<IServiceSession*> GetSessionsByUser(const std::string&)
     {
     }
-    virtual IServiceSession* GetSession(Endpoint)
+    virtual IServiceSession* GetSession(const Endpoint&)
+    {
+    }
+
+    virtual DocSessionDescriptor GetDescriptor(const Endpoint&)
     {
     }
 
 protected:
     std::unordered_map<Endpoint, IServiceSession*> m_sessions;
-    std::unordered_map<std::string, std::string> m_docByUser;
-    std::unordered_map<std::string, std::string> m_userByDoc;
+    std::unordered_map<std::string, std::vector<std::string>> m_docByUser;
+    std::unordered_map<std::string, std::vector<std::string>> m_userByDoc;
     std::unordered_map<DocSessionDescriptor, Endpoint> m_endpointByDescriptor;
+    std::unordered_map<Endpoint, DocSessionDescriptor> m_DescriptorByEndpoint;
 };
 
 #endif  // _IINTERNALSESSIONSMANAGER_H_
