@@ -7,43 +7,27 @@
 
 using namespace std::chrono_literals;
 
-// Test fixture to be used in the tests
 class DrawConflictResolverTest : public testing::Test
 {
 protected:
     IDrawConflictResolver* m_resolver;
-    IData* m_data{nullptr};
-    std::vector<DrawAction> m_inputInsertionsOnly;
-    std::vector<DrawAction> m_expectedInsertionsOnly;
 
     void SetUp() override
     {
         m_resolver = create_resolver();
-
-        m_inputInsertionsOnly = {{ResolverActionType::kInsertion, "figure1", "endpoint1",
-                                  std::chrono::system_clock::now() - 10s, m_data},
-                                 {ResolverActionType::kInsertion, "figure1", "endpoint2",
-                                  std::chrono::system_clock::now(), m_data},
-                                 {ResolverActionType::kInsertion, "figure1", "endpoint1",
-                                  std::chrono::system_clock::now() - 5s, m_data}};
-
-        // Initialize the expected output vector with the input vector sorted by time
-        m_expectedInsertionsOnly = m_inputInsertionsOnly;
-        std::sort(m_expectedInsertionsOnlyoutput_.begin(), m_expectedInsertionsOnlyoutput_.end(),
-                  [](const DrawAction& a, const DrawAction& b) { return a.time < b.time; });
     }
 
     void TearDown() override
     {
-        // Destroy the resolver after each test
         delete m_resolver;
     }
 
-    // Helper function to create an instance of the resolver
     virtual IDrawConflictResolver* create_resolver() const = 0;
 };
 
-// Test case for resolver that sorts the actions by time
+namespace time_based_resolver
+{
+// Test case for resolver that sorts the input by time
 class TimeBasedDrawConflictResolverTest : public DrawConflictResolverTest
 {
 protected:
@@ -54,8 +38,7 @@ protected:
     }
 };
 
-// Test case for empty input vector
-TEST_F(TimeBasedDrawConflictResolverTest, TestEmptyVector)
+TEST_F(TimeBasedDrawConflictResolverTest, EmptyInput)
 {
     std::vector<DrawAction> expected;
     auto actual = m_resolver->resolve(expected);
@@ -63,139 +46,162 @@ TEST_F(TimeBasedDrawConflictResolverTest, TestEmptyVector)
     EXPECT_EQ(actual.size(), 0);
 }
 
-// Test case for vector with one element
-TEST_F(TimeBasedDrawConflictResolverTest, TestSingleElementVector)
+TEST_F(TimeBasedDrawConflictResolverTest, SingleActionInput)
 {
     std::vector<DrawAction> expected{{ResolverActionType::kInsertion, "figure1", "endpoint1",
-                                      std::chrono::system_clock::now(), m_data}};
+                                      std::chrono::system_clock::now(), nullptr}};
     auto actual = m_resolver->resolve(expected);
 
     EXPECT_EQ(actual[0], expected[0]);
 }
 
-// Test case for vector with multiple elements
-TEST_F(TimeBasedDrawConflictResolverTest, TestMultipleElementsVector)
+TEST_F(TimeBasedDrawConflictResolverTest, MultipleInsertionsOneClientOneFigure)
 {
-    auto actual = m_resolver->resolve(m_inputInsertionsOnly);
+    std::vector<DrawAction> input = {{ResolverActionType::kInsertion, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now() - 10s, nullptr},
+                                     {ResolverActionType::kInsertion, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now(), nullptr},
+                                     {ResolverActionType::kInsertion, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now() - 5s, nullptr}};
 
-    ASSERT_EQ(actions.size(), m_expectedInsertionsOnly.size());
-    for (size_t i = 0; i < actions.size(); ++i)
+    std::vector<DrawAction> expected = input;
+    std::sort(expected.begin(), expected.end(),
+              [](const DrawAction& a, const DrawAction& b) { return a.time < b.time; });
+
+    auto actual = m_resolver->resolve(input);
+
+    ASSERT_EQ(actual.size(), expected.size());
+    for (size_t i = 0; i < actual.size(); ++i)
     {
-        EXPECT_EQ(actions[i], m_expectedInsertionsOnly[i]);
+        EXPECT_EQ(actual[i], expected[i]);
     }
 }
 
-// Test case for multiple operation types on the same figure
-TEST_F(TimeBasedDrawConflictResolverTest, TestMultipleOperationTypesSameFigure)
+TEST_F(TimeBasedDrawConflictResolverTest, MultipleActionTypesOneClientOneFigure)
 {
-    std::vector<DrawAction> actions = {
-            {ResolverActionType::kInsertion, "figure1", "endpoint1",
-             std::chrono::system_clock::now() - 10s, m_data},
+    std::vector<DrawAction> input = {{ResolverActionType::kInsertion, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now() - 10s, nullptr},
+                                     {ResolverActionType::kFormat, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now(), nullptr},
+                                     {ResolverActionType::kSelect, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now() - 5s, nullptr}};
+
+    std::vector<DrawAction> expected = input;
+    std::sort(expected.begin(), expected.end(),
+              [](const DrawAction& a, const DrawAction& b) { return a.time < b.time; });
+
+    auto actual = m_resolver->resolve(input);
+
+    ASSERT_EQ(actual.size(), expected.size());
+    for (size_t i = 0; i < actual.size(); ++i)
+    {
+        EXPECT_EQ(actual[i], expected[i]);
+    }
+}
+
+TEST_F(TimeBasedDrawConflictResolverTest, TwoClientsOneFigure)
+{
+    std::vector<DrawAction> input = {{ResolverActionType::kInsertion, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now() - 15s, nullptr},
+                                     {ResolverActionType::kInsertion, "figure1", "endpoint2",
+                                      std::chrono::system_clock::now() - 10s, nullptr},
+                                     {ResolverActionType::kInsertion, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now(), nullptr},
+                                     {ResolverActionType::kInsertion, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now() - 5s, nullptr}};
+
+    std::vector<DrawAction> expected = input;
+    std::sort(expected.begin(), expected.end(),
+              [](const DrawAction& a, const DrawAction& b) { return a.time < b.time; });
+
+    auto actual = m_resolver->resolve(input);
+
+    ASSERT_EQ(actual.size(), expected.size());
+    for (size_t i = 0; i < actual.size(); ++i)
+    {
+        EXPECT_EQ(actual[i], expected[i]);
+    }
+}
+
+TEST_F(TimeBasedDrawConflictResolverTest, DeletionInMiddle)
+{
+    std::vector<DrawAction> input = {{ResolverActionType::kInsertion, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now() - 10s, nullptr},
+                                     {ResolverActionType::kFormat, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now() - 5s, nullptr},
+                                     {ResolverActionType::kDeletion, "figure1", "endpoint2",
+                                      std::chrono::system_clock::now() - 3s, nullptr},
+                                     {ResolverActionType::kInsertion, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now(), nullptr}};
+
+    std::vector<DrawAction> expected = {{ResolverActionType::kInsertion, "figure1", "endpoint1",
+                                         std::chrono::system_clock::now() - 10s, nullptr},
+                                        {ResolverActionType::kFormat, "figure1", "endpoint1",
+                                         std::chrono::system_clock::now() - 5s, nullptr},
+                                        {ResolverActionType::kDeletion, "figure1", "endpoint2",
+                                         std::chrono::system_clock::now() - 3s, nullptr}};
+
+    std::vector<DrawAction> actual = m_resolver->resolve(input);
+
+    ASSERT_EQ(actual.size(), expected.size());
+    for (size_t i = 0; i < actual.size(); ++i)
+    {
+        EXPECT_EQ(actual[i], expected[i]);
+    }
+}
+
+TEST_F(TimeBasedDrawConflictResolverTest, DeletionAfterOtherSelected)
+{
+    std::vector<DrawAction> input = {
+            {ResolverActionType::kSelect, "figure1", "endpoint1",
+             std::chrono::system_clock::now() - 10s, nullptr},
             {ResolverActionType::kDeletion, "figure1", "endpoint2",
-             std::chrono::system_clock::now() - 5s, m_data},
-            {ResolverActionType::kFormat, "figure1", "endpoint1",
-             std::chrono::system_clock::now() - 3s, m_data},
-            {ResolverActionType::kSelect, "figure1", "endpoint2", std::chrono::system_clock::now(),
-             m_data},
+             std::chrono::system_clock::now() - 3s, nullptr},
     };
+
+    std::vector<DrawAction> expected = input;
+
+    std::vector<DrawAction> actual = m_resolver->resolve(input);
+
+    ASSERT_EQ(actual.size(), expected.size());
+    for (size_t i = 0; i < actual.size(); ++i)
+    {
+        EXPECT_EQ(actual[i], expected[i]);
+    }
+}
+
+TEST_F(TimeBasedDrawConflictResolverTest, OperationsOnDifferentFigures)
+{
+    std::vector<DrawAction> input = {{ResolverActionType::kInsertion, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now() - 10s, nullptr},
+                                     {ResolverActionType::kDeletion, "figure2", "endpoint1",
+                                      std::chrono::system_clock::now() - 5s, nullptr},
+                                     {ResolverActionType::kFormat, "figure3", "endpoint1",
+                                      std::chrono::system_clock::now() - 9s, nullptr},
+                                     {ResolverActionType::kSelect, "figure4", "endpoint1",
+                                      std::chrono::system_clock::now(), nullptr}};
 
     // Expected result is the same as the input, as there are no conflicts to resolve
-    std::vector<DrawAction> expected = actions;
+    std::vector<DrawAction> expected = input;
 
     // Resolve conflicts
-    std::vector<DrawAction> resolvedActions = m_resolver->resolve(actions);
+    std::vector<DrawAction> actual = m_resolver->resolve(input);
 
-    // Verify the resolved actions match the expected result
-    ASSERT_EQ(resolvedActions.size(), expected.size());
-    for (size_t i = 0; i < resolvedActions.size(); ++i)
+    // Verify the resolved input match the expected result
+    ASSERT_EQ(actual.size(), expected.size());
+    for (size_t i = 0; i < actual.size(); ++i)
     {
-        EXPECT_EQ(resolvedActions[i], expected[i]);
+        EXPECT_EQ(actual[i], expected[i]);
     }
 }
 
-// Test case for multiple endpoints on the same figure
-TEST_F(TimeBasedDrawConflictResolverTest, TestMultipleEndpointsSameFigure)
+}  // namespace time_based_resolver
+
+namespace blocking_resolver
 {
-    std::vector<DrawAction> actions = {
-            {ResolverActionType::kInsertion, "figure1", "endpoint1",
-             std::chrono::system_clock::now() - 10s, m_data},
-            {ResolverActionType::kInsertion, "figure1", "endpoint2",
-             std::chrono::system_clock::now() - 5s, m_data},
-            {ResolverActionType::kInsertion, "figure1", "endpoint1",
-             std::chrono::system_clock::now() - 3s, m_data},
-    };
-
-    // Expected result is the same as the input, as there are no conflicts to resolve
-    std::vector<DrawAction> expected = actions;
-
-    // Resolve conflicts
-    std::vector<DrawAction> resolvedActions = m_resolver->resolve(actions);
-
-    // Verify the resolved actions match the expected result
-    ASSERT_EQ(resolvedActions.size(), expected.size());
-    for (size_t i = 0; i < resolvedActions.size(); ++i)
-    {
-        EXPECT_EQ(resolvedActions[i], expected[i]);
-    }
-}
-
-// Test case for multiple endpoints on the same figure with figure deletion
-TEST_F(TimeBasedDrawConflictResolverTest, TestMultipleEndpointsSameFigureWithDeletion)
-{
-    std::vector<DrawAction> actions = {
-            {ResolverActionType::kInsertion, "figure1", "endpoint1",
-             std::chrono::system_clock::now() - 10s, m_data},
-            {ResolverActionType::kDeletion, "figure1", "endpoint2",
-             std::chrono::system_clock::now() - 5s, m_data},
-            {ResolverActionType::kInsertion, "figure1", "endpoint1",
-             std::chrono::system_clock::now() - 3s, m_data},
-    };
-
-    // Expected result is an empty vector, as the figure is deleted and subsequent insertions are
-    // cancelled
-    std::vector<DrawAction> expected;
-
-    // Resolve conflicts
-
-    std::vector<DrawAction> resolvedActions = m_resolver->resolve(actions);
-
-    // Verify the resolved actions match the expected result
-    ASSERT_EQ(resolvedActions.size(), expected.size());
-    for (size_t i = 0; i < resolvedActions.size(); ++i)
-    {
-        EXPECT_EQ(resolvedActions[i], expected[i]);
-    }
-}
-
-// Test case for multiple operations on different figures
-TEST_F(TimeBasedDrawConflictResolverTest, TestMultipleOperationsDifferentFigures)
-{
-    std::vector<DrawAction> actions = {
-            {ResolverActionType::kInsertion, "figure1", "endpoint1",
-             std::chrono::system_clock::now() - 10s, m_data},
-            {ResolverActionType::kDeletion, "figure2", "endpoint1",
-             std::chrono::system_clock::now() - 5s, m_data},
-            {ResolverActionType::kFormat, "figure3", "endpoint1",
-             std::chrono::system_clock::now() - 10s, m_data},
-            {ResolverActionType::kSelect, "figure4", "endpoint1", std::chrono::system_clock::now(),
-             m_data},
-    };
-
-    // Expected result is the same as the input, as there are no conflicts to resolve
-    std::vector<DrawAction> expected = actions;
-
-    // Resolve conflicts
-    std::vector<DrawAction> resolvedActions = m_resolver->resolve(actions);
-
-    // Verify the resolved actions match the expected result
-    ASSERT_EQ(resolvedActions.size(), expected.size());
-    for (size_t i = 0; i < resolvedActions.size(); ++i)
-    {
-        EXPECT_EQ(resolvedActions[i], expected[i]);
-    }
-}
-
 // Test case for resolver that allows only one user to modify figure
+// Blocking starts when user selects figure and ends when he deselects it
+// therefore input must not be ill-formated (selection action should be passed each time if any)
 class BlockingDrawConflictResolverTest : public DrawConflictResolverTest
 {
 protected:
@@ -205,113 +211,210 @@ protected:
         return new IDrawConflictResolver();
     }
 };
-// Blocking starts when user selects figure and ends when he deselects it
 
-// Test case for multiple operation types on the same figure
-TEST_F(BlockingDrawConflictResolverTest, TestMultipleOperationTypesSameFigure)
+TEST_F(BlockingDrawConflictResolverTest, EmptyInput)
 {
-    std::vector<DrawAction> actions = {
-            {ResolverActionType::kInsertion, "figure1", "endpoint1",
-             std::chrono::system_clock::now() - 10s, m_data},
-            {ResolverActionType::kDeletion, "figure1", "endpoint2",
-             std::chrono::system_clock::now() - 5s, m_data},
-            {ResolverActionType::kFormat, "figure1", "endpoint1",
-             std::chrono::system_clock::now() - 3s, m_data},
-            {ResolverActionType::kSelect, "figure1", "endpoint2", std::chrono::system_clock::now(),
-             m_data},
-    };
+    std::vector<DrawAction> expected;
+    auto actual = m_resolver->resolve(expected);
 
-    // Only the last action (kSelect) should be preserved due to blocking
-    std::vector<DrawAction> expected = {actions.back()};
-
-    // Resolve conflicts
-    std::vector<DrawAction> resolvedActions = m_resolver->resolve(actions);
-
-    // Verify the resolved actions match the expected result
-    ASSERT_EQ(resolvedActions.size(), expected.size());
-    EXPECT_EQ(resolvedActions[0], expected[0]);
+    EXPECT_EQ(actual.size(), 0);
 }
 
-// Test case for multiple endpoints on the same figure
-TEST_F(BlockingDrawConflictResolverTest, TestMultipleEndpointsSameFigure)
+TEST_F(BlockingDrawConflictResolverTest, NoSelectionInput)
 {
-    std::vector<DrawAction> actions = {
-            {ResolverActionType::kInsertion, "figure1", "endpoint1",
-             std::chrono::system_clock::now() - 10s, m_data},
-            {ResolverActionType::kInsertion, "figure1", "endpoint2",
-             std::chrono::system_clock::now() - 5s, m_data},
-            {ResolverActionType::kInsertion, "figure1", "endpoint1",
-             std::chrono::system_clock::now(), m_data},
-            {ResolverActionType::kSelect, "figure1", "endpoint2",
-             std::chrono::system_clock::now() + 5s, m_data},
-    };
+    std::vector<DrawAction> input{{ResolverActionType::kInsertion, "figure1", "endpoint1",
+                                   std::chrono::system_clock::now(), nullptr},
+                                  {ResolverActionType::kInsertion, "figure1", "endpoint1",
+                                   std::chrono::system_clock::now() - 5s, nullptr}};
 
-    // Only the last action (kSelect) should be preserved due to blocking
-    std::vector<DrawAction> expected = {actions.back()};
+    // result should be empty because there is no selection for endpoint1
+    std::vector<DrawAction> expected;
+    auto actual = m_resolver->resolve(input);
 
-    // Resolve conflicts
-    std::vector<DrawAction> resolvedActions = m_resolver->resolve(actions);
-
-    // Verify the resolved actions match the expected result
-    ASSERT_EQ(resolvedActions.size(), expected.size());
-    EXPECT_EQ(resolvedActions[0], expected[0]);
+    EXPECT_EQ(actual.size(), expected.size());
 }
 
-// Test case for multiple operations on different figures
-TEST_F(BlockingDrawConflictResolverTest, TestMultipleOperationsDifferentFigures)
+TEST_F(BlockingDrawConflictResolverTest, OneUserGoodOtherNoSelectionDifferentFigures)
 {
-    std::vector<DrawAction> actions = {
+    std::vector<DrawAction> input{
+            {ResolverActionType::kSelect, "figure1", "endpoint1",
+             std::chrono::system_clock::now() - 5s, nullptr},
+            {ResolverActionType::kInsertion, "figureOther", "endpointNoSelection",
+             std::chrono::system_clock::now() - 3s, nullptr},
             {ResolverActionType::kInsertion, "figure1", "endpoint1",
-             std::chrono::system_clock::now() - 10s, m_data},
-            {ResolverActionType::kDeletion, "figure2", "endpoint2",
-             std::chrono::system_clock::now() - 5s, m_data},
-            {ResolverActionType::kFormat, "figure3", "endpoint3",
-             std::chrono::system_clock::now() - 3s, m_data},
-            {ResolverActionType::kSelect, "figure4", "endpoint4", std::chrono::system_clock::now(),
-             m_data},
-    };
+             std::chrono::system_clock::now(), nullptr}};
 
-    // All actions should be preserved as there are no conflicts between figures
-    std::vector<DrawAction> expected = actions;
+    std::vector<DrawAction> expected{{ResolverActionType::kSelect, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now() - 5s, nullptr},
+                                     {ResolverActionType::kInsertion, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now(), nullptr}};
+    auto actual = m_resolver->resolve(input);
 
-    // Resolve conflicts
-    std::vector<DrawAction> resolvedActions = m_resolver->resolve(actions);
-
-    // Verify the resolved actions match the expected result
-    ASSERT_EQ(resolvedActions.size(), expected.size());
-    for (size_t i = 0; i < resolvedActions.size(); ++i)
+    ASSERT_EQ(actual.size(), expected.size());
+    for (size_t i = 0; i < actual.size(); ++i)
     {
-        EXPECT_EQ(resolvedActions[i], expected[i]);
+        EXPECT_EQ(actual[i], expected[i]);
     }
 }
 
-// Test case for other necessary scenario (e.g., figure deletion cancels subsequent insertions)
-TEST_F(BlockingDrawConflictResolverTest, TestFigureDeletionCancelsInsertions)
+TEST_F(BlockingDrawConflictResolverTest, OneUserGoodOtherNoSelectionOneFigure)
 {
-    std::vector<DrawAction> actions = {
-            {ResolverActionType::kInsertion, "figure1", "endpoint1",
-             std::chrono::system_clock::now() - 10s, m_data},
-            {ResolverActionType::kDeletion, "figure1", "endpoint2",
-             std::chrono::system_clock::now() - 5s, m_data},
-            {ResolverActionType::kInsertion, "figure1", "endpoint1",
-             std::chrono::system_clock::now(), m_data},
-            {ResolverActionType::kInsertion, "figure1", "endpoint2",
-             std::chrono::system_clock::now() + 5s, m_data},
-    };
+    std::vector<DrawAction> input{{ResolverActionType::kSelect, "figure1", "endpoint1",
+                                   std::chrono::system_clock::now() - 5s, nullptr},
+                                  {ResolverActionType::kInsertion, "figure1", "endpointNoSelection",
+                                   std::chrono::system_clock::now() - 3s, nullptr},
+                                  {ResolverActionType::kInsertion, "figure1", "endpoint1",
+                                   std::chrono::system_clock::now(), nullptr}};
 
-    // The deletion action should cancel the subsequent insertions on the same figure
-    std::vector<DrawAction> expected = {
-            actions[0],
-            actions[1],
-    };
+    std::vector<DrawAction> expected{{ResolverActionType::kSelect, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now() - 5s, nullptr},
+                                     {ResolverActionType::kInsertion, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now(), nullptr}};
+    auto actual = m_resolver->resolve(input);
 
-    // Resolve conflicts
-    std::vector<DrawAction> resolvedActions = m_resolver->resolve(actions);
-
-    // Verify the resolved actions match the expected result
-    ASSERT_EQ(resolvedActions.size(), expected.size());
-    for (size_t i = 0; i < resolvedActions.size(); ++i)
+    ASSERT_EQ(actual.size(), expected.size());
+    for (size_t i = 0; i < actual.size(); ++i)
     {
-        EXPECT_EQ(resolvedActions[i], expected[i]);
+        EXPECT_EQ(actual[i], expected[i]);
     }
 }
+
+TEST_F(BlockingDrawConflictResolverTest, NoDeselectSoFar)
+{
+    std::vector<DrawAction> input = {{ResolverActionType::kSelect, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now() - 10s, nullptr},
+                                     {ResolverActionType::kInsertion, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now() - 5s, nullptr},
+                                     {ResolverActionType::kFormat, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now() - 3s, nullptr},
+                                     {ResolverActionType::kInsertion, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now(), nullptr}};
+
+    std::vector<DrawAction> expected = input;
+
+    std::vector<DrawAction> actual = m_resolver->resolve(input);
+
+    ASSERT_EQ(actual.size(), expected.size());
+    for (size_t i = 0; i < actual.size(); ++i)
+    {
+        EXPECT_EQ(actual[i], expected[i]);
+    }
+}
+
+TEST_F(BlockingDrawConflictResolverTest, FullCycle)
+{
+    std::vector<DrawAction> input = {{ResolverActionType::kSelect, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now() - 10s, nullptr},
+                                     {ResolverActionType::kInsertion, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now() - 5s, nullptr},
+                                     {ResolverActionType::kFormat, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now() - 3s, nullptr},
+                                     {ResolverActionType::kDeselect, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now(), nullptr}};
+
+    std::vector<DrawAction> expected = input;
+
+    std::vector<DrawAction> actual = m_resolver->resolve(input);
+
+    ASSERT_EQ(actual.size(), expected.size());
+    for (size_t i = 0; i < actual.size(); ++i)
+    {
+        EXPECT_EQ(actual[i], expected[i]);
+    }
+}
+
+TEST_F(BlockingDrawConflictResolverTest, MultipleSelections)
+{
+    std::vector<DrawAction> input = {{ResolverActionType::kSelect, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now() - 10s, nullptr},
+                                     {ResolverActionType::kSelect, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now() - 5s, nullptr},
+                                     {ResolverActionType::kFormat, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now() - 3s, nullptr},
+                                     {ResolverActionType::kDeselect, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now(), nullptr}};
+
+    std::vector<DrawAction> expected = {{ResolverActionType::kSelect, "figure1", "endpoint1",
+                                         std::chrono::system_clock::now() - 10s, nullptr},
+                                        {ResolverActionType::kFormat, "figure1", "endpoint1",
+                                         std::chrono::system_clock::now() - 3s, nullptr},
+                                        {ResolverActionType::kDeselect, "figure1", "endpoint1",
+                                         std::chrono::system_clock::now(), nullptr}};
+
+    std::vector<DrawAction> actual = m_resolver->resolve(input);
+
+    ASSERT_EQ(actual.size(), expected.size());
+    for (size_t i = 0; i < actual.size(); ++i)
+    {
+        EXPECT_EQ(actual[i], expected[i]);
+    }
+}
+
+TEST_F(BlockingDrawConflictResolverTest, OtherUserTriesSelectWhenBlocked)
+{
+    std::vector<DrawAction> input = {{ResolverActionType::kSelect, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now() - 10s, nullptr},
+                                     {ResolverActionType::kSelect, "figure1", "endpoint2",
+                                      std::chrono::system_clock::now() - 5s, nullptr},
+                                     {ResolverActionType::kFormat, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now() - 3s, nullptr}};
+
+    std::vector<DrawAction> expected = {{ResolverActionType::kSelect, "figure1", "endpoint1",
+                                         std::chrono::system_clock::now() - 10s, nullptr},
+                                        {ResolverActionType::kFormat, "figure1", "endpoint1",
+                                         std::chrono::system_clock::now() - 3s, nullptr}};
+
+    std::vector<DrawAction> actual = m_resolver->resolve(input);
+
+    ASSERT_EQ(actual.size(), expected.size());
+    for (size_t i = 0; i < actual.size(); ++i)
+    {
+        EXPECT_EQ(actual[i], expected[i]);
+    }
+}
+
+TEST_F(BlockingDrawConflictResolverTest, OtherUserSelectsAfterDeselect)
+{
+    std::vector<DrawAction> input = {{ResolverActionType::kSelect, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now() - 10s, nullptr},
+                                     {ResolverActionType::kFormat, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now() - 3s, nullptr},
+                                     {ResolverActionType::kDeselect, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now() - 1s, nullptr},
+                                     {ResolverActionType::kSelect, "figure1", "endpoint2",
+                                      std::chrono::system_clock::now(), nullptr}};
+
+    std::vector<DrawAction> expected = input;
+
+    std::vector<DrawAction> actual = m_resolver->resolve(input);
+
+    ASSERT_EQ(actual.size(), expected.size());
+    for (size_t i = 0; i < actual.size(); ++i)
+    {
+        EXPECT_EQ(actual[i], expected[i]);
+    }
+}
+
+TEST_F(BlockingDrawConflictResolverTest, UsersSelectsDifferentFiguresIsOk)
+{
+    std::vector<DrawAction> input = {{ResolverActionType::kSelect, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now() - 10s, nullptr},
+                                     {ResolverActionType::kSelect, "figure2", "endpoint2",
+                                      std::chrono::system_clock::now() - 5s, nullptr},
+                                     {ResolverActionType::kFormat, "figure1", "endpoint1",
+                                      std::chrono::system_clock::now() - 3s, nullptr},
+                                     {ResolverActionType::kFormat, "figure2", "endpoint2",
+                                      std::chrono::system_clock::now(), nullptr}};
+
+    std::vector<DrawAction> expected = input;
+
+    std::vector<DrawAction> actual = m_resolver->resolve(input);
+
+    ASSERT_EQ(actual.size(), expected.size());
+    for (size_t i = 0; i < actual.size(); ++i)
+    {
+        EXPECT_EQ(actual[i], expected[i]);
+    }
+}
+
+}  // namespace blocking_resolver
