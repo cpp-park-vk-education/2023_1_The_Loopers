@@ -1,5 +1,6 @@
 /build
 /out
+checks.json
 
 # Created by https://www.toptal.com/developers/gitignore/api/c++,cmake,visualstudiocode,clion
 # Edit at https://www.toptal.com/developers/gitignore?templates=c++,cmake,visualstudiocode,clion

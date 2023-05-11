@@ -19,7 +19,7 @@ target_include_directories(${TEST_EXECUTABLE} PRIVATE ${PRIVATE_INCLUDE_DIRECTOR
 set(PRIVATE_LINK_LIBRARIES
     "GTest::gtest_main"
     "GTest::gmock_main"
-    
+        
     # "Back"
 )
 

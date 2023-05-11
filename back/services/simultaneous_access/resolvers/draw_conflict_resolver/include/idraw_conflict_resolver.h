@@ -21,7 +21,7 @@ struct DrawAction
 
     constexpr bool operator==(const DrawAction &other) const noexcept
     {
-        return type == other.type && figureId == other.figureId && userLogin == other.userLogin &&
+        return type == other.type && figureId == other.figureId && endpoint == other.endpoint &&
                time == other.time && data == other.data;
     }
     bool operator!=(const DrawAction &other) const

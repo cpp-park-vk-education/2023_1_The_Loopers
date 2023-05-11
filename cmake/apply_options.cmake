@@ -83,6 +83,8 @@ else()
             "-Wall"
             "-Wextra"
             "-Wpedantic"
+            "-Wno-error=return-type"
+            "-Wno-error=unused-parameter"
         )
         if(NOT ENABLE_CLANG_TIDY)
             list(APPEND ${WARNINGS_FLAGS} "-Wabi=${CMAKE_CXX_STANDARD}")

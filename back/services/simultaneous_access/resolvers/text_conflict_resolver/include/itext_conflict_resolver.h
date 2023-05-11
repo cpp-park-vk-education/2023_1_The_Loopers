@@ -22,7 +22,7 @@ struct TextAction
 
     bool operator==(const TextAction &other) const
     {
-        return type == other.type && figureId == other.figureId && userLogin == other.userLogin &&
+        return type == other.type && figureId == other.figureId && endpoint == other.endpoint &&
                time == other.time && posStart == other.posStart && posEnd == other.posEnd &&
                data == other.data;
     }
