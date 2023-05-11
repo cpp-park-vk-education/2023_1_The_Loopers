@@ -20,13 +20,6 @@ protected:
     {
         m_resolver = create_resolver();
 
-        // m_inputInsertionsOnly = {{ResolverActionType::kInsertion,
-        // std::chrono::system_clock::now() - 10s},
-        //           {kDeletion, std::chrono::system_clock::now() - 5s},
-        //           {kFormat, std::chrono::system_clock::now()},
-        //           {kSelect, std::chrono::system_clock::now() + 5s},
-        //           {kDeselect, std::chrono::system_clock::now() + 10s}};
-
         m_inputInsertionsOnly = {{ResolverActionType::kInsertion, "figure1", "endpoint1",
                                   std::chrono::system_clock::now() - 10s, m_data},
                                  {ResolverActionType::kInsertion, "figure1", "endpoint2",
@@ -89,5 +82,115 @@ TEST_F(TimeBasedDrawConflictResolverTest, TestMultipleElementsVector)
     for (size_t i = 0; i < actions.size(); ++i)
     {
         EXPECT_EQ(actions[i], m_expectedInsertionsOnly[i]);
+    }
+}
+
+// Test case for multiple operation types on the same figure
+TEST_F(TimeBasedDrawConflictResolverTest, TestMultipleOperationTypesSameFigure)
+{
+    std::vector<DrawAction> actions = {
+            {ResolverActionType::kInsertion, "figure1", "endpoint1",
+             std::chrono::system_clock::now() - 10s, m_data},
+            {ResolverActionType::kDeletion, "figure1", "endpoint2",
+             std::chrono::system_clock::now() - 5s, m_data},
+            {ResolverActionType::kFormat, "figure1", "endpoint1",
+             std::chrono::system_clock::now() - 3s, m_data},
+            {ResolverActionType::kSelect, "figure1", "endpoint2", std::chrono::system_clock::now(),
+             m_data},
+    };
+
+    // Expected result is the same as the input, as there are no conflicts to resolve
+    std::vector<DrawAction> expected = actions;
+
+    // Resolve conflicts
+    std::vector<DrawAction> resolvedActions = m_resolver->resolve(actions);
+
+    // Verify the resolved actions match the expected result
+    ASSERT_EQ(resolvedActions.size(), expected.size());
+    for (size_t i = 0; i < resolvedActions.size(); ++i)
+    {
+        EXPECT_EQ(resolvedActions[i], expected[i]);
+    }
+}
+
+// Test case for multiple endpoints on the same figure
+TEST_F(TimeBasedDrawConflictResolverTest, TestMultipleEndpointsSameFigure)
+{
+    std::vector<DrawAction> actions = {
+            {ResolverActionType::kInsertion, "figure1", "endpoint1",
+             std::chrono::system_clock::now() - 10s, m_data},
+            {ResolverActionType::kInsertion, "figure1", "endpoint2",
+             std::chrono::system_clock::now() - 5s, m_data},
+            {ResolverActionType::kInsertion, "figure1", "endpoint1",
+             std::chrono::system_clock::now() - 3s, m_data},
+    };
+
+    // Expected result is the same as the input, as there are no conflicts to resolve
+    std::vector<DrawAction> expected = actions;
+
+    // Resolve conflicts
+    std::vector<DrawAction> resolvedActions = m_resolver->resolve(actions);
+
+    // Verify the resolved actions match the expected result
+    ASSERT_EQ(resolvedActions.size(), expected.size());
+    for (size_t i = 0; i < resolvedActions.size(); ++i)
+    {
+        EXPECT_EQ(resolvedActions[i], expected[i]);
+    }
+}
+
+// Test case for multiple endpoints on the same figure with figure deletion
+TEST_F(TimeBasedDrawConflictResolverTest, TestMultipleEndpointsSameFigureWithDeletion)
+{
+    std::vector<DrawAction> actions = {
+            {ResolverActionType::kInsertion, "figure1", "endpoint1",
+             std::chrono::system_clock::now() - 10s, m_data},
+            {ResolverActionType::kDeletion, "figure1", "endpoint2",
+             std::chrono::system_clock::now() - 5s, m_data},
+            {ResolverActionType::kInsertion, "figure1", "endpoint1",
+             std::chrono::system_clock::now() - 3s, m_data},
+    };
+
+    // Expected result is an empty vector, as the figure is deleted and subsequent insertions are
+    // cancelled
+    std::vector<DrawAction> expected;
+
+    // Resolve conflicts
+
+    std::vector<DrawAction> resolvedActions = m_resolver->resolve(actions);
+
+    // Verify the resolved actions match the expected result
+    ASSERT_EQ(resolvedActions.size(), expected.size());
+    for (size_t i = 0; i < resolvedActions.size(); ++i)
+    {
+        EXPECT_EQ(resolvedActions[i], expected[i]);
+    }
+}
+
+// Test case for multiple operations on different figures
+TEST_F(TimeBasedDrawConflictResolverTest, TestMultipleOperationsDifferentFigures)
+{
+    std::vector<DrawAction> actions = {
+            {ResolverActionType::kInsertion, "figure1", "endpoint1",
+             std::chrono::system_clock::now() - 10s, m_data},
+            {ResolverActionType::kDeletion, "figure2", "endpoint1",
+             std::chrono::system_clock::now() - 5s, m_data},
+            {ResolverActionType::kFormat, "figure3", "endpoint1",
+             std::chrono::system_clock::now() - 10s, m_data},
+            {ResolverActionType::kSelect, "figure4", "endpoint1", std::chrono::system_clock::now(),
+             m_data},
+    };
+
+    // Expected result is the same as the input, as there are no conflicts to resolve
+    std::vector<DrawAction> expected = actions;
+
+    // Resolve conflicts
+    std::vector<DrawAction> resolvedActions = m_resolver->resolve(actions);
+
+    // Verify the resolved actions match the expected result
+    ASSERT_EQ(resolvedActions.size(), expected.size());
+    for (size_t i = 0; i < resolvedActions.size(); ++i)
+    {
+        EXPECT_EQ(resolvedActions[i], expected[i]);
     }
 }
