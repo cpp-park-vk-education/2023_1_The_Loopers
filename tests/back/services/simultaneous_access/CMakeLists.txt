@@ -3,8 +3,9 @@ set(TEST_EXECUTABLE test_simultaneous_access)
 add_executable(${TEST_EXECUTABLE} "")
 
 target_sources(${TEST_EXECUTABLE}
-PRIVATE
+    PRIVATE
     "resolvers/draw_conflict_resolver/test_draw_conflict_resolver.cpp"
+    "resolvers/text_conflict_resolver/test_text_conflict_resovler.cpp"
 )
 
 set(PRIVATE_INCLUDE_DIRECTORIES
@@ -19,7 +20,7 @@ target_include_directories(${TEST_EXECUTABLE} PRIVATE ${PRIVATE_INCLUDE_DIRECTOR
 set(PRIVATE_LINK_LIBRARIES
     "GTest::gtest_main"
     "GTest::gmock_main"
-        
+
     # "Back"
 )
 

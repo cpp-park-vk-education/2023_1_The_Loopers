@@ -1,19 +1,19 @@
+#include <gtest/gtest.h>
+
 #include <chrono>
 #include <vector>
 
 #include "global.h"
-#include "gtest/gtest.h"
 #include "idraw_conflict_resolver.h"
 
 using namespace std::chrono_literals;
-
-Endpoint endpoint1 = {"127.0.0.1", 2154};
-Endpoint endpoint2 = {"45.5.4.1", 2144};
 
 class DrawConflictResolverTest : public testing::Test
 {
 public:
     IDrawConflictResolver* m_resolver;
+    Endpoint endpoint1 = {"127.0.0.1", 2154};
+    Endpoint endpoint2 = {"45.5.4.1", 2144};
 
 protected:
     void SetUp() override
