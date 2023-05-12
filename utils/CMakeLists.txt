@@ -1,0 +1,3 @@
+add_subdirectory(network_adapter)
+add_subdirectory(serializer_deserializer)
+add_subdirectory(client_connector)
