@@ -73,22 +73,15 @@ else()
     set(DEBUG_MESSAGE "${DEBUG_MESSAGE}${ResetColor}\n")
     message(${DEBUG_MESSAGE})
 
-    if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC") 
-        set(WARNINGS_FLAGS
-            "-Wall"
-        )
-    else()
-        set(WARNINGS_FLAGS
-            "-Werror"
-            "-Wall"
-            "-Wextra"
-            "-Wpedantic"
-            "-Wno-error=return-type"
-            "-Wno-error=unused-parameter"
-        )
-        if(NOT ENABLE_CLANG_TIDY)
-            list(APPEND ${WARNINGS_FLAGS} "-Wabi=${CMAKE_CXX_STANDARD}")
-        endif()
+    set(WARNINGS_FLAGS
+        "-Werror"
+        "-Wall"
+        "-Wextra"
+        "-Wpedantic"
+    )
+
+    if(NOT ENABLE_CLANG_TIDY)
+        list(APPEND ${WARNINGS_FLAGS} "-Wabi=${CMAKE_CXX_STANDARD}")
     endif()
 
     add_compile_options(${WARNINGS_FLAGS})
@@ -116,4 +109,17 @@ if(ENABLE_TEST)
 
     set(SERVICES_DIR "${PROJECT_SOURCE_DIR}/back/services")
     set(BACK_UTILS_DIR "${PROJECT_SOURCE_DIR}/back/utils")
+
+    add_subdirectory(tests)
+endif()
+
+if (CLEAR_CACHE)
+    unset(ENABLE_TEST CACHE)
+
+    unset(ENABLE_CLANG_FORMAT CACHE)
+    unset(ENABLE_CPPLINT CACHE)
+    unset(ENABLE_CLANG_TIDY CACHE)
+    unset(ENABLE_CPPCHECK CACHE)
+    
+    unset(ENABLE_SANITIZER CACHE)
 endif()
