@@ -1,0 +1,24 @@
+set(ENV{EXTERNAL_SERVICE_CHASSISS} ${PROJECT_NAME}_external_service_chassiss)
+
+add_library($ENV{EXTERNAL_SERVICE_CHASSISS} SHARED "")
+
+target_sources($ENV{EXTERNAL_SERVICE_CHASSISS} PRIVATE
+    "src/trash.cpp"
+)
+
+# set(PRIVATE_INCLUDE_DIRECTORIES
+# "${UTILS_DIR}/include"
+# )
+
+set(PUBLIC_INCLUDE_DIRECTORIES
+    "include"
+    "user_exit_handler/include"
+)
+
+target_include_directories($ENV{EXTERNAL_SERVICE_CHASSISS} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
+
+set(PUBLIC_LINK_LIBRARIES
+    "$ENV{BASE_SERVICE_CHASSISS}"
+)
+
+target_link_libraries($ENV{EXTERNAL_SERVICE_CHASSISS} PUBLIC ${PUBLIC_LINK_LIBRARIES})
