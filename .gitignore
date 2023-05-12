@@ -1,5 +1,6 @@
 /build
 /out
+checks.json
 
 # Created by https://www.toptal.com/developers/gitignore/api/c++,cmake,visualstudiocode,clion
 # Edit at https://www.toptal.com/developers/gitignore?templates=c++,cmake,visualstudiocode,clion
@@ -48,6 +49,7 @@
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
+.idea/*
 
 # AWS User-specific
 .idea/**/aws.xml
@@ -170,11 +172,7 @@ _deps
 
 ### VisualStudioCode ###
 .vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-!.vscode/*.code-snippets
+.vscode
 
 # Local History for Visual Studio Code
 .history/
@@ -566,10 +564,6 @@ FodyWeavers.xsd
 
 # VS Code files for those working on multiple tools
 .vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
 *.code-workspace
 
 # Local History for Visual Studio Code
