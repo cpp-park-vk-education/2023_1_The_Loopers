@@ -6,6 +6,10 @@
 #include <sstream>
 #include <stdexcept>
 
+namespace inklink_service_chassiss
+{
+using namespace inklink_service_session;
+
 void InternalSessionsManager::AddSession(const DocSessionDescriptor& descriptor,
                                          std::weak_ptr<IServiceSession> session)
 {
@@ -122,3 +126,4 @@ DocSessionDescriptor InternalSessionsManager::GetDescriptor(const Endpoint& endp
     }
     return result;
 }
+}  // namespace inklink_service_chassiss

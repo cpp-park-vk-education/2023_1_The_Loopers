@@ -9,6 +9,8 @@
 #include "global.h"
 #include "iservice_session.h"
 
+namespace inklink_service_chassiss
+{
 struct DocSessionDescriptor
 {
     std::string documentId;
@@ -29,6 +31,7 @@ struct std::hash<DocSessionDescriptor>
 class InternalSessionsManager
 {
 public:
+    using IServiceSession = inklink_service_session::IServiceSession;
     InternalSessionsManager() = default;
 
     // deleted because injected into sessions and they removes themself at the end of lifetime:
@@ -58,5 +61,6 @@ protected:
     std::unordered_map<DocSessionDescriptor, Endpoint> m_endpointByDescriptor;
     std::unordered_map<Endpoint, DocSessionDescriptor> m_DescriptorByEndpoint;
 };
+}  // namespace inklink_service_chassiss
 
 #endif  // _IINTERNALSESSIONSMANAGER_H_
