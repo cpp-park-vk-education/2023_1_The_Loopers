@@ -52,8 +52,8 @@ public:
 
 protected:
     std::unordered_map<Endpoint, IServiceSession*> m_sessions;
-    std::unordered_map<std::string, std::vector<std::string>> m_docByUser;
-    std::unordered_map<std::string, std::vector<std::string>> m_userByDoc;
+    std::unordered_map<std::string, std::vector<std::string>> m_docsByUser;
+    std::unordered_map<std::string, std::vector<std::string>> m_usersByDoc;
     std::unordered_map<DocSessionDescriptor, Endpoint> m_endpointByDescriptor;
     std::unordered_map<Endpoint, DocSessionDescriptor> m_DescriptorByEndpoint;
 };
