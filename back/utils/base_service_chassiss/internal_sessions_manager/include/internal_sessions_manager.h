@@ -28,33 +28,27 @@ struct std::hash<DocSessionDescriptor>
 class InternalSessionsManager
 {
 public:
+    InternalSessionsManager() = default;
+
+    // deleted because injected into sessions and they removes themself at the end of lifetime:
+    // it is a lot easier and better to manage lifetime of async session within session itself
+    // and it is how it is done in boost::beast examples
+    InternalSessionsManager(const InternalSessionsManager&) = delete;
+    InternalSessionsManager(InternalSessionsManager&&) = delete;
+    InternalSessionsManager& operator=(const InternalSessionsManager&) = delete;
+
     virtual ~InternalSessionsManager() = default;
 
-    virtual void AddSession(const DocSessionDescriptor&, IServiceSession*)
-    {
-    }
-    virtual void RemoveSession(const DocSessionDescriptor&)
-    {
-    }
-    virtual void RemoveSession(IServiceSession*)
-    {
-    }
-    virtual IServiceSession* GetSession(const DocSessionDescriptor&)
-    {
-    }
-    virtual std::vector<IServiceSession*> GetSessionsByDocument(const std::string&)
-    {
-    }
-    virtual std::vector<IServiceSession*> GetSessionsByUser(const std::string&)
-    {
-    }
-    virtual IServiceSession* GetSession(const Endpoint&)
-    {
-    }
+    virtual void AddSession(const DocSessionDescriptor&, IServiceSession*);
+    virtual void RemoveSession(const DocSessionDescriptor&);
+    virtual void RemoveSession(IServiceSession*);
 
-    virtual DocSessionDescriptor GetDescriptor(const Endpoint&)
-    {
-    }
+    virtual IServiceSession* GetSession(const DocSessionDescriptor&);
+    virtual IServiceSession* GetSession(const Endpoint&);
+    virtual std::vector<IServiceSession*> GetSessionsByDocument(const std::string&);
+    virtual std::vector<IServiceSession*> GetSessionsByUser(const std::string&);
+
+    virtual DocSessionDescriptor GetDescriptor(const Endpoint&);
 
 protected:
     std::unordered_map<Endpoint, IServiceSession*> m_sessions;
