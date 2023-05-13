@@ -1,13 +1,16 @@
 #include "beast_websocket_listener.h"
 
+#include <boost/asio/ip/tcp.hpp>
+
 namespace net = boost::asio;
-using tcp = boost::asio::ip::tcp;
 namespace beast = boost::beast;
 
 // Accepts incoming connections and launches the sessions
-BeastWebsocketListener::BeastWebsocketListener(net::io_context &ioc, tcp::endpoint endpoint,
-                                               std::shared_ptr<ISessionsFactory> factory,
-                                               DoOnAccept doOnAccept)
+template <DoOnAcceptConcept DoOnAccept>
+BeastWebsocketListener<DoOnAccept>::BeastWebsocketListener(
+        net::io_context &ioc, net::ip::tcp::endpoint endpoint,
+        std::shared_ptr<ISessionsFactory> factory,
+        DoOnAccept doOnAccept)
         : m_ioc{ioc}, m_acceptor{ioc}, m_factory{factory}, m_doOnAccept{doOnAccept}
 {
     boost::system::error_code ec;
@@ -46,21 +49,25 @@ BeastWebsocketListener::BeastWebsocketListener(net::io_context &ioc, tcp::endpoi
 }
 
 // Start accepting incoming connections
-void BeastWebsocketListener::async_run()
+template <DoOnAcceptConcept DoOnAccept>
+void BeastWebsocketListener<DoOnAccept>::async_run()
 {
     if (!m_acceptor.is_open())
         return;
     do_accept();
 }
 
-void BeastWebsocketListener::do_accept()
+template <DoOnAcceptConcept DoOnAccept>
+void BeastWebsocketListener<DoOnAccept>::do_accept()
 {
     m_acceptor.async_accept(
             net::make_strand(m_ioc),
-            beast::bind_front_handler(&BeastWebsocketListener::on_accept, shared_from_this()));
+            beast::bind_front_handler(&BeastWebsocketListener<DoOnAccept>::on_accept,
+                                      shared_from_this()));
 }
 
-void BeastWebsocketListener::on_accept(boost::system::error_code ec, tcp::socket socket)
+template <DoOnAcceptConcept DoOnAccept>
+void BeastWebsocketListener<DoOnAccept>::on_accept(boost::system::error_code ec, tcp::socket socket)
 {
     if (ec)
     {
@@ -78,7 +85,8 @@ void BeastWebsocketListener::on_accept(boost::system::error_code ec, tcp::socket
 }
 
 // Report a failure
-void BeastWebsocketListener::fail(boost::system::error_code ec, char const *what)
+template <DoOnAcceptConcept DoOnAccept>
+void BeastWebsocketListener<DoOnAccept>::fail(boost::system::error_code ec, char const *what)
 {
     // Don't report on canceled operations
     if (ec == net::error::operation_aborted)

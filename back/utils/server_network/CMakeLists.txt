@@ -5,6 +5,7 @@ add_library($ENV{SERVER_NETWORK} SHARED "")
 target_sources($ENV{SERVER_NETWORK} PRIVATE
     "service_session/src/iservice_session.cpp"
     "sessions_factory/src/isessions_factory.cpp"
+    "listener/src/beast_websocket_listener.cpp"
 )
 
 set(PUBLIC_LINK_LIBRARIES

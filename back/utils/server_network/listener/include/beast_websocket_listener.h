@@ -6,12 +6,23 @@
 #include <boost/system/error_code.hpp>
 #include <boost/system/linux_error.hpp>
 #include <boost/system/system_error.hpp>
+#include <concepts>
 #include <functional>
 #include <memory>
 
 #include "ilistener.h"
 
-template <class DoOnAccept>
+class IServiceSession;
+
+template <typename T>
+concept DoOnAcceptConcept =
+        requires(T &&t, boost::system::error_code ec, IServiceSession *session) {
+            {
+                std::forward<T>(t)(ec, session)
+            } -> std::same_as<void>;
+        };
+
+template <DoOnAcceptConcept DoOnAccept>
 class BeastWebsocketListener : public IListener,
                                public std::enable_shared_from_this<BeastWebsocketListener>
 {
