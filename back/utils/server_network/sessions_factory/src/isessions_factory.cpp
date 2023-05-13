@@ -1,6 +1,6 @@
 #include "isessions_factory.h"
 
-void ISessionsFactory::SetManager(IInternalSessionsManager* manager)
+void ISessionsFactory::SetManager(std::shared_ptr<InternalSessionsManager> manager)
 {
     m_manager = manager;
 }
