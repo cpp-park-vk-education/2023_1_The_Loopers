@@ -24,10 +24,11 @@ struct std::hash<DocSessionDescriptor>
         return h1 ^ (h2 << 1);
     }
 };
-class IInternalSessionsManager
+
+class InternalSessionsManager
 {
 public:
-    virtual ~IInternalSessionsManager() = default;
+    virtual ~InternalSessionsManager() = default;
 
     virtual void AddSession(const DocSessionDescriptor&, IServiceSession*)
     {
