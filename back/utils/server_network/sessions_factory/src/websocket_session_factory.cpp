@@ -12,7 +12,7 @@ template <Do_ErrorCodeAndSession_Concept DoOnRead, Do_ErrorCodeAndSession_Concep
           Do_ErrorCode_Concept DoOnWrite>
 WebsocketSessionsFactory<DoOnRead, DoOnAccept, DoOnWrite>::WebsocketSessionsFactory(
         DoOnRead doOnRead, DoOnAccept doOnAccept, DoOnWrite doOnWrite) noexcept
-        : m_doOnRead{doOnRead}, m_doOnAccept{doOnAccept}, m_doOnWrite{doOnWrite}
+        : ISessionsFactory(), m_doOnRead{doOnRead}, m_doOnAccept{doOnAccept}, m_doOnWrite{doOnWrite}
 {
 }
 
