@@ -2,7 +2,7 @@
 
 #include <service_session.h>
 
-#include <algorithm
+#include <algorithm>
 #include <sstream>
 #include <stdexcept>
 
@@ -11,7 +11,7 @@ void InternalSessionsManager::AddSession(const DocSessionDescriptor& descriptor,
 {
     std::shared_ptr<IServiceSession> sessionPtr{session};
 
-    const Endpoint& endpoint =->GetClientEndpoint();
+    const Endpoint& endpoint = sessionPtr->GetClientEndpoint();
     if (!m_sessions.contains(endpoint))
     {
         std::string error{};
