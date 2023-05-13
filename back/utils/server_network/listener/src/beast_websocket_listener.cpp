@@ -12,7 +12,7 @@ template <DoOnAcceptConcept DoOnAccept>
 BeastWebsocketListener<DoOnAccept>::BeastWebsocketListener(
         net::io_context &ioc, net::ip::tcp::endpoint endpoint,
         std::shared_ptr<ISessionsFactory> factory, DoOnAccept doOnAccept)
-        : m_ioc{ioc}, m_acceptor{ioc}, m_factory{factory}, m_doOnAccept{doOnAccept}
+        : IListener(), m_ioc{ioc}, m_acceptor{ioc}, m_factory{factory}, m_doOnAccept{doOnAccept}
 {
     boost::system::error_code ec;
 
