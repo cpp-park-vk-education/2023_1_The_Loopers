@@ -8,12 +8,19 @@
 #include "iservice_session.h"
 
 class IAuthorizer;
+namespace inklink_service_chassiss
+{
 class InternalSessionsManager;
-class INetworkStreamAdapter;
+}
 
+namespace inklink_sessions_factory
+{
 class ISessionsFactory
 {
 public:
+    using InternalSessionsManager = inklink_service_chassiss::InternalSessionsManager;
+    using IServiceSession = inklink_service_session::IServiceSession;
+
     virtual ~ISessionsFactory() = default;
 
     virtual void SetManager(std::shared_ptr<InternalSessionsManager>);
@@ -29,5 +36,6 @@ protected:
     std::shared_ptr<InternalSessionsManager> m_manager;
     std::shared_ptr<INetworkStreamAdapter> m_adapter;
 };
+}  // namespace inklink_sessions_factory
 
 #endif  // _ISERVICESESSION_H_

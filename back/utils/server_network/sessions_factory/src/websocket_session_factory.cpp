@@ -2,6 +2,12 @@
 
 #include "websocket_service_session.h"
 
+namespace
+{
+using WebsocketServiceSession = inklink_service_session::WebsocketServiceSession;
+}
+namespace inklink_sessions_factory
+{
 template <Do_ErrorCodeAndSession_Concept DoOnRead, Do_ErrorCodeAndSession_Concept DoOnAccept,
           Do_ErrorCode_Concept DoOnWrite>
 WebsocketSessionsFactory<DoOnRead, DoOnAccept, DoOnWrite>::WebsocketSessionsFactory(
@@ -19,3 +25,4 @@ WebsocketSessionsFactory<DoOnRead, DoOnAccept, DoOnWrite>::GetSession(
     return std::make_shared<WebsocketServiceSession<DoOnRead, DoOnAccept, DoOnWrite>>(
             std::move(socket), m_doOnRead, m_doOnAccept, m_doOnWrite);
 }
+}  // namespace inklink_sessions_factory

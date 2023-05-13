@@ -1,5 +1,7 @@
 #include "isessions_factory.h"
 
+namespace inklink_sessions_factory
+{
 void ISessionsFactory::SetManager(std::shared_ptr<InternalSessionsManager> manager)
 {
     m_manager = manager;
@@ -14,3 +16,4 @@ void ISessionsFactory::SetNetworkAdapter(std::shared_ptr<INetworkStreamAdapter> 
 {
     m_adapter = adapter;
 }
+}  // namespace inklink_sessions_factory
