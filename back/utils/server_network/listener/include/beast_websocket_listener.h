@@ -22,14 +22,18 @@ concept DoOnAcceptConcept =
             } -> std::same_as<void>;
         };
 
-template <DoOnAcceptConcept DoOnAccept>
+template <DoOnAcceptConcept DoOnAccept =
+                  std::function<void(boost::system::error_code, IServiceSession *)>>
 class BeastWebsocketListener : public IListener,
                                public std::enable_shared_from_this<BeastWebsocketListener>
 {
 public:
     BeastWebsocketListener() = delete;
-    explicit BeastWebsocketListener(boost::asio::io_context &, boost::asio::ip::tcp::endpoint,
-                                    std::shared_ptr<ISessionsFactory>, DoOnAccept doOnAccept);
+    explicit BeastWebsocketListener(
+            boost::asio::io_context &, boost::asio::ip::tcp::endpoint,
+            std::shared_ptr<ISessionsFactory>,
+            DoOnAccept doOnAccept = [](boost::system::error_code, IServiceSession *) {});
+
     virtual ~BeastWebsocketListener() = default;
 
     void async_run() override;
