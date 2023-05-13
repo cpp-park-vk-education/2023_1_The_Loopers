@@ -14,11 +14,10 @@ void InternalSessionsManager::AddSession(const DocSessionDescriptor& descriptor,
     const Endpoint& endpoint = sessionPtr->GetClientEndpoint();
     if (!m_sessions.contains(endpoint))
     {
-        std::string error{};
-        std::ostringstream ss{error};
+        std::ostringstream ss{};
         ss << "Manager already contains enpoint '" << endpoint.address << ':' << endpoint.port
            << "'";
-        throw std::logic_error(error);
+        throw std::logic_error(ss.str());
     }
 
     m_sessions[endpoint] = session;
@@ -39,10 +38,10 @@ void InternalSessionsManager::RemoveSession(const DocSessionDescriptor& descript
         m_endpointByDescriptor.erase(descriptor);
 
         auto& docs = m_docsByUser[descriptor.login];
-        docs.erase(std::remove(docs.begin(), docs.end(), descriptor.documentId), docs.end());
+        std::erase(docs.begin(), docs.end(), descriptor.documentId);
 
         auto& users = m_usersByDoc[descriptor.documentId];
-        users.erase(std::remove(users.begin(), users.end(), descriptor.login), users.end());
+        std::erase(users.begin(), users.end(), descriptor.login);
     }
 }
 
@@ -58,10 +57,10 @@ void InternalSessionsManager::RemoveSession(IServiceSession* session)
         m_DescriptorByEndpoint.erase(endpoint);
 
         auto& docs = m_docsByUser[descriptor.login];
-        docs.erase(std::remove(docs.begin(), docs.end(), descriptor.documentId), docs.end());
+        std::erase(docs.begin(), docs.end(), descriptor.documentId);
 
         auto& users = m_usersByDoc[descriptor.documentId];
-        users.erase(std::remove(users.begin(), users.end(), descriptor.login), users.end());
+        std::erase(users.begin(), users.end(), descriptor.login);
     }
 }
 
