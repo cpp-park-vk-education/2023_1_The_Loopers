@@ -3,7 +3,7 @@ set(ENV{BASE_SERVICE_CHASSISS} ${PROJECT_NAME}_base_service_chassiss)
 add_library($ENV{BASE_SERVICE_CHASSISS} SHARED "")
 
 target_sources($ENV{BASE_SERVICE_CHASSISS} PRIVATE
-    "src/trash.cpp"
+    "internal_sessions_manager/src/internal_sessions_manager.cpp"
 )
 
 set(PUBLIC_INCLUDE_DIRECTORIES
