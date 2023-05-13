@@ -12,10 +12,10 @@ void IServiceSession::SetAuthorizer(std::shared_ptr<IAuthorizer> authorizer)
     m_authorizer = authorizer;
 }
 
-void IServiceSession::SetNetworkAdapter(std::shared_ptr<INetworkStreamAdapter> adapter)
-{
-    m_adapter = adapter;
-}
+// void IServiceSession::SetNetworkAdapter(std::shared_ptr<INetworkStreamAdapter> adapter)
+// {
+//     m_adapter = adapter;
+// }
 
 Endpoint IServiceSession::GetClientEndpoint()
 {
