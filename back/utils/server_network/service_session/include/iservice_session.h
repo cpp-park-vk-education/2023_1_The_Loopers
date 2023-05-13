@@ -6,20 +6,29 @@
 
 #include "global.h"
 
+namespace inklink_authorizer
+{
 class IAuthorizer;
+}
+namespace inklink_service_chassiss
+{
 class InternalSessionsManager;
-class INetworkStreamAdapter;
+}
+// class INetworkStreamAdapter;
 
 namespace inklink_service_session
 {
 class IServiceSession
 {
 public:
+    using InternalSessionsManager = inklink_service_chassiss::InternalSessionsManager;
+    using IAuthorizer = inklink_authorizer::IAuthorizer;
+
     virtual ~IServiceSession() = default;
 
     virtual void SetManager(std::shared_ptr<InternalSessionsManager>);
     virtual void SetAuthorizer(std::shared_ptr<IAuthorizer>);
-    virtual void SetNetworkAdapter(std::shared_ptr<INetworkStreamAdapter>);
+    // virtual void SetNetworkAdapter(std::shared_ptr<INetworkStreamAdapter>);
     virtual Endpoint GetClientEndpoint();
 
     virtual void run_async()
@@ -37,7 +46,7 @@ protected:
 
     std::shared_ptr<IAuthorizer> m_authorizer;
     std::shared_ptr<InternalSessionsManager> m_manager;
-    std::shared_ptr<INetworkStreamAdapter> m_adapter;
+    // std::shared_ptr<INetworkStreamAdapter> m_adapter;
 };
 }  // namespace inklink_service_session
 

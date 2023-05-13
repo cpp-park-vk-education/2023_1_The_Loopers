@@ -1,7 +1,10 @@
 #ifndef _WEBSOCKETSERVICESESSION_H_
 #define _WEBSOCKETSERVICESESSION_H_
 
+#include <boost/asio.hpp>
+#include <boost/beast.hpp>
 #include <boost/system/error_code.hpp>
+#include <deque>
 #include <memory>
 #include <string>
 
@@ -9,6 +12,10 @@
 
 namespace inklink_service_session
 {
+namespace net = boost::asio;
+namespace beast = boost::beast;
+namespace websocket = beast::websocket;
+
 template <typename T>
 concept Do_ErrorCodeAndSession_Concept =
         requires(T&& t, boost::system::error_code ec, IServiceSession* session) {
@@ -34,6 +41,11 @@ class WebsocketServiceSession : public IServiceSession,
                                 public std::enable_shared_from_this<WebsocketServiceSession>
 {
 public:
+    using error_code = boost::system::error_code;
+    WebsocketServiceSession(
+            net::ip::tcp::socket&&, DoOnRead = [](error_code, IServiceSession*) {},
+            DoOnAccept = [](error_code, IServiceSession*) {}, DoOnWrite = [](error_code) {});
+
     WebsocketServiceSession() = delete;
 
     WebsocketServiceSession(const WebsocketServiceSession&) = delete;
@@ -44,9 +56,6 @@ public:
 
     ~WebsocketServiceSession();
 
-    virtual void run()
-    {
-    }
     virtual void run_async()
     {
     }
@@ -55,7 +64,20 @@ public:
     }
 
 private:
-    void OnRead();
+    void OnAccept(boost::system::error_code ec);
+
+    void DoRead();
+
+    void OnRead(boost::system::error_code ec, std::size_t bytes_transferred);
+    void OnWrite(boost::system::error_code ec, std::size_t bytes_transferred);
+
+    websocket::stream<tcp::socket> m_ws;
+    boost::beast::multi_buffer m_buffer;
+    std::deque<std::shared_ptr<std::string const>> m_queue;
+    
+    DoOnRead m_doOnRead;
+    DoOnAccept m_doOnAccept;
+    DoOnWrite m_doOnWrite;
 };
 }  // namespace inklink_service_session
 

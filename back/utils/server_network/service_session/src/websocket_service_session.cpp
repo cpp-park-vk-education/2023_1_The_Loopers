@@ -2,18 +2,18 @@
 
 namespace inklink_service_session
 {
-void IServiceSession::SetManager(IInternalSessionsManager* manager)
+template <Do_ErrorCodeAndSession_Concept DoOnRead, Do_ErrorCodeAndSession_Concept DoOnAccept,
+          Do_ErrorCode_Concept DoOnWrite>
+WebsocketServiceSession<DoOnRead, DoOnAccept, DoOnWrite>::WebsocketServiceSession(
+        net::ip::tcp::socket&& socket, DoOnRead doOnRead, DoOnAccept doOnAccept,
+        DoOnWrite doOnWrite)
+        : IServiceSession(), m_ws(std::move(socket)), m_doOnRead{doOnRead},
+          m_doOnAccept{doOnAccept}, m_doOnWrite{doOnWrite}
 {
-    m_manager = manager;
 }
 
-void IServiceSession::SetAuthorizer(std::shared_ptr<IAuthorizer> authorizer)
-{
-    m_authorizer = authorizer;
-}
+template <Do_ErrorCodeAndSession_Concept DoOnRead, Do_ErrorCodeAndSession_Concept DoOnAccept,
+          Do_ErrorCode_Concept DoOnWrite>
+WebsocketServiceSession<DoOnRead, DoOnAccept, DoOnWrite>::
 
-void IServiceSession::SetNetworkAdapter(std::shared_ptr<INetworkStreamAdapter> adapter)
-{
-    m_adapter = adapter;
-}
 }  // namespace inklink_service_session
