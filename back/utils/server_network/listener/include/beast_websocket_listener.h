@@ -12,27 +12,34 @@
 
 #include "ilistener.h"
 
+namespace inklink_service_session
+{
 class IServiceSession;
+}  // namespace inklink_service_session
 
+namespace inklink_listener
+{
 template <typename T>
-concept DoOnAcceptConcept =
-        requires(T &&t, boost::system::error_code ec, IServiceSession *session) {
-            {
-                std::forward<T>(t)(ec, session)
-            } -> std::same_as<void>;
-        };
+concept DoOnAcceptConcept = requires(T&& t, boost::system::error_code ec,
+                                     inklink_service_session::IServiceSession* session) {
+    {
+        std::forward<T>(t)(ec, session)
+    } -> std::same_as<void>;
+};
 
-template <DoOnAcceptConcept DoOnAccept =
-                  std::function<void(boost::system::error_code, IServiceSession *)>>
+template <DoOnAcceptConcept DoOnAccept = std::function<void(
+                  boost::system::error_code, inklink_service_session::IServiceSession*)>>
 class BeastWebsocketListener : public IListener,
                                public std::enable_shared_from_this<BeastWebsocketListener>
 {
 public:
+    using IServiceSession = inklink_service_session::IServiceSession;
+
     BeastWebsocketListener() = delete;
     explicit BeastWebsocketListener(
-            boost::asio::io_context &, boost::asio::ip::tcp::endpoint,
+            boost::asio::io_context&, boost::asio::ip::tcp::endpoint,
             std::shared_ptr<ISessionsFactory>,
-            DoOnAccept doOnAccept = [](boost::system::error_code, IServiceSession *) {});
+            DoOnAccept doOnAccept = [](boost::system::error_code, IServiceSession*) {});
 
     virtual ~BeastWebsocketListener() = default;
 
@@ -43,13 +50,13 @@ private:
 
     void do_accept();
 
-    void fail(boost::system::error_code ec, char const *what);
+    void fail(boost::system::error_code ec, char const* what);
     void on_accept(boost::system::error_code ec, tcp::socket socket);
 
-    net::io_context &m_ioc;
+    net::io_context& m_ioc;
     tcp::acceptor m_acceptor;
-    std::shared_ptr<ISessionsFactory> m_factory;
     DoOnAccept m_doOnAccept;
 };
+}  // namespace inklink_listener
 
 #endif  // _BEASTWEBSOCKETLISTENER_H_

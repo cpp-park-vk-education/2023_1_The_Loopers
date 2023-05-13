@@ -2,6 +2,8 @@
 
 #include <boost/asio/ip/tcp.hpp>
 
+namespace inklink_listener
+{
 namespace net = boost::asio;
 namespace beast = boost::beast;
 
@@ -9,8 +11,7 @@ namespace beast = boost::beast;
 template <DoOnAcceptConcept DoOnAccept>
 BeastWebsocketListener<DoOnAccept>::BeastWebsocketListener(
         net::io_context &ioc, net::ip::tcp::endpoint endpoint,
-        std::shared_ptr<ISessionsFactory> factory,
-        DoOnAccept doOnAccept)
+        std::shared_ptr<ISessionsFactory> factory, DoOnAccept doOnAccept)
         : m_ioc{ioc}, m_acceptor{ioc}, m_factory{factory}, m_doOnAccept{doOnAccept}
 {
     boost::system::error_code ec;
@@ -93,3 +94,4 @@ void BeastWebsocketListener<DoOnAccept>::fail(boost::system::error_code ec, char
         return;
     // fail(ec, what, plugin_);
 }
+}  // namespace inklink_listener

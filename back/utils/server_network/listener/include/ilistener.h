@@ -6,21 +6,26 @@
 
 #include "isessions_factory.h"
 
+namespace inklink_listener
+{
 class IListener
 {
 public:
+    using ISessionsFactory = inklink_sessions_factory::ISessionsFactory;
+
     virtual ~IListener() = default;
 
     virtual void async_run()
     {
     }
-    virtual void SetSessionFactory(ISessionsFactory* factory)
+    virtual void SetSessionFactory(std::shared_ptr<ISessionsFactory> factory)
     {
         m_factory = factory;
     }
 
 protected:
-    ISessionsFactory* m_factory;
+    std::shared_ptr<ISessionsFactory> m_factory;
 };
+}  // namespace inklink_listener
 
 #endif  // _ILISTENER_H_
