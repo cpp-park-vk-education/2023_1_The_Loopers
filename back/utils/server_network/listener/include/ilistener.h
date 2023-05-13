@@ -11,15 +11,16 @@ class IListener
 public:
     virtual ~IListener() = default;
 
-    virtual void run()
-    {
-    }
     virtual void async_run()
     {
     }
-    virtual void SetSessionFactory(ISessionsFactory*)
+    virtual void SetSessionFactory(ISessionsFactory* factory)
     {
+        m_factory = factory;
     }
+
+protected:
+    ISessionsFactory* m_factory;
 };
 
 #endif  // _ILISTENER_H_
