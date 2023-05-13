@@ -7,13 +7,12 @@
 #include <stdexcept>
 
 void InternalSessionsManager::AddSession(const DocSessionDescriptor& descriptor,
-                                         IServiceSession* session)
+                                         std::weak_ptr<IServiceSession> session)
 {
-    const Endpoint& endpoint = session->GetClientEndpoint();
+    std::shared_ptr<IServiceSession> sessionPtr{session};
 
-    m_sessions.at(endpoint);
-
-    if (m_sessions.contains(endpoint))
+    const Endpoint& endpoint =->GetClientEndpoint();
+    if (!m_sessions.contains(endpoint))
     {
         std::string error{};
         std::ostringstream ss{error};

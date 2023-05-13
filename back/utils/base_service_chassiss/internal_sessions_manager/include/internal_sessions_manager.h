@@ -1,6 +1,7 @@
 #ifndef _IINTERNALSESSIONSMANAGER_H_
 #define _IINTERNALSESSIONSMANAGER_H_
 
+#include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -39,19 +40,19 @@ public:
 
     virtual ~InternalSessionsManager() = default;
 
-    virtual void AddSession(const DocSessionDescriptor&, IServiceSession*);
+    virtual void AddSession(const DocSessionDescriptor&, std::weak_ptr<IServiceSession>);
     virtual void RemoveSession(const DocSessionDescriptor&);
     virtual void RemoveSession(IServiceSession*);
 
-    virtual IServiceSession* GetSession(const DocSessionDescriptor&);
-    virtual IServiceSession* GetSession(const Endpoint&);
-    virtual std::vector<IServiceSession*> GetSessionsByDocument(const std::string&);
-    virtual std::vector<IServiceSession*> GetSessionsByUser(const std::string&);
+    virtual std::weak_ptr<IServiceSession> GetSession(const DocSessionDescriptor&);
+    virtual std::weak_ptr<IServiceSession> GetSession(const Endpoint&);
+    virtual std::vector<std::weak_ptr<IServiceSession>> GetSessionsByDocument(const std::string&);
+    virtual std::vector<std::weak_ptr<IServiceSession>> GetSessionsByUser(const std::string&);
 
     virtual DocSessionDescriptor GetDescriptor(const Endpoint&);
 
 protected:
-    std::unordered_map<Endpoint, IServiceSession*> m_sessions;
+    std::unordered_map<Endpoint, std::weak_ptr<IServiceSession>> m_sessions;
     std::unordered_map<std::string, std::vector<std::string>> m_docsByUser;
     std::unordered_map<std::string, std::vector<std::string>> m_usersByDoc;
     std::unordered_map<DocSessionDescriptor, Endpoint> m_endpointByDescriptor;
