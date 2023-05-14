@@ -18,9 +18,11 @@ class IServiceRegistrator
     using IClientSession = client_connector::IClientSession;
 
 public:
+    explicit IServiceRegistrator(std::shared_ptr<IClientSession> conn) noexcept
+            : m_connectionToRegistry{std::move(conn)}
+    {
+    }
     virtual ~IServiceRegistrator() = default;
-
-    virtual void SetConnection(IClientSession*) = 0;
 
     virtual bool Register(ServiceType, const Endpoint&) = 0;
     virtual void Deregister(ServiceType, const Endpoint&) = 0;

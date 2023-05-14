@@ -12,7 +12,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 include(cmake/get_boost_lib.cmake)
 
 option(ENABLE_BACKEND "Set to \"ON\" to build back" ON)
-option(ENABLE_FRONTEND "Set to \"ON\" to build front" OFF)
+option(ENABLE_FRONTEND "Set to \"ON\" to build front" ON)
 
 option(CLEAR_CACHE "Set to \"ON\" to clear cache" ON)
 
@@ -46,6 +46,12 @@ set(TOKEN_GENERATOR ${PROJECT_NAME}_token_generator)
 set(CLIENT_NETWORK ${PROJECT_NAME}_client_network)
 set(NETWORK_ADAPTER ${PROJECT_NAME}_network_adapter)
 set(SERIALIZER ${PROJECT_NAME}_serializer)
+
+# frontend
+set(AUTH ${PROJECT_NAME}_AUTH)
+set(DRAW ${PROJECT_NAME}_DRAW)
+set(GRAPH ${PROJECT_NAME}_GRAPH)
+set(MENU ${PROJECT_NAME}_MENU)
 
 add_subdirectory(${UTILS_DIR})
 if (ENABLE_BACKEND)
