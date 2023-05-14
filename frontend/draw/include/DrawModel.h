@@ -5,7 +5,10 @@
 #include <string>
 #include <vector>
 
-class DrawModel {
+namespace inklink::draw
+{
+class DrawModel
+{
 public:
     void deserialize(std::string);
 
@@ -18,3 +21,4 @@ protected:
 private:
     std::vector<ObjectWithAttributes*> m_objects;
 };
+} // namespace inklink::draw
