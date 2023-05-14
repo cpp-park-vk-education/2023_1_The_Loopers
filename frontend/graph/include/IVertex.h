@@ -3,15 +3,18 @@
 #include "GraphModel.h"
 #include "IEdge.h"
 
+#include <string>
 #include <vector>
 
-class IVertex{
+namespace inklink::graph
+{
+class IVertex
+{
 public:
-    void addEdge(IEdge* edge);
     void calculateForces();
     bool advancePosition();
-    std::vector<IEdge*> getEdges();
     std::string getName();
+
     Position getCurrentPosition();
     Position getNewPosition();
     void setCurrentPosition(Position);
@@ -19,7 +22,7 @@ public:
 
 private:
     std::string m_name;
-    std::vector<IEdge*> m_edgeList;
     Position m_currentPosition;
-    Position m_newPosition;
+//    Position m_newPosition;
 };
+} // namespace inklink::graph
