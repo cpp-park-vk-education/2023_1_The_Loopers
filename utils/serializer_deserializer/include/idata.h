@@ -2,6 +2,8 @@
 
 #include <string>
 
+namespace inklink::serializer
+{
 class IData
 {
 public:
@@ -15,3 +17,4 @@ public:
     {
     }
 };
+} // namespace inklink::serializer

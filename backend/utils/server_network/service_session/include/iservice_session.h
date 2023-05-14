@@ -5,11 +5,12 @@
 #include <memory>
 #include <string>
 
-
 class IAuthorizer;
 class IInternalSessionsManager;
 class INetworkStreamAdapter;
 
+namespace inklink::server_network
+{
 class IServiceSession
 {
 public:
@@ -40,3 +41,4 @@ protected:
     IInternalSessionsManager* m_manager;
     std::shared_ptr<INetworkStreamAdapter> m_adapter;
 };
+} // namespace inklink::server_network

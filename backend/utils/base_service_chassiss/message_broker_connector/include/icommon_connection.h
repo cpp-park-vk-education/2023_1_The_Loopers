@@ -6,7 +6,8 @@
 #include <memory>
 #include <string>
 
-
+namespace inklink::base_service_chassis
+{
 class ICommonConnection
 {
 public:
@@ -29,3 +30,4 @@ protected:
     bool connected{false};
     ServiceType m_serviceType;
 };
+} // namespace inklink::base_service_chassis

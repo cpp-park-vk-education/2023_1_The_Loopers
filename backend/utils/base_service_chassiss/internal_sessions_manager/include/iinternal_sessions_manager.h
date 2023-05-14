@@ -7,7 +7,8 @@
 #include <unordered_map>
 #include <vector>
 
-
+namespace inklink::base_service_chassis
+{
 struct DocSessionDescriptor
 {
     std::string documentId;
@@ -62,3 +63,4 @@ protected:
     std::unordered_map<DocSessionDescriptor, Endpoint> m_endpointByDescriptor;
     std::unordered_map<Endpoint, DocSessionDescriptor> m_DescriptorByEndpoint;
 };
+} // namespace inklink::base_service_chassis

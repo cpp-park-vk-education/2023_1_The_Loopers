@@ -7,7 +7,8 @@
 #include <memory>
 #include <string>
 
-
+namespace inklink::service_simultaneous_access
+{
 class SimultaneousProtocolDecoder
 {
 public:
@@ -24,3 +25,4 @@ public:
     {
     }
 };
+} // namespace inklink::service_simultaneous_access

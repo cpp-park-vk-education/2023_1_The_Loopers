@@ -2,6 +2,8 @@
 
 #include <string>
 
+namespace inklink::base_service_chassis
+{
 class ILogger
 {
 public:
@@ -35,3 +37,4 @@ public:
     {
     }
 };
+} // namespace inklink::base_service_chassis

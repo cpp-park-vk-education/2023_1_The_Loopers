@@ -8,6 +8,8 @@
 #include <memory>
 #include <string>
 
+namespace inklink::service_simultaneous_access
+{
 class SimultaneousAccessService
 {
 public:
@@ -38,3 +40,4 @@ private:
 
     std::map<std::chrono::time_point<std::chrono::system_clock>, DrawAction> m_notApplied;
 };
+} // namespace inklink::service_simultaneous_access

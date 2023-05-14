@@ -5,7 +5,8 @@
 #include <functional>
 #include <string>
 
-
+namespace inklink::client_connector
+{
 class IClientSession
 {
 public:
@@ -30,3 +31,4 @@ public:
     {
     }
 };
+} // namespace inklink::client_connector

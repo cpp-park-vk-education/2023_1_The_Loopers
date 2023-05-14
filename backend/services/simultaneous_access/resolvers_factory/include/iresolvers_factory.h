@@ -3,6 +3,8 @@
 #include "idraw_conflict_resolver.h"
 #include "itext_conflict_resolver.h"
 
+namespace inklink::service_simultaneous_access
+{
 class IResolversFactory
 {
 public:
@@ -15,3 +17,4 @@ public:
     {
     }
 };
+} // namespace inklink::service_simultaneous_access

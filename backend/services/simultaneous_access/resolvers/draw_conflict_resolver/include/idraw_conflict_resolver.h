@@ -11,6 +11,8 @@
 
 class IData;
 
+namespace inklink::service_simultaneous_access
+{
 struct DrawAction
 {
     ResolverActionType type;
@@ -40,3 +42,4 @@ public:
         return {};
     }
 };
+} // namespace inklink::service_simultaneous_access

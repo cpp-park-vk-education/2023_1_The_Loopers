@@ -3,6 +3,8 @@
 #include <functional>
 #include <string>
 
+namespace inklink
+{
 struct Endpoint
 {
     bool operator==(const Endpoint& rhs) const noexcept
@@ -11,17 +13,6 @@ struct Endpoint
     }
     std::string address;
     unsigned short port;
-};
-
-template <>
-struct std::hash<Endpoint>
-{
-    size_t operator()(const Endpoint& endpoint)
-    {
-        size_t h1 = std::hash<std::string>{}(endpoint.address);
-        size_t h2 = std::hash<unsigned short>{}(endpoint.port);
-        return h1 ^ (h2 << 1);
-    }
 };
 
 enum class ServiceType
@@ -36,13 +27,6 @@ enum class ServiceType
     kAll = 100,
     kNone = 101
 };
-
-// template<>
-// struct std::hash<ServiceType> {
-//     size_t operator()(const ServiceType&) {
-
-//     }
-// };
 
 enum class ActionType
 {
@@ -69,4 +53,16 @@ enum class ResolverActionType
     kFormat,
     kSelect,
     kDeselect
+};
+} // namespace inklink
+
+template <>
+struct std::hash<inklink::Endpoint>
+{
+    size_t operator()(const inklink::Endpoint& endpoint)
+    {
+        const size_t h1 = std::hash<std::string>{}(endpoint.address);
+        const size_t h2 = std::hash<unsigned short>{}(endpoint.port);
+        return h1 ^ (h2 << 1);
+    }
 };

@@ -6,9 +6,10 @@
 #include <string>
 #include <vector>
 
-
 class IClientSession;
 
+namespace inklink::base_service_chassis
+{
 class IServiceRegistrator
 {
 public:
@@ -31,3 +32,4 @@ public:
 protected:
     std::shared_ptr<IClientSession> m_cnnectionToRegistry;
 };
+} // namespace inklink::base_service_chassis

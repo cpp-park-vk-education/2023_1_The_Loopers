@@ -8,7 +8,8 @@
 #include <memory>
 #include <string>
 
-
+namespace inklink::base_service_chassis
+{
 class IMessageBrokerSignal
 {
 public:
@@ -30,3 +31,4 @@ public:
 protected:
     std::shared_ptr<ICommonConnection> m_connectionToMsgBroker;
 };
+} // namespace inklink::base_service_chassis

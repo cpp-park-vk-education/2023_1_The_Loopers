@@ -5,7 +5,8 @@
 #include <memory>
 #include <string>
 
-
+namespace inklink::authorizer
+{
 class IAuthorizer
 {
 public:
@@ -19,3 +20,4 @@ public:
     {
     }
 };
+} // namespace inklink::authorizer

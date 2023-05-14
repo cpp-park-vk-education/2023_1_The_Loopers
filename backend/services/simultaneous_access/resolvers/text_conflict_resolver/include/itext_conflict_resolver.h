@@ -9,6 +9,8 @@
 
 class IData;
 
+namespace inklink::service_simultaneous_access
+{
 struct TextAction
 {
     ResolverActionType type;
@@ -40,3 +42,4 @@ public:
     {
     }
 };
+} // namespace inklink::service_simultaneous_access

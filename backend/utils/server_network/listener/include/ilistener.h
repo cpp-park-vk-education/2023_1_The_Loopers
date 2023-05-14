@@ -5,7 +5,8 @@
 #include <memory>
 #include <string>
 
-
+namespace inklink::server_network
+{
 class IListener
 {
 public:
@@ -21,3 +22,4 @@ public:
     {
     }
 };
+} // namespace inklink::server_network

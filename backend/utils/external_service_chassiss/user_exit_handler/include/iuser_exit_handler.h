@@ -5,7 +5,8 @@
 #include <memory>
 #include <string>
 
-
+namespace inklink::external_service_chassis
+{
 class IUserExitHandler
 {
 public:
@@ -21,3 +22,4 @@ public:
 protected:
     std::shared_ptr<IInternalSessionsManager> m_sessionManger;
 };
+} // namespace inklink::external_service_chassis

@@ -6,7 +6,8 @@
 #include <memory>
 #include <string>
 
-
+namespace inklink::external_service_chassis
+{
 class IExternalServiceChassis
 {
 public:
@@ -15,3 +16,4 @@ public:
     std::shared_ptr<IBaseServiceChassis> m_baseServiceChassis;
     std::shared_ptr<IUserExitHandler> m_userExitHandler;
 };
+} // namespace inklink::external_service_chassis

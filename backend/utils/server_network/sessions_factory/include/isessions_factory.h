@@ -5,7 +5,6 @@
 #include <memory>
 #include <string>
 
-
 namespace boost::asio::ip::tcp
 {
 class socket;
@@ -15,6 +14,8 @@ class IAuthorizer;
 class IInternalSessionsManager;
 class INetworkStreamAdapter;
 
+namespace inklink::server_network
+{
 class ISessionsFactory
 {
 public:
@@ -33,3 +34,4 @@ protected:
     IInternalSessionsManager* m_manager;
     std::shared_ptr<INetworkStreamAdapter> m_adapter;
 };
+} // namespace inklink::server_network

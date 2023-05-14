@@ -7,7 +7,8 @@
 #include <unordered_map>
 #include <vector>
 
-
+namespace inklink::service_message_broker
+{
 class ISignalsHandler
 {
 public:
@@ -24,3 +25,4 @@ public:
 protected:
     std::shared_ptr<IBaseServiceChassis> m_serviceChassis;
 };
+} // namespace inklink::service_message_broker

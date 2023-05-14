@@ -15,6 +15,8 @@
 #include "global.h"
 #include "iservice_registator.h"
 
+namespace inklink::base_service_chassis
+{
 class IBaseServiceChassis
 {
 public:
@@ -79,3 +81,4 @@ protected:
     std::string m_name;
     Endpoint m_selfEndpoint;
 };
+} // namespace inklink::base_service_chassis

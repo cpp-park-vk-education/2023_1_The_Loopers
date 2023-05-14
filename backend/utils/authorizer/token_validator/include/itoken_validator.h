@@ -3,6 +3,8 @@
 #include <chrono>
 #include <string>
 
+namespace inklink::authorizer
+{
 class ITokenValidator
 {
 public:
@@ -12,3 +14,4 @@ public:
     {
     }
 };
+Ъ

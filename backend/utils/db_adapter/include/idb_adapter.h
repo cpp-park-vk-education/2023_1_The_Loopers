@@ -3,6 +3,8 @@
 #include <memory>
 #include <string>
 
+namespace inklink::db_adapter
+{
 class IDBAdapter
 {
 public:
@@ -24,3 +26,4 @@ public:
     {
     }
 };
+} // namespace inklink::db_adapter

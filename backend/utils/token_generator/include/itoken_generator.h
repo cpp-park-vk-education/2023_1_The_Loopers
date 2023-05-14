@@ -2,6 +2,8 @@
 
 #include <string>
 
+namespace inklink::token_generator
+{
 class ITokenGenerator
 {
 public:
@@ -11,3 +13,4 @@ public:
     {
     }
 };
+} // namespace inklink::token_generator

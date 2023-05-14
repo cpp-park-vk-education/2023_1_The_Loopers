@@ -5,7 +5,8 @@
 #include <string>
 #include <vector>
 
-
+namespace inklink::base_service_chassis
+{
 class ILocalServiceRegistry
 {
 public:
@@ -19,3 +20,4 @@ public:
     {
     }
 };
+} // namespace inklink::base_service_chassis

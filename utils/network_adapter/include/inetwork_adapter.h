@@ -5,6 +5,8 @@
 #include <string>
 #include <string_view>
 
+namespace inklink::network_adapter
+{
 class INetworkStreamAdapter
 {
 public:
@@ -35,3 +37,4 @@ public:
     {
     }
 };
+} // namespace inklink::network_adapter
