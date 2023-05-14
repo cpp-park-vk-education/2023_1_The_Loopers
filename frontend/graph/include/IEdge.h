@@ -9,8 +9,8 @@ class IEdge
 public:
     //    IEdge(IVertex* source, IVertex* destination): m_sourceVertex(source), m_destinationVertex(destination) {};
 
-    const IVertex* getSourceVertex();
-    const IVertex* getDestinationVertex();
+    const IVertex* getSourceVertex() const;
+    const IVertex* getDestinationVertex() const;
 
 private:
     IVertex* m_sourceVertex;
