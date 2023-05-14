@@ -1,20 +1,19 @@
 #ifndef _WEBSOCKETSESSIONSFACTORY_H_
 #define _WEBSOCKETSESSIONSFACTORY_H_
 
+#include "isessions_factory.h"
+
 #include <memory>
 #include <string>
 
-#include "isessions_factory.h"
-
-namespace inklink_sessions_factory
+namespace inklink::server_network
 {
 template <typename T>
-concept Do_ErrorCodeAndSession_Concept =
-        requires(T&& t, boost::system::error_code ec, IServiceSession* session) {
-            {
-                std::forward<T>(t)(ec, session)
-            } -> std::same_as<void>;
-        };
+concept Do_ErrorCodeAndSession_Concept = requires(T&& t, boost::system::error_code ec, IServiceSession* session) {
+    {
+        std::forward<T>(t)(ec, session)
+    } -> std::same_as<void>;
+};
 
 template <typename T>
 concept Do_ErrorCode_Concept = requires(T&& t, boost::system::error_code ec) {
@@ -31,31 +30,34 @@ template <Do_ErrorCodeAndSession_Concept DoOnRead = Fun_ErrorCodeAndSession,
           Do_ErrorCode_Concept DoOnWrite = Fun_ErrorCode>
 class WebsocketSessionsFactory : public ISessionsFactory
 {
+    using IAuthorizer = authorizer::IAuthorizer;
+    using InternalSessionsManager = base_service_chassis::InternalSessionsManager;
+    using tcp = boost::asio::ip::tcp;
+
 public:
     WebsocketSessionsFactory() = delete;
 
-    WebsocketSessionsFactory(
+    explicit WebsocketSessionsFactory(
+            std::shared_ptr<InternalSessionsManager>, std::shared_ptr<IAuthorizer>,
             DoOnRead = [](boost::system::error_code, IServiceSession*) {},
             DoOnAccept = [](boost::system::error_code, IServiceSession*) {},
             DoOnWrite = [](boost::system::error_code) {}) noexcept;
 
-    WebsocketSessionsFactory(const WebsocketSessionsFactory&) = default noexcept;
-    WebsocketSessionsFactory(WebsocketSessionsFactory&&) = default noexcept;
+    WebsocketSessionsFactory(const WebsocketSessionsFactory&) noexcept = default;
+    WebsocketSessionsFactory(WebsocketSessionsFactory&&) noexcept = default;
 
-    WebsocketSessionsFactory& WebsocketSessionsFactory operator=(const WebsocketSessionsFactory&) =
-            default;
-    WebsocketSessionsFactory& WebsocketSessionsFactory operator=(WebsocketSessionsFactory&&) =
-            default;
+    WebsocketSessionsFactory& operator=(const WebsocketSessionsFactory&) noexcept = default;
+    WebsocketSessionsFactory& operator=(WebsocketSessionsFactory&&) noexcept = default;
 
-    ~WebsocketSessionsFactory() = default;
+    ~WebsocketSessionsFactory() final = default;
 
-    std::shared_ptr<IServiceSession> GetSession(boost::asio::ip::tcp::socket&&) override;
+    std::shared_ptr<IServiceSession> GetSession(boost::asio::ip::tcp::socket&&) final;
 
 private:
     DoOnRead m_doOnRead;
     DoOnAccept m_doOnAccept;
     DoOnWrite m_doOnWrite;
 };
-}  // namespace inklink_sessions_factory
+} // namespace inklink::server_network
 
-#endif  // _WEBSOCKETSESSIONSFACTORY_H_
+#endif // _WEBSOCKETSESSIONSFACTORY_H_
