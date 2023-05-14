@@ -6,12 +6,16 @@
 #include <string>
 #include <vector>
 
-struct Position{
+namespace inklink::graph
+{
+struct Position
+{
     std::size_t xPosition;
     std::size_t yPosition;
 };
 
-class GraphModel{
+class GraphModel
+{
 public:
     void addVertexesToModel(std::vector<std::string> vertexes);
     std::vector<IVertex*> getUniqueVertexes();
@@ -23,3 +27,4 @@ private:
     std::vector<std::pair<IVertex*, Position>> m_uniqueVertexes;
     std::vector<IEdge*> m_edges;
 };
+} // namespace inklink::graph
