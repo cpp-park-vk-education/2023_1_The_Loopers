@@ -3,10 +3,12 @@
 #include <string>
 #include <vector>
 
+namespace inklink::draw
+{
 struct Point
 {
-    size_t xPosition;
-    size_t yPosition;
+    std::size_t xPosition;
+    std::size_t yPosition;
 };
 
 class ObjectWithAttributes
@@ -62,3 +64,4 @@ private:
     size_t m_xRadius;
     size_t m_yRadius;
 };
+} // namespace inklink::draw

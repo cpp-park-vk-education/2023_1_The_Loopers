@@ -5,17 +5,17 @@
 
 namespace inklink::base_service_chassis
 {
-class IInternalSessionsManager;
+class InternalSessionsManager;
 }
 
 namespace inklink::external_service_chassis
 {
 class IUserExitHandler
 {
-    using IInternalSessionsManager = base_service_chassis::IInternalSessionsManager;
+    using InternalSessionsManager = base_service_chassis::InternalSessionsManager;
 
 public:
-    explicit IUserExitHandler(std::shared_ptr<IInternalSessionsManager> manager) noexcept
+    explicit IUserExitHandler(std::shared_ptr<InternalSessionsManager> manager) noexcept
             : m_sessionManger{std::move(manager)}
     {
     }
@@ -24,6 +24,6 @@ public:
     virtual void DoOnUserExit(const std::string&) = 0;
 
 protected:
-    std::shared_ptr<IInternalSessionsManager> m_sessionManger;
+    std::shared_ptr<InternalSessionsManager> m_sessionManger;
 };
 } // namespace inklink::external_service_chassis
