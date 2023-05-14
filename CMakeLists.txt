@@ -11,8 +11,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(cmake/get_boost_lib.cmake)
 
-option(ENABLE_BACK "Set to \"ON\" to build back" ON)
-option(ENABLE_FRONT "Set to \"ON\" to build front" OFF)
+option(ENABLE_BACKEND "Set to \"ON\" to build back" ON)
+option(ENABLE_FRONTEND "Set to \"ON\" to build front" OFF)
 
 option(CLEAR_CACHE "Set to \"ON\" to clear cache" ON)
 
@@ -48,11 +48,11 @@ set(NETWORK_ADAPTER ${PROJECT_NAME}_network_adapter)
 set(SERIALIZER ${PROJECT_NAME}_serializer)
 
 add_subdirectory(${UTILS_DIR})
-if (ENABLE_BACK)
-    add_subdirectory(back)
+if (ENABLE_BACKEND)
+    add_subdirectory(backend)
 endif()
-if (ENABLE_FRONT)
-    add_subdirectory(front)
+if (ENABLE_FRONTEND)
+    add_subdirectory(frontend)
 endif()
 if (ENABLE_TEST)
     add_subdirectory(tests)
