@@ -15,13 +15,12 @@ namespace inklink::base_service_chassis
 class ICommonConnection
 {
     using IClientSession = client_connector::IClientSession;
+
 public:
     virtual ~ICommonConnection() = default;
 
     virtual void Init(ServiceType, const Endpoint& self, const Endpoint& other) = 0;
-
     virtual void ChangeConnection(ServiceType, const Endpoint& self, const Endpoint& other) = 0;
-
     virtual std::shared_ptr<IClientSession> GetSession() = 0;
 
 protected:
