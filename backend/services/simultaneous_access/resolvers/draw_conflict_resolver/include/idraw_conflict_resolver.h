@@ -1,6 +1,6 @@
 #pragma once
 
-#include "global.h"
+#include "inklink_global.h"
 
 #include <chrono>
 #include <map>
@@ -9,12 +9,17 @@
 #include <tuple>
 #include <vector>
 
+namespace inklink::serializer
+{
 class IData;
+}
 
 namespace inklink::service_simultaneous_access
 {
 struct DrawAction
 {
+    using IData = serializer::IData;
+
     ResolverActionType type;
     std::string figureId;
     Endpoint endpoint;
@@ -37,9 +42,6 @@ class IDrawConflictResolver
 public:
     virtual ~IDrawConflictResolver() = default;
 
-    virtual std::vector<DrawAction> resolve(std::vector<DrawAction>)
-    {
-        return {};
-    }
+    virtual std::vector<DrawAction> resolve(std::vector<DrawAction>) = 0;
 };
 } // namespace inklink::service_simultaneous_access

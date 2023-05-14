@@ -1,14 +1,18 @@
 #pragma once
 
-#include "InternalSessionsManager.h"
-
 #include <memory>
 #include <string>
+
+namespace inklink::base_service_chassis
+{
+class IInternalSessionsManager;
+}
 
 namespace inklink::external_service_chassis
 {
 class IUserExitHandler
 {
+    using IInternalSessionsManager = base_service_chassis::IInternalSessionsManager;
 public:
     virtual ~IExternalServiceChassis() = default;
 

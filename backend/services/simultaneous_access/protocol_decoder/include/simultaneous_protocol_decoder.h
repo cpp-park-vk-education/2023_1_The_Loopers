@@ -1,16 +1,19 @@
 #pragma once
 
-#include "idata.h"
-#include "idraw_conflict_resolver.h"
-#include "itext_conflict_resolver.h"
-
 #include <memory>
 #include <string>
+
+namespace inklink::serializer
+{
+class IData;
+}
 
 namespace inklink::service_simultaneous_access
 {
 class SimultaneousProtocolDecoder
 {
+    using IData = serializer::IData;
+
 public:
     ActionType GetActionType(IData*) = 0;
     TextAction GetTextAction(IData*) = 0;

@@ -10,7 +10,7 @@ class ITokenValidator
 public:
     virtual ~ITokenValidator() = default;
 
-    virtual std::chrono::time_point<std::chrono::system_clock> ValidateToken(std::string token,
-                                                                             std::string publicKey) = 0;
+    virtual std::chrono::time_point<std::chrono::system_clock> ValidateToken(const std::string& token,
+                                                                             const std::string& publicKey) = 0;
 };
-Ъ
+} // namespace inklink::authorizer

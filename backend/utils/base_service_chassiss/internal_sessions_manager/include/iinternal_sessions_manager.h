@@ -1,6 +1,6 @@
 #pragma once
 
-#include "global.h"
+#include "inklink_global.h"
 #include "iservice_session.h"
 
 #include <string>
@@ -14,6 +14,7 @@ struct DocSessionDescriptor
     std::string documentId;
     std::string login;
 };
+}
 
 template <>
 struct std::hash<DocSessionDescriptor>
@@ -25,8 +26,12 @@ struct std::hash<DocSessionDescriptor>
         return h1 ^ (h2 << 1);
     }
 };
+
+namespace inklink::base_service_chassis
+{
 class IInternalSessionsManager
 {
+    using IServiceSession = inklink::server_network::IServiceSession;
 public:
     virtual ~IInternalSessionsManager() = default;
 

@@ -1,18 +1,23 @@
 #pragma once
 
-#include "global.h"
+#include "inklink_global.h"
 
 #include <chrono>
 #include <memory>
 #include <string>
 #include <vector>
 
+namespace inklink::serializer
+{
 class IData;
+}
 
 namespace inklink::service_simultaneous_access
 {
 struct TextAction
 {
+    using IData = serializer::IData;
+
     ResolverActionType type;
     std::string figureId;
     Endpoint endpoint;

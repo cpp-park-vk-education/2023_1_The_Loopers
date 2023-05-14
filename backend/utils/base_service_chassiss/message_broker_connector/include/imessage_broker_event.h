@@ -1,17 +1,22 @@
 #pragma once
 
-#include "global.h"
-#include "iclient_session.h"
 #include "icommon_connection.h"
+#include "inklink_global.h"
 
 #include <functional>
 #include <memory>
 #include <string>
 
+namespace inklink::client_connector
+{
+class IClientSession;
+}
+
 namespace inklink::base_service_chassis
 {
 class IMessageBrokerEvent
 {
+    using IClientSession = client_connector::IClientSession;
 public:
     virtual ~IMessageBrokerEvent() = default;
 

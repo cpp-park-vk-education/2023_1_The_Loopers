@@ -1,6 +1,5 @@
 #pragma once
 
-#include "idb_adapter.h"
 #include "iexternal_service_chassiss.h"
 #include "iresolvers_factory.h"
 
@@ -8,16 +7,33 @@
 #include <memory>
 #include <string>
 
+namespace inklink::db_adapter
+{
+class IDBAdapter;
+}
+
+namespace inklink::external_service_chassis
+{
+class IExternalServiceChassis;
+}
+
+namespace inklink::server_network
+{
+class IServiceSession;
+}
+
 namespace inklink::service_simultaneous_access
 {
 class SimultaneousAccessService
 {
-public:
-    void SetResolversFactory(IResolversFactory*);
-    void SetServiceChassis(IExternalServiceChassis*);
-    void SetDbAdapter(IDBAdapter*);
+    using IDBAdapter = db_adapter::IDBAdapter;
+    using IExternalServiceChassis = external_service_chassis::IExternalServiceChassis;
+    using IServiceSession = server_network::IServiceSession;
 
-    void run(unsigned short port);
+public:
+    SimultaneousAccessService(IResolversFactory&, IExternalServiceChassis&, IDBAdapter&);
+
+    void Run(unsigned short port);
 
 private:
     void DoOnConnect();
@@ -25,5 +41,9 @@ private:
     void DoOnWrite();
 
     std::map<std::chrono::time_point<std::chrono::system_clock>, DrawAction> m_notApplied;
+
+    IResolversFactory& m_factory;
+    IExternalServiceChassis& m_chassis;
+    IDBAdapter& m_dbAdapter;
 };
 } // namespace inklink::service_simultaneous_access

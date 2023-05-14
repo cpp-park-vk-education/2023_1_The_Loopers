@@ -10,26 +10,33 @@ namespace boost::asio::ip::tcp
 class socket;
 }
 
+namespace inklink::authorizer
+{
 class IAuthorizer;
+}
+
+namespace inklink::base_service_chassis
+{
 class IInternalSessionsManager;
-class INetworkStreamAdapter;
+}
 
 namespace inklink::server_network
 {
 class ISessionsFactory
 {
+    using IAuthorizer = authorizer::IAuthorizer;
+    using IInternalSessionsManager = base_service_chassis::IInternalSessionsManager;
+
 public:
     virtual ~ISessionsFactory() = default;
 
     virtual void SetManager(IInternalSessionsManager*);
     virtual void SetAuthorizer(std::shared_ptr<IAuthorizer>);
-    virtual void SetNetworkAdapter(std::shared_ptr<INetworkStreamAdapter>);
 
     virtual IServiceSession* GetSession(boost::asio::ip::tcp::socket&&) = 0;
 
 protected:
     std::shared_ptr<IAuthorizer> m_authorizer;
     IInternalSessionsManager* m_manager;
-    std::shared_ptr<INetworkStreamAdapter> m_adapter;
 };
 } // namespace inklink::server_network

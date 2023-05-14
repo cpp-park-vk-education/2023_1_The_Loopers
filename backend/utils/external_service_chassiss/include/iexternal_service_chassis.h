@@ -1,15 +1,18 @@
 #pragma once
 
-#include "BaseServicechassiss.h"
-#include "UserExitHandler.h"
+#include "ibase_service_chassiss.h"
+#include "iuser_exit_handler.h"
 
 #include <memory>
 #include <string>
 
 namespace inklink::external_service_chassis
 {
+class IUserExitHandler;
+
 class IExternalServiceChassis
 {
+    using IBaseServiceChassis = base_service_chassis::IBaseServiceChassiss;
 public:
     virtual ~IExternalServiceChassis() = default;
 

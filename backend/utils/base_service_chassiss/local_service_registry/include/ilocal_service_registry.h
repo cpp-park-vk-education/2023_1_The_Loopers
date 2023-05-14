@@ -1,6 +1,6 @@
 #pragma once
 
-#include "global.h"
+#include "inklink_global.h"
 
 #include <string>
 #include <vector>
