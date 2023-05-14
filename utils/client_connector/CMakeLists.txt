@@ -1,8 +1,6 @@
-set(ENV{CLIENT_NETWORK} ${PROJECT_NAME}_client_network)
+add_library(${CLIENT_NETWORK} SHARED "")
 
-add_library($ENV{CLIENT_NETWORK} SHARED "")
-
-target_sources($ENV{CLIENT_NETWORK} PRIVATE
+target_sources(${CLIENT_NETWORK} PRIVATE
     "src/trash.cpp"
 )
 
@@ -13,11 +11,11 @@ set(PUBLIC_LINK_LIBRARIES
 )
 
 set(PRIVATE_LINK_LIBRARIES
-    "$ENV{NETWORK_ADAPTER}"
+    "${NETWORK_ADAPTER}"
 )
 
-target_link_libraries($ENV{CLIENT_NETWORK} PUBLIC ${PUBLIC_LINK_LIBRARIES})
-target_link_libraries($ENV{CLIENT_NETWORK} PRIVATE ${PRIVATE_LINK_LIBRARIES})
+target_link_libraries(${CLIENT_NETWORK} PUBLIC ${PUBLIC_LINK_LIBRARIES})
+target_link_libraries(${CLIENT_NETWORK} PRIVATE ${PRIVATE_LINK_LIBRARIES})
 
 set(PUBLIC_INCLUDE_DIRECTORIES
     "${UTILS_DIR}/include"
@@ -28,4 +26,4 @@ set(PUBLIC_INCLUDE_DIRECTORIES
     "${Boost_INCLUDE_DIRS}"
 )
 
-target_include_directories($ENV{CLIENT_NETWORK} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
+target_include_directories(${CLIENT_NETWORK} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
