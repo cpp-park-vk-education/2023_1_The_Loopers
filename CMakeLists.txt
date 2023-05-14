@@ -30,6 +30,23 @@ set(UTILS_DIR "${PROJECT_SOURCE_DIR}/utils")
 
 include(cmake/apply_options.cmake)
 
+# services
+set(MESSAGE_BROKER_SERVICE service_${PROJECT_NAME}_message_broker)
+set(SIMULTANEOUS_ACCESS_SERVICE service_${PROJECT_NAME}_simultaneous_access)
+# backend utils
+set(AUTHORIZER ${PROJECT_NAME}_authorizer)
+set(BASE_SERVICE_CHASSISS ${PROJECT_NAME}_base_service_chassiss)
+set(DB_ADAPTER ${PROJECT_NAME}_db_adapter)
+set(EXTERNAL_SERVICE_CHASSISS ${PROJECT_NAME}_external_service_chassiss)
+set(SERVER_NETWORK ${PROJECT_NAME}_server_network)
+set(CHASSISS_CONFIGURATOR ${PROJECT_NAME}_services_chassiss_configurator)
+set(TOKEN_GENERATOR ${PROJECT_NAME}_token_generator)
+
+# global utils
+set(CLIENT_NETWORK ${PROJECT_NAME}_client_network)
+set(NETWORK_ADAPTER ${PROJECT_NAME}_network_adapter)
+set(SERIALIZER ${PROJECT_NAME}_serializer)
+
 add_subdirectory(${UTILS_DIR})
 if (ENABLE_BACK)
     add_subdirectory(back)

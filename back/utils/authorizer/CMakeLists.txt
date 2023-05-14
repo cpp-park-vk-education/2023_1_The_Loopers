@@ -1,8 +1,6 @@
-set(ENV{AUTHORIZER} ${PROJECT_NAME}_authorizer)
+add_library(${AUTHORIZER} STATIC "")
 
-add_library($ENV{AUTHORIZER} STATIC "")
-
-target_sources($ENV{AUTHORIZER} PRIVATE
+target_sources(${AUTHORIZER} PRIVATE
     "src/trash.cpp"
 )
 
@@ -12,7 +10,7 @@ set(PUBLIC_INCLUDE_DIRECTORIES
     "token_validator/include"
 )
 
-target_include_directories($ENV{AUTHORIZER} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
+target_include_directories(${AUTHORIZER} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
 
 # depends on some crypto library/ jwt token library
 
@@ -33,4 +31,4 @@ target_include_directories($ENV{AUTHORIZER} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES}
 #     # "nlohmann_json::nlohmann_json"
 # )
 
-# target_link_libraries($ENV{BASE_SERVICE_CHASSISS} PRIVATE ${PRIVATE_LINK_LIBRARIES})
+# target_link_libraries(${BASE_SERVICE_CHASSISS} PRIVATE ${PRIVATE_LINK_LIBRARIES})

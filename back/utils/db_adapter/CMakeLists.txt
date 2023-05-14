@@ -1,8 +1,6 @@
-set(ENV{DB_ADAPTER} ${PROJECT_NAME}_db_adapter)
+add_library(${DB_ADAPTER} SHARED "")
 
-add_library($ENV{DB_ADAPTER} SHARED "")
-
-target_sources($ENV{DB_ADAPTER} PRIVATE
+target_sources(${DB_ADAPTER} PRIVATE
     "src/trash.cpp"
 )
 
@@ -15,7 +13,7 @@ set(PUBLIC_INCLUDE_DIRECTORIES
     "include"
 )
 
-target_include_directories($ENV{DB_ADAPTER} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
+target_include_directories(${DB_ADAPTER} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
 
 # find_package(spdlog)
 
@@ -34,4 +32,4 @@ target_include_directories($ENV{DB_ADAPTER} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES}
 #     # "nlohmann_json::nlohmann_json"
 # )
 
-# target_link_libraries($ENV{BASE_SERVICE_CHASSISS} PRIVATE ${PRIVATE_LINK_LIBRARIES})
+# target_link_libraries(${BASE_SERVICE_CHASSISS} PRIVATE ${PRIVATE_LINK_LIBRARIES})
