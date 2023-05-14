@@ -25,23 +25,24 @@ concept DoOnAcceptConcept = requires(T&& t, boost::system::error_code ec, IServi
 template <DoOnAcceptConcept DoOnAccept = std::function<void(boost::system::error_code, IServiceSession*)>>
 class BeastWebsocketListener : public IListener, public std::enable_shared_from_this<BeastWebsocketListener<DoOnAccept>>
 {
+    using tcp = boost::asio::ip::tcp;
+    using error_code = boost::system::error_code;
+
 public:
     BeastWebsocketListener() = delete;
     explicit BeastWebsocketListener(
-            boost::asio::io_context&, boost::asio::ip::tcp::endpoint, std::shared_ptr<ISessionsFactory>,
-            DoOnAccept doOnAccept = [](boost::system::error_code, IServiceSession*) {});
+            boost::asio::io_context&, const tcp::endpoint&, std::shared_ptr<ISessionsFactory>,
+            DoOnAccept doOnAccept = [](error_code, IServiceSession*) {});
 
     ~BeastWebsocketListener() final = default;
 
     void AsyncRun() final;
 
 private:
-    using tcp = boost::asio::ip::tcp;
-
     void DoAccept();
 
-    void Fail(boost::system::error_code ec, char const* what);
-    void OnAccept(boost::system::error_code ec, tcp::socket socket);
+    void Fail(error_code ec, char const* what);
+    void OnAccept(error_code ec, tcp::socket socket);
 
     boost::asio::io_context& m_ioc;
     tcp::acceptor m_acceptor;
