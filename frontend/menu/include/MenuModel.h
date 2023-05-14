@@ -1,5 +1,6 @@
 #pragma once
 
-class MenuModel{
-    //todo
+class MenuModel
+{
+    // todo
 };

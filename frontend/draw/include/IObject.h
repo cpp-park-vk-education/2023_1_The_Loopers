@@ -3,19 +3,22 @@
 #include <string>
 #include <vector>
 
-struct Point {
+struct Point
+{
     size_t xPosition;
     size_t yPosition;
 };
 
-class ObjectWithAttributes {
+class ObjectWithAttributes
+{
 public:
     virtual size_t getID() = 0;
     virtual void setID(std::size_t ID) = 0;
     virtual std::string serialize() = 0;
 };
 
-class TextBox : public ObjectWithAttributes {
+class TextBox : public ObjectWithAttributes
+{
 public:
     size_t getID() override;
     void setID(std::size_t ID) override;
@@ -29,7 +32,8 @@ private:
     size_t m_width;
 };
 
-class Polygon : public ObjectWithAttributes {
+class Polygon : public ObjectWithAttributes
+{
 public:
     size_t getID() override;
     void setID(std::size_t ID) override;
@@ -42,7 +46,8 @@ private:
     std::vector<Point> m_arrayOfVertexCoordinates;
 };
 
-class Ellipse : public ObjectWithAttributes {
+class Ellipse : public ObjectWithAttributes
+{
 public:
     size_t getID() override;
     void setID(std::size_t ID) override;
