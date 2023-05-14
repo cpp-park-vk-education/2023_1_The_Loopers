@@ -12,7 +12,7 @@ struct Endpoint
         return (address == rhs.address) && (port == rhs.port);
     }
     std::string address;
-    unsigned short port;
+    uint16_t port;
 };
 
 enum class ServiceType
@@ -63,7 +63,7 @@ struct std::hash<inklink::Endpoint>
     inline std::size_t operator()(const inklink::Endpoint& endpoint)
     {
         const std::size_t h1 = std::hash<std::string>{}(endpoint.address);
-        const std::size_t h2 = std::hash<unsigned short>{}(endpoint.port);
+        const std::size_t h2 = std::hash<uint16_t>{}(endpoint.port);
         return h1 ^ (h2 << 1);
     }
 };
