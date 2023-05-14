@@ -116,13 +116,13 @@ void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::On
                         std::string(BOOST_BEAST_VERSION_STRING) + " inklink-client");
             }));
 
-    // Update the host_ string. This will provide the value of the
+    // Update the m_host string. This will provide the value of the
     // Host HTTP header during the WebSocket handshake.
     // See https://tools.ietf.org/html/rfc7230#section-5.4
     m_host += ':' + std::to_string(ep.port());
 
     // Perform the websocket handshake
-    ws_.async_handshake(
+    m_ws.async_handshake(
             m_host, "/",
             beast::bind_front_handler(&WebsocketClientSession::OnHandshake, shared_from_this()));
 }

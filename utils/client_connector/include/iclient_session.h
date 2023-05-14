@@ -4,7 +4,7 @@
 #include <functional>
 #include <string>
 
-#include "inetwork_adapter.h"
+// #include "inetwork_adapter.h"
 
 namespace inklink_client_session
 {
@@ -16,13 +16,13 @@ public:
     // {
     // }
 
-    virtual void run_async(const std::string& host, unsigned short port)
+    virtual void RunAsync(const std::string& host, unsigned short port)
     {
     }
-    virtual void send(const std::string&)
+    virtual void Send(const std::string&)
     {
     }
-    virtual void close()
+    virtual void Close()
     {
     }
 };
