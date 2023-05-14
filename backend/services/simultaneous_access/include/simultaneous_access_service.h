@@ -33,7 +33,7 @@ class SimultaneousAccessService
 public:
     SimultaneousAccessService(IResolversFactory&, IExternalServiceChassis&, IDBAdapter&);
 
-    void Run(unsigned short port);
+    void Run(uint16_t port);
 
 private:
     using time_point = std::chrono::time_point<std::chrono::system_clock>;
