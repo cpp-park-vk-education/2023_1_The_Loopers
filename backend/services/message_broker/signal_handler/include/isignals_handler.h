@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ibase_service_chassiss.h"
+#include "ibase_service_chassis.h"
 #include "inklink_global.h"
 
 #include <memory>

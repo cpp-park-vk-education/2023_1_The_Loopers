@@ -1,6 +1,6 @@
 #pragma once
 
-#include "iexternal_service_chassiss.h"
+#include "iexternal_service_chassis.h"
 #include "iresolvers_factory.h"
 
 #include <map>

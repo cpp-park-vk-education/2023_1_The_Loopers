@@ -35,4 +35,4 @@ target_include_directories(${TOKEN_GENERATOR} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIE
 #     # "nlohmann_json::nlohmann_json"
 # )
 
-# target_link_libraries(${BASE_SERVICE_CHASSISS} PRIVATE ${PRIVATE_LINK_LIBRARIES})
+# target_link_libraries(${BASE_SERVICE_CHASSIS} PRIVATE ${PRIVATE_LINK_LIBRARIES})

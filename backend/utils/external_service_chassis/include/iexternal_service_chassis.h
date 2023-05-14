@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ibase_service_chassiss.h"
+#include "ibase_service_chassis.h"
 #include "iuser_exit_handler.h"
 
 #include <memory>
@@ -12,7 +12,8 @@ class IUserExitHandler;
 
 class IExternalServiceChassis
 {
-    using IBaseServiceChassis = base_service_chassis::IBaseServiceChassiss;
+    using IBaseServiceChassis = base_service_chassis::IBaseServiceChassis;
+
 public:
     virtual ~IExternalServiceChassis() = default;
 

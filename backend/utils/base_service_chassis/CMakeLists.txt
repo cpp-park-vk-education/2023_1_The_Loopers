@@ -1,6 +1,6 @@
-add_library(${BASE_SERVICE_CHASSISS} SHARED "")
+add_library(${BASE_SERVICE_CHASSIS} SHARED "")
 
-target_sources(${BASE_SERVICE_CHASSISS} PRIVATE
+target_sources(${BASE_SERVICE_CHASSIS} PRIVATE
     "src/trash.cpp"
 )
 
@@ -14,7 +14,7 @@ set(PUBLIC_INCLUDE_DIRECTORIES
     "service_registator/include"
 )
 
-target_include_directories(${BASE_SERVICE_CHASSISS} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
+target_include_directories(${BASE_SERVICE_CHASSIS} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
 
 find_package(spdlog)
 
@@ -33,11 +33,11 @@ set(PRIVATE_LINK_LIBRARIES ${PRIVATE_LINK_LIBRARIES}
     # "nlohmann_json::nlohmann_json"
 )
 
-target_link_libraries(${BASE_SERVICE_CHASSISS} PRIVATE ${PRIVATE_LINK_LIBRARIES})
+target_link_libraries(${BASE_SERVICE_CHASSIS} PRIVATE ${PRIVATE_LINK_LIBRARIES})
 
 set(PUBLIC_LINK_LIBRARIES 
     "${SERVER_NETWORK}"
     "${CLIENT_NETWORK}"
 )
 
-target_link_libraries(${BASE_SERVICE_CHASSISS} PUBLIC ${PUBLIC_LINK_LIBRARIES})
+target_link_libraries(${BASE_SERVICE_CHASSIS} PUBLIC ${PUBLIC_LINK_LIBRARIES})
