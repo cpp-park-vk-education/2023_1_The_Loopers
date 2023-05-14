@@ -8,6 +8,12 @@
 
 namespace inklink::graph
 {
+
+struct Position{
+    std::size_t xPosition;
+    std::size_t yPosition;
+};
+
 class IVertex
 {
 public:
