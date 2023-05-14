@@ -17,14 +17,14 @@ struct DrawAction
     std::string figureId;
     Endpoint endpoint;
     std::chrono::time_point<std::chrono::system_clock> time;
-    IData *data;
+    IData* data;
 
-    constexpr bool operator==(const DrawAction &other) const noexcept
+    constexpr bool operator==(const DrawAction& other) const noexcept
     {
         return std::tie(type, figureId, endpoint, time, data) ==
                std::tie(other.type, other.figureId, other.endpoint, other.time, other.data);
     }
-    bool operator!=(const DrawAction &other) const
+    bool operator!=(const DrawAction& other) const
     {
         return !(*this == other);
     }
