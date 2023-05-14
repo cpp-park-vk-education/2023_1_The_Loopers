@@ -1,43 +1,40 @@
-#ifndef _SIMULTANEOUSACCESSSERVICE_H_
-#define _SIMULTANEOUSACCESSSERVICE_H_
-
-#include <map>
-#include <memory>
-#include <string>
+#pragma once
 
 #include "idb_adapter.h"
 #include "iexternal_service_chassiss.h"
 #include "iresolvers_factory.h"
 
+#include <map>
+#include <memory>
+#include <string>
+
 class SimultaneousAccessService
 {
 public:
-    virtual void SetResolversFactory(IResolversFactory*)
+    void SetResolversFactory(IResolversFactory*)
     {
     }
-    virtual void SetServiceChassis(IExternalServiceChassis*)
+    void SetServiceChassis(IExternalServiceChassis*)
     {
     }
-    virtual void SetDbAdapter(IDBAdapter*)
+    void SetDbAdapter(IDBAdapter*)
     {
     }
 
-    virtual void run(unsigned short port)
+    void run(unsigned short port)
     {
     }
 
 private:
-    virtual void DoOnConnect()
+    void DoOnConnect()
     {
     }
-    virtual void DoOnRead(const string&, IServiceSession*)
+    void DoOnRead(const string&, IServiceSession*)
     {
     }
-    virtual void DoOnWrite()
+    void DoOnWrite()
     {
     }
 
     std::map<std::chrono::time_point<std::chrono::system_clock>, DrawAction> m_notApplied;
 };
-
-#endif  // _SIMULTANEOUSACCESSSERVICE_H_
