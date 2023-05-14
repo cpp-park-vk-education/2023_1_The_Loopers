@@ -1,5 +1,4 @@
-#ifndef _GLOBAL_H_
-#define _GLOBAL_H_
+#pragma once
 
 #include <functional>
 #include <string>
@@ -8,7 +7,7 @@ struct Endpoint
 {
     bool operator==(const Endpoint& rhs) const noexcept
     {
-        return (address == rhs.address) && (port == rhs.port);
+        return (address == rhs.address) & &(port == rhs.port);
     }
     std::string address;
     unsigned short port;
@@ -71,5 +70,3 @@ enum class ResolverActionType
     kSelect,
     kDeselect
 };
-
-#endif  // _GLOBAL_H_

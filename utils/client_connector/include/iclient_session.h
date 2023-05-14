@@ -1,10 +1,10 @@
-#ifndef _ICLIENTSESSION_H_
-#define _ICLIENTSESSION_H_
+#pragma once
+
+#include "inetwork_adapter.h"
 
 #include <functional>
 #include <string>
 
-#include "inetwork_adapter.h"
 
 class IClientSession
 {
@@ -14,12 +14,10 @@ public:
     {
     }
 
-    virtual void run(const std::string& host, unsigned short port,
-                     const std::string& onHandshakeText)
+    virtual void run(const std::string& host, unsigned short port, const std::string& onHandshakeText)
     {
     }
-    virtual void run_async(const std::string& host, unsigned short port,
-                           const std::string& onHandshakeText)
+    virtual void run_async(const std::string& host, unsigned short port, const std::string& onHandshakeText)
     {
     }
     virtual std::string sync_read()
@@ -32,5 +30,3 @@ public:
     {
     }
 };
-
-#endif  // _ICLIENTSESSION_H_
