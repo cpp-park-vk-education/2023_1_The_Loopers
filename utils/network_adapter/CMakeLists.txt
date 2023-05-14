@@ -1,8 +1,6 @@
-set(ENV{NETWORK_ADAPTER} ${PROJECT_NAME}_network_adapter)
+add_library(${NETWORK_ADAPTER} SHARED "")
 
-add_library($ENV{NETWORK_ADAPTER} SHARED "")
-
-target_sources($ENV{NETWORK_ADAPTER} PRIVATE
+target_sources(${NETWORK_ADAPTER} PRIVATE
     "src/trash.cpp"
 )
 
@@ -14,7 +12,7 @@ set(PUBLIC_LINK_LIBRARIES
     # "Boost::asio"
 )
 
-target_link_libraries($ENV{NETWORK_ADAPTER} PUBLIC ${PUBLIC_LINK_LIBRARIES})
+target_link_libraries(${NETWORK_ADAPTER} PUBLIC ${PUBLIC_LINK_LIBRARIES})
 
 set(PUBLIC_INCLUDE_DIRECTORIES
     "include"
@@ -29,4 +27,4 @@ set(PUBLIC_INCLUDE_DIRECTORIES
     "${Boost_INCLUDE_DIRS}"
 )
 
-target_include_directories($ENV{NETWORK_ADAPTER} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
+target_include_directories(${NETWORK_ADAPTER} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
