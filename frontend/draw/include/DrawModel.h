@@ -5,11 +5,6 @@
 #include <string>
 #include <vector>
 
-struct Point {
-    std::size_t xPosition;
-    std::size_t yPosition;
-};
-
 class DrawModel {
 public:
     void deserialize(std::string);
