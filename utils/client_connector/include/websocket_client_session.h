@@ -43,11 +43,13 @@ concept Do_ErrorCode_Concept = requires(T&& t, boost::system::error_code ec) {
     } -> std::same_as<void>;
 };
 
+using Fun_ConnectTypeErrorCodeSession =
+        std::function<void(ConnectType, boost::system::error_code, IClientSession*)>;
 using Fun_StringErrorCodeSession =
         std::function<void(const std::string&, boost::system::error_code, IClientSession*)>;
 using Fun_ErrorCode = std::function<void(boost::system::error_code)>;
 
-template <Do_ConnectTypeErrorCode_Concept DoOnConnectType = Do_ConnectTypeErrorCode_Concept,
+template <Do_ConnectTypeErrorCode_Concept DoOnConnectType = Fun_ConnectTypeErrorCodeSession,
           Do_StringErrorCode_Concept DoOnRead = Fun_StringErrorCodeSession,
           Do_ErrorCode_Concept DoOnWrite = Fun_ErrorCode,
           Do_ErrorCode_Concept DoOnClose = Fun_ErrorCode>
@@ -79,14 +81,15 @@ public:
 private:
     namespace net = boost::asio;
     namespace beast = boost::beast;
+    using error_code = boost::system::error_code;
 
-    void OnResolve(beast::error_code ec, net::ip::tcp::resolver::results_type results);
+    void OnResolve(error_code ec, net::ip::tcp::resolver::results_type results);
 
-    void OnConnect(beast::error_code ec, net::ip::tcp::resolver::results_type::endpoint_type ep);
-    void OnHandshake(beast::error_code ec);
-    void OnWrite(beast::error_code ec, std::size_t bytes_transferred);
-    void OnRead(beast::error_code ec, std::size_t bytes_transferred);
-    void OnClose(beast::error_code ec);
+    void OnConnect(error_code ec, net::ip::tcp::resolver::results_type::endpoint_type ep);
+    void OnHandshake(error_code ec);
+    void OnWrite(error_code ec, std::size_t bytes_transferred);
+    void OnRead(error_code ec, std::size_t bytes_transferred);
+    void OnClose(error_code ec);
 
     std::string m_host;
     net::ip::tcp::resolver m_resolver;

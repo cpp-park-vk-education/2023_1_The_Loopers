@@ -6,10 +6,8 @@ namespace net = boost::asio;
 namespace beast = boost::beast;
 using error_code = boost::system::error_code;
 
-template <Do_ConnectTypeErrorCode_Concept DoOnConnectType = Do_ConnectTypeErrorCode_Concept,
-          Do_StringErrorCode_Concept DoOnRead = Fun_StringErrorCodeSession,
-          Do_ErrorCode_Concept DoOnWrite = Fun_ErrorCode,
-          Do_ErrorCode_Concept DoOnClose = Fun_ErrorCode>
+template <Do_ConnectTypeErrorCode_Concept DoOnConnectType, Do_StringErrorCode_Concept DoOnRead,
+          Do_ErrorCode_Concept DoOnWrite, Do_ErrorCode_Concept DoOnClose>
 WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::WebsocketClientSession(
         boost::asio::io_context& ioc, DoOnConnectType doOnConnectType, DoOnRead doOnRead,
         DoOnWrite doOnWrite, DoOnClose doOnClose)
@@ -19,10 +17,8 @@ WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::Websock
 {
 }
 
-template <Do_ConnectTypeErrorCode_Concept DoOnConnectType = Do_ConnectTypeErrorCode_Concept,
-          Do_StringErrorCode_Concept DoOnRead = Fun_StringErrorCodeSession,
-          Do_ErrorCode_Concept DoOnWrite = Fun_ErrorCode,
-          Do_ErrorCode_Concept DoOnClose = Fun_ErrorCode>
+template <Do_ConnectTypeErrorCode_Concept DoOnConnectType, Do_StringErrorCode_Concept DoOnRead,
+          Do_ErrorCode_Concept DoOnWrite, Do_ErrorCode_Concept DoOnClose>
 void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::RunAsync(
         const std::string& host, unsigned short port)
 {
@@ -35,10 +31,8 @@ void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::Ru
             beast::bind_front_handler(&WebsocketClientSession::OnResolve, shared_from_this()));
 }
 
-template <Do_ConnectTypeErrorCode_Concept DoOnConnectType = Do_ConnectTypeErrorCode_Concept,
-          Do_StringErrorCode_Concept DoOnRead = Fun_StringErrorCodeSession,
-          Do_ErrorCode_Concept DoOnWrite = Fun_ErrorCode,
-          Do_ErrorCode_Concept DoOnClose = Fun_ErrorCode>
+template <Do_ConnectTypeErrorCode_Concept DoOnConnectType, Do_StringErrorCode_Concept DoOnRead,
+          Do_ErrorCode_Concept DoOnWrite, Do_ErrorCode_Concept DoOnClose>
 void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::Send(
         const std::string& msgBody)
 {
@@ -57,25 +51,21 @@ void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::Se
                                                                 shared_from_this()));
 }
 
-template <Do_ConnectTypeErrorCode_Concept DoOnConnectType = Do_ConnectTypeErrorCode_Concept,
-          Do_StringErrorCode_Concept DoOnRead = Fun_StringErrorCodeSession,
-          Do_ErrorCode_Concept DoOnWrite = Fun_ErrorCode,
-          Do_ErrorCode_Concept DoOnClose = Fun_ErrorCode>
+template <Do_ConnectTypeErrorCode_Concept DoOnConnectType, Do_StringErrorCode_Concept DoOnRead,
+          Do_ErrorCode_Concept DoOnWrite, Do_ErrorCode_Concept DoOnClose>
 void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::Close()
 {
-    // TODO stop every read etc.
+    // TODO (a.novak) stop every read etc.
 
     m_ws.async_close(
             websocket::close_code::normal,
             beast::bind_front_handler(&WebsocketClientSession::OnClose, shared_from_this()));
 }
 
-template <Do_ConnectTypeErrorCode_Concept DoOnConnectType = Do_ConnectTypeErrorCode_Concept,
-          Do_StringErrorCode_Concept DoOnRead = Fun_StringErrorCodeSession,
-          Do_ErrorCode_Concept DoOnWrite = Fun_ErrorCode,
-          Do_ErrorCode_Concept DoOnClose = Fun_ErrorCode>
+template <Do_ConnectTypeErrorCode_Concept DoOnConnectType, Do_StringErrorCode_Concept DoOnRead,
+          Do_ErrorCode_Concept DoOnWrite, Do_ErrorCode_Concept DoOnClose>
 void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::OnResolve(
-        beast::error_code ec, tcp::resolver::results_type results)
+        error_code ec, net::ip::tcp::resolver::results_type results)
 {
     m_doOnConnectType(ConnectType::kResolve, ec);
     if (ec)
@@ -90,12 +80,10 @@ void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::On
             beast::bind_front_handler(&WebsocketClientSession::OnConnect, shared_from_this()));
 }
 
-template <Do_ConnectTypeErrorCode_Concept DoOnConnectType = Do_ConnectTypeErrorCode_Concept,
-          Do_StringErrorCode_Concept DoOnRead = Fun_StringErrorCodeSession,
-          Do_ErrorCode_Concept DoOnWrite = Fun_ErrorCode,
-          Do_ErrorCode_Concept DoOnClose = Fun_ErrorCode>
+template <Do_ConnectTypeErrorCode_Concept DoOnConnectType, Do_StringErrorCode_Concept DoOnRead,
+          Do_ErrorCode_Concept DoOnWrite, Do_ErrorCode_Concept DoOnClose>
 void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::OnConnect(
-        beast::error_code ec, tcp::resolver::results_type::endpoint_type ep)
+        error_code ec, net::ip::tcp::resolver::results_type::endpoint_type ep)
 {
     m_doOnConnectType(ConnectType::kConnect, ec);
     if (ec)
@@ -127,12 +115,10 @@ void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::On
             beast::bind_front_handler(&WebsocketClientSession::OnHandshake, shared_from_this()));
 }
 
-template <Do_ConnectTypeErrorCode_Concept DoOnConnectType = Do_ConnectTypeErrorCode_Concept,
-          Do_StringErrorCode_Concept DoOnRead = Fun_StringErrorCodeSession,
-          Do_ErrorCode_Concept DoOnWrite = Fun_ErrorCode,
-          Do_ErrorCode_Concept DoOnClose = Fun_ErrorCode>
+template <Do_ConnectTypeErrorCode_Concept DoOnConnectType, Do_StringErrorCode_Concept DoOnRead,
+          Do_ErrorCode_Concept DoOnWrite, Do_ErrorCode_Concept DoOnClose>
 void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::OnHandshake(
-        beast::error_code ec)
+        error_code ec)
 {
     m_doOnConnectType(ConnectType::kHandshake, ec);
     if (ec)
@@ -143,12 +129,10 @@ void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::On
                     beast::bind_front_handler(&WebsocketClientSession::OnRead, shared_from_this()));
 }
 
-template <Do_ConnectTypeErrorCode_Concept DoOnConnectType = Do_ConnectTypeErrorCode_Concept,
-          Do_StringErrorCode_Concept DoOnRead = Fun_StringErrorCodeSession,
-          Do_ErrorCode_Concept DoOnWrite = Fun_ErrorCode,
-          Do_ErrorCode_Concept DoOnClose = Fun_ErrorCode>
-void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::OnWrite(
-        beast::error_code ec, std::size_t)
+template <Do_ConnectTypeErrorCode_Concept DoOnConnectType, Do_StringErrorCode_Concept DoOnRead,
+          Do_ErrorCode_Concept DoOnWrite, Do_ErrorCode_Concept DoOnClose>
+void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::OnWrite(error_code ec,
+                                                                                      std::size_t)
 {
     m_doOnWrite(ec);
 
@@ -168,12 +152,10 @@ void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::On
     }
 }
 
-template <Do_ConnectTypeErrorCode_Concept DoOnConnectType = Do_ConnectTypeErrorCode_Concept,
-          Do_StringErrorCode_Concept DoOnRead = Fun_StringErrorCodeSession,
-          Do_ErrorCode_Concept DoOnWrite = Fun_ErrorCode,
-          Do_ErrorCode_Concept DoOnClose = Fun_ErrorCode>
-void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::OnRead(
-        beast::error_code ec, std::size_t)
+template <Do_ConnectTypeErrorCode_Concept DoOnConnectType, Do_StringErrorCode_Concept DoOnRead,
+          Do_ErrorCode_Concept DoOnWrite, Do_ErrorCode_Concept DoOnClose>
+void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::OnRead(error_code ec,
+                                                                                     std::size_t)
 {
     m_doOnRead(beast::buffer::to_string(m_buffer.data()), ec);
     if (ec)
@@ -184,12 +166,9 @@ void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::On
     DoRead();
 }
 
-template <Do_ConnectTypeErrorCode_Concept DoOnConnectType = Do_ConnectTypeErrorCode_Concept,
-          Do_StringErrorCode_Concept DoOnRead = Fun_StringErrorCodeSession,
-          Do_ErrorCode_Concept DoOnWrite = Fun_ErrorCode,
-          Do_ErrorCode_Concept DoOnClose = Fun_ErrorCode>
-void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::OnClose(
-        beast::error_code ec)
+template <Do_ConnectTypeErrorCode_Concept DoOnConnectType, Do_StringErrorCode_Concept DoOnRead,
+          Do_ErrorCode_Concept DoOnWrite, Do_ErrorCode_Concept DoOnClose>
+void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::OnClose(error_code ec)
 {
     m_doOnClose(ec);
     if (ec)
