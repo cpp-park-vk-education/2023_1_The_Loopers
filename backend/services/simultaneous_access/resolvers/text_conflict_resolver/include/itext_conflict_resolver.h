@@ -1,12 +1,12 @@
 #ifndef _ITEXTCONFLICTRESOLVER_H_
 #define _ITEXTCONFLICTRESOLVER_H_
 
+#include "global.h"
+
 #include <chrono>
 #include <memory>
 #include <string>
 #include <vector>
-
-#include "global.h"
 
 class IData;
 
@@ -22,9 +22,9 @@ struct TextAction
 
     bool operator==(const TextAction &other) const
     {
-        return type == other.type && figureId == other.figureId && endpoint == other.endpoint &&
-               time == other.time && posStart == other.posStart && posEnd == other.posEnd &&
-               data == other.data;
+        return std::tie(type, figureId, endpoint, time, posStart, posEnd, data) ==
+               std::tie(other.type, other.figureId, other.endpoint, other.time, other.posStart, other.posEnd,
+                        other.data);
     }
     bool operator!=(const TextAction &other) const
     {
@@ -42,4 +42,4 @@ public:
     }
 };
 
-#endif  // _ITEXTCONFLICTRESOLVER_H_
+#endif // _ITEXTCONFLICTRESOLVER_H_

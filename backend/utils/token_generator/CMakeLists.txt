@@ -1,10 +1,9 @@
-set(ENV{DB_ADAPTER} ${PROJECT_NAME}_db_adapter)
+add_library(${TOKEN_GENERATOR} STATIC "")
 
-add_library($ENV{DB_ADAPTER} SHARED "")
-
-target_sources($ENV{DB_ADAPTER} PRIVATE
+target_sources(${TOKEN_GENERATOR} PRIVATE
     "src/trash.cpp"
 )
+
 
 # set(PRIVATE_INCLUDE_DIRECTORIES
 # "${UTILS_DIR}/include"
@@ -15,7 +14,9 @@ set(PUBLIC_INCLUDE_DIRECTORIES
     "include"
 )
 
-target_include_directories($ENV{DB_ADAPTER} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
+target_include_directories(${TOKEN_GENERATOR} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
+
+# depends on some crypto library/ jwt token library
 
 # find_package(spdlog)
 
@@ -34,4 +35,4 @@ target_include_directories($ENV{DB_ADAPTER} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES}
 #     # "nlohmann_json::nlohmann_json"
 # )
 
-# target_link_libraries($ENV{BASE_SERVICE_CHASSISS} PRIVATE ${PRIVATE_LINK_LIBRARIES})
+# target_link_libraries(${BASE_SERVICE_CHASSISS} PRIVATE ${PRIVATE_LINK_LIBRARIES})

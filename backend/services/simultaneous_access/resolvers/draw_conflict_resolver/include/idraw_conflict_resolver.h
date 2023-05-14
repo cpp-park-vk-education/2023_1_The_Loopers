@@ -1,13 +1,14 @@
 #ifndef _IDRAWCONFLICTRESOLVER_H_
 #define _IDRAWCONFLICTRESOLVER_H_
 
+#include "global.h"
+
 #include <chrono>
 #include <map>
 #include <memory>
 #include <string>
+#include <tuple>
 #include <vector>
-
-#include "global.h"
 
 class IData;
 
@@ -21,8 +22,8 @@ struct DrawAction
 
     constexpr bool operator==(const DrawAction &other) const noexcept
     {
-        return type == other.type && figureId == other.figureId && endpoint == other.endpoint &&
-               time == other.time && data == other.data;
+        return std::tie(type, figureId, endpoint, time, data) ==
+               std::tie(other.type, other.figureId, other.endpoint, other.time, other.data);
     }
     bool operator!=(const DrawAction &other) const
     {
@@ -41,4 +42,4 @@ public:
     }
 };
 
-#endif  // _IDRAWCONFLICTRESOLVER_H_
+#endif // _IDRAWCONFLICTRESOLVER_H_

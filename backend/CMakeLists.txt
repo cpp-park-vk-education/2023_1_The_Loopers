@@ -1,4 +1,4 @@
-set(BACK_UTILS_DIR "${CMAKE_CURRENT_LIST_DIR}/utils")
+set(BACKEND_UTILS_DIR "${CMAKE_CURRENT_LIST_DIR}/utils")
 
 add_subdirectory(utils/token_generator)
 add_subdirectory(utils/authorizer)

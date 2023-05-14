@@ -1,8 +1,6 @@
-set(ENV{SERVER_NETWORK} ${PROJECT_NAME}_server_network)
+add_library(${SERVER_NETWORK} SHARED "")
 
-add_library($ENV{SERVER_NETWORK} SHARED "")
-
-target_sources($ENV{SERVER_NETWORK} PRIVATE
+target_sources(${SERVER_NETWORK} PRIVATE
     "service_session/src/iservice_session.cpp"
     "sessions_factory/src/isessions_factory.cpp"
 )
@@ -14,11 +12,11 @@ set(PUBLIC_LINK_LIBRARIES
 )
 
 set(PRIVATE_LINK_LIBRARIES
-    "$ENV{NETWORK_ADAPTER}"
+    "${NETWORK_ADAPTER}"
 )
 
-target_link_libraries($ENV{SERVER_NETWORK} PUBLIC ${PUBLIC_LINK_LIBRARIES})
-target_link_libraries($ENV{SERVER_NETWORK} PRIVATE ${PRIVATE_LINK_LIBRARIES})
+target_link_libraries(${SERVER_NETWORK} PUBLIC ${PUBLIC_LINK_LIBRARIES})
+target_link_libraries(${SERVER_NETWORK} PRIVATE ${PRIVATE_LINK_LIBRARIES})
 
 set(PUBLIC_INCLUDE_DIRECTORIES
     "${UTILS_DIR}/include"
@@ -30,4 +28,4 @@ set(PUBLIC_INCLUDE_DIRECTORIES
     "${Boost_INCLUDE_DIRS}"
 )
 
-target_include_directories($ENV{SERVER_NETWORK} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
+target_include_directories(${SERVER_NETWORK} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
