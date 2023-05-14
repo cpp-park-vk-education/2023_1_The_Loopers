@@ -10,10 +10,12 @@ namespace inklink::server_network
 class IListener
 {
 public:
+    explicit IListener(ISessionsFactory&) noexcept;
     virtual ~IListener() = default;
 
-    virtual void run() = 0;
-    virtual void async_run() = 0;
-    virtual void SetSessionFactory(ISessionsFactory*) = 0;
+    virtual void AsyncRun() = 0;
+
+protected:
+    ISessionsFactory& m_factory;
 };
 } // namespace inklink::server_network
