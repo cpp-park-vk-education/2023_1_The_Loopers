@@ -16,7 +16,7 @@ public:
     std::vector<IEdge*> getEdges();
 
 private:
-    void setPositionToVertexes();
+    void setPositionToVertexes(Position position);
 
     std::vector<IVertex*> m_uniqueVertexes;
     std::vector<IEdge*> m_edges;
