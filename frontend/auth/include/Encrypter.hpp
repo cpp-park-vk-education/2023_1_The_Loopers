@@ -4,7 +4,7 @@
 
 class Encrypter{
 public:
-    void setEncryptingKey(std::string key);
+    void setEncryptingKey(const std::string& key);
     std::string encryptString(const std::string& stringToEncrypt);
 
 private:
