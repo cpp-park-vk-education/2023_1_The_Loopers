@@ -1,6 +1,9 @@
 #pragma once
 
+namespace inklink::menu
+{
 class MenuModel
 {
-    // todo
+
 };
+} // namespace inklink::menu
