@@ -1,5 +1,5 @@
-#ifndef _READFILE_H_
-#define _READFILE_H_
+#ifndef _READ_FILE_H_
+#define _READ_FILE_H_
 
 #include <string>
 
@@ -9,4 +9,4 @@ public:
     std::string Get(std::string filePath);
 };
 
-#endif  // _READFILE_H_
+#endif  // _READ_FILE_H_
