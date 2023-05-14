@@ -12,6 +12,8 @@ struct Point
 class ObjectWithAttributes
 {
 public:
+    virtual ~ObjectWithAttributes() = default;
+
     virtual size_t getID() = 0;
     virtual void setID(std::size_t ID) = 0;
     virtual std::string serialize() = 0;
