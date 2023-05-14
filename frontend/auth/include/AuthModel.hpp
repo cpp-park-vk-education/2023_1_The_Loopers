@@ -5,6 +5,8 @@
 #include <memory>
 #include <string>
 
+namespace inklink::auth
+{
 class AuthModel
 {
 public:
@@ -24,3 +26,4 @@ private:
     std::string m_token;
     std::unique_ptr<Encrypter> m_encrypter;
 };
+} // namespace inklink::auth

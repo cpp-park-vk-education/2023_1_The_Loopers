@@ -2,7 +2,10 @@
 
 #include <string>
 
-class Encrypter{
+namespace inklink::auth
+{
+class Encrypter
+{
 public:
     void setEncryptingKey(const std::string& key);
     std::string encryptString(const std::string& stringToEncrypt);
@@ -10,3 +13,4 @@ public:
 private:
     std::string m_encryptingKey;
 };
+} // namespace inklink::auth
