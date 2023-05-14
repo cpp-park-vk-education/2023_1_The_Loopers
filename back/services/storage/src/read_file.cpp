@@ -3,7 +3,7 @@
 #include "read_file.h"
 
 
-std::string ReadFile::Get(std::string filePath)
+std::string ReadFile::Get(const std::string& filePath)
 {
     std::ifstream fileRead(filePath);
     std::string stringFile("");
@@ -15,13 +15,10 @@ std::string ReadFile::Get(std::string filePath)
         return "Uncorrect file path";
     }
 
-    while (!fileRead.eof())
+    while (fileRead >> buffer)
     {
-        fileRead >> buffer;
         stringFile = stringFile + buffer;
     }
-
-    fileRead.close();
 
     return stringFile;
 }

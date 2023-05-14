@@ -7,7 +7,7 @@
 class SaveChanges
 {
 public:
-    bool Save(std::string filePath, std::string changes);
+    bool Save(const std::string& filePath, const std::string& changes);
 };
 
 #endif  // _SAVE_CHANGES_H_

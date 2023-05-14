@@ -6,7 +6,7 @@
 class DeleteFile
 {
 public:
-    bool Delete(std::string filePath);
+    bool Delete(const std::string& filePath);
 };
 
 #endif  // _DELETE_FILE_H_

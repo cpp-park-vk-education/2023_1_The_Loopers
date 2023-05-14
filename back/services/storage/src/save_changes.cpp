@@ -3,7 +3,7 @@
 #include "save_changes.h"
 
 
-bool SaveChanges::Save(std::string filePath, std::string changes)
+bool SaveChanges::Save(const std::string& filePath, const std::string& changes)
 {
     std::ofstream file(filePath, std::ios::app);
 
@@ -14,7 +14,6 @@ bool SaveChanges::Save(std::string filePath, std::string changes)
 
 
     file << changes;
-    file.close();
 
     return true;
 }
