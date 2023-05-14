@@ -10,11 +10,7 @@ class IResolversFactory
 public:
     virtual ~IResolversFactory() = default;
 
-    virtual ITextConflictResolver* GetTextConflictResolver()
-    {
-    }
-    virtual IDrawConflictResolver* GetDrawConflictResolver()
-    {
-    }
+    virtual ITextConflictResolver* GetTextConflictResolver() = 0;
+    virtual IDrawConflictResolver* GetDrawConflictResolver() = 0;
 };
 } // namespace inklink::service_simultaneous_access

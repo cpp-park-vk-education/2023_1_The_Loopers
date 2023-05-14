@@ -14,19 +14,11 @@ class IEventsHandler
 public:
     virtual ~IEventsHandler() = default;
 
-    virtual void SetServiceChassis(std::shared_ptr<IBaseServiceChassis>)
-    {
-    }
+    virtual void SetServiceChassis(std::shared_ptr<IBaseServiceChassis>) = 0;
 
-    virtual void RemoveSubscriber(int, Endpoint)
-    {
-    }
-    virtual void AddSubscriber(int, Endpoint)
-    {
-    }
-    virtual void SendEvent(int, std::string)
-    {
-    }
+    virtual void RemoveSubscriber(int, Endpoint) = 0;
+    virtual void AddSubscriber(int, Endpoint) = 0;
+    virtual void SendEvent(int, std::string) = 0;
 
 protected:
     std::shared_ptr<IBaseServiceChassis> m_serviceChassis{std::make_shared<IBaseServiceChassis>()};

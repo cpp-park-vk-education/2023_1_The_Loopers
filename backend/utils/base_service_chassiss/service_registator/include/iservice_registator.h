@@ -15,19 +15,11 @@ class IServiceRegistrator
 public:
     virtual ~IServiceRegistrator() = default;
 
-    virtual void SetConnection(IClientSession*)
-    {
-    }
+    virtual void SetConnection(IClientSession*) = 0;
 
-    virtual bool Register(ServiceType, const Endpoint&)
-    {
-    }
-    virtual void Deregister(ServiceType, const Endpoint&)
-    {
-    }
-    virtual std::vector<Endpoint> GetEndpoints(ServiceType)
-    {
-    }
+    virtual bool Register(ServiceType, const Endpoint&) = 0;
+    virtual void Deregister(ServiceType, const Endpoint&) = 0;
+    virtual std::vector<Endpoint> GetEndpoints(ServiceType) = 0;
 
 protected:
     std::shared_ptr<IClientSession> m_cnnectionToRegistry;

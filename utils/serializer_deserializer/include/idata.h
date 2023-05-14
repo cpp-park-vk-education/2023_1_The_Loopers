@@ -9,12 +9,8 @@ class IData
 public:
     virtual ~IData() = default;
 
-    virtual std::string ToString(std::string)
-    {
-    }
+    virtual std::string ToString(std::string) = 0;
 
-    virtual std::string& operator[](std::string)
-    {
-    }
+    virtual std::string& operator[](std::string) = 0;
 };
 } // namespace inklink::serializer

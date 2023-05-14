@@ -30,31 +30,15 @@ class IInternalSessionsManager
 public:
     virtual ~IInternalSessionsManager() = default;
 
-    virtual void AddSession(const DocSessionDescriptor&, IServiceSession*)
-    {
-    }
-    virtual void RemoveSession(const DocSessionDescriptor&)
-    {
-    }
-    virtual void RemoveSession(IServiceSession*)
-    {
-    }
-    virtual IServiceSession* GetSession(const DocSessionDescriptor&)
-    {
-    }
-    virtual std::vector<IServiceSession*> GetSessionsByDocument(const std::string&)
-    {
-    }
-    virtual std::vector<IServiceSession*> GetSessionsByUser(const std::string&)
-    {
-    }
-    virtual IServiceSession* GetSession(const Endpoint&)
-    {
-    }
+    virtual void AddSession(const DocSessionDescriptor&, IServiceSession*) = 0;
+    virtual void RemoveSession(const DocSessionDescriptor&) = 0;
+    virtual void RemoveSession(IServiceSession*) = 0;
+    virtual IServiceSession* GetSession(const DocSessionDescriptor&) = 0;
+    virtual std::vector<IServiceSession*> GetSessionsByDocument(const std::string&) = 0;
+    virtual std::vector<IServiceSession*> GetSessionsByUser(const std::string&) = 0;
+    virtual IServiceSession* GetSession(const Endpoint&) = 0;
 
-    virtual DocSessionDescriptor GetDescriptor(const Endpoint&)
-    {
-    }
+    virtual DocSessionDescriptor GetDescriptor(const Endpoint&) = 0;
 
 protected:
     std::unordered_map<Endpoint, IServiceSession*> m_sessions;

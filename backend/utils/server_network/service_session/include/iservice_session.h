@@ -19,22 +19,12 @@ public:
     virtual void SetManager(IInternalSessionsManager*);
     virtual void SetAuthorizer(std::shared_ptr<IAuthorizer>);
     virtual void SetNetworkAdapter(std::shared_ptr<INetworkStreamAdapter>);
-    virtual Endpoint GetClientEndpoint()
-    {
-    }
+    virtual Endpoint GetClientEndpoint() = 0;
 
-    virtual void run()
-    {
-    }
-    virtual void run_async()
-    {
-    }
-    virtual std::string sync_read()
-    {
-    }
-    virtual void send(const std::string&)
-    {
-    }
+    virtual void run() = 0;
+    virtual void run_async() = 0;
+    virtual std::string sync_read() = 0;
+    virtual void send(const std::string&) = 0;
 
 protected:
     std::shared_ptr<IAuthorizer> m_authorizer;

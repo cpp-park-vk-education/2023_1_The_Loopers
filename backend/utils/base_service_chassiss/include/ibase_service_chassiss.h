@@ -22,50 +22,26 @@ class IBaseServiceChassis
 public:
     virtual ~IBaseServiceChassis() = default;
 
-    virtual void init(ServiceType, const std::string&, const Endpoint&)
-    {
-    }
+    virtual void init(ServiceType, const std::string&, const Endpoint&) = 0;
 
     // Service register
-    virtual bool Register(ServiceType, const Endpoint&)
-    {
-    }
-    virtual std::vector<Endpoint> GetEndpoints(ServiceType)
-    {
-    }
+    virtual bool Register(ServiceType, const Endpoint&) = 0;
+    virtual std::vector<Endpoint> GetEndpoints(ServiceType) = 0;
 
     // local registry
-    virtual void AddService(ServiceType, const Endpoint&)
-    {
-    }
-    virtual std::vector<Endpoint> GetServices(ServiceType)
-    {
-    }
+    virtual void AddService(ServiceType, const Endpoint&) = 0;
+    virtual std::vector<Endpoint> GetServices(ServiceType) = 0;
 
     // message broker
-    virtual void SetReqResCommonConnection(ICommonConnection*)
-    {
-    }
-    virtual void Request(const std::string&, const Endpoint&)
-    {
-    }
-    virtual void SetPubSubCommonConnection(ICommonConnection*)
-    {
-    }
-    virtual void Publish(int event, const std::string&, ServiceType = ServiceType::kNone)
-    {
-    }
-    virtual void Subscribe(int event, const Endpoint&)
-    {
-    }
+    virtual void SetReqResCommonConnection(ICommonConnection*) = 0;
+    virtual void Request(const std::string&, const Endpoint&) = 0;
+    virtual void SetPubSubCommonConnection(ICommonConnection*) = 0;
+    virtual void Publish(int event, const std::string&, ServiceType = ServiceType::kNone) = 0;
+    virtual void Subscribe(int event, const Endpoint&) = 0;
 
     // sessions manager
-    virtual void AddSession(DocSessionDescriptor, IServiceSession*)
-    {
-    }
-    virtual void RemoveSession(DocSessionDescriptor)
-    {
-    }
+    virtual void AddSession(DocSessionDescriptor, IServiceSession*) = 0;
+    virtual void RemoveSession(DocSessionDescriptor) = 0;
 
     std::shared_ptr<ILogger> m_logger{std::make_shared<ILogger>()};
     std::shared_ptr<IListener> m_listener{std::make_shared<IListener>()};

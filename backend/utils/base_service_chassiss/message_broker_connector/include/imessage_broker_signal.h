@@ -15,18 +15,12 @@ class IMessageBrokerSignal
 public:
     virtual ~IMessageBrokerSignal() = default;
 
-    virtual void SetCommonConnection(ICommonConnection*)
-    {
-    }
+    virtual void SetCommonConnection(ICommonConnection*) = 0;
 
     virtual void SetDoOnRead(std::function<void(const std::string&, IClientSession*)> = [](const std::string&,
-                                                                                           IClientSession*) {})
-    {
-    }
+                                                                                           IClientSession*) {}) = 0;
 
-    virtual void Request(const std::string&, const Endpoint&)
-    {
-    }
+    virtual void Request(const std::string&, const Endpoint&) = 0;
 
 protected:
     std::shared_ptr<ICommonConnection> m_connectionToMsgBroker;

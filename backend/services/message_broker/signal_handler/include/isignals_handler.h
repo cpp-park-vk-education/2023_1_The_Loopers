@@ -14,13 +14,9 @@ class ISignalsHandler
 public:
     virtual ~ISignalsHandler() = default;
 
-    virtual void SetServiceChassis(std::shared_ptr<IBaseServiceChassis>)
-    {
-    }
+    virtual void SetServiceChassis(std::shared_ptr<IBaseServiceChassis>) = 0;
 
-    virtual void Send(Endpoint, const std::string&)
-    {
-    }
+    virtual void Send(Endpoint, const std::string&) = 0;
 
 protected:
     std::shared_ptr<IBaseServiceChassis> m_serviceChassis;

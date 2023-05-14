@@ -11,8 +11,6 @@ class ISerializer
 public:
     virtual ~ISerializer() = default;
 
-    virtual IData* Serialize(const std::string&)
-    {
-    }
+    virtual IData* Serialize(const std::string&) = 0;
 };
 } // namespace inklink::serializer

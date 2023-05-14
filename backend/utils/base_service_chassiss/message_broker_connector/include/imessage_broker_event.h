@@ -15,22 +15,14 @@ class IMessageBrokerEvent
 public:
     virtual ~IMessageBrokerEvent() = default;
 
-    virtual void SetCommonConnection(ICommonConnection*)
-    {
-    }
+    virtual void SetCommonConnection(ICommonConnection*) = 0;
 
     virtual void SetDoOnNotified(std::function<void(int, const std::string&, IClientSession*)> =
-                                         [](int, const std::string&, IClientSession*) {})
-    {
-    }
+                                         [](int, const std::string&, IClientSession*) {}) = 0;
 
-    virtual void Publish(int event, const std::string&, ServiceType = ServiceType::kNone)
-    {
-    }
+    virtual void Publish(int event, const std::string&, ServiceType = ServiceType::kNone) = 0;
 
-    virtual void Subscribe(int event, const Endpoint&)
-    {
-    }
+    virtual void Subscribe(int event, const Endpoint&) = 0;
 
 protected:
     std::shared_ptr<ICommonConnection> m_connectionToMsgBroker;

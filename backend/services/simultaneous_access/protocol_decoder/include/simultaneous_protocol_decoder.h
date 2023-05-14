@@ -12,17 +12,9 @@ namespace inklink::service_simultaneous_access
 class SimultaneousProtocolDecoder
 {
 public:
-    ActionType GetActionType(IData*)
-    {
-    }
-    TextAction GetTextAction(IData*)
-    {
-    }
-    DrawAction GetDrawAction(IData*)
-    {
-    }
-    bool IsValid(Idata*)
-    {
-    }
+    ActionType GetActionType(IData*) = 0;
+    TextAction GetTextAction(IData*) = 0;
+    DrawAction GetDrawAction(IData*) = 0;
+    bool IsValid(Idata*) = 0;
 };
 } // namespace inklink::service_simultaneous_access

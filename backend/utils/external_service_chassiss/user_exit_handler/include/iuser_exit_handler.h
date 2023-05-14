@@ -12,12 +12,8 @@ class IUserExitHandler
 public:
     virtual ~IExternalServiceChassis() = default;
 
-    virtual void SetSessionManager(std::shared_ptr<IInternalSessionsManager>)
-    {
-    }
-    virtual void DoOnUserExit(const std::string&)
-    {
-    }
+    virtual void SetSessionManager(std::shared_ptr<IInternalSessionsManager>) = 0;
+    virtual void DoOnUserExit(const std::string&) = 0;
 
 protected:
     std::shared_ptr<IInternalSessionsManager> m_sessionManger;

@@ -25,9 +25,7 @@ public:
     virtual void SetAuthorizer(std::shared_ptr<IAuthorizer>);
     virtual void SetNetworkAdapter(std::shared_ptr<INetworkStreamAdapter>);
 
-    virtual IServiceSession* GetSession(boost::asio::ip::tcp::socket&&)
-    {
-    }
+    virtual IServiceSession* GetSession(boost::asio::ip::tcp::socket&&) = 0;
 
 protected:
     std::shared_ptr<IAuthorizer> m_authorizer;

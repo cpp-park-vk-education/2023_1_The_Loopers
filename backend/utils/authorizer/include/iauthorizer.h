@@ -12,12 +12,8 @@ class IAuthorizer
 public:
     virtual ~IAuthorizer() = default;
 
-    virtual void SetTokenValidator(ITokenValidator*)
-    {
-    }
+    virtual void SetTokenValidator(ITokenValidator*) = 0;
 
-    virtual bool IsAuthenticated(const std::string&)
-    {
-    }
+    virtual bool IsAuthenticated(const std::string&) = 0;
 };
 } // namespace inklink::authorizer
