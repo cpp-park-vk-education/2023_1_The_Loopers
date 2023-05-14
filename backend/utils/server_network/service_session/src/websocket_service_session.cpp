@@ -1,31 +1,31 @@
 #include "websocket_service_session.h"
 
+#include <algorithm>
 #include <internal_sessions_manager.h>
 
-#include <algorithm>
-
-namespace inklink_service_session
+namespace inklink::server_network
 {
-template <Fun_StringErrorCodeSession DoOnRead, Do_ErrorCodeAndSession_Concept DoOnAccept,
+namespace beast = boost::beast;
+
+template <Do_StringErrorCodeSession_Concept DoOnRead, Do_ErrorCodeAndSession_Concept DoOnAccept,
           Do_ErrorCode_Concept DoOnWrite>
 WebsocketServiceSession<DoOnRead, DoOnAccept, DoOnWrite>::WebsocketServiceSession(
-        net::ip::tcp::socket &&socket, DoOnRead doOnRead, DoOnAccept doOnAccept,
-        DoOnWrite doOnWrite)
-        : IServiceSession(), m_doOnRead{doOnRead}, m_doOnAccept{doOnAccept}, m_doOnWrite{doOnWrite}
+        std::shared_ptr<InternalSessionsManager> manager, std::shared_ptr<IAuthorizer> auth, tcp::socket &&socket,
+        DoOnRead doOnRead, DoOnAccept doOnAccept, DoOnWrite doOnWrite) noexcept
+        : IServiceSession(manager, auth), m_endpoint{.address = socket.remote_endpoint().address().to_string(),
+                                                     .port = socket.remote_endpoint().port()},
+          m_ws(std::move(socket)), m_doOnRead{doOnRead}, m_doOnAccept{doOnAccept}, m_doOnWrite{doOnWrite}
 {
-    m_endpoint.address = socket.remote_endpoint().address().to_string();
-    m_endpoint.port = socket.remote_endpoint().port();
-    m_ws = websocket::stream<tcp::socket>(std::move(socket)),
 }
 
-template <Fun_StringErrorCodeSession DoOnRead, Do_ErrorCodeAndSession_Concept DoOnAccept,
+template <Do_StringErrorCodeSession_Concept DoOnRead, Do_ErrorCodeAndSession_Concept DoOnAccept,
           Do_ErrorCode_Concept DoOnWrite>
 WebsocketServiceSession<DoOnRead, DoOnAccept, DoOnWrite>::~WebsocketServiceSession()
 {
     m_manager->RemoveSession(this);
 }
 
-template <Fun_StringErrorCodeSession DoOnRead, Do_ErrorCodeAndSession_Concept DoOnAccept,
+template <Do_StringErrorCodeSession_Concept DoOnRead, Do_ErrorCodeAndSession_Concept DoOnAccept,
           Do_ErrorCode_Concept DoOnWrite>
 void WebsocketServiceSession<DoOnRead, DoOnAccept, DoOnWrite>::RunAsync()
 {
@@ -34,10 +34,10 @@ void WebsocketServiceSession<DoOnRead, DoOnAccept, DoOnWrite>::RunAsync()
     // for single-threaded contexts, this example code is written to be
     // thread-safe by default.
     net::dispatch(m_ws.get_executor(),
-                  beast::bind_front_handler(&WebsocketServiceSession::on_run, shared_from_this()));
+                  beast::bind_front_handler(&WebsocketServiceSession::OnRun, this->shared_from_this()));
 }
 
-template <Fun_StringErrorCodeSession DoOnRead, Do_ErrorCodeAndSession_Concept DoOnAccept,
+template <Do_StringErrorCodeSession_Concept DoOnRead, Do_ErrorCodeAndSession_Concept DoOnAccept,
           Do_ErrorCode_Concept DoOnWrite>
 void WebsocketServiceSession<DoOnRead, DoOnAccept, DoOnWrite>::OnRun()
 {
@@ -48,15 +48,14 @@ void WebsocketServiceSession<DoOnRead, DoOnAccept, DoOnWrite>::OnRun()
     m_ws.set_option(websocket::stream_base::decorator(
             [](websocket::response_type &res)
             {
-                res.set(http::field::server, std::string(BOOST_BEAST_VERSION_STRING) +
-                                                     " inklink-simultaneous-access-service");
+                res.set(beast::http::field::server,
+                        std::string(BOOST_BEAST_VERSION_STRING) + " inklink-simultaneous-access-service");
             }));
     // Accept the websocket handshake
-    m_ws.async_accept(
-            beast::bind_front_handler(&WebsocketServiceSession::OnAccept, shared_from_this()));
+    m_ws.async_accept(beast::bind_front_handler(&WebsocketServiceSession::OnAccept, this->shared_from_this()));
 }
 
-template <Fun_StringErrorCodeSession DoOnRead, Do_ErrorCodeAndSession_Concept DoOnAccept,
+template <Do_StringErrorCodeSession_Concept DoOnRead, Do_ErrorCodeAndSession_Concept DoOnAccept,
           Do_ErrorCode_Concept DoOnWrite>
 void WebsocketServiceSession<DoOnRead, DoOnAccept, DoOnWrite>::Send(const std::string &message)
 {
@@ -66,18 +65,18 @@ void WebsocketServiceSession<DoOnRead, DoOnAccept, DoOnWrite>::Send(const std::s
 
     // Are we already writing?
     if (m_queue.size() > 1)
+    {
         return;
+    }
 
     // We are not currently writing, so send this immediately
-    m_bufferSending = net::buffer(*m_queue.front());
-    m_ws.async_write(m_bufferSending, beast::bind_front_handler(&WebsocketServiceSession::OnWrite,
-                                                                shared_from_this()));
+    m_ws.async_write(net::buffer(*m_queue.front()),
+                     beast::bind_front_handler(&WebsocketServiceSession::OnWrite, this->shared_from_this()));
 }
 
-template <Fun_StringErrorCodeSession DoOnRead, Do_ErrorCodeAndSession_Concept DoOnAccept,
+template <Do_StringErrorCodeSession_Concept DoOnRead, Do_ErrorCodeAndSession_Concept DoOnAccept,
           Do_ErrorCode_Concept DoOnWrite>
-void WebsocketServiceSession<DoOnRead, DoOnAccept, DoOnWrite>::OnAccept(
-        boost::system::error_code ec)
+void WebsocketServiceSession<DoOnRead, DoOnAccept, DoOnWrite>::OnAccept(boost::system::error_code ec)
 {
     m_doOnAccept(ec, this);
 
@@ -91,19 +90,17 @@ void WebsocketServiceSession<DoOnRead, DoOnAccept, DoOnWrite>::OnAccept(
     DoRead();
 }
 
-template <Fun_StringErrorCodeSession DoOnRead, Do_ErrorCodeAndSession_Concept DoOnAccept,
+template <Do_StringErrorCodeSession_Concept DoOnRead, Do_ErrorCodeAndSession_Concept DoOnAccept,
           Do_ErrorCode_Concept DoOnWrite>
 void WebsocketServiceSession<DoOnRead, DoOnAccept, DoOnWrite>::DoRead()
 {
     // Read a message into our buffer
-    ws_.async_read(buffer_,
-                   beast::bind_front_handler(&WebsocketServiceSession::OnRead, shared_from_this()));
+    m_ws.async_read(m_buffer, beast::bind_front_handler(&WebsocketServiceSession::OnRead, this->shared_from_this()));
 }
 
-template <Fun_StringErrorCodeSession DoOnRead, Do_ErrorCodeAndSession_Concept DoOnAccept,
+template <Do_StringErrorCodeSession_Concept DoOnRead, Do_ErrorCodeAndSession_Concept DoOnAccept,
           Do_ErrorCode_Concept DoOnWrite>
-void WebsocketServiceSession<DoOnRead, DoOnAccept, DoOnWrite>::OnRead(boost::system::error_code ec,
-                                                                      std::size_t)
+void WebsocketServiceSession<DoOnRead, DoOnAccept, DoOnWrite>::OnRead(boost::system::error_code ec, std::size_t)
 {
     m_doOnRead(beast::buffers_to_string(m_buffer.data()), ec, this);
 
@@ -123,12 +120,11 @@ void WebsocketServiceSession<DoOnRead, DoOnAccept, DoOnWrite>::OnRead(boost::sys
     DoRead();
 }
 
-template <Fun_StringErrorCodeSession DoOnRead, Do_ErrorCodeAndSession_Concept DoOnAccept,
+template <Do_StringErrorCodeSession_Concept DoOnRead, Do_ErrorCodeAndSession_Concept DoOnAccept,
           Do_ErrorCode_Concept DoOnWrite>
-void WebsocketServiceSession<DoOnRead, DoOnAccept, DoOnWrite>::OnWrite(boost::system::error_code ec,
-                                                                       std::size_t)
+void WebsocketServiceSession<DoOnRead, DoOnAccept, DoOnWrite>::OnWrite(boost::system::error_code ec, std::size_t)
 {
-    m_DoOnWrite(ec);
+    m_doOnWrite(ec);
     if (ec)
     {
         return;
@@ -140,11 +136,8 @@ void WebsocketServiceSession<DoOnRead, DoOnAccept, DoOnWrite>::OnWrite(boost::sy
     // Send the next message if any
     if (!m_queue.empty())
     {
-        m_bufferSending = net::buffer(*m_queue.front());
-        m_ws.async_write(
-                m_bufferSending,
-                beast::bind_front_handler(&WebsocketServiceSession::OnWrite, shared_from_this()));
+        m_ws.async_write(net::buffer(*m_queue.front()),
+                         beast::bind_front_handler(&WebsocketServiceSession::OnWrite, this->shared_from_this()));
     }
 }
-
-}  // namespace inklink_service_session
+} // namespace inklink::server_network
