@@ -25,7 +25,7 @@ public:
 
 protected:
     std::shared_ptr<IClientSession> m_session;
-    bool connected{false};
+    bool m_connected{false};
     ServiceType m_serviceType;
 };
 } // namespace inklink::base_service_chassis
