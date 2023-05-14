@@ -25,15 +25,17 @@ class ISessionsFactory
     using tcp = boost::asio::ip::tcp;
 
 public:
+    explicit ISessionsFactory(std::shared_ptr<IInternalSessionsManager> manager,
+                              std::shared_ptr<IAuthorizer> auth) noexcept
+            : m_manager{std::move(manager)}, m_authorizer{std::move(auth)}
+    {
+    }
     virtual ~ISessionsFactory() = default;
-
-    virtual void SetManager(IInternalSessionsManager*);
-    virtual void SetAuthorizer(std::shared_ptr<IAuthorizer>);
 
     virtual IServiceSession* GetSession(tcp::socket&&) = 0;
 
 protected:
+    std::shared_ptr<IInternalSessionsManager> m_manager;
     std::shared_ptr<IAuthorizer> m_authorizer;
-    IInternalSessionsManager* m_manager;
 };
 } // namespace inklink::server_network

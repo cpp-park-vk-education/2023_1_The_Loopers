@@ -13,10 +13,14 @@ namespace inklink::external_service_chassis
 class IUserExitHandler
 {
     using IInternalSessionsManager = base_service_chassis::IInternalSessionsManager;
-public:
-    virtual ~IExternalServiceChassis() = default;
 
-    virtual void SetSessionManager(std::shared_ptr<IInternalSessionsManager>) = 0;
+public:
+    explicit IUserExitHandler(std::shared_ptr<IInternalSessionsManager> manager) noexcept
+            : m_sessionManger{std::move(manager)}
+    {
+    }
+    virtual ~IUserExitHandler() = default;
+
     virtual void DoOnUserExit(const std::string&) = 0;
 
 protected:
