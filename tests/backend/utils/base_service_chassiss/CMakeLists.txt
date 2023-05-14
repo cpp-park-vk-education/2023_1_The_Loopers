@@ -10,7 +10,7 @@ target_sources(${TEST_EXECUTABLE} PRIVATE
 set(PRIVATE_LINK_LIBRARIES
     "GTest::gtest_main"
     "GTest::gmock_main"
-    "$ENV{BASE_SERVICE_CHASSISS}"
+    "${BASE_SERVICE_CHASSISS}"
 )
 
 target_link_libraries(${TEST_EXECUTABLE} PRIVATE ${PRIVATE_LINK_LIBRARIES})

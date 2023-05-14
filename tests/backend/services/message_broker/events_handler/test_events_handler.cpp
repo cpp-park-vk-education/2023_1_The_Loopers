@@ -1,7 +1,13 @@
+#include "ievents_handler.h"
+
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
+#include <memory>
 
-#include "isignals_handler.h"
+using namespace inklink;
+using namespace inklink::service_message_broker;
+using IServiceSession = server_network::IServiceSession;
+using IBaseServiceChassis = base_service_chassis::IBaseServiceChassis;
 
 class ServiceSession_Fake : public IServiceSession
 {
@@ -13,6 +19,12 @@ public:
     Endpoint GetClientEndpoint() override
     {
         return m_endpoint;
+    }
+    void RunAsync() override
+    {
+    }
+    void Send(const std::string&) override
+    {
     }
 
 private:
@@ -29,40 +41,57 @@ public:
     MOCK_METHOD(void, send, (const std::string&), (override));
 };
 
-class SignalsHandlerTest : public ::testing::Test
+class EventsHandlerTest : public ::testing::Test
 {
 protected:
     void SetUp() override
     {
-        handler = std::make_unique<ISignalsHandler>();
+        handler = std::make_unique<IEventsHandler>();
 
         sessionMock = std::make_shared<IServiceSessionMock>(realEndpoint);
 
         m_chassiss = std::make_shared<IBaseServiceChassis>();
         m_chassiss->m_internalSessionsManager->AddSession({"d1", "u1"}, sessionMock.get());
         handler->SetServiceChassis(m_chassiss);
+
+        int eventId = 1;
+        handler->AddSubscriber(eventId, realEndpoint);
     }
 
     Endpoint realEndpoint{.address = "127.0.0.1", .port = 8080};
-    std::unique_ptr<ISignalsHandler> handler;
+    std::unique_ptr<IEventsHandler> handler;
     std::shared_ptr<IServiceSessionMock> sessionMock;
     std::shared_ptr<IBaseServiceChassis> m_chassiss;
 };
 
-TEST_F(SignalsHandlerTest, Send)
+TEST_F(EventsHandlerTest, SendEvent)
 {
-    std::string msg = "Event Data";
+    int eventId = 1;
+    std::string eventData = "Event Data";
 
     EXPECT_CALL(*sessionMock, send(testing::_)).Times(1);
 
-    handler->Send(realEndpoint, msg);
+    handler->SendEvent(eventId, eventData);
 }
 
-TEST_F(SignalsHandlerTest, SendToNonExisting)
+TEST_F(EventsHandlerTest, SendEventWithNoSubscribers)
 {
-    std::string msg = "Event Data";
+    int eventId = 999;
+    std::string eventData = "Event Data";
 
     EXPECT_CALL(*sessionMock, send(testing::_)).Times(0);
 
-    handler->Send({.address = "NonExisting", .port = 8080}, msg);
+    handler->SendEvent(eventId, eventData);
+}
+
+TEST_F(EventsHandlerTest, SendEventAfterRemovalOfSubscription)
+{
+    int eventId = 1;
+    handler->RemoveSubscriber(eventId, realEndpoint);
+
+    std::string eventData = "Event Data";
+
+    EXPECT_CALL(*sessionMock, send(testing::_)).Times(0);
+
+    handler->SendEvent(eventId, eventData);
 }

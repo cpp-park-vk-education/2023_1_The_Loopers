@@ -1,8 +1,13 @@
-#include <gtest/gtest.h>
+#include "iinternal_sessions_manager.h"
+#include "iservice_session.h"
 
+#include <gtest/gtest.h>
 #include <memory>
 
-#include "iinternal_sessions_manager.h"
+using namespace inklink;
+using IServiceSession = server_network::IServiceSession;
+using IInternalSessionsManager = base_service_chassis::IInternalSessionsManager;
+using DocSessionDescriptor = base_service_chassis::DocSessionDescriptor;
 
 class ServiceSession_Fake : public IServiceSession
 {
@@ -14,6 +19,12 @@ public:
     Endpoint GetClientEndpoint() override
     {
         return m_endpoint;
+    }
+    void RunAsync() override
+    {
+    }
+    void Send(const std::string&) override
+    {
     }
 
 private:
@@ -27,11 +38,10 @@ protected:
     {
         sessionsManager = std::make_unique<IInternalSessionsManager>();
 
-        std::vector<DocSessionDescriptor> docs{
-                {.documentId = "d1", .login = "u1"},
-                {.documentId = "d2", .login = "u1"},
-                {.documentId = "d3", .login = "u1"},
-                {.documentId = "d1", .login = "u2"}};
+        std::vector<DocSessionDescriptor> docs{{.documentId = "d1", .login = "u1"},
+                                               {.documentId = "d2", .login = "u1"},
+                                               {.documentId = "d3", .login = "u1"},
+                                               {.documentId = "d1", .login = "u2"}};
         std::vector<Endpoint> endpoints{{.address = "127.0.0.1", .port = 80},
                                         {.address = "127.0.0.1", .port = 90},
                                         {.address = "127.0.0.1", .port = 1000},
@@ -51,18 +61,15 @@ namespace add_existing
 {
 TEST_F(SessionsManagerTest, AddExistingSession)
 {
-    DocSessionDescriptor descriptor{.documentId = "different",
-                                                              .login = "u1"};
+    DocSessionDescriptor descriptor{.documentId = "different", .login = "u1"};
 
-    EXPECT_THROW({ sessionsManager->AddSession(descriptor, sessions[0].get()); },
-                 std::runtime_error);
+    EXPECT_THROW({ sessionsManager->AddSession(descriptor, sessions[0].get()); }, std::runtime_error);
 }
 
 TEST_F(SessionsManagerTest, AddSessionWithDuplicatedEndpoint)
 {
     Endpoint existingEndpoint{sessions[0]->GetClientEndpoint()};
-    DocSessionDescriptor descriptor{.documentId = "different",
-                                                              .login = "u1"};
+    DocSessionDescriptor descriptor{.documentId = "different", .login = "u1"};
     IServiceSession* session = new ServiceSession_Fake(existingEndpoint);
 
     EXPECT_THROW(sessionsManager->AddSession(descriptor, session), std::runtime_error);
@@ -75,12 +82,11 @@ TEST_F(SessionsManagerTest, AddSessionWithDuplicatedDescriptor)
     DocSessionDescriptor descriptor{.documentId = "d1", .login = "u1"};
     IServiceSession* session = new ServiceSession_Fake({"new ip", 8080});
 
-    EXPECT_THROW({ sessionsManager->AddSession(descriptor, sessions[0].get()); },
-                 std::runtime_error);
+    EXPECT_THROW({ sessionsManager->AddSession(descriptor, sessions[0].get()); }, std::runtime_error);
 
     delete session;
 }
-}  // namespace add_existing
+} // namespace add_existing
 
 namespace get_good
 {
@@ -225,7 +231,7 @@ TEST_F(SessionsManagerTest, GetSessionsByDocAfterRemovalBySessionPointer)
     ASSERT_EQ(actual.size(), 1);
     EXPECT_EQ(expected, actual);
 }
-}  // namespace get_good
+} // namespace get_good
 
 namespace test_delete
 {
@@ -249,8 +255,7 @@ TEST_F(SessionsManagerTest, DoubleRemovalByPointer)
 
 TEST_F(SessionsManagerTest, DeleteNonExistingByDescriptor)
 {
-    DocSessionDescriptor descriptor{.documentId = "non existing",
-                                                              .login = "u1"};
+    DocSessionDescriptor descriptor{.documentId = "non existing", .login = "u1"};
     EXPECT_NO_THROW(sessionsManager->RemoveSession(descriptor));
 }
 
@@ -260,7 +265,7 @@ TEST_F(SessionsManagerTest, DoubleRemovalByDescriptor)
     sessionsManager->RemoveSession(descriptor);
     EXPECT_NO_THROW(sessionsManager->RemoveSession(descriptor));
 }
-}  // namespace test_delete
+} // namespace test_delete
 
 namespace no_session
 {
@@ -274,8 +279,7 @@ TEST_F(SessionsManagerTest, NoSessionByEndpoint)
 
 TEST_F(SessionsManagerTest, NoSessionsByDocDescriptor)
 {
-    DocSessionDescriptor descriptor{.documentId = "non existing",
-                                                              .login = "u1"};
+    DocSessionDescriptor descriptor{.documentId = "non existing", .login = "u1"};
 
     IServiceSession* expected = nullptr;
     IServiceSession* actual = sessionsManager->GetSession(descriptor);
@@ -385,4 +389,4 @@ TEST_F(SessionsManagerTest, NoSessionsByDocAfterRemovalBySessionPointer)
 
     EXPECT_EQ(actual.size(), expected.size());
 }
-}  // namespace no_session
+} // namespace no_session
