@@ -2,16 +2,19 @@
 
 #include "Encrypter.hpp"
 
+#include <memory>
 #include <string>
 
+namespace inklink::auth
+{
 class AuthModel
 {
 public:
     bool createUser(const std::string& login, const std::string& password);
     bool login(const std::string& login, const std::string& password);
     void exit();
-    std::string getLogin();
-    std::string getToken();
+    const std::string getLogin() const;
+    const std::string getToken() const;
 
 protected:
     void setLogin(const std::string& login);
@@ -21,5 +24,6 @@ protected:
 private:
     std::string m_login;
     std::string m_token;
-    Encrypter* m_encrypter;
+    std::unique_ptr<Encrypter> m_encrypter;
 };
+} // namespace inklink::auth

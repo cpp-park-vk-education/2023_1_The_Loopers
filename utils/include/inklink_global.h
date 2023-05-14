@@ -56,13 +56,14 @@ enum class ResolverActionType
 };
 } // namespace inklink
 
+// it should not give multiple definitions. The problem is that it is very hard to do it differently
 template <>
 struct std::hash<inklink::Endpoint>
 {
-    size_t operator()(const inklink::Endpoint& endpoint)
+    inline std::size_t operator()(const inklink::Endpoint& endpoint)
     {
-        const size_t h1 = std::hash<std::string>{}(endpoint.address);
-        const size_t h2 = std::hash<unsigned short>{}(endpoint.port);
+        const std::size_t h1 = std::hash<std::string>{}(endpoint.address);
+        const std::size_t h2 = std::hash<unsigned short>{}(endpoint.port);
         return h1 ^ (h2 << 1);
     }
 };
