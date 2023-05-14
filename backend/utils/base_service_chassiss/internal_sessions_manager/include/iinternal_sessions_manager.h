@@ -1,12 +1,12 @@
-#ifndef _IINTERNALSESSIONSMANAGER_H_
-#define _IINTERNALSESSIONSMANAGER_H_
+#pragma once
+
+#include "global.h"
+#include "iservice_session.h"
 
 #include <string>
 #include <unordered_map>
 #include <vector>
 
-#include "global.h"
-#include "iservice_session.h"
 
 struct DocSessionDescriptor
 {
@@ -62,5 +62,3 @@ protected:
     std::unordered_map<DocSessionDescriptor, Endpoint> m_endpointByDescriptor;
     std::unordered_map<Endpoint, DocSessionDescriptor> m_DescriptorByEndpoint;
 };
-
-#endif  // _IINTERNALSESSIONSMANAGER_H_

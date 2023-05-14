@@ -1,5 +1,4 @@
-#ifndef _GLOBAL_H_
-#define _GLOBAL_H_
+#pragma once
 
 #include <functional>
 #include <string>
@@ -71,5 +70,3 @@ enum class ResolverActionType
     kSelect,
     kDeselect
 };
-
-#endif  // _GLOBAL_H_

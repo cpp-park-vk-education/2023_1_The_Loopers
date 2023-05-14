@@ -1,10 +1,10 @@
-#ifndef _ILISTENER_H_
-#define _ILISTENER_H_
+#pragma once
+
+#include "isessions_factory.h"
 
 #include <memory>
 #include <string>
 
-#include "isessions_factory.h"
 
 class IListener
 {
@@ -21,5 +21,3 @@ public:
     {
     }
 };
-
-#endif  // _ILISTENER_H_

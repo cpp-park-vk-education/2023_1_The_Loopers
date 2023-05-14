@@ -1,12 +1,12 @@
-#ifndef _IEVENTSHANDLER_H_
-#define _IEVENTSHANDLER_H_
+#pragma once
+
+#include "global.h"
+#include "ibase_service_chassiss.h"
 
 #include <memory>
 #include <unordered_map>
 #include <vector>
 
-#include "global.h"
-#include "ibase_service_chassiss.h"
 
 class IEventsHandler
 {
@@ -32,5 +32,3 @@ protected:
 
     std::unordered_map<int, std::vector<Endpoint>> m_subscribers;
 };
-
-#endif  // _IEVENTSHANDLER_H_

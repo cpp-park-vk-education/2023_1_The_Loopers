@@ -1,13 +1,13 @@
-#ifndef _IMESSAGEBROKEREVENT_H_
-#define _IMESSAGEBROKEREVENT_H_
+#pragma once
+
+#include "global.h"
+#include "iclient_session.h"
+#include "icommon_connection.h"
 
 #include <functional>
 #include <memory>
 #include <string>
 
-#include "global.h"
-#include "iclient_session.h"
-#include "icommon_connection.h"
 
 class IMessageBrokerEvent
 {
@@ -35,5 +35,3 @@ protected:
     std::shared_ptr<ICommonConnection> m_connectionToMsgBroker;
     std::function<void(int, const std::string&, IClientSession*)> m_doOnNotified;
 };
-
-#endif  // _IMESSAGEBROKEREVENT_H_

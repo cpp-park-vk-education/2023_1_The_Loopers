@@ -1,5 +1,4 @@
-#ifndef _IDRAWCONFLICTRESOLVER_H_
-#define _IDRAWCONFLICTRESOLVER_H_
+#pragma once
 
 #include "global.h"
 
@@ -41,5 +40,3 @@ public:
         return {};
     }
 };
-
-#endif // _IDRAWCONFLICTRESOLVER_H_

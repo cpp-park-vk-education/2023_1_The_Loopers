@@ -1,10 +1,10 @@
-#ifndef _ISERVICESESSION_H_
-#define _ISERVICESESSION_H_
+#pragma once
+
+#include "global.h"
 
 #include <memory>
 #include <string>
 
-#include "global.h"
 
 class IAuthorizer;
 class IInternalSessionsManager;
@@ -40,5 +40,3 @@ protected:
     IInternalSessionsManager* m_manager;
     std::shared_ptr<INetworkStreamAdapter> m_adapter;
 };
-
-#endif  // _ISERVICESESSION_H_

@@ -1,11 +1,11 @@
-#ifndef _ICOMMONCONNECTION_H_
-#define _ICOMMONCONNECTION_H_
+#pragma once
+
+#include "global.h"
+#include "iclient_session.h"
 
 #include <memory>
 #include <string>
 
-#include "global.h"
-#include "iclient_session.h"
 
 class ICommonConnection
 {
@@ -29,5 +29,3 @@ protected:
     bool connected{false};
     ServiceType m_serviceType;
 };
-
-#endif  // _ICOMMONCONNECTION_H_

@@ -1,12 +1,12 @@
-#ifndef _ISIGNALSHANDLER_H_
-#define _ISIGNALSHANDLER_H_
+#pragma once
+
+#include "global.h"
+#include "ibase_service_chassiss.h"
 
 #include <memory>
 #include <unordered_map>
 #include <vector>
 
-#include "global.h"
-#include "ibase_service_chassiss.h"
 
 class ISignalsHandler
 {
@@ -24,5 +24,3 @@ public:
 protected:
     std::shared_ptr<IBaseServiceChassis> m_serviceChassis;
 };
-
-#endif  // _ISIGNALSHANDLER_H_

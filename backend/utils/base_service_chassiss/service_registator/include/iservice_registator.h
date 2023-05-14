@@ -1,30 +1,33 @@
-#ifndef _ISERVICEREGISTRATOR_H_
-#define _ISERVICEREGISTRATOR_H_
+#pragma once
+
+#include "global.h"
 
 #include <memory>
 #include <string>
 #include <vector>
 
-#include "global.h"
 
 class IClientSession;
 
-class IServiceRegistrator {
-  public:
+class IServiceRegistrator
+{
+public:
     virtual ~IServiceRegistrator() = default;
 
-    virtual void SetConnection(IClientSession*) {
+    virtual void SetConnection(IClientSession*)
+    {
     }
 
-    virtual bool Register(ServiceType,const Endpoint&) {
+    virtual bool Register(ServiceType, const Endpoint&)
+    {
     }
-    virtual void Deregister(ServiceType,const Endpoint&) {
+    virtual void Deregister(ServiceType, const Endpoint&)
+    {
     }
-    virtual std::vector<Endpoint> GetEndpoints(ServiceType) {
+    virtual std::vector<Endpoint> GetEndpoints(ServiceType)
+    {
     }
 
-  protected:
+protected:
     std::shared_ptr<IClientSession> m_cnnectionToRegistry;
 };
-
-#endif  // _ISERVICEREGISTRATOR_H_

@@ -1,13 +1,13 @@
-#ifndef _IMESSAGEBROKERSIGNAL_H_
-#define _IMESSAGEBROKERSIGNAL_H_
+#pragma once
+
+#include "global.h"
+#include "iclient_session.h"
+#include "icommon_connection.h"
 
 #include <functional>
 #include <memory>
 #include <string>
 
-#include "global.h"
-#include "iclient_session.h"
-#include "icommon_connection.h"
 
 class IMessageBrokerSignal
 {
@@ -18,8 +18,8 @@ public:
     {
     }
 
-    virtual void SetDoOnRead(std::function<void(const std::string&, IClientSession*)> =
-                                     [](const std::string&, IClientSession*) {})
+    virtual void SetDoOnRead(std::function<void(const std::string&, IClientSession*)> = [](const std::string&,
+                                                                                           IClientSession*) {})
     {
     }
 
@@ -30,5 +30,3 @@ public:
 protected:
     std::shared_ptr<ICommonConnection> m_connectionToMsgBroker;
 };
-
-#endif  // _IMESSAGEBROKERSIGNAL_H_

@@ -1,16 +1,16 @@
-#ifndef _SIMULTANEOUSPROTOCOLDECODER_H_
-#define _SIMULTANEOUSPROTOCOLDECODER_H_
-
-#include <memory>
-#include <string>
+#pragma once
 
 #include "idata.h"
 #include "idraw_conflict_resolver.h"
 #include "itext_conflict_resolver.h"
 
+#include <memory>
+#include <string>
+
+
 class SimultaneousProtocolDecoder
 {
-  public:
+public:
     ActionType GetActionType(IData*)
     {
     }
@@ -24,5 +24,3 @@ class SimultaneousProtocolDecoder
     {
     }
 };
-
-#endif  // _SIMULTANEOUSPROTOCOLDECODER_H_

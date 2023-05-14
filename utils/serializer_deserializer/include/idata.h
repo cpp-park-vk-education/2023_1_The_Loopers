@@ -1,11 +1,10 @@
-#ifndef _IDATA_H_
-#define _IDATA_H_
+#pragma once
 
 #include <string>
 
 class IData
 {
-  public:
+public:
     virtual ~IData() = default;
 
     virtual std::string ToString(std::string)
@@ -16,5 +15,3 @@ class IData
     {
     }
 };
-
-#endif  // _IDATA_H_

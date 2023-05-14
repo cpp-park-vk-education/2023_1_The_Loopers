@@ -1,4 +1,1 @@
-#ifndef _MESSAGE_BROKER_SERVICE_H_
-#define _MESSAGE_BROKER_SERVICE_H_
-
-#endif  //_MESSAGE_BROKER_SERVICE_H_
+#pragma once

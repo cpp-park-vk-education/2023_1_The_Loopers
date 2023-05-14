@@ -1,10 +1,10 @@
-#ifndef _ISESSIONSFACTORY_H_
-#define _ISESSIONSFACTORY_H_
+#pragma once
+
+#include "iservice_session.h"
 
 #include <memory>
 #include <string>
 
-#include "iservice_session.h"
 
 namespace boost::asio::ip::tcp
 {
@@ -33,5 +33,3 @@ protected:
     IInternalSessionsManager* m_manager;
     std::shared_ptr<INetworkStreamAdapter> m_adapter;
 };
-
-#endif  // _ISERVICESESSION_H_

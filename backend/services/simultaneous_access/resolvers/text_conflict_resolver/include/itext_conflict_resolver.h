@@ -1,5 +1,4 @@
-#ifndef _ITEXTCONFLICTRESOLVER_H_
-#define _ITEXTCONFLICTRESOLVER_H_
+#pragma once
 
 #include "global.h"
 
@@ -41,5 +40,3 @@ public:
     {
     }
 };
-
-#endif // _ITEXTCONFLICTRESOLVER_H_
