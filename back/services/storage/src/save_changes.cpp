@@ -14,6 +14,7 @@ bool SaveChanges::Save(std::string filePath, std::string changes)
 
 
     file << changes;
+    file.close();
 
     return true;
 }
