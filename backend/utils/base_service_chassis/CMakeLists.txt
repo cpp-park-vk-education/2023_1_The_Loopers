@@ -1,7 +1,7 @@
 add_library(${BASE_SERVICE_CHASSIS} SHARED "")
 
 target_sources(${BASE_SERVICE_CHASSIS} PRIVATE
-    "src/trash.cpp"
+    "src/internal_sessions_manager.cpp"
 )
 
 set(PUBLIC_INCLUDE_DIRECTORIES
