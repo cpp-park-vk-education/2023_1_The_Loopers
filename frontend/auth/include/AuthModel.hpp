@@ -2,6 +2,7 @@
 
 #include "Encrypter.hpp"
 
+#include <memory>
 #include <string>
 
 class AuthModel
@@ -21,5 +22,5 @@ protected:
 private:
     std::string m_login;
     std::string m_token;
-    Encrypter* m_encrypter;
+    std::unique_ptr<Encrypter> m_encrypter;
 };
