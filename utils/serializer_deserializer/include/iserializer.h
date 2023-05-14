@@ -1,16 +1,16 @@
-#ifndef _ISERIALIZER_H_
-#define _ISERIALIZER_H_
-
-#include <string>
+#pragma once
 
 #include "idata.h"
 
-class ISerializer {
-  public:
+#include <string>
+
+namespace inklink::serializer
+{
+class ISerializer
+{
+public:
     virtual ~ISerializer() = default;
 
-    virtual IData* Serialize(std::string) {
-    }
+    virtual IData* Serialize(const std::string&) = 0;
 };
-
-#endif  // _ISERIALIZER_H_
+} // namespace inklink::serializer

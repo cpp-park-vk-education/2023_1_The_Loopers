@@ -1,36 +1,19 @@
-#ifndef _ICLIENTSESSION_H_
-#define _ICLIENTSESSION_H_
+#pragma once
 
 #include <functional>
 #include <string>
 
-#include "inetwork_adapter.h"
-
+namespace inklink::client_connector
+{
 class IClientSession
 {
 public:
     virtual ~IClientSession() = default;
-    virtual void SetNetworkAdapter(INetworkStreamAdapter*)
-    {
-    }
 
-    virtual void run(const std::string& host, unsigned short port,
-                     const std::string& onHandshakeText)
-    {
-    }
-    virtual void run_async(const std::string& host, unsigned short port,
-                           const std::string& onHandshakeText)
-    {
-    }
-    virtual std::string sync_read()
-    {
-    }
-    virtual void send(const std::string&)
-    {
-    }
-    virtual void close()
-    {
-    }
+    // virtual void run(const std::string& host, unsigned short port, const std::string& onHandshakeText) = 0;
+    virtual void RunAsync(const std::string& host, unsigned short port, const std::string& onHandshakeText) = 0;
+    // virtual std::string sync_read() = 0;
+    virtual void Send(const std::string&) = 0;
+    virtual void Close() = 0;
 };
-
-#endif  // _ICLIENTSESSION_H_
+} // namespace inklink::client_connector
