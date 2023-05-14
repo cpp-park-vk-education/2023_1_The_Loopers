@@ -1,6 +1,6 @@
 #include <fstream>
 #include <string>
-#include "ReadFile.h"
+#include "read_file.h"
 
 
 std::string ReadFile::Get(std::string filePath)
@@ -20,6 +20,8 @@ std::string ReadFile::Get(std::string filePath)
         fileRead >> buffer;
         stringFile = stringFile + buffer;
     }
+
+    fileRead.close();
 
     return stringFile;
 }
