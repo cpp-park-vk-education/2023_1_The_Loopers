@@ -20,7 +20,6 @@ class ISignalsHandler
 
 public:
     ISignalsHandler(std::shared_ptr<IBaseServiceChassis>);
-
     virtual ~ISignalsHandler() = default;
 
     virtual void Send(Endpoint, const std::string&) = 0;

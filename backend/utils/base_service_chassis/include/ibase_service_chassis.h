@@ -1,10 +1,11 @@
 #pragma once
 
-#include "iinternal_sessions_manager.h"
 #include "ilocal_service_registry.h"
 #include "ilogger.h"
 #include "imessage_broker_event.h"
 #include "imessage_broker_signal.h"
+#include "internal_sessions_manager.h"
+
 // #include "iserializer.h"
 #include "inklink_global.h"
 #include "iservice_registator.h"
@@ -49,7 +50,7 @@ public:
     std::shared_ptr<IMessageBrokerSignal> m_signalBroker{std::make_shared<IMessageBrokerSignal>()};
     std::shared_ptr<IMessageBrokerEvent> m_eventBroker{std::make_shared<IMessageBrokerEvent>()};
     std::shared_ptr<ILocalServiceRegistry> m_localServiceRegistry{std::make_shared<ILocalServiceRegistry>()};
-    std::shared_ptr<IInternalSessionsManager> m_internalSessionsManager{std::make_shared<IInternalSessionsManager>()};
+    std::shared_ptr<InternalSessionsManager> m_internalSessionsManager{std::make_shared<InternalSessionsManager>()};
 
 protected:
     ServiceType m_selfType;
