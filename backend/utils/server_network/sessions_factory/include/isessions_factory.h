@@ -32,7 +32,7 @@ public:
     }
     virtual ~ISessionsFactory() = default;
 
-    virtual IServiceSession* GetSession(tcp::socket&&) = 0;
+    virtual std::shared_ptr<IServiceSession> GetSession(tcp::socket&&) = 0;
 
 protected:
     std::shared_ptr<IInternalSessionsManager> m_manager;
