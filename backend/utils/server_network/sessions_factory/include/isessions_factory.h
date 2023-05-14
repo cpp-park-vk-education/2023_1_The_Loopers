@@ -1,37 +1,42 @@
-#ifndef _ISESSIONSFACTORY_H_
-#define _ISESSIONSFACTORY_H_
+#pragma once
+
+#include "iservice_session.h"
 
 #include <memory>
 #include <string>
-
-#include "iservice_session.h"
 
 namespace boost::asio::ip::tcp
 {
 class socket;
 }
 
+namespace inklink::authorizer
+{
 class IAuthorizer;
-class IInternalSessionsManager;
-class INetworkStreamAdapter;
+}
 
+namespace inklink::base_service_chassis
+{
+class IInternalSessionsManager;
+}
+
+namespace inklink::server_network
+{
 class ISessionsFactory
 {
+    using IAuthorizer = authorizer::IAuthorizer;
+    using IInternalSessionsManager = base_service_chassis::IInternalSessionsManager;
+
 public:
     virtual ~ISessionsFactory() = default;
 
     virtual void SetManager(IInternalSessionsManager*);
     virtual void SetAuthorizer(std::shared_ptr<IAuthorizer>);
-    virtual void SetNetworkAdapter(std::shared_ptr<INetworkStreamAdapter>);
 
-    virtual IServiceSession* GetSession(boost::asio::ip::tcp::socket&&)
-    {
-    }
+    virtual IServiceSession* GetSession(boost::asio::ip::tcp::socket&&) = 0;
 
 protected:
     std::shared_ptr<IAuthorizer> m_authorizer;
     IInternalSessionsManager* m_manager;
-    std::shared_ptr<INetworkStreamAdapter> m_adapter;
 };
-
-#endif  // _ISERVICESESSION_H_
+} // namespace inklink::server_network

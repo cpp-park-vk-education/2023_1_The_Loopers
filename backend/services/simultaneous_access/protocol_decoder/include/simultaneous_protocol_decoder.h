@@ -1,28 +1,23 @@
-#ifndef _SIMULTANEOUSPROTOCOLDECODER_H_
-#define _SIMULTANEOUSPROTOCOLDECODER_H_
+#pragma once
 
 #include <memory>
 #include <string>
 
-#include "idata.h"
-#include "idraw_conflict_resolver.h"
-#include "itext_conflict_resolver.h"
+namespace inklink::serializer
+{
+class IData;
+}
 
+namespace inklink::service_simultaneous_access
+{
 class SimultaneousProtocolDecoder
 {
-  public:
-    ActionType GetActionType(IData*)
-    {
-    }
-    TextAction GetTextAction(IData*)
-    {
-    }
-    DrawAction GetDrawAction(IData*)
-    {
-    }
-    bool IsValid(Idata*)
-    {
-    }
-};
+    using IData = serializer::IData;
 
-#endif  // _SIMULTANEOUSPROTOCOLDECODER_H_
+public:
+    ActionType GetActionType(IData*) = 0;
+    TextAction GetTextAction(IData*) = 0;
+    DrawAction GetDrawAction(IData*) = 0;
+    bool IsValid(Idata*) = 0;
+};
+} // namespace inklink::service_simultaneous_access

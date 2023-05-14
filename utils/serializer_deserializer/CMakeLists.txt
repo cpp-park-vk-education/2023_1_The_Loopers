@@ -28,11 +28,11 @@ target_include_directories(${SERIALIZER} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
 #     # "nlohmann_json::nlohmann_json"
 # )
 
-# target_link_libraries(${BASE_SERVICE_CHASSISS} PRIVATE ${PRIVATE_LINK_LIBRARIES})
+# target_link_libraries(${BASE_SERVICE_CHASSIS} PRIVATE ${PRIVATE_LINK_LIBRARIES})
 
 # set(PUBLIC_LINK_LIBRARIES 
 #     "${SERVER_NETWORK}"
 #     "${CLIENT_NETWORK}"
 # )
 
-# target_link_libraries(${BASE_SERVICE_CHASSISS} PUBLIC ${PUBLIC_LINK_LIBRARIES})
+# target_link_libraries(${BASE_SERVICE_CHASSIS} PUBLIC ${PUBLIC_LINK_LIBRARIES})

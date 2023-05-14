@@ -1,28 +1,31 @@
-#ifndef _ISIGNALSHANDLER_H_
-#define _ISIGNALSHANDLER_H_
+#pragma once
+
+#include "ibase_service_chassis.h"
+#include "inklink_global.h"
 
 #include <memory>
 #include <unordered_map>
 #include <vector>
 
-#include "global.h"
-#include "ibase_service_chassiss.h"
+namespace inklink::base_service_chassis
+{
+class IBaseServiceChassis;
+}
 
+namespace inklink::service_message_broker
+{
 class ISignalsHandler
 {
+    using IBaseServiceChassis = base_service_chassis::IBaseServiceChassis;
+
 public:
+    ISignalsHandler(std::shared_ptr<IBaseServiceChassis>);
+
     virtual ~ISignalsHandler() = default;
 
-    virtual void SetServiceChassis(std::shared_ptr<IBaseServiceChassis>)
-    {
-    }
-
-    virtual void Send(Endpoint, const std::string&)
-    {
-    }
+    virtual void Send(Endpoint, const std::string&) = 0;
 
 protected:
     std::shared_ptr<IBaseServiceChassis> m_serviceChassis;
 };
-
-#endif  // _ISIGNALSHANDLER_H_
+} // namespace inklink::service_message_broker

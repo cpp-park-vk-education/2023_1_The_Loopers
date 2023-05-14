@@ -35,11 +35,11 @@ set(MESSAGE_BROKER_SERVICE service_${PROJECT_NAME}_message_broker)
 set(SIMULTANEOUS_ACCESS_SERVICE service_${PROJECT_NAME}_simultaneous_access)
 # backend utils
 set(AUTHORIZER ${PROJECT_NAME}_authorizer)
-set(BASE_SERVICE_CHASSISS ${PROJECT_NAME}_base_service_chassiss)
+set(BASE_SERVICE_CHASSIS ${PROJECT_NAME}_base_service_chassis)
 set(DB_ADAPTER ${PROJECT_NAME}_db_adapter)
-set(EXTERNAL_SERVICE_CHASSISS ${PROJECT_NAME}_external_service_chassiss)
+set(EXTERNAL_SERVICE_CHASSIS ${PROJECT_NAME}_external_service_chassis)
 set(SERVER_NETWORK ${PROJECT_NAME}_server_network)
-set(CHASSISS_CONFIGURATOR ${PROJECT_NAME}_services_chassiss_configurator)
+set(CHASSIS_CONFIGURATOR ${PROJECT_NAME}_services_chassis_configurator)
 set(TOKEN_GENERATOR ${PROJECT_NAME}_token_generator)
 
 # global utils

@@ -1,20 +1,19 @@
-#ifndef _IAUTHORIZER_H_
-#define _IAUTHORIZER_H_
+#pragma once
+
+#include "itoken_validator.h"
 
 #include <memory>
 #include <string>
 
-#include "itoken_validator.h"
-
-class IAuthorizer {
-  public:
+namespace inklink::authorizer
+{
+class IAuthorizer
+{
+public:
     virtual ~IAuthorizer() = default;
 
-    virtual void SetTokenValidator(ITokenValidator*) {
-    }
+    virtual void SetTokenValidator(ITokenValidator*) = 0;
 
-    virtual bool IsAuthenticated(const std::string&) {
-    }
+    virtual bool IsAuthenticated(const std::string&) = 0;
 };
-
-#endif  // _IAUTHORIZER_H_
+} // namespace inklink::authorizer

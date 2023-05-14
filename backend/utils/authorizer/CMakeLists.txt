@@ -31,4 +31,4 @@ target_include_directories(${AUTHORIZER} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
 #     # "nlohmann_json::nlohmann_json"
 # )
 
-# target_link_libraries(${BASE_SERVICE_CHASSISS} PRIVATE ${PRIVATE_LINK_LIBRARIES})
+# target_link_libraries(${BASE_SERVICE_CHASSIS} PRIVATE ${PRIVATE_LINK_LIBRARIES})

@@ -1,15 +1,15 @@
-#ifndef _ITOKENGENERATOR_H_
-#define _ITOKENGENERATOR_H_
+#pragma once
 
 #include <string>
 
-class ITokenGenerator {
-  public:
+namespace inklink::token_generator
+{
+class ITokenGenerator
+{
+public:
     virtual ~ITokenGenerator() = default;
 
     virtual std::string GenerateToken(const std::string& login, const std::string& pass,
-                                      const std::string& privateKey) {
-    }
+                                      const std::string& privateKey) = 0;
 };
-
-#endif  // _ITOKENGENERATOR_H_
+} // namespace inklink::token_generator

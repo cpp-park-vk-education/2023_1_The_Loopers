@@ -1,43 +1,51 @@
-#ifndef _SIMULTANEOUSACCESSSERVICE_H_
-#define _SIMULTANEOUSACCESSSERVICE_H_
+#pragma once
+
+#include "iexternal_service_chassis.h"
+#include "iresolvers_factory.h"
 
 #include <map>
 #include <memory>
 #include <string>
 
-#include "idb_adapter.h"
-#include "iexternal_service_chassiss.h"
-#include "iresolvers_factory.h"
+namespace inklink::db_adapter
+{
+class IDBAdapter;
+}
 
+namespace inklink::external_service_chassis
+{
+class IExternalServiceChassis;
+}
+
+namespace inklink::server_network
+{
+class IServiceSession;
+}
+
+namespace inklink::service_simultaneous_access
+{
 class SimultaneousAccessService
 {
-public:
-    virtual void SetResolversFactory(IResolversFactory*)
-    {
-    }
-    virtual void SetServiceChassis(IExternalServiceChassis*)
-    {
-    }
-    virtual void SetDbAdapter(IDBAdapter*)
-    {
-    }
+    using IDBAdapter = db_adapter::IDBAdapter;
+    using IExternalServiceChassis = external_service_chassis::IExternalServiceChassis;
+    using IServiceSession = server_network::IServiceSession;
 
-    virtual void run(unsigned short port)
-    {
-    }
+public:
+    SimultaneousAccessService(IResolversFactory&, IExternalServiceChassis&, IDBAdapter&);
+
+    void Run(unsigned short port);
 
 private:
-    virtual void DoOnConnect()
-    {
-    }
-    virtual void DoOnRead(const string&, IServiceSession*)
-    {
-    }
-    virtual void DoOnWrite()
-    {
-    }
+    using time_point = std::chrono::time_point<std::chrono::system_clock>;
 
-    std::map<std::chrono::time_point<std::chrono::system_clock>, DrawAction> m_notApplied;
+    void DoOnConnect();
+    void DoOnRead(const string&, IServiceSession*);
+    void DoOnWrite();
+
+    std::map<time_point, DrawAction> m_notApplied;
+
+    IResolversFactory& m_factory;
+    IExternalServiceChassis& m_chassis;
+    IDBAdapter& m_dbAdapter;
 };
-
-#endif  // _SIMULTANEOUSACCESSSERVICE_H_
+} // namespace inklink::service_simultaneous_access

@@ -1,17 +1,16 @@
-#ifndef _IRESOLVERSFACTORY_H_
-#define _IRESOLVERSFACTORY_H_
+#pragma once
 
 #include "idraw_conflict_resolver.h"
 #include "itext_conflict_resolver.h"
 
-class IResolversFactory {
-  public:
+namespace inklink::service_simultaneous_access
+{
+class IResolversFactory
+{
+public:
     virtual ~IResolversFactory() = default;
 
-    virtual ITextConflictResolver* GetTextConflictResolver() {
-    }
-    virtual IDrawConflictResolver* GetDrawConflictResolver() {
-    }
+    virtual ITextConflictResolver* GetTextConflictResolver() = 0;
+    virtual IDrawConflictResolver* GetDrawConflictResolver() = 0;
 };
-
-#endif  // _IRESOLVERSFACTORY_H_
+} // namespace inklink::service_simultaneous_access

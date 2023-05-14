@@ -6,8 +6,8 @@ add_subdirectory(utils/server_network)
 
 add_subdirectory(utils/db_adapter)
 
-add_subdirectory(utils/base_service_chassiss)
-add_subdirectory(utils/external_service_chassiss)
-add_subdirectory(utils/service_chassiss_configurators)
+add_subdirectory(utils/base_service_chassis)
+add_subdirectory(utils/external_service_chassis)
+add_subdirectory(utils/service_chassis_configurators)
 
 add_subdirectory(services/simultaneous_access)

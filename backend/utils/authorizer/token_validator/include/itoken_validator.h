@@ -1,16 +1,19 @@
-#ifndef _ITOKENVALIDATOR_H_
-#define _ITOKENVALIDATOR_H_
+#pragma once
 
 #include <chrono>
 #include <string>
 
-class ITokenValidator {
-  public:
+namespace inklink::authorizer
+{
+class ITokenValidator
+{
+    template <class T>
+    using time_point = std::chrono::time_point<T>;
+    using system_clock = std::chrono::system_clock;
+
+public:
     virtual ~ITokenValidator() = default;
 
-    virtual std::chrono::time_point<std::chrono::system_clock> ValidateToken(
-            std::string token, std::string publicKey) {
-    }
+    virtual time_point<system_clock> ValidateToken(const std::string& token, const std::string& publicKey) = 0;
 };
-
-#endif  // _ITOKENVALIDATOR_H_
+} // namespace inklink::authorizer

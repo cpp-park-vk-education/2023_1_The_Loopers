@@ -1,4 +1,5 @@
-#ifndef _MESSAGE_BROKER_SERVICE_H_
-#define _MESSAGE_BROKER_SERVICE_H_
+#pragma once
 
-#endif  //_MESSAGE_BROKER_SERVICE_H_
+namespace inklink::service_message_broker
+{
+}
