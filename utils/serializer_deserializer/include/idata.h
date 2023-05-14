@@ -1,20 +1,16 @@
-#ifndef _IDATA_H_
-#define _IDATA_H_
+#pragma once
 
 #include <string>
 
+namespace inklink::serializer
+{
 class IData
 {
-  public:
+public:
     virtual ~IData() = default;
 
-    virtual std::string ToString(std::string)
-    {
-    }
+    virtual std::string ToString(std::string) = 0;
 
-    virtual std::string& operator[](std::string)
-    {
-    }
+    virtual std::string& operator[](std::string) = 0;
 };
-
-#endif  // _IDATA_H_
+} // namespace inklink::serializer
