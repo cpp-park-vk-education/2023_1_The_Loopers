@@ -8,6 +8,8 @@
 #include "save_changes.h"
 
 
+namespace inklink_file_holder
+{
 class IFileHolder
 {
 public:
@@ -15,12 +17,14 @@ public:
     virtual bool Delete(std::string filePath) = 0;
     virtual std::string Read(std::string filePath) = 0;
 
-    virtial ~IFileHolder() {}
+    virtial ~IFileHolder()
+    {
+    }
 
 protected:
     SaveChanges m_changesSavior;
     DeleteFile m_fileDeletor;
     ReadFile m_fileReader;
 };
-
+}  // namespace inklink_file_holder
 #endif  // _FILE_HOLDER_H_
