@@ -36,11 +36,13 @@ public:
     void Run(unsigned short port);
 
 private:
+    using time_point = std::chrono::time_point<std::chrono::system_clock>;
+
     void DoOnConnect();
     void DoOnRead(const string&, IServiceSession*);
     void DoOnWrite();
 
-    std::map<std::chrono::time_point<std::chrono::system_clock>, DrawAction> m_notApplied;
+    std::map<time_point, DrawAction> m_notApplied;
 
     IResolversFactory& m_factory;
     IExternalServiceChassis& m_chassis;
