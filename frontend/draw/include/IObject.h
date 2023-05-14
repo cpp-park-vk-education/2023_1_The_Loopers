@@ -5,8 +5,8 @@
 
 struct Point
 {
-    size_t xPosition;
-    size_t yPosition;
+    std::size_t xPosition;
+    std::size_t yPosition;
 };
 
 class ObjectWithAttributes
