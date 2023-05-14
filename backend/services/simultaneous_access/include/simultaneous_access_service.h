@@ -39,7 +39,7 @@ private:
     using time_point = std::chrono::time_point<std::chrono::system_clock>;
 
     void DoOnConnect();
-    void DoOnRead(const string&, IServiceSession*);
+    void DoOnRead(const std::string&, IServiceSession*);
     void DoOnWrite();
 
     std::map<time_point, DrawAction> m_notApplied;
