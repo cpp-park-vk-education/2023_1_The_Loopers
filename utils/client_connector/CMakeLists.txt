@@ -1,7 +1,7 @@
 add_library(${CLIENT_NETWORK} SHARED "")
 
 target_sources(${CLIENT_NETWORK} PRIVATE
-    "src/trash.cpp"
+    "src/websocket_client_session.cpp"
 )
 
 set(PUBLIC_LINK_LIBRARIES
