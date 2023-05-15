@@ -1,4 +1,4 @@
-add_library(${EXTERNAL_SERVICE_CHASSIS} SHARED "")
+add_library(${EXTERNAL_SERVICE_CHASSIS} STATIC "")
 
 target_sources(${EXTERNAL_SERVICE_CHASSIS} PRIVATE
     "src/trash.cpp"
