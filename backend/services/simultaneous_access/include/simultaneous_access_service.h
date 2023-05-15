@@ -1,6 +1,5 @@
 #pragma once
 
-#include "iexternal_service_chassis.h"
 #include "iresolvers_factory.h"
 
 #include <map>
@@ -31,7 +30,7 @@ class SimultaneousAccessService
     using IServiceSession = server_network::IServiceSession;
 
 public:
-    SimultaneousAccessService(IResolversFactory&, IExternalServiceChassis&, IDBAdapter&);
+    SimultaneousAccessService(IResolversFactory&, IExternalServiceChassis&, IDBAdapter&) noexcept;
 
     void Run(uint16_t port);
 

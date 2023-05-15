@@ -3,6 +3,7 @@ add_executable(${SIMULTANEOUS_ACCESS_SERVICE} "")
 target_sources(${SIMULTANEOUS_ACCESS_SERVICE}
 PRIVATE
     "src/main.cpp"
+    "src/simultaneous_access_service.cpp"
 )
 
 set(PRIVATE_INCLUDE_DIRECTORIES
