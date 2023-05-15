@@ -25,5 +25,4 @@ class FileHolder : public IFileHolder
     {
     }
 };
-
-}
+}  // namespace inklink_file_holder

@@ -2,13 +2,13 @@
 #include <string>
 #include "read_file.h"
 
-
+namespace inklink_file_holder
+{
 std::string ReadFile::Get(const std::string& filePath)
 {
     std::ifstream fileRead(filePath);
     std::string stringFile("");
     std::string buffer;
-
 
     if (!fileRead.is_open())
     {
@@ -22,3 +22,4 @@ std::string ReadFile::Get(const std::string& filePath)
 
     return stringFile;
 }
+}  // namespace inklink_file_holder

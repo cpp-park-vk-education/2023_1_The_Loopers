@@ -1,13 +1,14 @@
-#ifndef _SAVE_CHANGES_H_
-#define _SAVE_CHANGES_H_
+#ifndef _BACK_SERVICES_STORAGE_INCLUDE_SAVE_CHANGES_H_
+#define _BACK_SERVICES_STORAGE_INCLUDE_SAVE_CHANGES_H_
 
 #include <string>
 
-
+namespace inklink_file_holder
+{
 class SaveChanges
 {
 public:
     bool Save(const std::string& filePath, const std::string& changes);
 };
-
-#endif  // _SAVE_CHANGES_H_
+}  // namespace inklink_file_holder
+#endif  // _BACK_SERVICES_STORAGE_INCLUDE_SAVE_CHANGES_H_

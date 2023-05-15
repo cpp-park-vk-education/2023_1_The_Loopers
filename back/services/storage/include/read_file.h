@@ -1,12 +1,15 @@
-#ifndef _READ_FILE_H_
-#define _READ_FILE_H_
+#ifndef _BACK_SERVICES_STORAGE_INCLUDE_READ_FILE_H_
+#define _BACK_SERVICES_STORAGE_INCLUDE_READ_FILE_H_
 
 #include <string>
 
+
+namespace inklink_file_holder
+{
 class ReadFile
 {
 public:
     std::string Get(const std::string& filePath);
 };
-
-#endif  // _READ_FILE_H_
+}  // namespace inklink_file_holder
+#endif  // _BACK_SERVICES_STORAGE_INCLUDE_READ_FILE_H_

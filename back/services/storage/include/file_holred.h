@@ -1,5 +1,5 @@
-#ifndef _FILE_HOLDER_H_
-#define _FILE_HOLDER_H_
+#ifndef _BACK_SERVICES_STORAGE_INCLUDE_FILE_HOLDER_H_
+#define _BACK_SERVICES_STORAGE_INCLUDE_FILE_HOLDER_H_
 
 
 #include <string>
@@ -25,4 +25,4 @@ protected:
     ReadFile m_fileReader;
 };
 }  // namespace inklink_file_holder
-#endif  // _FILE_HOLDER_H_
+#endif  // _BACK_SERVICES_STORAGE_INCLUDE_FILE_HOLDER_H_
