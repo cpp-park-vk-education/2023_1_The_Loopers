@@ -42,6 +42,6 @@ class IDrawConflictResolver
 public:
     virtual ~IDrawConflictResolver() = default;
 
-    virtual std::vector<DrawAction> resolve(std::vector<DrawAction>) = 0;
+    virtual std::vector<DrawAction> Resolve(std::vector<DrawAction>) = 0;
 };
 } // namespace inklink::service_simultaneous_access

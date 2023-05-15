@@ -43,6 +43,6 @@ class ITextConflictResolver
 public:
     virtual ~ITextConflictResolver() = default;
 
-    virtual std::vector<TextAction> resolve(std::vector<TextAction>) = 0;
+    virtual std::vector<TextAction> Resolve(std::vector<TextAction>) = 0;
 };
 } // namespace inklink::service_simultaneous_access
