@@ -23,7 +23,7 @@ struct DocSessionDescriptor
 template <>
 struct std::hash<inklink::base_service_chassis::DocSessionDescriptor>
 {
-    inline std::size_t operator()(const inklink::base_service_chassis::DocSessionDescriptor& descriptor)
+    inline std::size_t operator()(const inklink::base_service_chassis::DocSessionDescriptor& descriptor) const
     {
         const std::size_t h1 = std::hash<std::string>{}(descriptor.documentId);
         const std::size_t h2 = std::hash<std::string>{}(descriptor.login);
