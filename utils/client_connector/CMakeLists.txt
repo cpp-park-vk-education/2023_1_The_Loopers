@@ -1,4 +1,4 @@
-add_library(${CLIENT_NETWORK} SHARED "")
+add_library(${CLIENT_NETWORK} STATIC "")
 
 target_sources(${CLIENT_NETWORK} PRIVATE
     "src/trash.cpp"

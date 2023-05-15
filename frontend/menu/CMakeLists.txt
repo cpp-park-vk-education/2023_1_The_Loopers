@@ -1,4 +1,4 @@
-add_library(${MENU} SHARED "")
+add_library(${MENU} STATIC "")
 
 target_sources(${MENU} PRIVATE
         "src/temp.cpp"
