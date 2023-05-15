@@ -1,7 +1,7 @@
 #include "internal_sessions_manager.h"
 
 #include <algorithm>
-#include <service_session.h>
+#include <iservice_session.h>
 #include <sstream>
 #include <stdexcept>
 
@@ -61,10 +61,10 @@ void InternalSessionsManager::RemoveSession(IServiceSession* session)
         m_DescriptorByEndpoint.erase(endpoint);
 
         auto& docs = m_docsByUser[descriptor.login];
-        std::erase(docs.begin(), docs.end(), descriptor.documentId);
+        std::erase(docs, descriptor.documentId);
 
         auto& users = m_usersByDoc[descriptor.documentId];
-        std::erase(users.begin(), users.end(), descriptor.login);
+        std::erase(users, descriptor.login);
     }
 }
 
