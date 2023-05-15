@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <string>
+#include <pqxx/pqxx>
 
 namespace inklink::db_adapter
 {
@@ -20,5 +21,8 @@ public:
     virtual void Delete(const std::string& deletePart, const std::string& fromPart, const std::string& wherePart) = 0;
 
     virtual void Connect(const std::string& connectionString) = 0;
+
+protected:
+    pqxx::connection m_connection;
 };
 } // namespace inklink::db_adapter
