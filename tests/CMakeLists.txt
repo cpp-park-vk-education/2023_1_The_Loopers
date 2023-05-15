@@ -12,12 +12,12 @@ function(add_test_and_update_script TEST_NAME TEST_EXECUTABLE_PATH)
     file(APPEND ${TESTS_BINARY_DIR}/run_tests.sh "${TEST_EXECUTABLE_PATH}\n")
 endfunction()
 
-if (ENABLE_BACK)
-    add_subdirectory(back)
+if (ENABLE_BACKEND)
+#    add_subdirectory(backend)
 endif()
 
-if (ENABLE_FRONT)
-# add_subdirectory(front)
+if (ENABLE_FRONTEND)
+# add_subdirectory(frontend)
 endif()
 
 # Set execute permissions for run_tests.sh
@@ -26,5 +26,3 @@ file(
     DESTINATION ${TESTS_BINARY_DIR}
     PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
 )
-
-
