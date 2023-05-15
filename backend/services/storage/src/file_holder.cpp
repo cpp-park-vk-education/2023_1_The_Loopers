@@ -8,16 +8,16 @@ class FileHolder : public IFileHolder
 {
     bool Save(std::string filePath, std::string fileChanges) override
     {
-        if (m_changesSavior.Save(filePath, fileChanges))
+        if (m_changesSavior.SaveFile(filePath, fileChanges))
         {
             return true;
         }
         return false;
     }
 
-    std::string Read(std::string filePath) override
+    std::string Get(std::string filePath) override
     {
-        return m_fileReader.Get(filePath);
+        return m_fileReader.GetFile(filePath);
     }
 
 

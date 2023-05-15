@@ -4,7 +4,7 @@
 
 namespace inklink_file_holder
 {
-std::string ReadFile::Get(const std::string& filePath)
+std::string ReadFile::GetFile(const std::string& filePath)
 {
     std::ifstream fileRead(filePath);
     std::string stringFile("");
