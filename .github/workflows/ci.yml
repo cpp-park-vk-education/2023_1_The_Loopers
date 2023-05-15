@@ -84,7 +84,7 @@ jobs:
     - name: Run tests
       id: run-tests
       run: |
-        ${{ github.workflow }}/build/test/test 2>&1 | tee ${{ github.workflow }}/tests_output.txt
+        ${{ github.workflow }}/build/test/test 2>>&1 | tee ${{ github.workflow }}/tests_output.txt
         echo "TESTS_OUTPUT<<EOF" >> $GITHUB_OUTPUT
         echo "$(cat ${{ github.workflow }}/tests_output.txt)" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
