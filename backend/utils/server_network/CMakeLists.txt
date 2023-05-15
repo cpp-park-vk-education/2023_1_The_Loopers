@@ -1,4 +1,4 @@
-add_library(${SERVER_NETWORK} SHARED "")
+add_library(${SERVER_NETWORK} STATIC "")
 
 target_sources(${SERVER_NETWORK} PRIVATE
     "service_session/src/iservice_session.cpp"

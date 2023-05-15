@@ -1,4 +1,4 @@
-add_library(${AUTH} SHARED "")
+add_library(${AUTH} STATIC "")
 
 target_sources(${AUTH} PRIVATE
         "src/temp.cpp"
