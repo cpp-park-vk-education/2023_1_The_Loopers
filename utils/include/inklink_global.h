@@ -60,7 +60,7 @@ enum class ResolverActionType
 template <>
 struct std::hash<inklink::Endpoint>
 {
-    inline std::size_t operator()(const inklink::Endpoint& endpoint)
+    inline std::size_t operator()(const inklink::Endpoint& endpoint) const noexcept
     {
         const std::size_t h1 = std::hash<std::string>{}(endpoint.address);
         const std::size_t h2 = std::hash<uint16_t>{}(endpoint.port);
