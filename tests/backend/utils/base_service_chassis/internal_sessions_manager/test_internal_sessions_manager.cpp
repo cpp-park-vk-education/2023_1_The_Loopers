@@ -73,7 +73,7 @@ TEST_F(SessionsManagerTest, AddExistingSession)
 {
     const DocSessionDescriptor descriptor{.documentId = "different", .login = "u1"};
 
-    EXPECT_THROW({ sessionsManager->AddSession(descriptor, sessions[0]); }, std::runtime_error);
+    EXPECT_THROW({ sessionsManager->AddSession(descriptor, sessions[0]); }, std::logic_error);
 }
 
 TEST_F(SessionsManagerTest, AddSessionWithDuplicatedEndpoint)
@@ -82,7 +82,7 @@ TEST_F(SessionsManagerTest, AddSessionWithDuplicatedEndpoint)
     const DocSessionDescriptor descriptor{.documentId = "different", .login = "u1"};
     auto session = std::make_shared<ServiceSessionFake>(existingEndpoint);
 
-    EXPECT_THROW(sessionsManager->AddSession(descriptor, session), std::runtime_error);
+    EXPECT_THROW(sessionsManager->AddSession(descriptor, session), std::logic_error);
 }
 
 TEST_F(SessionsManagerTest, AddSessionWithDuplicatedDescriptor)
@@ -90,7 +90,7 @@ TEST_F(SessionsManagerTest, AddSessionWithDuplicatedDescriptor)
     const DocSessionDescriptor descriptor{.documentId = "d1", .login = "u1"};
     IServiceSession* session = new ServiceSessionFake({"new ip", 8080});
 
-    EXPECT_THROW({ sessionsManager->AddSession(descriptor, sessions[0]); }, std::runtime_error);
+    EXPECT_THROW({ sessionsManager->AddSession(descriptor, sessions[0]); }, std::logic_error);
 
     delete session;
 }
@@ -298,7 +298,7 @@ TEST_F(SessionsManagerTest, NoSessionsByDocDescriptor)
 TEST_F(SessionsManagerTest, NoSessionsByUser)
 {
     const std::vector<IServiceSession*> expected{};
-    auto actual = VectorOfWeakPtrToRawPtr(sessionsManager->GetSessionsByUser("u2"));
+    auto actual = VectorOfWeakPtrToRawPtr(sessionsManager->GetSessionsByUser("NonExisting"));
 
     EXPECT_EQ(actual.size(), expected.size());
 }
@@ -306,7 +306,7 @@ TEST_F(SessionsManagerTest, NoSessionsByUser)
 TEST_F(SessionsManagerTest, NoSessionsByDoc)
 {
     const std::vector<IServiceSession*> expected{};
-    auto actual = VectorOfWeakPtrToRawPtr(sessionsManager->GetSessionsByDocument("d2"));
+    auto actual = VectorOfWeakPtrToRawPtr(sessionsManager->GetSessionsByDocument("NonExisting"));
 
     EXPECT_EQ(actual.size(), expected.size());
 }

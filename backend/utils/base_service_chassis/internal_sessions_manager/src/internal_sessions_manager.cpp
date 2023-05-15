@@ -17,7 +17,7 @@ void InternalSessionsManager::AddSession(const DocSessionDescriptor& descriptor,
     const std::shared_ptr<IServiceSession> sessionPtr{session};
 
     const Endpoint& endpoint = sessionPtr->GetClientEndpoint();
-    if (!m_sessions.contains(endpoint))
+    if (m_sessions.contains(endpoint))
     {
         std::ostringstream ss{};
         ss << "Manager already contains enpoint '" << endpoint.address << ':' << endpoint.port << "'";
@@ -51,6 +51,11 @@ void InternalSessionsManager::RemoveSession(const DocSessionDescriptor& descript
 
 void InternalSessionsManager::RemoveSession(IServiceSession* session)
 {
+    if (!session)
+    {
+        return;
+    }
+
     const Endpoint& endpoint = session->GetClientEndpoint();
 
     if (m_DescriptorByEndpoint.contains(endpoint))
