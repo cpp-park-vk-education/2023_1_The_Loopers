@@ -17,6 +17,11 @@ struct DocSessionDescriptor
 {
     std::string documentId;
     std::string login;
+
+    bool operator==(const DocSessionDescriptor& rhs) const noexcept
+    {
+        return documentId == rhs.documentId && login == rhs.login;
+    }
 };
 } // namespace inklink::base_service_chassis
 
