@@ -13,11 +13,11 @@ function(add_test_and_update_script TEST_NAME TEST_EXECUTABLE_PATH)
 endfunction()
 
 if (ENABLE_BACKEND)
-#    add_subdirectory(backend)
+   add_subdirectory(backend)
 endif()
 
 if (ENABLE_FRONTEND)
-# add_subdirectory(frontend)
+    add_subdirectory(frontend)
 endif()
 
 # Set execute permissions for run_tests.sh
