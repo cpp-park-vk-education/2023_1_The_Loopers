@@ -22,8 +22,9 @@ std::vector<std::shared_ptr<IVertex>> GraphModel::getUniqueVertexes()
     return m_uniqueVertexes;
 }
 
-std::vector<IEdge*> GraphModel::getEdges()
+std::vector<std::shared_ptr<IEdge>> GraphModel::getEdges()
 {
+    return m_edges;
 }
 
 Position GraphModel::GeneratePosition()
