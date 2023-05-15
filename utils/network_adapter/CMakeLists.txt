@@ -1,4 +1,4 @@
-add_library(${NETWORK_ADAPTER} SHARED "")
+add_library(${NETWORK_ADAPTER} STATIC "")
 
 target_sources(${NETWORK_ADAPTER} PRIVATE
     "src/trash.cpp"
