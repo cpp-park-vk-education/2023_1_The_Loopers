@@ -44,11 +44,10 @@ jobs:
 
     - name: Build with linters
       id: build-with-linters-step
-      run: |
-        cmake --build ${{ github.workflow }}/build 2>&1 | tee ${{ github.workflow }}/build_output.txt
-        echo "BUILD_OUTPUT<<EOF" >> $GITHUB_OUTPUT
-        echo "$(cat ${{ github.workflow }}/build_output.txt)" >> $GITHUB_OUTPUT
-        echo "EOF" >> $GITHUB_OUTPUT
+      uses: selfagency/capture-output@v1
+      with:
+        cmd: cmake --build ${{ github.workflow }}/build
+        file: ${{ github.workflow }}/build_output.txt
 
     - name: Save results to PR comment
       uses: mshick/add-pr-comment@v2
@@ -56,7 +55,7 @@ jobs:
         message: |
           ## Results of build with clang-tidy, cpplint, cppcheck
           ```
-          echo ${{ steps.build-with-linters-step.outputs.BUILD_OUTPUT }}
+          cat ${{ github.workflow }}/build_output.txt
           ```
     - name: Save build results to artifact
       uses: actions/upload-artifact@v3
@@ -83,11 +82,10 @@ jobs:
 
     - name: Run tests
       id: run-tests
-      run: |
-        ${{ github.workflow }}/build/test/test 2>&1 | tee ${{ github.workflow }}/tests_output.txt
-        echo "TESTS_OUTPUT<<EOF" >> $GITHUB_OUTPUT
-        echo "$(cat ${{ github.workflow }}/tests_output.txt)" >> $GITHUB_OUTPUT
-        echo "EOF" >> $GITHUB_OUTPUT
+      uses: selfagency/capture-output@v1
+      with:
+        cmd: ${{ github.workflow }}/build/tests/run_tests.sh
+        file: ${{ github.workflow }}/tests_output.txt
 
     - name: Save results to PR comment
       uses: mshick/add-pr-comment@v2
@@ -95,7 +93,7 @@ jobs:
         message: |
           ## Tests Results
           ```
-          echo ${{ steps.run-tests.outputs.TESTS_OUTPUT }}
+          cat ${{ github.workflow }}/tests_output.txt
           ```
 
     - name: Save build results to artifact
