@@ -15,17 +15,6 @@ class FileHolder : public IFileHolder
         return false;
     }
 
-
-    bool Delete(std::string filePath) override
-    {
-        if (m_fileDeletor.Delete(filePath))
-        {
-            return true;
-        }
-        return false;
-    }
-
-
     std::string Read(std::string filePath) override
     {
         return m_fileReader.Get(filePath);

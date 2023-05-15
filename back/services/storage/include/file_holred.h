@@ -14,7 +14,6 @@ class IFileHolder
 {
 public:
     virtual bool Save(std::string filePath, std::string fileChanges) = 0;
-    virtual bool Delete(std::string filePath) = 0;
     virtual std::string Read(std::string filePath) = 0;
 
     virtial ~IFileHolder()
@@ -23,7 +22,6 @@ public:
 
 protected:
     SaveChanges m_changesSavior;
-    DeleteFile m_fileDeletor;
     ReadFile m_fileReader;
 };
 }  // namespace inklink_file_holder
