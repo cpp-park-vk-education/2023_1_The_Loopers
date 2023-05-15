@@ -1,4 +1,4 @@
-add_library(${DRAW} SHARED "")
+add_library(${DRAW} STATIC "")
 
 target_sources(${DRAW} PRIVATE
         "src/temp.cpp"

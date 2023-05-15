@@ -1,4 +1,4 @@
-add_library(${SERIALIZER} SHARED "")
+add_library(${SERIALIZER} STATIC "")
 
 target_sources(${SERIALIZER} PRIVATE
     "src/trash.cpp"

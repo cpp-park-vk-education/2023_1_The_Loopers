@@ -1,4 +1,4 @@
-add_library(${DB_ADAPTER} SHARED "")
+add_library(${DB_ADAPTER} STATIC "")
 
 target_sources(${DB_ADAPTER} PRIVATE
     "src/trash.cpp"
