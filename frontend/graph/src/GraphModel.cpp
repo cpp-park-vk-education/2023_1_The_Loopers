@@ -17,8 +17,9 @@ void GraphModel::addVertexesToGraph(std::vector<std::string> vertexes)
     }
 }
 
-std::vector<IVertex*> GraphModel::getUniqueVertexes()
+std::vector<std::shared_ptr<IVertex>> GraphModel::getUniqueVertexes()
 {
+    return m_uniqueVertexes;
 }
 
 std::vector<IEdge*> GraphModel::getEdges()
