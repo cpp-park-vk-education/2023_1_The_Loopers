@@ -22,7 +22,7 @@ class IBaseServiceChassis
 public:
     virtual ~IBaseServiceChassis() = default;
 
-    virtual void init(ServiceType, const std::string&, const Endpoint&) = 0;
+    virtual void Init(ServiceType, const std::string&, const Endpoint&) = 0;
 
     // Service register
     virtual bool Register(ServiceType, const Endpoint&) = 0;
@@ -36,7 +36,7 @@ public:
     virtual void SetReqResCommonConnection(ICommonConnection*) = 0;
     virtual void Request(const std::string&, const Endpoint&) = 0;
     virtual void SetPubSubCommonConnection(ICommonConnection*) = 0;
-    virtual void Publish(int event, const std::string&, ServiceType = ServiceType::kNone) = 0;
+    virtual void Publish(int event, const std::string&, ServiceType) = 0;
     virtual void Subscribe(int event, const Endpoint&) = 0;
 
     // sessions manager
@@ -44,7 +44,7 @@ public:
     virtual void RemoveSession(DocSessionDescriptor) = 0;
 
     std::shared_ptr<ILogger> m_logger{std::make_shared<ILogger>()};
-    std::shared_ptr<IListener> m_listener{std::make_shared<server_network::IListener>()};
+    std::shared_ptr<server_network::IListener> m_listener{std::make_shared<server_network::IListener>()};
     // std::shared_ptr<ISerializer> m_serializer{std::make_shared<ISerializer>()};
     std::shared_ptr<IServiceRegistrator> m_register{std::make_shared<IServiceRegistrator>()};
     std::shared_ptr<IMessageBrokerSignal> m_signalBroker{std::make_shared<IMessageBrokerSignal>()};
