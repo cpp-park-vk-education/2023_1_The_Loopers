@@ -36,3 +36,18 @@ bool AuthModel::login(const std::string& login, const std::string& password)
     return 1;
 }
 
+void exit()
+{
+}
+
+const std::string getLogin() const {
+
+    return m_login;
+
+}
+
+const std::string getToken() const {
+
+    return m_token;
+
+}
