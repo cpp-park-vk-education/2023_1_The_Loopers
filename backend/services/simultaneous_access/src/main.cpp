@@ -6,6 +6,6 @@ void ConfigureService()
 
 int main(int, char**)
 {
-    inklink::service_simultaneous_access::SimultaneousAccessService service;
+    // inklink::service_simultaneous_access::SimultaneousAccessService service;
     return 0;
 }

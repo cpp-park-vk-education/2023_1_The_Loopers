@@ -1,5 +1,6 @@
 #include "simultaneous_access_service.h"
 
+#include <idb_adapter.h>
 #include <iexternal_service_chassis.h>
 
 namespace inklink::service_simultaneous_access
