@@ -1,4 +1,4 @@
-#include "idraw_conflict_Resolver.h"
+#include "idraw_conflict_resolver.h"
 #include "inklink_global.h"
 
 #include <chrono>
@@ -115,10 +115,7 @@ TEST_F(TimeBasedDrawConflictResolverTest, DeletionInMiddle)
             {ResolverActionType::kDeletion, "figure1", endpoint2, std::chrono::system_clock::now() - 3s, nullptr},
             {ResolverActionType::kInsertion, "figure1", endpoint1, std::chrono::system_clock::now(), nullptr}};
 
-    std::vector<DrawAction> expected = {
-            {ResolverActionType::kInsertion, "figure1", endpoint1, std::chrono::system_clock::now() - 10s, nullptr},
-            {ResolverActionType::kFormat, "figure1", endpoint1, std::chrono::system_clock::now() - 5s, nullptr},
-            {ResolverActionType::kDeletion, "figure1", endpoint2, std::chrono::system_clock::now() - 3s, nullptr}};
+    std::vector<DrawAction> expected = {input[0], input[1], input[2]};
 
     std::vector<DrawAction> actual = m_Resolver->Resolve(input);
 

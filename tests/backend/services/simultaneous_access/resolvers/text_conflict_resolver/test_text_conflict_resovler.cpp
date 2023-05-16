@@ -114,16 +114,12 @@ TEST_F(TimeBasedTextConflictResolverTest, TwoClientsOneFigureInsertionsOnly)
              nullptr},
             {ResolverActionType::kInsertion, "figure1", endpoint1, std::chrono::system_clock::now(), 1, 2, nullptr}};
 
-    // each action of different user should be transformed
-    std::vector<TextAction> expected = {
-            {ResolverActionType::kInsertion, "figure1", endpoint1, std::chrono::system_clock::now() - 15s, 0, 1,
-             nullptr},
-            // second insertion shifted to the right on one char due to insertion by user1
-            {ResolverActionType::kInsertion, "figure1", endpoint2, std::chrono::system_clock::now() - 10s, 1, 2,
-             nullptr},
-            // third insertion shifted to the right on one char due to insertion by user2 (it
-            // already takes into account insertion by author user1)
-            {ResolverActionType::kInsertion, "figure1", endpoint1, std::chrono::system_clock::now(), 2, 3, nullptr}};
+    // insertion shifted to the right by one char for input[1] and [2]
+    std::vector<TextAction> expected = input;
+    expected[1].posStart = 1;
+    expected[1].posEnd = 2;
+    expected[2].posStart = 2;
+    expected[2].posEnd = 3;
 
     auto actual = m_Resolver->Resolve(input);
 
@@ -143,16 +139,14 @@ TEST_F(TimeBasedTextConflictResolverTest, TwoClientsOneFigureWithDeletion)
              nullptr},
             {ResolverActionType::kInsertion, "figure1", endpoint1, std::chrono::system_clock::now(), 10, 20, nullptr}};
 
-    // each action of different user should be transformed
-    std::vector<TextAction> expected = {
-            {ResolverActionType::kInsertion, "figure1", endpoint1, std::chrono::system_clock::now() - 15s, 0, 1,
-             nullptr},
-            // deletion shifted to the right on one char due to insertion by user1
-            {ResolverActionType::kDeletion, "figure1", endpoint2, std::chrono::system_clock::now() - 10s, 1, 2,
-             nullptr},
-            // insertion shifted to the left on one char due to deletion by user2 (it already takes
-            // into account insertion by author user1)
-            {ResolverActionType::kInsertion, "figure1", endpoint1, std::chrono::system_clock::now(), 9, 19, nullptr}};
+    std::vector<TextAction> expected = input;
+    // deletion shifted to the right by one char due to insertion by user1
+    expected[1].posStart = 1;
+    expected[1].posEnd = 2;
+    // insertion shifted to the left by one char due to deletion by user2 (it already takes
+    // into account insertion by author user1)
+    expected[2].posStart = 9;
+    expected[2].posEnd = 19;
     std::vector<TextAction> actual = m_Resolver->Resolve(input);
 
     ASSERT_EQ(actual.size(), expected.size());

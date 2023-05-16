@@ -4,10 +4,9 @@
 #include <chrono>
 #include <format>
 #include <gtest/gtest.h>
-#include <gtest/gtest_pred_impl.h>
 #include <vector>
 
-// TODO operator << overload
+// TODO (a.novak) operator << overload for DrawAction
 
 using namespace inklink;
 using namespace inklink::service_simultaneous_access;
