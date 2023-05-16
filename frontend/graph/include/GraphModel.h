@@ -17,9 +17,9 @@ enum positionLimits{
 class GraphModel
 {
 public:
-    void addVertexesToGraph(std::vector<std::string> vertexes);
-    std::vector<std::shared_ptr<IVertex>> getUniqueVertexes();
-    std::vector<std::shared_ptr<IEdge>> getEdges();
+    void AddVertexesToGraph(const std::vector<std::string>& vertexes);
+    std::vector<std::shared_ptr<IVertex>> GetUniqueVertexes();
+    std::vector<std::shared_ptr<IEdge>> GetEdges();
 
 private:
     //generates random position for vertex, because edge
