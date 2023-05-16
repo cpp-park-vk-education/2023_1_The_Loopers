@@ -62,12 +62,22 @@ void GraphModel::FillUniqueVertexes(std::set<std::shared_ptr<IVertex>> uniqueVer
 
 void GraphModel::FillEdges(std::vector<NamingsEdge> namings)
 {
-    for (auto rawEdge : namings){
+    for (auto rawEdge : namings)
+    {
         std::shared_ptr<IVertex> sourceVertex = std::make_shared<IVertex>(rawEdge.source);
         std::shared_ptr<IVertex> destinationVertex = std::make_shared<IVertex>(rawEdge.destination);
         IEdge(sourceVertex, destinationVertex);
 
         m_edges.push_back(IEdge);
+    }
+}
+
+void GraphModel::SetRandomPositions()
+{
+    for (auto vertex : m_uniqueVertexes)
+    {
+        auto vertexPosition = GeneratePosition();
+        vertex->SetCurrentPosition(vertexPosition);
     }
 }
 } // namespace inklink::graph
