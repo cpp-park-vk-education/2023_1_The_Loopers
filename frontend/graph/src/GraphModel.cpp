@@ -7,7 +7,7 @@
 namespace inklink::graph
 {
 // TODO should parse raw data to edges and unique vertexes, then add them to graph
-void GraphModel::addVertexesToGraph(const std::vector<std::string>& vertexes)
+void GraphModel::AddVertexesToGraph(const std::vector<std::string>& vertexes)
 {
     for (std::string vertexName : vertexes)
     {
@@ -18,12 +18,12 @@ void GraphModel::addVertexesToGraph(const std::vector<std::string>& vertexes)
     }
 }
 
-std::vector<std::shared_ptr<IVertex>> GraphModel::getUniqueVertexes()
+std::vector<std::shared_ptr<IVertex>> GraphModel::GetUniqueVertexes()
 {
     return m_uniqueVertexes;
 }
 
-std::vector<std::shared_ptr<IEdge>> GraphModel::getEdges()
+std::vector<std::shared_ptr<IEdge>> GraphModel::GetEdges()
 {
     return m_edges;
 }
