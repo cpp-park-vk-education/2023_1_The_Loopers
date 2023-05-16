@@ -5,11 +5,13 @@
 
 bool AuthModel::createUser(const std::string& login, const std::string& password)
 {
-    if(login = '') {
+    if (login == '')
+    {
         return 0;
     }
 
-    if(password = '') {
+    if (password == '')
+    {
         return 0;
     }
 
@@ -18,3 +20,19 @@ bool AuthModel::createUser(const std::string& login, const std::string& password
 
     return 1;
 }
+
+bool AuthModel::login(const std::string& login, const std::string& password)
+{
+    if (login != m_login)
+    {
+        return 0;
+    }
+
+    if (password != m_token)
+    {
+        return 0;
+    }
+
+    return 1;
+}
+
