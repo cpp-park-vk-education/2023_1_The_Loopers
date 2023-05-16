@@ -54,4 +54,9 @@ std::set<std::shared_ptr<IVertex>> GraphModel::MakeUniqueVertexes()
 
     return uniqueVertexes;
 }
+
+void GraphModel::FillUniqueVertexes(std::set<std::shared_ptr<IVertex>> uniqueVertexes)
+{
+    m_uniqueVertexes = std::move(uniqueVertexes);
+}
 } // namespace inklink::graph
