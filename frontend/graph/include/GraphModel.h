@@ -9,9 +9,14 @@
 
 namespace inklink::graph
 {
-
-enum positionLimits{
+enum positionLimits
+{
     kPosition = 300
+};
+
+struct rawEdge{
+    std::string source;
+    std::string destination;
 };
 
 class GraphModel
@@ -21,9 +26,12 @@ public:
     std::vector<std::shared_ptr<IVertex>> GetUniqueVertexes();
     std::vector<std::shared_ptr<IEdge>> GetEdges();
 
+    void AddEdge(rawEdge);
+
 private:
-    //generates random position for vertex, because edge
-    Position GeneratePosition();
+    Position GeneratePosition(); // generates random position for vertex
+    void MakeUniqueVertexes();   // convert edges into unique vertexes
+    std::vector<rawEdge> ParseRawData(std::string& rawString);
 
     // first vertex in vector used as center vertex
     std::vector<std::shared_ptr<IVertex>> m_uniqueVertexes;
