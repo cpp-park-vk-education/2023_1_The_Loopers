@@ -36,18 +36,25 @@ bool AuthModel::login(const std::string& login, const std::string& password)
     return 1;
 }
 
-void exit()
+void AuthModel::exit()
 {
 }
 
-const std::string getLogin() const {
-
+const std::string AuthModel::getLogin() const
+{
     return m_login;
-
 }
 
-const std::string getToken() const {
-
+const std::string AuthModel::getToken() const
+{
     return m_token;
+}
 
+void AuthModel::setLogin(const std::string& login)
+{
+    m_login = login;
+}
+void AuthModel::setToken(const std::string& token)
+{
+    m_token = token;
 }
