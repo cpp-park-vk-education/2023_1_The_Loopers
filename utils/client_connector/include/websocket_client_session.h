@@ -19,7 +19,7 @@ namespace beast = boost::beast;
 template <Do_ConnectTypeErrorCode_Concept DoOnConnectType = Fun_ConnectTypeErrorCodeSession,
           Do_StringErrorCode_Concept DoOnRead = Fun_StringErrorCodeSession,
           Do_ErrorCode_Concept DoOnWrite = Fun_ErrorCode, Do_ErrorCode_Concept DoOnClose = Fun_ErrorCode>
-class WebsocketClientSession
+class WebsocketClientSession final
         : public IClientSession,
           public std::enable_shared_from_this<WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>>
 {
@@ -37,7 +37,7 @@ public:
     WebsocketClientSession& operator=(const WebsocketClientSession&) = delete;
     WebsocketClientSession& operator=(WebsocketClientSession&&) = delete;
 
-    ~WebsocketClientSession() final = default;
+    ~WebsocketClientSession() final;
 
     void RunAsync(const std::string& host, uint16_t port) final;
     void Send(const std::string&) final;
@@ -58,6 +58,9 @@ private:
     std::string m_host;
     net::ip::tcp::resolver m_resolver;
     beast::websocket::stream<beast::tcp_stream> m_ws;
+
+    bool m_close{false};
+    bool m_writing{false};
 
     beast::flat_buffer m_buffer;
     std::deque<std::shared_ptr<std::string const>> m_queue;
