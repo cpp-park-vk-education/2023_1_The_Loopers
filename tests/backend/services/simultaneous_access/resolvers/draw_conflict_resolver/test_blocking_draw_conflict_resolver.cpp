@@ -2,7 +2,9 @@
 #include "inklink_global.h"
 
 #include <chrono>
+#include <format>
 #include <gtest/gtest.h>
+#include <gtest/gtest_pred_impl.h>
 #include <vector>
 
 // TODO operator << overload
@@ -11,6 +13,11 @@ using namespace inklink;
 using namespace inklink::service_simultaneous_access;
 
 using namespace std::chrono_literals;
+
+bool PredBlocking(const DrawAction& lhs, const DrawAction& rhs)
+{
+    return lhs == rhs;
+}
 
 // Test cases for resolver that allows only one user to modify figure
 // Blocking starts when user selects figure and ends when he deselects it
@@ -63,9 +70,7 @@ TEST_F(BlockingDrawConflictResolverTest, OneUserGoodOtherNoSelectionDifferentFig
             {ResolverActionType::kInsertion, "figureOther", endpoint2, std::chrono::system_clock::now() - 3s, nullptr},
             {ResolverActionType::kInsertion, "figure1", endpoint1, std::chrono::system_clock::now(), nullptr}};
 
-    std::vector<DrawAction> expected{
-            {ResolverActionType::kSelect, "figure1", endpoint1, std::chrono::system_clock::now() - 5s, nullptr},
-            {ResolverActionType::kInsertion, "figure1", endpoint1, std::chrono::system_clock::now(), nullptr}};
+    std::vector<DrawAction> expected{input[0], input[2]};
     auto actual = m_Resolver->Resolve(input);
 
     ASSERT_EQ(actual.size(), expected.size());
@@ -73,8 +78,10 @@ TEST_F(BlockingDrawConflictResolverTest, OneUserGoodOtherNoSelectionDifferentFig
     {
         EXPECT_EQ(actual[i], expected[i])
                 << "Actual type " << (int)actual[i].type << " figure " << actual[i].figureId << " endpoint "
-                << actual[i].endpoint.address << "\nExpected type " << (int)expected[i].type << " figure "
-                << expected[i].figureId << " endpoint " << expected[i].endpoint.address;
+                << actual[i].endpoint.address << " time " << actual[i].time.time_since_epoch().count() << " data ptr "
+                << actual[i].data << "\nExpected type " << (int)expected[i].type << " figure " << expected[i].figureId
+                << " endpoint " << expected[i].endpoint.address << " time "
+                << expected[i].time.time_since_epoch().count() << " data ptr " << expected[i].data;
     }
 }
 
@@ -85,9 +92,7 @@ TEST_F(BlockingDrawConflictResolverTest, OneUserGoodOtherNoSelectionOneFigure)
             {ResolverActionType::kInsertion, "figure1", endpoint2, std::chrono::system_clock::now() - 3s, nullptr},
             {ResolverActionType::kInsertion, "figure1", endpoint1, std::chrono::system_clock::now(), nullptr}};
 
-    std::vector<DrawAction> expected{
-            {ResolverActionType::kSelect, "figure1", endpoint1, std::chrono::system_clock::now() - 5s, nullptr},
-            {ResolverActionType::kInsertion, "figure1", endpoint1, std::chrono::system_clock::now(), nullptr}};
+    std::vector<DrawAction> expected{input[0], input[2]};
     auto actual = m_Resolver->Resolve(input);
 
     ASSERT_EQ(actual.size(), expected.size());
@@ -95,8 +100,10 @@ TEST_F(BlockingDrawConflictResolverTest, OneUserGoodOtherNoSelectionOneFigure)
     {
         EXPECT_EQ(actual[i], expected[i])
                 << "Actual type " << (int)actual[i].type << " figure " << actual[i].figureId << " endpoint "
-                << actual[i].endpoint.address << "\nExpected type " << (int)expected[i].type << " figure "
-                << expected[i].figureId << " endpoint " << expected[i].endpoint.address;
+                << actual[i].endpoint.address << " time " << actual[i].time.time_since_epoch().count() << " data ptr "
+                << actual[i].data << "\nExpected type " << (int)expected[i].type << " figure " << expected[i].figureId
+                << " endpoint " << expected[i].endpoint.address << " time "
+                << expected[i].time.time_since_epoch().count() << " data ptr " << expected[i].data;
     }
 }
 
@@ -117,8 +124,10 @@ TEST_F(BlockingDrawConflictResolverTest, NoDeselectSoFar)
     {
         EXPECT_EQ(actual[i], expected[i])
                 << "Actual type " << (int)actual[i].type << " figure " << actual[i].figureId << " endpoint "
-                << actual[i].endpoint.address << "\nExpected type " << (int)expected[i].type << " figure "
-                << expected[i].figureId << " endpoint " << expected[i].endpoint.address;
+                << actual[i].endpoint.address << " time " << actual[i].time.time_since_epoch().count() << " data ptr "
+                << actual[i].data << "\nExpected type " << (int)expected[i].type << " figure " << expected[i].figureId
+                << " endpoint " << expected[i].endpoint.address << " time "
+                << expected[i].time.time_since_epoch().count() << " data ptr " << expected[i].data;
     }
 }
 
@@ -139,8 +148,10 @@ TEST_F(BlockingDrawConflictResolverTest, FullCycle)
     {
         EXPECT_EQ(actual[i], expected[i])
                 << "Actual type " << (int)actual[i].type << " figure " << actual[i].figureId << " endpoint "
-                << actual[i].endpoint.address << "\nExpected type " << (int)expected[i].type << " figure "
-                << expected[i].figureId << " endpoint " << expected[i].endpoint.address;
+                << actual[i].endpoint.address << " time " << actual[i].time.time_since_epoch().count() << " data ptr "
+                << actual[i].data << "\nExpected type " << (int)expected[i].type << " figure " << expected[i].figureId
+                << " endpoint " << expected[i].endpoint.address << " time "
+                << expected[i].time.time_since_epoch().count() << " data ptr " << expected[i].data;
     }
 }
 
@@ -152,10 +163,7 @@ TEST_F(BlockingDrawConflictResolverTest, MultipleSelections)
             {ResolverActionType::kFormat, "figure1", endpoint1, std::chrono::system_clock::now() - 3s, nullptr},
             {ResolverActionType::kDeselect, "figure1", endpoint1, std::chrono::system_clock::now(), nullptr}};
 
-    std::vector<DrawAction> expected = {
-            {ResolverActionType::kSelect, "figure1", endpoint1, std::chrono::system_clock::now() - 10s, nullptr},
-            {ResolverActionType::kFormat, "figure1", endpoint1, std::chrono::system_clock::now() - 3s, nullptr},
-            {ResolverActionType::kDeselect, "figure1", endpoint1, std::chrono::system_clock::now(), nullptr}};
+    std::vector<DrawAction> expected = {input[0], input[2], input[3]};
 
     std::vector<DrawAction> actual = m_Resolver->Resolve(input);
 
@@ -164,8 +172,10 @@ TEST_F(BlockingDrawConflictResolverTest, MultipleSelections)
     {
         EXPECT_EQ(actual[i], expected[i])
                 << "Actual type " << (int)actual[i].type << " figure " << actual[i].figureId << " endpoint "
-                << actual[i].endpoint.address << "\nExpected type " << (int)expected[i].type << " figure "
-                << expected[i].figureId << " endpoint " << expected[i].endpoint.address;
+                << actual[i].endpoint.address << " time " << actual[i].time.time_since_epoch().count() << " data ptr "
+                << actual[i].data << "\nExpected type " << (int)expected[i].type << " figure " << expected[i].figureId
+                << " endpoint " << expected[i].endpoint.address << " time "
+                << expected[i].time.time_since_epoch().count() << " data ptr " << expected[i].data;
     }
 }
 
@@ -176,9 +186,7 @@ TEST_F(BlockingDrawConflictResolverTest, OtherUserTriesSelectWhenBlocked)
             {ResolverActionType::kSelect, "figure1", endpoint2, std::chrono::system_clock::now() - 5s, nullptr},
             {ResolverActionType::kFormat, "figure1", endpoint1, std::chrono::system_clock::now() - 3s, nullptr}};
 
-    std::vector<DrawAction> expected = {
-            {ResolverActionType::kSelect, "figure1", endpoint1, std::chrono::system_clock::now() - 10s, nullptr},
-            {ResolverActionType::kFormat, "figure1", endpoint1, std::chrono::system_clock::now() - 3s, nullptr}};
+    std::vector<DrawAction> expected = {input[0], input[2]};
 
     std::vector<DrawAction> actual = m_Resolver->Resolve(input);
 
@@ -187,8 +195,10 @@ TEST_F(BlockingDrawConflictResolverTest, OtherUserTriesSelectWhenBlocked)
     {
         EXPECT_EQ(actual[i], expected[i])
                 << "Actual type " << (int)actual[i].type << " figure " << actual[i].figureId << " endpoint "
-                << actual[i].endpoint.address << "\nExpected type " << (int)expected[i].type << " figure "
-                << expected[i].figureId << " endpoint " << expected[i].endpoint.address;
+                << actual[i].endpoint.address << " time " << actual[i].time.time_since_epoch().count() << " data ptr "
+                << actual[i].data << "\nExpected type " << (int)expected[i].type << " figure " << expected[i].figureId
+                << " endpoint " << expected[i].endpoint.address << " time "
+                << expected[i].time.time_since_epoch().count() << " data ptr " << expected[i].data;
     }
 }
 
@@ -209,8 +219,10 @@ TEST_F(BlockingDrawConflictResolverTest, OtherUserSelectsAfterDeselect)
     {
         EXPECT_EQ(actual[i], expected[i])
                 << "Actual type " << (int)actual[i].type << " figure " << actual[i].figureId << " endpoint "
-                << actual[i].endpoint.address << "\nExpected type " << (int)expected[i].type << " figure "
-                << expected[i].figureId << " endpoint " << expected[i].endpoint.address;
+                << actual[i].endpoint.address << " time " << actual[i].time.time_since_epoch().count() << " data ptr "
+                << actual[i].data << "\nExpected type " << (int)expected[i].type << " figure " << expected[i].figureId
+                << " endpoint " << expected[i].endpoint.address << " time "
+                << expected[i].time.time_since_epoch().count() << " data ptr " << expected[i].data;
     }
 }
 
@@ -231,7 +243,9 @@ TEST_F(BlockingDrawConflictResolverTest, UsersSelectsDifferentFiguresIsOk)
     {
         EXPECT_EQ(actual[i], expected[i])
                 << "Actual type " << (int)actual[i].type << " figure " << actual[i].figureId << " endpoint "
-                << actual[i].endpoint.address << "\nExpected type " << (int)expected[i].type << " figure "
-                << expected[i].figureId << " endpoint " << expected[i].endpoint.address;
+                << actual[i].endpoint.address << " time " << actual[i].time.time_since_epoch().count() << " data ptr "
+                << actual[i].data << "\nExpected type " << (int)expected[i].type << " figure " << expected[i].figureId
+                << " endpoint " << expected[i].endpoint.address << " time "
+                << expected[i].time.time_since_epoch().count() << " data ptr " << expected[i].data;
     }
 }
