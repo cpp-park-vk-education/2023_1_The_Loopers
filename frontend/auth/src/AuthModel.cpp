@@ -54,7 +54,14 @@ void AuthModel::setLogin(const std::string& login)
 {
     m_login = login;
 }
+
 void AuthModel::setToken(const std::string& token)
 {
     m_token = token;
 }
+
+std::string AuthModel::encrypt(const std::string& password)
+{
+    return;
+}
+
