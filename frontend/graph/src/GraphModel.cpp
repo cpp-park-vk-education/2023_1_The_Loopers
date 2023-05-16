@@ -2,12 +2,13 @@
 
 #include <memory>
 #include <random>
+#include <set>
 #include <string>
 
 namespace inklink::graph
 {
 // TODO should parse raw data to edges and unique vertexes, then add them to graph
-void GraphModel::AddVertexesToGraph(const std::vector<std::string>& vertexes)
+void GraphModel::FillGraphByEdges(const std::vector<std::string>& vertexes)
 {
     for (std::string vertexName : vertexes)
     {
@@ -39,5 +40,18 @@ Position GraphModel::GeneratePosition()
     temp.yPosition = dis(gen);
     temp.xPosition = dis(gen);
     return temp;
+}
+
+std::set<std::shared_ptr<IVertex>> GraphModel::MakeUniqueVertexes()
+{
+    std::set<std::shared_ptr<IVertex>> uniqueVertexes;
+
+    for (auto edge : m_edges)
+    {
+        uniqueVertexes.insert(edge->GetSourceVertex());
+        uniqueVertexes.insert(edge->GetDestinationVertex());
+    }
+
+    return uniqueVertexes;
 }
 } // namespace inklink::graph

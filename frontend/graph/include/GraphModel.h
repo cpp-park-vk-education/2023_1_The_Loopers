@@ -4,6 +4,7 @@
 #include "IVertex.h"
 
 #include <memory>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -28,11 +29,11 @@ public:
     std::vector<std::shared_ptr<IVertex>> GetUniqueVertexes();
     std::vector<std::shared_ptr<IEdge>> GetEdges();
 
-    void AddEdge(NamingsEdge);
+//    void AddEdge(NamingsEdge);
 
 private:
     Position GeneratePosition();                                // generates random position for vertex
-    std::vector<std::shared_ptr<IVertex>> MakeUniqueVertexes(); // parse edges and find unique vertexes
+    std::set<std::shared_ptr<IVertex>> MakeUniqueVertexes(); // parse edges and find unique vertexes
     void FillUniqueVertexes(std::shared_ptr<IVertex>);
     void FillEdges(std::vector<NamingsEdge>);
     void SetPosition ();

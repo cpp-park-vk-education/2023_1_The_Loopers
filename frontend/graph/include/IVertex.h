@@ -22,9 +22,9 @@ public:
     std::string getName();
 
     Position getCurrentPosition();
-    Position getNewPosition();
+//    Position getNewPosition();
     void setCurrentPosition(Position);
-    void setNewPosition(Position);
+//    void setNewPosition(Position);
 
 private:
     std::string m_name;
