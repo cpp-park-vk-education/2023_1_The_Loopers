@@ -5,6 +5,8 @@
 #include <gtest/gtest.h>
 #include <vector>
 
+// TODO operator << overload
+
 using namespace inklink;
 using namespace inklink::service_simultaneous_access;
 
@@ -69,7 +71,10 @@ TEST_F(BlockingDrawConflictResolverTest, OneUserGoodOtherNoSelectionDifferentFig
     ASSERT_EQ(actual.size(), expected.size());
     for (size_t i = 0; i < actual.size(); ++i)
     {
-        EXPECT_EQ(actual[i], expected[i]);
+        EXPECT_EQ(actual[i], expected[i])
+                << "Actual type " << (int)actual[i].type << " figure " << actual[i].figureId << " endpoint "
+                << actual[i].endpoint.address << "\nExpected type " << (int)expected[i].type << " figure "
+                << expected[i].figureId << " endpoint " << expected[i].endpoint.address;
     }
 }
 
@@ -88,7 +93,10 @@ TEST_F(BlockingDrawConflictResolverTest, OneUserGoodOtherNoSelectionOneFigure)
     ASSERT_EQ(actual.size(), expected.size());
     for (size_t i = 0; i < actual.size(); ++i)
     {
-        EXPECT_EQ(actual[i], expected[i]);
+        EXPECT_EQ(actual[i], expected[i])
+                << "Actual type " << (int)actual[i].type << " figure " << actual[i].figureId << " endpoint "
+                << actual[i].endpoint.address << "\nExpected type " << (int)expected[i].type << " figure "
+                << expected[i].figureId << " endpoint " << expected[i].endpoint.address;
     }
 }
 
@@ -107,7 +115,10 @@ TEST_F(BlockingDrawConflictResolverTest, NoDeselectSoFar)
     ASSERT_EQ(actual.size(), expected.size());
     for (size_t i = 0; i < actual.size(); ++i)
     {
-        EXPECT_EQ(actual[i], expected[i]);
+        EXPECT_EQ(actual[i], expected[i])
+                << "Actual type " << (int)actual[i].type << " figure " << actual[i].figureId << " endpoint "
+                << actual[i].endpoint.address << "\nExpected type " << (int)expected[i].type << " figure "
+                << expected[i].figureId << " endpoint " << expected[i].endpoint.address;
     }
 }
 
@@ -126,7 +137,10 @@ TEST_F(BlockingDrawConflictResolverTest, FullCycle)
     ASSERT_EQ(actual.size(), expected.size());
     for (size_t i = 0; i < actual.size(); ++i)
     {
-        EXPECT_EQ(actual[i], expected[i]);
+        EXPECT_EQ(actual[i], expected[i])
+                << "Actual type " << (int)actual[i].type << " figure " << actual[i].figureId << " endpoint "
+                << actual[i].endpoint.address << "\nExpected type " << (int)expected[i].type << " figure "
+                << expected[i].figureId << " endpoint " << expected[i].endpoint.address;
     }
 }
 
@@ -134,7 +148,7 @@ TEST_F(BlockingDrawConflictResolverTest, MultipleSelections)
 {
     std::vector<DrawAction> input = {
             {ResolverActionType::kSelect, "figure1", endpoint1, std::chrono::system_clock::now() - 10s, nullptr},
-            {ResolverActionType::kSelect, "figure1", endpoint1, std::chrono::system_clock::now() - 5s, nullptr},
+            {ResolverActionType::kSelect, "figure1", endpoint2, std::chrono::system_clock::now() - 5s, nullptr},
             {ResolverActionType::kFormat, "figure1", endpoint1, std::chrono::system_clock::now() - 3s, nullptr},
             {ResolverActionType::kDeselect, "figure1", endpoint1, std::chrono::system_clock::now(), nullptr}};
 
@@ -148,7 +162,10 @@ TEST_F(BlockingDrawConflictResolverTest, MultipleSelections)
     ASSERT_EQ(actual.size(), expected.size());
     for (size_t i = 0; i < actual.size(); ++i)
     {
-        EXPECT_EQ(actual[i], expected[i]);
+        EXPECT_EQ(actual[i], expected[i])
+                << "Actual type " << (int)actual[i].type << " figure " << actual[i].figureId << " endpoint "
+                << actual[i].endpoint.address << "\nExpected type " << (int)expected[i].type << " figure "
+                << expected[i].figureId << " endpoint " << expected[i].endpoint.address;
     }
 }
 
@@ -168,7 +185,10 @@ TEST_F(BlockingDrawConflictResolverTest, OtherUserTriesSelectWhenBlocked)
     ASSERT_EQ(actual.size(), expected.size());
     for (size_t i = 0; i < actual.size(); ++i)
     {
-        EXPECT_EQ(actual[i], expected[i]);
+        EXPECT_EQ(actual[i], expected[i])
+                << "Actual type " << (int)actual[i].type << " figure " << actual[i].figureId << " endpoint "
+                << actual[i].endpoint.address << "\nExpected type " << (int)expected[i].type << " figure "
+                << expected[i].figureId << " endpoint " << expected[i].endpoint.address;
     }
 }
 
@@ -187,7 +207,10 @@ TEST_F(BlockingDrawConflictResolverTest, OtherUserSelectsAfterDeselect)
     ASSERT_EQ(actual.size(), expected.size());
     for (size_t i = 0; i < actual.size(); ++i)
     {
-        EXPECT_EQ(actual[i], expected[i]);
+        EXPECT_EQ(actual[i], expected[i])
+                << "Actual type " << (int)actual[i].type << " figure " << actual[i].figureId << " endpoint "
+                << actual[i].endpoint.address << "\nExpected type " << (int)expected[i].type << " figure "
+                << expected[i].figureId << " endpoint " << expected[i].endpoint.address;
     }
 }
 
@@ -206,6 +229,9 @@ TEST_F(BlockingDrawConflictResolverTest, UsersSelectsDifferentFiguresIsOk)
     ASSERT_EQ(actual.size(), expected.size());
     for (size_t i = 0; i < actual.size(); ++i)
     {
-        EXPECT_EQ(actual[i], expected[i]);
+        EXPECT_EQ(actual[i], expected[i])
+                << "Actual type " << (int)actual[i].type << " figure " << actual[i].figureId << " endpoint "
+                << actual[i].endpoint.address << "\nExpected type " << (int)expected[i].type << " figure "
+                << expected[i].figureId << " endpoint " << expected[i].endpoint.address;
     }
 }

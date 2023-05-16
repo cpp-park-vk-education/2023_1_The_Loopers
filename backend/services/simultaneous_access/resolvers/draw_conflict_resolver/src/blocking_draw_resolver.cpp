@@ -21,7 +21,6 @@ std::vector<DrawAction> BlockingDrawResolver::Resolve(std::vector<DrawAction> ac
         switch (action.type)
         {
         case ResolverActionType::kSelect:
-        case ResolverActionType::kInsertion:
             if (!userByFigure.contains(action.figureId))
             {
                 userByFigure[action.figureId] = action.endpoint;
