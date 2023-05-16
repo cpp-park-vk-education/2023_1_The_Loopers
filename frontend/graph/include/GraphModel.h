@@ -9,6 +9,11 @@
 
 namespace inklink::graph
 {
+
+enum positionLimits{
+    kPosition = 300
+};
+
 class GraphModel
 {
 public:

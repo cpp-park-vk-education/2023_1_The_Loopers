@@ -6,10 +6,6 @@
 
 namespace inklink::graph
 {
-enum{
-    kPosition = 300
-};
-
 // TODO should parse raw data to edges and unique vertexes, then add them to graph
 void GraphModel::addVertexesToGraph(std::vector<std::string> vertexes)
 {
@@ -37,7 +33,7 @@ Position GraphModel::GeneratePosition()
 {
     std::random_device seed;
     std::mt19937 gen(seed());
-    std::uniform_int_distribution<> dis(-kPosition, kPosition);
+    std::uniform_int_distribution<> dis(-positionLimits::kPosition, positionLimits::kPosition);
 
     Position temp;
     temp.yPosition = dis(gen);
