@@ -2,6 +2,7 @@ add_library(${CLIENT_NETWORK} STATIC "")
 
 target_sources(${CLIENT_NETWORK} PRIVATE
     "src/trash.cpp"
+    "src/manual_websocket_client_session.cpp"
 )
 
 set(PUBLIC_LINK_LIBRARIES

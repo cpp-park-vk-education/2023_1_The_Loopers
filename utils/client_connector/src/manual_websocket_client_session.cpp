@@ -1,4 +1,4 @@
-#include "manual_client_session.h"
+#include "manual_websocket_client_session.h"
 
 #include <boost/posix_time.h>
 
@@ -19,6 +19,23 @@ WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::Websock
     net::ip::tcp::endpoint localEndpoint(boost::asio::ip::address::from_string(address), port);
     // do not realy need strand here, and I'm not sure can be socket constructed using strand
     m_socket = boost::asio::ip::tcp::socket(ioc, localEndpoint);
+}
+
+template <Do_ConnectTypeErrorCode_Concept DoOnConnectType, Do_StringErrorCode_Concept DoOnRead,
+          Do_ErrorCode_Concept DoOnWrite, Do_ErrorCode_Concept DoOnClose>
+WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::~ManualWebsocketClientSession()
+{
+    m_close = true;
+    if (m_ws.is_open())
+    {
+        while (m_writing)
+        {
+            continue;
+        }
+        error_code ec{};
+        m_ws.close(websocket::close_code::normal, ec);
+        m_doOnClose(ec);
+    }
 }
 
 template <Do_ConnectTypeErrorCode_Concept DoOnConnectType, Do_StringErrorCode_Concept DoOnRead,
@@ -56,6 +73,7 @@ void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::Se
     auto ss = std::make_shared<std::string const>(message);
     // Always add to queue
     m_queue.push_back(ss);
+    m_writing = true;
 
     // Are we already writing?
     if (m_queue.size() > 1)
@@ -70,18 +88,24 @@ template <Do_ConnectTypeErrorCode_Concept DoOnConnectType, Do_StringErrorCode_Co
           Do_ErrorCode_Concept DoOnWrite, Do_ErrorCode_Concept DoOnClose>
 void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::Close()
 {
-    // TODO (a.novak) stop every read etc.
+    m_close = true;
 
-    m_ws.async_close(websocket::close_code::normal,
-                     beast::bind_front_handler(&WebsocketClientSession::OnClose, this->shared_from_this()));
+    if (!m_writing)
+    {
+        m_ws.async_close(websocket::close_code::normal,
+                         beast::bind_front_handler(&WebsocketClientSession::OnClose, this->shared_from_this()));
+    }
 }
 
 template <Do_ConnectTypeErrorCode_Concept DoOnConnectType, Do_StringErrorCode_Concept DoOnRead,
           Do_ErrorCode_Concept DoOnWrite, Do_ErrorCode_Concept DoOnClose>
 void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::DoRead()
 {
-    // Read a message into our buffer
-    m_ws.async_read(m_buffer, beast::bind_front_handler(&WebsocketClientSession::OnRead, this->shared_from_this()));
+    if (!m_close)
+    {
+        // Read a message into our buffer
+        m_ws.async_read(m_buffer, beast::bind_front_handler(&WebsocketClientSession::OnRead, this->shared_from_this()));
+    }
 }
 
 template <Do_ConnectTypeErrorCode_Concept DoOnConnectType, Do_StringErrorCode_Concept DoOnRead,
@@ -141,11 +165,22 @@ void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::On
     // Remove the string from the queue
     m_queue.pop_front();
 
+    if (m_close)
+    {
+        m_queue.clear();
+        m_ws.async_close(websocket::close_code::normal,
+                         beast::bind_front_handler(&WebsocketClientSession::OnClose, this->shared_from_this()));
+    }
+
     // Send the next message if any
     if (!m_queue.empty())
     {
         m_ws.async_write(net::buffer(*m_queue.front()),
                          beast::bind_front_handler(&WebsocketClientSession::OnWrite, this->shared_from_this()));
+    }
+    else
+    {
+        m_writing = false;
     }
 }
 

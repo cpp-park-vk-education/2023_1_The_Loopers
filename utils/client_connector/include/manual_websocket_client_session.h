@@ -20,7 +20,7 @@ namespace beast = boost::beast;
 template <Do_ConnectTypeErrorCode_Concept DoOnConnectType = Fun_ConnectTypeErrorCodeSession,
           Do_StringErrorCode_Concept DoOnRead = Fun_StringErrorCodeSession,
           Do_ErrorCode_Concept DoOnWrite = Fun_ErrorCode, Do_ErrorCode_Concept DoOnClose = Fun_ErrorCode>
-class ManualWebsocketClientSession
+class ManualWebsocketClientSession final
         : public IClientSession,
           public std::enable_shared_from_this<
                   ManualWebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>>
@@ -40,11 +40,11 @@ public:
     ManualWebsocketClientSession& operator=(const ManualWebsocketClientSession&) = delete;
     ManualWebsocketClientSession& operator=(ManualWebsocketClientSession&&) = delete;
 
-    ~ManualWebsocketClientSession() = default;
+    ~ManualWebsocketClientSession() final;
 
-    void RunAsync(const std::string& host, unsigned short port) override;
-    void Send(const std::string&) override;
-    void Close() override;
+    void RunAsync(const std::string& host, unsigned short port) final;
+    void Send(const std::string&) final;
+    void Close() final;
 
 private:
     using error_code = boost::system::error_code;
@@ -59,6 +59,9 @@ private:
 
     boost::asio::ip::tcp::socket m_socket;
     boost::asio::deadline_timer m_timer;
+
+    bool m_close{false};
+    bool m_writing{false};
 
     std::string m_host;
     beast::websocket::stream<beast::tcp_stream> m_ws;
