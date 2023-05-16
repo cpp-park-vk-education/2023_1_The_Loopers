@@ -89,8 +89,11 @@ void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::Cl
 {
     m_close = true;
 
-    m_ws.async_close(websocket::close_code::normal,
-                     beast::bind_front_handler(&WebsocketClientSession::OnClose, this->shared_from_this()));
+    if (!m_writing)
+    {
+        m_ws.async_close(websocket::close_code::normal,
+                         beast::bind_front_handler(&WebsocketClientSession::OnClose, this->shared_from_this()));
+    }
 }
 
 template <Do_ConnectTypeErrorCode_Concept DoOnConnectType, Do_StringErrorCode_Concept DoOnRead,
@@ -185,6 +188,8 @@ void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::On
     if (m_close)
     {
         m_queue.clear();
+        m_ws.async_close(websocket::close_code::normal,
+                         beast::bind_front_handler(&WebsocketClientSession::OnClose, this->shared_from_this()));
     }
 
     // Send the next message if any
