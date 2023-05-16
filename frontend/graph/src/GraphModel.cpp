@@ -59,4 +59,15 @@ void GraphModel::FillUniqueVertexes(std::set<std::shared_ptr<IVertex>> uniqueVer
 {
     m_uniqueVertexes = std::move(uniqueVertexes);
 }
+
+void GraphModel::FillEdges(std::vector<NamingsEdge> namings)
+{
+    for (auto rawEdge : namings){
+        std::shared_ptr<IVertex> sourceVertex = std::make_shared<IVertex>(rawEdge.source);
+        std::shared_ptr<IVertex> destinationVertex = std::make_shared<IVertex>(rawEdge.destination);
+        IEdge(sourceVertex, destinationVertex);
+
+        m_edges.push_back(IEdge);
+    }
+}
 } // namespace inklink::graph
