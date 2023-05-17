@@ -41,7 +41,7 @@ jobs:
       run: |
         cmake -B ${{ github.workflow }}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
         ${{ env.LINTERS_FLAGS_ON }} ${{ env.TEST_FLAGS_OFF }} ${{ env.BACK_FRONT_ON }}
-        cd ${{ githun.workflow }}
+        cd ${{ github.workflow }}
         ls
 
     - name: Build with linters
