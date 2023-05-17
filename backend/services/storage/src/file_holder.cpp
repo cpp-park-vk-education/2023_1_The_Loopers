@@ -4,25 +4,18 @@
 
 namespace inklink_file_holder
 {
-class FileHolder : public IFileHolder
+bool FileHolder::Save(std::string filePath, std::string fileChanges)
 {
-    bool Save(std::string filePath, std::string fileChanges) override
+    if (m_changesSavior.SaveFile(filePath, fileChanges))
     {
-        if (m_changesSavior.SaveFile(filePath, fileChanges))
-        {
-            return true;
-        }
-        return false;
+        return true;
     }
+    return false;
+}
 
-    std::string Get(std::string filePath) override
-    {
-        return m_fileReader.GetFile(filePath);
-    }
-
-
-    ~FileHolder() 
-    {
-    }
+std::string FileHolder::Get(std::string filePath) override
+{
+    return m_fileReader.GetFile(filePath);
+}
 };
 }  // namespace inklink_file_holder
