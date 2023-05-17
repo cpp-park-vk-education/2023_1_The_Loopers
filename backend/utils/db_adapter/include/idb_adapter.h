@@ -5,10 +5,10 @@
 
 namespace inklink::db_adapter
 {
-class IDBAdapter
+class PgSqlIDbAdapter
 {
 public:
-    virtual ~IDBAdapter() = default;
+    virtual ~PgSqlIDbAdapter() = default;
 
     virtual void Insert(const std::string& insertPart, const std::string& valuesPart) = 0;
 
