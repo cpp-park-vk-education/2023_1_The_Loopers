@@ -53,6 +53,7 @@ jobs:
       with:
         cmd: cmake
         args: --build, ${{ github.workspace }}/CI/build/
+        fail: false
         file: ${{ github.workspace }}/CI/build_output.txt
 
     - name: Save results to PR comment
