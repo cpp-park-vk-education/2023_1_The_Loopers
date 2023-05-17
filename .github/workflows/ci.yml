@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: 
+    branches:
       - '*'
       - '!main'
 
@@ -45,15 +45,16 @@ jobs:
         cmake -B ${{ github.workflow }}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
         ${{ env.LINTERS_FLAGS_ON }} ${{ env.TEST_FLAGS_OFF }} ${{ env.BACK_FRONT_ON }}
         cd ${{ github.workflow }}
-        ls
 
     - name: Build with linters
       id: build-with-linters-step
-      uses: selfagency/capture-output@v1
-      with:
-        cmd: cmake
-        args: --build,${{ github.workspace }}/${{ github.workflow }}/build/
-        file: ${{ github.workspace }}/${{ github.workflow }}/build_output.txt
+      run: |
+        cmake --build ${{ github.workflow }}/build 2>&1 | tee ${{ github.wokflow  }}/build_output.txt
+        RESULT_CODE = ${PIPESTATUS[0]}
+        echo "BUILD_OUTPUT<<EOF" >> $GITHUB_OUTPUT
+        echo "$(cat ${{ github.workflow }}/build_output.txt)" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+        exit $RESULT_CODE
 
     - name: Save results to PR comment
       uses: mshick/add-pr-comment@v2
