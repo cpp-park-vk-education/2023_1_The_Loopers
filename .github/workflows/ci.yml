@@ -52,7 +52,7 @@ jobs:
       uses: selfagency/capture-output@v1
       with:
         cmd: cmake
-        args: --build, ${{ github.workspace }}/CI/build
+        args: --build, ${{ github.workspace }}/CI/build/
         file: ${{ github.workspace }}/CI/build_output.txt
 
     - name: Save results to PR comment
