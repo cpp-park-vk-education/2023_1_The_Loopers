@@ -62,6 +62,6 @@ void AuthModel::setToken(const std::string& token)
 
 std::string AuthModel::encrypt(const std::string& password)
 {
-    return;
+    return m_enncrypter.encryptString(password);
 }
 
