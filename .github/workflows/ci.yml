@@ -49,8 +49,8 @@ jobs:
       uses: selfagency/capture-output@v1
       with:
         cmd: cmake
-        args: --build, ${{ github.workflow }}/build
-        file: ${{ github.workflow }}/build_output.txt
+        args: --build, ${{ github.workspace }}/${{ github.workflow }}/build
+        file: ${{ github.workspace }}/${{ github.workflow }}/build_output.txt
 
     - name: Save results to PR comment
       uses: mshick/add-pr-comment@v2
