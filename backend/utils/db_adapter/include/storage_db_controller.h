@@ -13,10 +13,11 @@ class StorageDbController
 public:
     void SetAdapter(PgSqlIDbAdapter& adapter);
 
-    void Insert();
-    std::string Select(const std::string& table, const std::string& columnToSelect, );
-    void Update();
-    void Delete();
+    std::string GetFilePath(std::string fileName, std::string login);
+    std::string GetGraphArcs(std::string vertexName, std::string login);
+
+    void InsertFile(std::string fileName, std::string login, std::string filePath);
+    void InsertGraphArc(std::string fromFileName, std::string toFileName);
 
     void Connect(const std::string& connectionString);
 
