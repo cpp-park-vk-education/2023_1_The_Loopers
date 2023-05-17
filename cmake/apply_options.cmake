@@ -114,6 +114,6 @@ if(ENABLE_TEST)
 
     enable_testing()
 
-    set(SERVICES_DIR "${PROJECT_SOURCE_DIR}/back/services")
-    set(BACKEND_UTILS_DIR "${PROJECT_SOURCE_DIR}/back/utils")
+    set(SERVICES_DIR "${PROJECT_SOURCE_DIR}/backend/services")
+    set(BACKEND_UTILS_DIR "${PROJECT_SOURCE_DIR}/backend/utils")
 endif()
