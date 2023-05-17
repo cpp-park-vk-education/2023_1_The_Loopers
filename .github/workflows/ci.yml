@@ -46,7 +46,8 @@ jobs:
       id: build-with-linters-step
       uses: selfagency/capture-output@v1
       with:
-        cmd: cmake --build ${{ github.workflow }}/build
+        cmd: cmake
+        args: --build, ${{ github.workflow }}/build
         file: ${{ github.workflow }}/build_output.txt
 
     - name: Save results to PR comment
