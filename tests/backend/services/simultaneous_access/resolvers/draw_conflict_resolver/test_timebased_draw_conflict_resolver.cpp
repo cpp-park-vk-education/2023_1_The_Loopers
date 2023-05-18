@@ -20,7 +20,7 @@ public:
 protected:
     void SetUp() override
     {
-        m_Resolver = new IDrawConflictResolver();
+        m_Resolver = nullptr; // new IDrawConflictResolver();
     }
 
     void TearDown() override

@@ -7,6 +7,7 @@ set(RESOLVERS_DIR "${SERVICES_DIR}/simultaneous_access/resolvers")
 target_sources(${TEST_EXECUTABLE}
     PRIVATE
     "resolvers/draw_conflict_resolver/test_blocking_draw_conflict_resolver.cpp"
+    # "resolvers/draw_conflict_resolver/test_timebased_draw_conflict_resolver.cpp"
     # "resolvers/text_conflict_resolver/test_text_conflict_resovler.cpp"
 
     "${RESOLVERS_DIR}/draw_conflict_resolver/src/blocking_draw_resolver.cpp"
