@@ -2,9 +2,11 @@
 
 #include "inklink_global.h"
 
+#include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
+
 
 namespace inklink::server_network
 {
