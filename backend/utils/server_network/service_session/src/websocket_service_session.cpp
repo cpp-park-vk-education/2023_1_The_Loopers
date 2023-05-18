@@ -110,6 +110,9 @@ void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::OnAcc
         return;
     }
 
+    // set binary format because don't know wich format will be used
+    m_websocketStream.binary(true);
+
     // Read a message
     DoRead();
 }
