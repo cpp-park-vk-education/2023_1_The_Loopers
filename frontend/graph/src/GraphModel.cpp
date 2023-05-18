@@ -1,8 +1,10 @@
 #include "GraphModel.h"
 
+#include <iostream>
 #include <memory>
 #include <random>
 #include <set>
+#include <sstream>
 #include <string>
 
 namespace inklink::graph
@@ -79,5 +81,25 @@ void GraphModel::SetRandomPositions()
         auto vertexPosition = GeneratePosition();
         vertex->SetCurrentPosition(vertexPosition);
     }
+}
+
+std::vector<NamingsEdge> GraphModel::ParseRawData(std::string& rawEdgeString)
+{
+    std::stringstream stringToParse(rawEdgeString);
+    std::string singleEdge;
+    std::vector<NamingsEdge> namings;
+
+    while (stringToParse >> singleEdge)
+    {
+        NamingsEdge edge;
+        auto spacePosition = singleEdge.find('\t');
+        auto source = singleEdge.substr(0, spacePosition);
+        auto destination = singleEdge.substr(spacePosition + 1);
+        edge.source = source;
+        edge.destination = destination;
+        namings.push_back(edge);
+    }
+
+    return namings;
 }
 } // namespace inklink::graph
