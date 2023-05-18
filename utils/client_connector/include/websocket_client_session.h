@@ -6,6 +6,7 @@
 #include <boost/asio.hpp>
 #include <boost/beast.hpp>
 #include <boost/system/error_code.hpp>
+
 #include <deque>
 #include <functional>
 #include <memory>
@@ -16,20 +17,28 @@ namespace inklink::client_connector
 namespace net = boost::asio;
 namespace beast = boost::beast;
 
-template <Do_ConnectTypeErrorCode_Concept DoOnConnectType = Fun_ConnectTypeErrorCodeSession,
-          Do_StringErrorCode_Concept DoOnRead = Fun_StringErrorCodeSession,
-          Do_ErrorCode_Concept DoOnWrite = Fun_ErrorCode, Do_ErrorCode_Concept DoOnClose = Fun_ErrorCode>
+template <ConnectTypeErrorCodeCallbackConcept ConnectCallback =
+                  std::function<void(ConnectType, boost::system::error_code, IClientSession*)>,
+          StringErrorCodeCallbackConcept ReadCallback =
+                  std::function<void(const std::string&, boost::system::error_code, IClientSession*)>,
+          ErrorCodeCallbackConcept WriteCallback = std::function<void(boost::system::error_code)>,
+          ErrorCodeCallbackConcept CloseCallback = std::function<void(boost::system::error_code)>>
 class WebsocketClientSession final
         : public IClientSession,
-          public std::enable_shared_from_this<WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>>
+          public std::enable_shared_from_this<
+                  WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallback>>
 {
 public:
     WebsocketClientSession() = delete;
 
+    // clang-format off
     explicit WebsocketClientSession(
-            boost::asio::io_context&, DoOnConnectType = [](ConnectType, boost::system::error_code) {},
-            DoOnRead = [](const std::string&, boost::system::error_code) {},
-            DoOnWrite = [](boost::system::error_code) {}, DoOnClose = [](boost::system::error_code) {});
+            boost::asio::io_context&, 
+            ConnectCallback = [](ConnectType, boost::system::error_code) {},
+            ReadCallback = [](const std::string&, boost::system::error_code) {},
+            WriteCallback = [](boost::system::error_code) {}, 
+            CloseCallback = [](boost::system::error_code) {});
+    // clang-format on
 
     WebsocketClientSession(const WebsocketClientSession&) = delete;
     WebsocketClientSession(WebsocketClientSession&&) = delete;
@@ -57,17 +66,17 @@ private:
 
     std::string m_host;
     net::ip::tcp::resolver m_resolver;
-    beast::websocket::stream<beast::tcp_stream> m_ws;
+    beast::websocket::stream<beast::tcp_stream> m_websocketStream;
 
     bool m_close{false};
     bool m_writing{false};
 
-    beast::flat_buffer m_buffer;
-    std::deque<std::shared_ptr<std::string const>> m_queue;
+    beast::flat_buffer m_readBuffer;
+    std::deque<std::shared_ptr<std::string const>> m_sendQueue;
 
-    DoOnConnectType m_doOnConnectType;
-    DoOnRead m_doOnRead;
-    DoOnWrite m_doOnWrite;
-    DoOnClose m_doOnClose;
+    ConnectCallback m_connectCallback;
+    ReadCallback m_readCallback;
+    WriteCallback m_writeCallback;
+    CloseCallback m_closeCallback;
 };
 } // namespace inklink::client_connector
