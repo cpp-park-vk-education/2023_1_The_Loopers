@@ -82,15 +82,7 @@ void InternalSessionsManager::RemoveSession(IServiceSession* session)
         return;
     }
     const DocSessionDescriptor& descriptor = m_DescriptorByEndpoint[endpoint];
-    m_sessions.erase(endpoint);
-    m_endpointByDescriptor.erase(descriptor);
-    m_DescriptorByEndpoint.erase(endpoint);
-
-    auto& docs = m_docsByUser[descriptor.login];
-    std::erase(docs, descriptor.documentId);
-
-    auto& users = m_usersByDoc[descriptor.documentId];
-    std::erase(users, descriptor.login);
+    RemoveSession(descriptor);
 }
 
 std::weak_ptr<IServiceSession>
