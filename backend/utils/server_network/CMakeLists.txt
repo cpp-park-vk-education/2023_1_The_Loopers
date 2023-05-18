@@ -15,6 +15,12 @@ set(PUBLIC_LINK_LIBRARIES
 set(PRIVATE_LINK_LIBRARIES
     "${NETWORK_ADAPTER}"
 )
+if (WIN32)
+    set(PRIVATE_LINK_LIBRARIES "${PRIVATE_LINK_LIBRARIES}"
+        "wsock32"
+        "ws2_32"
+    )
+endif()
 
 target_link_libraries(${SERVER_NETWORK} PUBLIC ${PUBLIC_LINK_LIBRARIES})
 target_link_libraries(${SERVER_NETWORK} PRIVATE ${PRIVATE_LINK_LIBRARIES})
