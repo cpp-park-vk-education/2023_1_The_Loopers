@@ -1,84 +1,86 @@
 #include "beast_websocket_listener.h"
 
-namespace inklink::server_network
+namespace
 {
 namespace net = boost::asio;
 using tcp = net::ip::tcp;
 namespace beast = boost::beast;
+using error_code = boost::system::error_code;
+} // namespace
 
-// Accepts incoming connections and launches the sessions
-template <DoOnAcceptConcept DoOnAccept>
-BeastWebsocketListener<DoOnAccept>::BeastWebsocketListener(net::io_context &ioc, const tcp::endpoint &endpoint,
-                                                           std::shared_ptr<ISessionsFactory> factory,
-                                                           DoOnAccept doOnAccept)
-        : IListener(std::move(factory)), m_ioc{ioc}, m_acceptor{ioc}, m_doOnAccept{doOnAccept}
+namespace inklink::server_network
 {
-    error_code ec;
+// Accepts incoming connections and launches the sessions
+template <AcceptCallbackConcept AcceptCallback>
+BeastWebsocketListener<AcceptCallback>::BeastWebsocketListener(net::io_context& ioContext,
+                                                               const tcp::endpoint& endpoint,
+                                                               std::unique_ptr<ISessionsFactory> factory,
+                                                               AcceptCallback acceptCallback)
+        : IListener{std::move(factory)}, m_ioContext{ioContext}, m_acceptor{ioContext}, m_acceptCallback{acceptCallback}
+{
+    error_code errorCode;
 
     // Open the acceptor
-    m_acceptor.open(endpoint.protocol(), ec);
-    if (ec)
+    if (m_acceptor.open(endpoint.protocol(), errorCode); errorCode)
     {
-        Fail(ec, "open");
+        TerminateOnFail(errorCode, "open ");
         return;
     }
 
     // Allow address reuse
-    m_acceptor.set_option(net::socket_base::reuse_address(true));
-    if (ec)
+    m_acceptor.set_option(net::socket_base::reuse_address(true), errorCode);
+    if (errorCode)
     {
-        Fail(ec, "set_option");
+        TerminateOnFail(errorCode, "set_option ");
         return;
     }
 
     // Bind to the server address
-    m_acceptor.bind(endpoint, ec);
-    if (ec)
+    if (m_acceptor.bind(endpoint, errorCode); errorCode)
     {
-        Fail(ec, "bind");
+        TerminateOnFail(errorCode, "bind ");
         return;
     }
 
     // Start listening for connections
-    m_acceptor.listen(net::socket_base::max_listen_connections, ec);
-    if (ec)
+    m_acceptor.listen(net::socket_base::max_listen_connections, errorCode);
+    if (errorCode)
     {
-        Fail(ec, "listen");
+        TerminateOnFail(errorCode, "listen ");
         return;
     }
 }
 
 // Start accepting incoming connections
-template <DoOnAcceptConcept DoOnAccept>
-void BeastWebsocketListener<DoOnAccept>::AsyncRun()
+template <AcceptCallbackConcept AcceptCallback>
+void BeastWebsocketListener<AcceptCallback>::AsyncRun()
 {
-    if (!m_acceptor.is_open())
+    if (m_acceptor.is_open())
     {
-        return;
+        DoAccept();
     }
-    DoAccept();
 }
 
-template <DoOnAcceptConcept DoOnAccept>
-void BeastWebsocketListener<DoOnAccept>::DoAccept()
+template <AcceptCallbackConcept AcceptCallback>
+void BeastWebsocketListener<AcceptCallback>::DoAccept()
 {
     m_acceptor.async_accept(
-            net::make_strand(m_ioc),
-            beast::bind_front_handler(&BeastWebsocketListener<DoOnAccept>::on_accept, this->shared_from_this()));
+            net::make_strand(m_ioContext),
+            beast::bind_front_handler(&BeastWebsocketListener<AcceptCallback>::OnAccept, this->shared_from_this()));
 }
 
-template <DoOnAcceptConcept DoOnAccept>
-void BeastWebsocketListener<DoOnAccept>::OnAccept(boost::system::error_code ec, tcp::socket socket)
+template <AcceptCallbackConcept AcceptCallback>
+void BeastWebsocketListener<AcceptCallback>::OnAccept(error_code ec, tcp::socket socket)
 {
     if (ec)
     {
-        m_doOnAccept(ec, nullptr);
+        m_acceptCallback(ec, nullptr);
     }
     else
     {
         // Create the session and run it
         auto session = m_factory->GetSession(std::move(socket));
-        doOnAccept(ec, session.get());
+        m_acceptCallback(ec, session.get());
         session->RunAsync();
     }
 
@@ -86,14 +88,10 @@ void BeastWebsocketListener<DoOnAccept>::OnAccept(boost::system::error_code ec, 
 }
 
 // Report a Failure
-template <DoOnAcceptConcept DoOnAccept>
-void BeastWebsocketListener<DoOnAccept>::Fail(boost::system::error_code ec, char const *)
+template <AcceptCallbackConcept AcceptCallback>
+void BeastWebsocketListener<AcceptCallback>::TerminateOnFail(error_code ec, const std::string&)
 {
-    // Don't report on canceled operations
-    if (ec == net::error::operation_aborted)
-    {
-        return;
-    }
-    // Fail(ec, what, plugin_);
+    // TODO (a.novak) custom error or new error_code with additional info
+    throw ec;
 }
 } // namespace inklink::server_network
