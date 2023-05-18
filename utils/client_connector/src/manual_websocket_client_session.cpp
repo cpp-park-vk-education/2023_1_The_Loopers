@@ -2,62 +2,80 @@
 
 #include <boost/posix_time.h>
 
-namespace inklink::client_connector
+namespace
 {
 namespace net = boost::asio;
 namespace beast = boost::beast;
 using error_code = boost::system::error_code;
 
-template <Do_ConnectTypeErrorCode_Concept DoOnConnectType, Do_StringErrorCode_Concept DoOnRead,
-          Do_ErrorCode_Concept DoOnWrite, Do_ErrorCode_Concept DoOnClose>
-WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::WebsocketClientSession(
-        net::io_context& ioc, const std::string& address, unsigned short port, DoOnConnectType doOnConnectType,
-        DoOnRead doOnRead, DoOnWrite doOnWrite, DoOnClose doOnClose)
-        : m_timer{ioc}, m_doOnConnectType{doOnConnectType}, m_doOnRead{doOnRead}, m_doOnWrite{doOnWrite},
-          m_doOnClose{doOnClose}
+constexpr char* kClientName = beast::BOOST_BEAST_VERSION_STRING " inklink-client";
+} // namespace
+
+namespace inklink::client_connector
+{
+// clang-format off
+template <ConnectTypeErrorCodeCallbackConcept ConnectCallback, StringErrorCodeCallbackConcept ReadCallback,
+          ErrorCodeCallbackConcept WriteCallback, ErrorCodeCallbackConcept CloseCallback>
+WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallback>::WebsocketClientSession(
+        net::io_context& ioc, 
+        const std::string& address, unsigned short port, 
+        ConnectCallback connectCallback,
+        ReadCallback readCallback, 
+        WriteCallback writeCallback, 
+        CloseCallback closeCallback)
+        : m_timer{ioc}, 
+          m_connectCallback{connectCallback}, 
+          m_readCallback{readCallback},
+          m_writeCallback{writeCallback}, 
+          m_closeCallback{closeCallback}
 {
     net::ip::tcp::endpoint localEndpoint(boost::asio::ip::address::from_string(address), port);
     // do not realy need strand here, and I'm not sure can be socket constructed using strand
     m_socket = boost::asio::ip::tcp::socket(ioc, localEndpoint);
 }
+// clang-format on
 
-template <Do_ConnectTypeErrorCode_Concept DoOnConnectType, Do_StringErrorCode_Concept DoOnRead,
-          Do_ErrorCode_Concept DoOnWrite, Do_ErrorCode_Concept DoOnClose>
-WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::~ManualWebsocketClientSession()
+template <ConnectTypeErrorCodeCallbackConcept ConnectCallback, StringErrorCodeCallbackConcept ReadCallback,
+          ErrorCodeCallbackConcept WriteCallback, ErrorCodeCallbackConcept CloseCallback>
+WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallback>::~ManualWebsocketClientSession()
 {
-    m_close = true;
-    if (m_ws.is_open())
+    try
     {
-        while (m_writing)
+        m_close = true;
+        if (m_websocketStream.is_open())
         {
-            continue;
+            while (m_writing)
+            {
+                continue;
+            }
+            error_code ec{};
+            m_websocketStream.close(websocket::close_code::normal, ec);
+            m_closeCallback(ec);
         }
-        error_code ec{};
-        m_ws.close(websocket::close_code::normal, ec);
-        m_doOnClose(ec);
+    }
+    catch (...)
+    {
     }
 }
 
-template <Do_ConnectTypeErrorCode_Concept DoOnConnectType, Do_StringErrorCode_Concept DoOnRead,
-          Do_ErrorCode_Concept DoOnWrite, Do_ErrorCode_Concept DoOnClose>
-void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::RunAsync(const std::string& host,
-                                                                                       unsigned short port)
+template <ConnectTypeErrorCodeCallbackConcept ConnectCallback, StringErrorCodeCallbackConcept ReadCallback,
+          ErrorCodeCallbackConcept WriteCallback, ErrorCodeCallbackConcept CloseCallback>
+void WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallback>::RunAsync(
+        const std::string& host, unsigned short port)
 {
-    m_host = host;
-    m_host += ':' + std::to_string(port);
+    m_host = host + ':' + std::to_string(port);
 
     // socket must be connected manually: asio::connect reset local endpoint bind
     net::ip::tcp::endpoint serverEndpoint(boost::asio::ip::address::from_string(host), port);
-    error_code ec{};
-    m_socket.async_connect(serverEndpoint, [this](error_code ec) { this->OnConnect(ec); });
+    m_socket.async_connect(serverEndpoint, [this](error_code errCode) { this->OnConnect(errCode); });
 
     // in case of no connection with internet etc.
     m_timer.expires_from_now(boost::posix_time::seconds(30));
     // Set up the timer's expiration handler
     m_timer.async_wait(
-            [&m_socket](const error_code& ec)
+            [&m_socket](const error_code& errCode)
             {
-                if (ec != net::error::operation_aborted)
+                if (errCode != net::error::operation_aborted)
                 {
                     // Timeout occurred, cancel the socket's asynchronous operations
                     m_socket.cancel();
@@ -66,96 +84,103 @@ void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::Ru
             });
 }
 
-template <Do_ConnectTypeErrorCode_Concept DoOnConnectType, Do_StringErrorCode_Concept DoOnRead,
-          Do_ErrorCode_Concept DoOnWrite, Do_ErrorCode_Concept DoOnClose>
-void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::Send(const std::string& msgBody)
+template <ConnectTypeErrorCodeCallbackConcept ConnectCallback, StringErrorCodeCallbackConcept ReadCallback,
+          ErrorCodeCallbackConcept WriteCallback, ErrorCodeCallbackConcept CloseCallback>
+void WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallback>::Send(
+        const std::string& msgBody)
 {
     auto ss = std::make_shared<std::string const>(message);
     // Always add to queue
-    m_queue.push_back(ss);
+    m_sendQueue.push_back(ss);
     m_writing = true;
 
     // Are we already writing?
-    if (m_queue.size() > 1)
+    if (m_sendQueue.size() > 1)
         return;
 
     // We are not currently writing, so send this immediately
-    m_ws.async_write(net::buffer(*m_queue.front()),
-                     beast::bind_front_handler(&WebsocketClientSession::OnWrite, this->shared_from_this()));
+    m_websocketStream.async_write(
+            net::buffer(*m_sendQueue.front()),
+            beast::bind_front_handler(&WebsocketClientSession::OnWrite, this->shared_from_this()));
 }
 
-template <Do_ConnectTypeErrorCode_Concept DoOnConnectType, Do_StringErrorCode_Concept DoOnRead,
-          Do_ErrorCode_Concept DoOnWrite, Do_ErrorCode_Concept DoOnClose>
-void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::Close()
+template <ConnectTypeErrorCodeCallbackConcept ConnectCallback, StringErrorCodeCallbackConcept ReadCallback,
+          ErrorCodeCallbackConcept WriteCallback, ErrorCodeCallbackConcept CloseCallback>
+void WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallback>::Close()
 {
     m_close = true;
 
     if (!m_writing)
     {
-        m_ws.async_close(websocket::close_code::normal,
-                         beast::bind_front_handler(&WebsocketClientSession::OnClose, this->shared_from_this()));
+        m_websocketStream.async_close(
+                websocket::close_code::normal,
+                beast::bind_front_handler(&WebsocketClientSession::OnClose, this->shared_from_this()));
     }
 }
 
-template <Do_ConnectTypeErrorCode_Concept DoOnConnectType, Do_StringErrorCode_Concept DoOnRead,
-          Do_ErrorCode_Concept DoOnWrite, Do_ErrorCode_Concept DoOnClose>
-void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::DoRead()
+template <ConnectTypeErrorCodeCallbackConcept ConnectCallback, StringErrorCodeCallbackConcept ReadCallback,
+          ErrorCodeCallbackConcept WriteCallback, ErrorCodeCallbackConcept CloseCallback>
+void WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallback>::DoRead()
 {
     if (!m_close)
     {
         // Read a message into our buffer
-        m_ws.async_read(m_buffer, beast::bind_front_handler(&WebsocketClientSession::OnRead, this->shared_from_this()));
+        m_websocketStream.async_read(
+                m_readBuffer, beast::bind_front_handler(&WebsocketClientSession::OnRead, this->shared_from_this()));
     }
 }
 
-template <Do_ConnectTypeErrorCode_Concept DoOnConnectType, Do_StringErrorCode_Concept DoOnRead,
-          Do_ErrorCode_Concept DoOnWrite, Do_ErrorCode_Concept DoOnClose>
-void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::OnConnect(error_code ec)
+template <ConnectTypeErrorCodeCallbackConcept ConnectCallback, StringErrorCodeCallbackConcept ReadCallback,
+          ErrorCodeCallbackConcept WriteCallback, ErrorCodeCallbackConcept CloseCallback>
+void WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallback>::OnConnect(error_code ec)
 {
     m_timer->cancel();
-    m_doOnConnectType(ConnectType::kConnect, ec);
+    m_connectCallback(ConnectType::kConnect, ec);
     if (ec)
     {
         return;
     }
 
-    m_ws = websocket::stream<net::ip::tcp::socket>(std::move(m_socket));
+    m_websocketStream = websocket::stream<net::ip::tcp::socket>(std::move(m_socket));
 
     // Turn off the timeout on the tcp_stream, because
     // the websocket stream has its own timeout system.
-    beast::get_lowest_layer(m_ws).expires_never();
+    beast::get_lowest_layer(m_websocketStream).expires_never();
 
     // Set suggested timeout settings for the websocket
-    m_ws.set_option(websocket::stream_base::timeout::suggested(beast::role_type::client));
+    m_websocketStream.set_option(websocket::stream_base::timeout::suggested(beast::role_type::client));
 
     // Set a decorator to change the User-Agent of the handshake
-    m_ws.set_option(websocket::stream_base::decorator(
-            [](websocket::request_type& req)
-            { req.set(http::field::user_agent, std::string(BOOST_BEAST_VERSION_STRING) + " inklink-client"); }));
+    m_websocketStream.set_option(websocket::stream_base::decorator([](websocket::request_type& req)
+                                                                   { req.set(http::field::user_agent, kClientName); }));
 
     // Perform the websocket handshake
-    m_ws.async_handshake(m_host, "/",
-                         beast::bind_front_handler(&WebsocketClientSession::OnHandshake, this->shared_from_this()));
+    m_websocketStream.async_handshake(
+            m_host, "/", beast::bind_front_handler(&WebsocketClientSession::OnHandshake, this->shared_from_this()));
 }
 
-template <Do_ConnectTypeErrorCode_Concept DoOnConnectType, Do_StringErrorCode_Concept DoOnRead,
-          Do_ErrorCode_Concept DoOnWrite, Do_ErrorCode_Concept DoOnClose>
-void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::OnHandshake(error_code ec)
+template <ConnectTypeErrorCodeCallbackConcept ConnectCallback, StringErrorCodeCallbackConcept ReadCallback,
+          ErrorCodeCallbackConcept WriteCallback, ErrorCodeCallbackConcept CloseCallback>
+void WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallback>::OnHandshake(error_code ec)
 {
-    m_doOnConnectType(ConnectType::kHandshake, ec);
+    m_connectCallback(ConnectType::kHandshake, ec);
     if (ec)
     {
         return;
     }
+
+    // set binary format because don't know wich format will be used
+    m_websocketStream.binary(true);
 
     DoRead();
 }
 
-template <Do_ConnectTypeErrorCode_Concept DoOnConnectType, Do_StringErrorCode_Concept DoOnRead,
-          Do_ErrorCode_Concept DoOnWrite, Do_ErrorCode_Concept DoOnClose>
-void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::OnWrite(error_code ec, std::size_t)
+template <ConnectTypeErrorCodeCallbackConcept ConnectCallback, StringErrorCodeCallbackConcept ReadCallback,
+          ErrorCodeCallbackConcept WriteCallback, ErrorCodeCallbackConcept CloseCallback>
+void WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallback>::OnWrite(error_code ec,
+                                                                                                  std::size_t)
 {
-    m_doOnWrite(ec);
+    m_writeCallback(ec);
 
     if (ec)
     {
@@ -163,20 +188,22 @@ void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::On
     }
 
     // Remove the string from the queue
-    m_queue.pop_front();
+    m_sendQueue.pop_front();
 
     if (m_close)
     {
-        m_queue.clear();
-        m_ws.async_close(websocket::close_code::normal,
-                         beast::bind_front_handler(&WebsocketClientSession::OnClose, this->shared_from_this()));
+        m_sendQueue.clear();
+        m_websocketStream.async_close(
+                websocket::close_code::normal,
+                beast::bind_front_handler(&WebsocketClientSession::OnClose, this->shared_from_this()));
     }
 
     // Send the next message if any
-    if (!m_queue.empty())
+    if (!m_sendQueue.empty())
     {
-        m_ws.async_write(net::buffer(*m_queue.front()),
-                         beast::bind_front_handler(&WebsocketClientSession::OnWrite, this->shared_from_this()));
+        m_websocketStream.async_write(
+                net::buffer(*m_sendQueue.front()),
+                beast::bind_front_handler(&WebsocketClientSession::OnWrite, this->shared_from_this()));
     }
     else
     {
@@ -184,26 +211,27 @@ void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::On
     }
 }
 
-template <Do_ConnectTypeErrorCode_Concept DoOnConnectType, Do_StringErrorCode_Concept DoOnRead,
-          Do_ErrorCode_Concept DoOnWrite, Do_ErrorCode_Concept DoOnClose>
-void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::OnRead(error_code ec, std::size_t)
+template <ConnectTypeErrorCodeCallbackConcept ConnectCallback, StringErrorCodeCallbackConcept ReadCallback,
+          ErrorCodeCallbackConcept WriteCallback, ErrorCodeCallbackConcept CloseCallback>
+void WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallback>::OnRead(error_code ec,
+                                                                                                 std::size_t)
 {
-    m_doOnRead(beast::buffer::to_string(m_buffer.data()), ec);
+    m_readCallback(beast::buffer::to_string(m_readBuffer.data()), ec);
     if (ec)
     {
         return;
     }
 
-    m_buffer.consume(m_buffer.size());
+    m_readBuffer.consume(m_readBuffer.size());
 
     DoRead();
 }
 
-template <Do_ConnectTypeErrorCode_Concept DoOnConnectType, Do_StringErrorCode_Concept DoOnRead,
-          Do_ErrorCode_Concept DoOnWrite, Do_ErrorCode_Concept DoOnClose>
-void WebsocketClientSession<DoOnConnectType, DoOnRead, DoOnWrite, DoOnClose>::OnClose(error_code ec)
+template <ConnectTypeErrorCodeCallbackConcept ConnectCallback, StringErrorCodeCallbackConcept ReadCallback,
+          ErrorCodeCallbackConcept WriteCallback, ErrorCodeCallbackConcept CloseCallback>
+void WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallback>::OnClose(error_code ec)
 {
-    m_doOnClose(ec);
+    m_closeCallback(ec);
     if (ec)
     {
         return;
