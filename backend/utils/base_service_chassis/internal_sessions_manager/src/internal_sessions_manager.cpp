@@ -101,14 +101,10 @@ InternalSessionsManager::GetSession(const DocSessionDescriptor& descriptor) cons
         return {};
     }
 
-    std::weak_ptr<IServiceSession> result{};
-
     const auto& endpointNode = *m_endpointByDescriptor.find(descriptor);
     const auto& endpoint = endpointNode.second;
     const auto& sessionNode = *m_sessions.find(endpoint);
-    result = sessionNode.second;
-
-    return result;
+    return {sessionNode.second};
 }
 
 std::weak_ptr<IServiceSession> InternalSessionsManager::GetSession(const Endpoint& endpoint) const noexcept
@@ -117,12 +113,9 @@ std::weak_ptr<IServiceSession> InternalSessionsManager::GetSession(const Endpoin
     {
         return {};
     }
-    std::weak_ptr<IServiceSession> result{};
 
     const auto& sessionNode = *m_sessions.find(endpoint);
-    result = sessionNode.second;
-
-    return result;
+    return {sessionNode.second};
 }
 
 std::vector<std::weak_ptr<IServiceSession>> InternalSessionsManager::GetSessionsByDocument(const std::string& doc) const
@@ -170,11 +163,7 @@ DocSessionDescriptor InternalSessionsManager::GetDescriptor(const Endpoint& endp
         return {};
     }
 
-    DocSessionDescriptor result{};
-
     const auto& descriptorNode = *m_DescriptorByEndpoint.find(endpoint);
-    result = descriptorNode.second;
-
-    return result;
+    return {descriptorNode.second};
 }
 } // namespace inklink::base_service_chassis
