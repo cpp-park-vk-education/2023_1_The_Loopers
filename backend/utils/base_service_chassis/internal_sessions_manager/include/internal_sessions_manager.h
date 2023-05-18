@@ -44,23 +44,32 @@ class InternalSessionsManager
     using IServiceSession = inklink::server_network::IServiceSession;
 
 public:
+    InternalSessionsManager(const InternalSessionsManager&) = delete;
+    InternalSessionsManager(InternalSessionsManager&&) = delete;
+    InternalSessionsManager& operator=(const InternalSessionsManager&) = delete;
+    InternalSessionsManager& operator=(InternalSessionsManager&&) = delete;
+
     virtual ~InternalSessionsManager() = default;
 
     virtual void AddSession(const DocSessionDescriptor&, std::weak_ptr<IServiceSession>);
     virtual void RemoveSession(const DocSessionDescriptor&);
     virtual void RemoveSession(IServiceSession*);
 
-    virtual std::weak_ptr<IServiceSession> GetSession(const DocSessionDescriptor&);
-    virtual std::vector<std::weak_ptr<IServiceSession>> GetSessionsByDocument(const std::string&);
-    virtual std::vector<std::weak_ptr<IServiceSession>> GetSessionsByUser(const std::string&);
-    virtual std::weak_ptr<IServiceSession> GetSession(const Endpoint&);
+    [[nodiscard]] virtual std::weak_ptr<IServiceSession> GetSession(const DocSessionDescriptor&) const noexcept;
+    [[nodiscard]] virtual std::weak_ptr<IServiceSession> GetSession(const Endpoint&) const noexcept;
 
-    virtual DocSessionDescriptor GetDescriptor(const Endpoint&);
+    [[nodiscard]] virtual std::vector<std::weak_ptr<IServiceSession>>
+    GetSessionsByDocument(const std::string& documentId) const;
+    [[nodiscard]] virtual std::vector<std::weak_ptr<IServiceSession>>
+    GetSessionsByUser(const std::string& userLogin) const;
+
+    [[nodiscard]] virtual DocSessionDescriptor GetDescriptor(const Endpoint&) const noexcept;
 
 protected:
     std::unordered_map<Endpoint, std::weak_ptr<IServiceSession>> m_sessions;
     std::unordered_map<std::string, std::vector<std::string>> m_docsByUser;
     std::unordered_map<std::string, std::vector<std::string>> m_usersByDoc;
+    // TODO (a.novak) now user can connect only from one device
     std::unordered_map<DocSessionDescriptor, Endpoint> m_endpointByDescriptor;
     std::unordered_map<Endpoint, DocSessionDescriptor> m_DescriptorByEndpoint;
 };

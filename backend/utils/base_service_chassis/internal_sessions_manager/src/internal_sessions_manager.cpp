@@ -1,7 +1,8 @@
 #include "internal_sessions_manager.h"
 
-#include <algorithm>
 #include <iservice_session.h>
+
+#include <algorithm>
 #include <sstream>
 #include <stdexcept>
 
@@ -16,11 +17,27 @@ void InternalSessionsManager::AddSession(const DocSessionDescriptor& descriptor,
 {
     const std::shared_ptr<IServiceSession> sessionPtr{session};
 
+    if (descriptor.documentId.empty())
+    {
+        throw std::logic_error("DocumentId empty");
+    }
+    if (descriptor.login.empty())
+    {
+        throw std::logic_error("Login empty");
+    }
+
     const Endpoint& endpoint = sessionPtr->GetClientEndpoint();
     if (m_sessions.contains(endpoint))
     {
         std::ostringstream ss{};
         ss << "Manager already contains enpoint '" << endpoint.address << ':' << endpoint.port << "'";
+        throw std::logic_error(ss.str());
+    }
+
+    if (m_endpointByDescriptor.contains(descriptor))
+    {
+        std::ostringstream ss{};
+        ss << "User '" << descriptor.login << "' is already using document '" << descriptor.documentId << "'";
         throw std::logic_error(ss.str());
     }
 
@@ -34,19 +51,21 @@ void InternalSessionsManager::AddSession(const DocSessionDescriptor& descriptor,
 
 void InternalSessionsManager::RemoveSession(const DocSessionDescriptor& descriptor)
 {
-    if (m_endpointByDescriptor.contains(descriptor))
+    if (!m_endpointByDescriptor.contains(descriptor))
     {
-        const Endpoint& endpoint = m_endpointByDescriptor[descriptor];
-        m_sessions.erase(endpoint);
-        m_DescriptorByEndpoint.erase(endpoint);
-        m_endpointByDescriptor.erase(descriptor);
-
-        auto& docs = m_docsByUser[descriptor.login];
-        std::erase(docs, descriptor.documentId);
-
-        auto& users = m_usersByDoc[descriptor.documentId];
-        std::erase(users, descriptor.login);
+        return;
     }
+
+    const auto& endpoint = m_endpointByDescriptor[descriptor];
+    m_sessions.erase(endpoint);
+    m_DescriptorByEndpoint.erase(endpoint);
+    m_endpointByDescriptor.erase(descriptor);
+
+    auto& docs = m_docsByUser[descriptor.login];
+    std::erase(docs, descriptor.documentId);
+
+    auto& users = m_usersByDoc[descriptor.documentId];
+    std::erase(users, descriptor.login);
 }
 
 void InternalSessionsManager::RemoveSession(IServiceSession* session)
@@ -58,77 +77,104 @@ void InternalSessionsManager::RemoveSession(IServiceSession* session)
 
     const Endpoint& endpoint = session->GetClientEndpoint();
 
-    if (m_DescriptorByEndpoint.contains(endpoint))
+    if (!m_DescriptorByEndpoint.contains(endpoint))
     {
-        const DocSessionDescriptor& descriptor = m_DescriptorByEndpoint[endpoint];
-        m_sessions.erase(endpoint);
-        m_endpointByDescriptor.erase(descriptor);
-        m_DescriptorByEndpoint.erase(endpoint);
-
-        auto& docs = m_docsByUser[descriptor.login];
-        std::erase(docs, descriptor.documentId);
-
-        auto& users = m_usersByDoc[descriptor.documentId];
-        std::erase(users, descriptor.login);
+        return;
     }
+    const DocSessionDescriptor& descriptor = m_DescriptorByEndpoint[endpoint];
+    m_sessions.erase(endpoint);
+    m_endpointByDescriptor.erase(descriptor);
+    m_DescriptorByEndpoint.erase(endpoint);
+
+    auto& docs = m_docsByUser[descriptor.login];
+    std::erase(docs, descriptor.documentId);
+
+    auto& users = m_usersByDoc[descriptor.documentId];
+    std::erase(users, descriptor.login);
 }
 
-std::weak_ptr<IServiceSession> InternalSessionsManager::GetSession(const DocSessionDescriptor& descriptor)
+std::weak_ptr<IServiceSession>
+InternalSessionsManager::GetSession(const DocSessionDescriptor& descriptor) const noexcept
 {
-    std::weak_ptr<IServiceSession> result{};
-    if (m_endpointByDescriptor.contains(descriptor))
+    if (!m_endpointByDescriptor.contains(descriptor))
     {
-        const Endpoint& endpoint = m_endpointByDescriptor[descriptor];
-        result = m_sessions[endpoint];
+        return {};
     }
+
+    std::weak_ptr<IServiceSession> result{};
+
+    const auto& endpointNode = *m_endpointByDescriptor.find(descriptor);
+    const auto& endpoint = endpointNode.second;
+    const auto& sessionNode = *m_sessions.find(endpoint);
+    result = sessionNode.second;
+
     return result;
 }
 
-std::weak_ptr<IServiceSession> InternalSessionsManager::GetSession(const Endpoint& endpoint)
+std::weak_ptr<IServiceSession> InternalSessionsManager::GetSession(const Endpoint& endpoint) const noexcept
 {
-    std::weak_ptr<IServiceSession> result{};
-    if (m_sessions.contains(endpoint))
+    if (!m_sessions.contains(endpoint))
     {
-        result = m_sessions[endpoint];
+        return {};
     }
+    std::weak_ptr<IServiceSession> result{};
+
+    const auto& sessionNode = *m_sessions.find(endpoint);
+    result = sessionNode.second;
+
     return result;
 }
 
-std::vector<std::weak_ptr<IServiceSession>> InternalSessionsManager::GetSessionsByDocument(const std::string& doc)
+std::vector<std::weak_ptr<IServiceSession>> InternalSessionsManager::GetSessionsByDocument(const std::string& doc) const
 {
-    std::vector<std::weak_ptr<IServiceSession>> sessions{};
-    if (m_usersByDoc.contains(doc))
+    if (!m_usersByDoc.contains(doc))
     {
-        for (const std::string& user : m_usersByDoc[doc])
-        {
-            auto descriptor = DocSessionDescriptor{doc, user};
-            sessions.push_back(GetSession(descriptor));
-        }
+        return {};
     }
+
+    std::vector<std::weak_ptr<IServiceSession>> sessions{};
+
+    const auto& usersNode = *m_usersByDoc.find(doc);
+    for (const auto& user : usersNode.second)
+    {
+        auto descriptor = DocSessionDescriptor{doc, user};
+        sessions.push_back(GetSession(descriptor));
+    }
+
     return sessions;
 }
 
-std::vector<std::weak_ptr<IServiceSession>> InternalSessionsManager::GetSessionsByUser(const std::string& login)
+std::vector<std::weak_ptr<IServiceSession>> InternalSessionsManager::GetSessionsByUser(const std::string& login) const
 {
-    std::vector<std::weak_ptr<IServiceSession>> sessions{};
-    if (m_docsByUser.contains(login))
+    if (!m_docsByUser.contains(login))
     {
-        for (const std::string& doc : m_docsByUser[login])
-        {
-            auto descriptor = DocSessionDescriptor{doc, login};
-            sessions.push_back(GetSession(descriptor));
-        }
+        return {};
     }
+
+    std::vector<std::weak_ptr<IServiceSession>> sessions{};
+
+    const auto& docsNode = *m_docsByUser.find(login);
+    for (const auto& doc : docsNode.second)
+    {
+        auto descriptor = DocSessionDescriptor{doc, login};
+        sessions.push_back(GetSession(descriptor));
+    }
+
     return sessions;
 }
 
-DocSessionDescriptor InternalSessionsManager::GetDescriptor(const Endpoint& endpoint)
+DocSessionDescriptor InternalSessionsManager::GetDescriptor(const Endpoint& endpoint) const noexcept
 {
+    if (!m_DescriptorByEndpoint.contains(endpoint))
+    {
+        return {};
+    }
+
     DocSessionDescriptor result{};
-    if (m_DescriptorByEndpoint.contains(endpoint))
-    {
-        result = m_DescriptorByEndpoint[endpoint];
-    }
+
+    const auto& descriptorNode = *m_DescriptorByEndpoint.find(endpoint);
+    result = descriptorNode.second;
+
     return result;
 }
 } // namespace inklink::base_service_chassis
