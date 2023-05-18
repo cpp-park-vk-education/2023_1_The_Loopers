@@ -1,6 +1,8 @@
-set(MAIN src/main.cpp)
+add_executable(${GENERAL} "")
 
-add_executable(${GENERAL} ${MAIN})
+target_sources(${GENERAL} PRIVATE
+        "src/main.cpp"
+        )
 
 set(PRIVATE_INCLUDE_DIRECTORIES
         "include"
