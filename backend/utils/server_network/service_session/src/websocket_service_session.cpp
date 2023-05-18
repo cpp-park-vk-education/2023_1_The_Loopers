@@ -1,8 +1,24 @@
+/**
+ * @file websocket_service_session.cpp
+ *
+ * About implementation of session:  Itworks asynchronously and always reading. To all asynchronous operations
+ * shared_ptr to this is passed (thanks to enable_shared_from_this, shared_ptr is created from within methods). As
+ * result, while there is at least one operation running, it's exist. As soon as all operations stopped object will
+ * destruct itself (when connection is closed or io_context stopped). Therefore, it manages its lifetime by itself.
+ */
+
 #include "websocket_service_session.h"
 
 #include <internal_sessions_manager.h>
 
 #include <algorithm>
+
+namespace
+{
+using stream_base = boost::beast::websocket::stream_base;
+
+constexpr char* kServerName{boost::beast::BOOST_BEAST_VERSION_STRING " inklink-simultaneous-access-service"};
+} // namespace
 
 namespace inklink::server_network
 {
@@ -52,15 +68,11 @@ template <StringErrorCodeSessionCallbackConcept ReadCallback, ErrorCodeAndSessio
 void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::OnRun()
 {
     // Set suggested timeout settings for the websocket
-    m_websocketStream.set_option(websocket::stream_base::timeout::suggested(beast::role_type::server));
+    m_websocketStream.set_option(stream_base::timeout::suggested(beast::role_type::server));
 
     // Set a decorator to change the Server of the handshake
-    m_websocketStream.set_option(websocket::stream_base::decorator(
-            [](websocket::response_type &res)
-            {
-                res.set(beast::http::field::server,
-                        std::string(BOOST_BEAST_VERSION_STRING) + " inklink-simultaneous-access-service");
-            }));
+    m_websocketStream.set_option(stream_base::decorator([](websocket::response_type& res)
+                                                        { res.set(beast::http::field::server, kServerName); }));
     // Accept the websocket handshake
     m_websocketStream.async_accept(
             beast::bind_front_handler(&WebsocketServiceSession::OnAccept, this->shared_from_this()));
@@ -68,7 +80,7 @@ void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::OnRun
 
 template <StringErrorCodeSessionCallbackConcept ReadCallback, ErrorCodeAndSessionCallbackConcept AcceptCallback,
           StringErrorCodeCallbackConcept WriteCallback>
-void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::Send(const std::string &message)
+void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::Send(const std::string& message)
 {
     auto ss = std::make_shared<std::string const>(message);
     // Always add to queue
@@ -94,7 +106,7 @@ void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::OnAcc
 
     if (ec)
     {
-        // destructor is called automatically, because no more shared_ptr points to this
+        // destructor is called automatically (see file doxygen comment)
         return;
     }
 
@@ -123,7 +135,7 @@ void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::OnRea
     // version 1.72)
     if (ec)
     {
-        // this will be deleted automatically, because no more shared_ptr will point to this
+        // destructor is called automatically (see file doxygen comment)
         return;
     }
 
@@ -139,14 +151,14 @@ template <StringErrorCodeSessionCallbackConcept ReadCallback, ErrorCodeAndSessio
 void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::OnWrite(boost::system::error_code ec,
                                                                                    std::size_t)
 {
+    // remove send string from queue
+    m_sendQueue.pop_front();
+
     m_writeCallback(ec);
     if (ec)
     {
         return;
     }
-
-    // Remove the string from the queue
-    m_sendQueue.pop_front();
 
     // Send the next message if any
     if (!m_sendQueue.empty())
