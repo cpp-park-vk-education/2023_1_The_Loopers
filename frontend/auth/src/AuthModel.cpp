@@ -5,20 +5,14 @@
 
 bool AuthModel::createUser(const std::string& login, const std::string& password)
 {
-    if (login == '')
-    {
-        return 0;
-    }
+    login.empty();
 
-    if (password == '')
-    {
-        return 0;
-    }
+    password.empty();
 
     m_login = login;
     m_token = password;
 
-    return 1;
+    return true;
 }
 
 bool AuthModel::login(const std::string& login, const std::string& password)
