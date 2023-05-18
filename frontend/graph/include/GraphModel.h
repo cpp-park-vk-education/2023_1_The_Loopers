@@ -34,13 +34,13 @@ public:
 private:
     Position GeneratePosition();                                // generates random position for vertex
     std::set<std::shared_ptr<IVertex>> MakeUniqueVertexes(); // parse edges and find unique vertexes
-    void FillUniqueVertexes(std::shared_ptr<IVertex>);
+    void FillUniqueVertexes(std::set<std::shared_ptr<IVertex>>);
     void FillEdges(std::vector<NamingsEdge>);
-    void SetPosition ();
+    void SetRandomPositions();
     std::vector<NamingsEdge> ParseRawData(std::string& rawString); // parse raw string and makes edges with vertex namings
 
     // first vertex in vector used as center vertex
-    std::vector<std::shared_ptr<IVertex>> m_uniqueVertexes;
+    std::set<std::shared_ptr<IVertex>> m_uniqueVertexes;
     std::vector<std::shared_ptr<IEdge>> m_edges;
 };
 } // namespace inklink::graph
