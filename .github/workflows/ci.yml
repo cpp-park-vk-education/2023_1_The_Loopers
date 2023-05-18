@@ -58,7 +58,6 @@ jobs:
       id: build-with-linters-step
       run: |
         cmake --build ${{ github.workflow }}/build 
-        echo "after build"
         # 2>&1 | tee ${{ github.wokflow  }}/build_output.txt
         # RESULT_CODE = ${PIPESTATUS[0]}
         # echo "BUILD_OUTPUT<<EOF" >> $GITHUB_OUTPUT
