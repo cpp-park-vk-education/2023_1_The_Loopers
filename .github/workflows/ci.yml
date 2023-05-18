@@ -58,11 +58,11 @@ jobs:
       id: build-with-linters-step
       run: |
         cmake --build ${{ github.workflow }}/build 2>&1 | tee ${{ github.wokflow  }}/build_output.txt
-#        RESULT_CODE = ${PIPESTATUS[0]}
+        RESULT_CODE = ${PIPESTATUS[0]}
         echo "BUILD_OUTPUT<<EOF" >> $GITHUB_OUTPUT
         echo "$(cat ${{ github.workflow }}/build_output.txt)" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
-#        exit $RESULT_CODE
+        exit $RESULT_CODE
 
     - name: Save results to PR comment
       uses: mshick/add-pr-comment@v2
