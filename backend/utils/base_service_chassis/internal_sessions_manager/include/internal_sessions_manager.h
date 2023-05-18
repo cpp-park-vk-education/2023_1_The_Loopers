@@ -44,6 +44,8 @@ class InternalSessionsManager
     using IServiceSession = inklink::server_network::IServiceSession;
 
 public:
+    InternalSessionsManager() = default;
+
     InternalSessionsManager(const InternalSessionsManager&) = delete;
     InternalSessionsManager(InternalSessionsManager&&) = delete;
     InternalSessionsManager& operator=(const InternalSessionsManager&) = delete;
