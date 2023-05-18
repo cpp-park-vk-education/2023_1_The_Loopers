@@ -1,13 +1,13 @@
 #ifndef _WEBSOCKETSERVICESESSION_H_
 #define _WEBSOCKETSERVICESESSION_H_
 
-#include "boost/asio/buffer.hpp"
-#include "boost/beast/core/flat_buffer.hpp"
 #include "iservice_session.h"
 
 #include <boost/asio.hpp>
 #include <boost/beast.hpp>
 #include <boost/system/error_code.hpp>
+
+#include <concepts>
 #include <deque>
 #include <memory>
 #include <string>
@@ -18,14 +18,14 @@ namespace net = boost::asio;
 namespace websocket = boost::beast::websocket;
 
 template <typename T>
-concept Do_ErrorCodeAndSession_Concept = requires(T&& t, boost::system::error_code ec, IServiceSession* session) {
+concept ErrorCodeAndSessionCallbackConcept = requires(T&& t, boost::system::error_code ec, IServiceSession* session) {
     {
         std::forward<T>(t)(ec, session)
     } -> std::same_as<void>;
 };
 
 template <typename T>
-concept Do_StringErrorCodeSession_Concept =
+concept StringErrorCodeSessionCallbackConcept =
         requires(T&& t, const std::string& msgBody, boost::system::error_code ec, IServiceSession* session) {
             {
                 std::forward<T>(t)(msgBody, ec, session)
@@ -33,22 +33,20 @@ concept Do_StringErrorCodeSession_Concept =
         };
 
 template <typename T>
-concept Do_ErrorCode_Concept = requires(T&& t, boost::system::error_code ec) {
+concept StringErrorCodeCallbackConcept = requires(T&& t, boost::system::error_code ec) {
     {
         std::forward<T>(t)(ec)
     } -> std::same_as<void>;
 };
 
-using Fun_StringErrorCodeSession = std::function<void(const std::string&, boost::system::error_code, IServiceSession*)>;
-using Fun_ErrorCodeAndSession = std::function<void(boost::system::error_code, IServiceSession*)>;
-using Fun_ErrorCode = std::function<void(boost::system::error_code)>;
-
-template <Do_StringErrorCodeSession_Concept DoOnRead = Fun_StringErrorCodeSession,
-          Do_ErrorCodeAndSession_Concept DoOnAccept = Fun_ErrorCodeAndSession,
-          Do_ErrorCode_Concept DoOnWrite = Fun_ErrorCode>
+template <StringErrorCodeSessionCallbackConcept ReadCallback =
+                  std::function<void(const std::string&, boost::system::error_code, IServiceSession*)>,
+          ErrorCodeAndSessionCallbackConcept AcceptCallback =
+                  std::function<void(boost::system::error_code, IServiceSession*)>,
+          StringErrorCodeCallbackConcept WriteCallback = std::function<void(boost::system::error_code)>>
 class WebsocketServiceSession
         : public IServiceSession,
-          public std::enable_shared_from_this<WebsocketServiceSession<DoOnRead, DoOnAccept, DoOnWrite>>
+          public std::enable_shared_from_this<WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>>
 {
     using IAuthorizer = authorizer::IAuthorizer;
     using InternalSessionsManager = base_service_chassis::InternalSessionsManager;
@@ -56,10 +54,15 @@ class WebsocketServiceSession
 
 public:
     using error_code = boost::system::error_code;
+    // clang-format off
     explicit WebsocketServiceSession(
-            std::shared_ptr<InternalSessionsManager>, std::shared_ptr<IAuthorizer>, net::ip::tcp::socket&&,
-            DoOnRead = [](const std::string&, error_code, IServiceSession*) {},
-            DoOnAccept = [](error_code, IServiceSession*) {}, DoOnWrite = [](error_code) {}) noexcept;
+            std::shared_ptr<InternalSessionsManager>, 
+            std::shared_ptr<IAuthorizer>, 
+            net::ip::tcp::socket&&,
+            ReadCallback = [](const std::string&, error_code, IServiceSession*) {},
+            AcceptCallback = [](error_code, IServiceSession*) {}, 
+            WriteCallback = [](error_code) {}) noexcept;
+    // clang-format on
 
     WebsocketServiceSession() = delete;
 
@@ -85,13 +88,13 @@ private:
 
     Endpoint m_endpoint;
 
-    websocket::stream<tcp::socket> m_ws;
-    boost::beast::multi_buffer m_buffer;
-    std::deque<std::shared_ptr<std::string const>> m_queue;
+    websocket::stream<tcp::socket> m_websocketStream;
+    boost::beast::multi_buffer m_readBuffer;
+    std::deque<std::shared_ptr<std::string const>> m_sendQueue;
 
-    DoOnRead m_doOnRead;
-    DoOnAccept m_doOnAccept;
-    DoOnWrite m_doOnWrite;
+    ReadCallback m_readCallback;
+    AcceptCallback m_acceptCallback;
+    WriteCallback m_writeCallback;
 };
 } // namespace inklink::server_network
 
