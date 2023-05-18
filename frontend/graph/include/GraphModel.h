@@ -10,10 +10,6 @@
 
 namespace inklink::graph
 {
-enum positionLimits
-{
-    kPosition = 300
-};
 
 struct NamingsEdge
 {

@@ -7,6 +7,8 @@
 #include <sstream>
 #include <string>
 
+constexpr std::size_t kPosition = 300;
+
 namespace inklink::graph
 {
 // TODO should parse raw data to edges and unique vertexes, then add them to graph
@@ -36,7 +38,7 @@ Position GraphModel::GeneratePosition()
 {
     std::random_device seed;
     std::mt19937 gen(seed());
-    std::uniform_int_distribution<> dis(-positionLimits::kPosition, positionLimits::kPosition);
+    std::uniform_int_distribution<> dis(-kPosition, kPosition);
 
     Position temp;
     temp.yPosition = dis(gen);
