@@ -7,11 +7,11 @@
 
 namespace inklink_file_holder
 {
-class FileHolder
+class FileHolder : public IFileHolder
 {
 public:
     bool Save(std::string filePath, std::string fileChanges) override;
-    std::string Get(std::string filePath) override;
+    const std::string Get(const std::string& filePath) override;
 
     virtual ~FileHolder() = default;
 

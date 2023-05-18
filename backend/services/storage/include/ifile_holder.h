@@ -1,11 +1,12 @@
 #ifndef _BACK_SERVICES_STORAGE_INCLUDE_IFILE_HOLDER_H_
 #define _BACK_SERVICES_STORAGE_INCLUDE_IFILE_HOLDER_H_
 
-
-#include <string>
 #include "delete_file.h"
 #include "read_file.h"
 #include "save_changes.h"
+
+#include <string>
+
 
 
 namespace inklink_file_holder
@@ -14,7 +15,7 @@ class IFileHolder
 {
 public:
     virtual bool Save(std::string filePath, std::string fileChanges) = 0;
-    virtual std::string Get(std::string filePath) = 0;
+    virtual const std::string Get(const std::string& filePath) = 0;
 
     virtual ~IFileHolder() = default;
 

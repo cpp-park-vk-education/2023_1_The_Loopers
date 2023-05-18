@@ -1,19 +1,15 @@
-#include <string>
 #include "file_holder.h"
 
+#include <string>
 
 namespace inklink_file_holder
 {
 bool FileHolder::Save(std::string filePath, std::string fileChanges)
 {
-    if (m_changesSavior.SaveFile(filePath, fileChanges))
-    {
-        return true;
-    }
-    return false;
+    return m_changesSavior.SaveFile(filePath, fileChanges);
 }
 
-std::string FileHolder::Get(std::string filePath) override
+const std::string FileHolder::Get(const std::string& filePath) override
 {
     return m_fileReader.GetFile(filePath);
 }

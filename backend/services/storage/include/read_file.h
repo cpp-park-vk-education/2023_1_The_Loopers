@@ -3,7 +3,6 @@
 
 #include <string>
 
-
 namespace inklink_file_holder
 {
 class ReadFile
