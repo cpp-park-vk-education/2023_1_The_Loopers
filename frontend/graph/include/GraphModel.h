@@ -14,8 +14,8 @@ class GraphModel
 {
 public:
     void FillGraphByEdges(const std::vector<std::string>& vertexes);
-    std::vector<std::shared_ptr<IVertex>> GetUniqueVertexes();
-    std::vector<std::shared_ptr<IEdge>> GetEdges();
+    std::vector<std::shared_ptr<IVertex>> GetUniqueVertexes() const;
+    std::vector<std::shared_ptr<IEdge>> GetEdges() const;
 
 private:
     struct NamingsEdge
