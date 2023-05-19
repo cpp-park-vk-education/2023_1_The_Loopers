@@ -11,6 +11,8 @@
 class IEdge;
 class IVertex;
 
+namespace inklink::graph
+{
 class IGraphModel
 {
 public:
@@ -33,3 +35,4 @@ private:
     virtual void FillEdges(const std::vector<NamingsEdge> namings) = 0;
     virtual std::vector<NamingsEdge> ParseRawData(std::string &rawEdgeString) = 0;
 };
+}  // namespace inklink::graph
