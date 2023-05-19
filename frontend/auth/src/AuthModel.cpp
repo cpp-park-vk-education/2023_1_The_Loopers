@@ -5,29 +5,32 @@
 
 bool AuthModel::createUser(const std::string& login, const std::string& password)
 {
-    login.empty();
+    if (!login.empty() && !password.empty())
+    {
+        std::string sault;
+        sault = Sault();
 
-    password.empty();
+        password += sault;
+        password = Hash(password);
 
-    m_login = login;
-    m_token = password;
-
-    return true;
+        result = ParserToJson(login, password, sault);
+        NetworkClient.POST() // надо передать result
+    }
 }
 
 bool AuthModel::login(const std::string& login, const std::string& password)
 {
     if (login != m_login)
     {
-        return 0;
+        return false;
     }
 
     if (password != m_token)
     {
-        return 0;
+        return false;
     }
 
-    return 1;
+    return true;
 }
 
 void AuthModel::exit()
@@ -59,3 +62,10 @@ std::string AuthModel::encrypt(const std::string& password)
     return m_enncrypter.encryptString(password);
 }
 
+std::string ParserToJson(const std::string& login, const std::string& password, const std::string& sault)
+{
+std:
+    string result;
+    result = "{\n" + "\"login\": " + login + ",\n" + "\"password\": " + password + ",\n" + "\"sault\": " + sault +
+             "\n" + "}";
+}
