@@ -10,13 +10,6 @@
 
 namespace inklink::graph
 {
-
-struct NamingsEdge
-{
-    std::string source;
-    std::string destination;
-};
-
 // DB -[edges string]-> Fill Graph <- {ParseData, FillEdges, MakeUniqueVertexes, FillUniqueVertexes, GeneratePosition}
 class GraphModel
 {
@@ -28,6 +21,12 @@ public:
 //    void AddEdge(NamingsEdge);
 
 private:
+    struct NamingsEdge
+    {
+        std::string source;
+        std::string destination;
+    };
+
     Position GeneratePosition();                                // generates random position for vertex
     std::set<std::shared_ptr<IVertex>> MakeUniqueVertexes(); // parse edges and find unique vertexes
     void FillUniqueVertexes(std::set<std::shared_ptr<IVertex>>);
