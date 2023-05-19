@@ -14,9 +14,9 @@ namespace inklink::graph
 class GraphModel : public IGraphModel
 {
 public:
-    void FillGraphByEdges(std::string& rawData);
-    std::set<std::shared_ptr<IVertex>> GetUniqueVertexes() const;
-    std::vector<std::shared_ptr<IEdge>> GetEdges() const;
+    void FillGraphByEdges(std::string& rawData) override;
+    std::set<std::shared_ptr<IVertex>> GetUniqueVertexes() const override;
+    std::vector<std::shared_ptr<IEdge>> GetEdges() const override;
 
 private:
     struct NamingsEdge
@@ -25,16 +25,16 @@ private:
         std::string destination;
     };
 
-    Position GeneratePosition();                             // generates random position for vertex
-    std::set<std::shared_ptr<IVertex>> MakeUniqueVertexes(); // parse edges and find unique vertexes
-    void FillUniqueVertexes(std::set<std::shared_ptr<IVertex>>);
-    void FillEdges(const std::vector<NamingsEdge> namings);
-    void SetRandomPositions();
-    std::vector<NamingsEdge> ParseRawData(std::string& rawEdgeString); // parse raw string and makes
-                                                                       // edges with vertex namings
-
     // first vertex in vector used as center vertex
     std::set<std::shared_ptr<IVertex>> m_uniqueVertexes;
     std::vector<std::shared_ptr<IEdge>> m_edges;
+
+    Position GeneratePosition();                             // generates random position for vertex
+    std::set<std::shared_ptr<IVertex>> MakeUniqueVertexes() override; // parse edges and find unique vertexes
+    void FillUniqueVertexes(std::set<std::shared_ptr<IVertex>>) override;
+    void FillEdges(const std::vector<NamingsEdge> namings) override;
+    void SetRandomPositions() ;
+    std::vector<NamingsEdge> ParseRawData(std::string& rawEdgeString) override; // parse raw string and makes
+                                                                       // edges with vertex namings
 };
 } // namespace inklink::graph
