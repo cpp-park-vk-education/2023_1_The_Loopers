@@ -8,10 +8,10 @@ namespace inklink::graph
 {
 class IVertex;
 
-class IEdge
+class Edge
 {
 public:
-    IEdge(std::shared_ptr<IVertex> source, std::shared_ptr<IVertex> destination)
+    Edge(std::shared_ptr<IVertex> source, std::shared_ptr<IVertex> destination)
             : m_sourceVertex(source), m_destinationVertex(destination){};
 
     [[nodiscard]] const std::shared_ptr<IVertex> GetSourceVertex() const;
