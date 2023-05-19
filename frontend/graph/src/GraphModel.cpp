@@ -7,7 +7,7 @@
 #include <sstream>
 #include <string>
 
-constexpr std::size_t kPosition = 300;
+constexpr int kPosition = 300;
 
 namespace inklink::graph
 {
