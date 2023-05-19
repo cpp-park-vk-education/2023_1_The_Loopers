@@ -1,7 +1,7 @@
 add_executable(${GENERAL} "")
 
 target_sources(${GENERAL} PRIVATE
-        "src/temp.cpp"
+        "src/main.cpp"
         )
 
 set(PRIVATE_INCLUDE_DIRECTORIES

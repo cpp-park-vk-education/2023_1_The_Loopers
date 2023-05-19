@@ -11,8 +11,15 @@ set(PUBLIC_LINK_LIBRARIES
     # "Boost::beast"
     # "Boost::asio"
 )
+if (WIN32)
+    set(PRIVATE_LINK_LIBRARIES "${PRIVATE_LINK_LIBRARIES}"
+        "wsock32"
+        "ws2_32"
+    )
+endif()
 
 target_link_libraries(${NETWORK_ADAPTER} PUBLIC ${PUBLIC_LINK_LIBRARIES})
+target_link_libraries(${NETWORK_ADAPTER} PRIVATE ${PRIVATE_LINK_LIBRARIES})
 
 set(PUBLIC_INCLUDE_DIRECTORIES
     "include"
