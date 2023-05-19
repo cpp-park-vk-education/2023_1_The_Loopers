@@ -1,5 +1,9 @@
 #include "AuthModel.hpp"
 
+#include <openssl/sha.h>
+
+#include <cstdlib>
+#include <ctime>
 #include <memory>
 #include <string>
 
@@ -8,13 +12,12 @@ bool AuthModel::createUser(const std::string& login, const std::string& password
     if (!login.empty() && !password.empty())
     {
         std::string sault;
-        sault = Sault();
+        sault = dinamicSault(password.size());
 
         password += sault;
-        password = Hash(password);
+        password = sha256(password);
 
         result = ParserToJson(login, password, sault);
-
     }
 }
 
@@ -60,6 +63,22 @@ void AuthModel::setToken(const std::string& token)
 std::string AuthModel::encrypt(const std::string& password)
 {
     return m_enncrypter.encryptString(password);
+}
+
+std::string AuthModel::dinamicSault(int passwordLength)
+{
+        std::string result{};
+
+        int saultLength = 20 - passwordLength;
+
+        srand(time(NULL));
+
+        for (int i = 0; i < saultLength; i++) {
+            char ch = 'a' + rand() % 26;
+            result.push_back(ch);
+        }
+
+        return result;
 }
 
 std::string AuthModel::parserToJson(const std::string& login, const std::string& password, const std::string& sault)

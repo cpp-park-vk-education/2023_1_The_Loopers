@@ -20,6 +20,7 @@ protected:
     void setLogin(const std::string& login);
     void setToken(const std::string& token);
     std::string encrypt(const std::string& password);
+    std::string dinamicSault(int passwordLength);
     std::string parserToJson(const std::string& login, const std::string& password, const std::string& sault);
 
 private:
