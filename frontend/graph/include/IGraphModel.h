@@ -6,6 +6,7 @@
 #include <memory>
 #include <set>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace inklink::graph
@@ -18,6 +19,8 @@ class IGraphModel
 public:
     struct NamingsEdge
     {
+        NamingsEdge(std::string source_, std::string destination_):source(std::move(source_)),destination(std::move(destination_)){};
+
         std::string source;
         std::string destination;
     };
