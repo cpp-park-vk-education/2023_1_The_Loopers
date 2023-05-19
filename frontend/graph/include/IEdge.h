@@ -3,7 +3,6 @@
 #include "IVertex.h"
 
 #include <memory>
-#include <utility>
 
 namespace inklink::graph
 {
