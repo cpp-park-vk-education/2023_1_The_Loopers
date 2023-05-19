@@ -16,12 +16,12 @@ void GraphModel::FillGraphByEdges(const std::vector<std::string>& vertexes)
     // TODO should parse raw data to edges and unique vertexes, then add them to graph
 }
 
-std::vector<std::shared_ptr<IVertex>> GraphModel::GetUniqueVertexes()
+std::vector<std::shared_ptr<IVertex>> GraphModel::GetUniqueVertexes() const
 {
     return m_uniqueVertexes;
 }
 
-std::vector<std::shared_ptr<IEdge>> GraphModel::GetEdges()
+std::vector<std::shared_ptr<IEdge>> GraphModel::GetEdges() const
 {
     return m_edges;
 }
