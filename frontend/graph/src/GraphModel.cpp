@@ -11,9 +11,13 @@ constexpr int kPosition = 300;
 
 namespace inklink::graph
 {
-void GraphModel::FillGraphByEdges(const std::vector<std::string>& vertexes)
+void GraphModel::FillGraphByEdges(std::string& rawData)
 {
-    // TODO should parse raw data to edges and unique vertexes, then add them to graph
+    auto namingsOfEdges = ParseRawData(rawData);
+    FillEdges(namingsOfEdges);
+    auto uniqueVertexes = MakeUniqueVertexes();
+    FillUniqueVertexes(uniqueVertexes);
+    SetRandomPositions();
 }
 
 std::set<std::shared_ptr<IVertex>> GraphModel::GetUniqueVertexes() const

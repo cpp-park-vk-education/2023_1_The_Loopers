@@ -13,7 +13,7 @@ namespace inklink::graph
 class GraphModel
 {
 public:
-    void FillGraphByEdges(const std::vector<std::string>& vertexes);
+    void FillGraphByEdges(std::string& rawData);
     std::set<std::shared_ptr<IVertex>> GetUniqueVertexes() const;
     std::vector<std::shared_ptr<IEdge>> GetEdges() const;
 
