@@ -14,7 +14,7 @@ bool AuthModel::createUser(const std::string& login, const std::string& password
         password = Hash(password);
 
         result = ParserToJson(login, password, sault);
-        NetworkClient.POST() // надо передать result
+
     }
 }
 
@@ -64,8 +64,7 @@ std::string AuthModel::encrypt(const std::string& password)
 
 std::string AuthModel::parserToJson(const std::string& login, const std::string& password, const std::string& sault)
 {
-std:
-    string result;
+    std::string result{};
     result = "{\n" + "\"login\": " + login + ",\n" + "\"password\": " + password + ",\n" + "\"sault\": " + sault +
              "\n" + "}";
 }
