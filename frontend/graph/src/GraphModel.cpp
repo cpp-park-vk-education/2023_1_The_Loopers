@@ -18,7 +18,7 @@ void GraphModel::FillGraphByEdges(const std::vector<std::string>& vertexes)
     {
         auto vertexPosition = GeneratePosition();
 
-        std::shared_ptr<IVertex> newVertex = std::make_shared<IVertex>(vertexName, vertexPosition);
+        auto newVertex = std::make_shared<IVertex>(vertexName, vertexPosition);
         m_uniqueVertexes.push_back(std::move(newVertex));
     }
 }
@@ -68,8 +68,8 @@ void GraphModel::FillEdges(std::vector<NamingsEdge> namings)
 {
     for (auto rawEdge : namings)
     {
-        std::shared_ptr<IVertex> sourceVertex = std::make_shared<IVertex>(rawEdge.source);
-        std::shared_ptr<IVertex> destinationVertex = std::make_shared<IVertex>(rawEdge.destination);
+        auto sourceVertex = std::make_shared<IVertex>(rawEdge.source);
+        auto destinationVertex = std::make_shared<IVertex>(rawEdge.destination);
         IEdge(sourceVertex, destinationVertex);
 
         m_edges.push_back(IEdge);
