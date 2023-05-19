@@ -9,11 +9,9 @@
 #include <string>
 #include <vector>
 
-
-
 namespace inklink::graph
 {
-class GraphModel: public IGraphModel
+class GraphModel : public IGraphModel
 {
 public:
     void FillGraphByEdges(std::string& rawData);

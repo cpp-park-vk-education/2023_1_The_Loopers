@@ -11,14 +11,16 @@
 class IEdge;
 class IVertex;
 
-class IGraphModel {
+class IGraphModel
+{
 public:
     virtual void FillGraphByEdges(std::string &rawData) = 0;
     virtual std::set<std::shared_ptr<IVertex>> GetUniqueVertexes() const = 0;
     virtual std::vector<std::shared_ptr<IEdge>> GetEdges() const = 0;
 
 private:
-    struct NamingsEdge {
+    struct NamingsEdge
+    {
         std::string source;
         std::string destination;
     };
