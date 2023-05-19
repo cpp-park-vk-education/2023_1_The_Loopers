@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IEdge.h"
+#include "IGraphModel.h"
 #include "IVertex.h"
 
 #include <memory>
@@ -8,9 +9,11 @@
 #include <string>
 #include <vector>
 
+
+
 namespace inklink::graph
 {
-class GraphModel
+class GraphModel: public IGraphModel
 {
 public:
     void FillGraphByEdges(std::string& rawData);
