@@ -50,7 +50,7 @@ std::set<std::shared_ptr<IVertex>> GraphModel::MakeUniqueVertexes()
 {
     std::set<std::shared_ptr<IVertex>> uniqueVertexes;
 
-    for (auto edge : m_edges)
+    for (const auto& edge : m_edges)
     {
         uniqueVertexes.insert(edge->GetSourceVertex());
         uniqueVertexes.insert(edge->GetDestinationVertex());
