@@ -6,6 +6,8 @@
 
 namespace inklink::graph
 {
+class IVertex;
+
 class IEdge
 {
 public:
