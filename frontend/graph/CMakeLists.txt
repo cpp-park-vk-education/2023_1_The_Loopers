@@ -1,7 +1,7 @@
 add_library(${GRAPH} STATIC "")
 
 target_sources(${GRAPH} PRIVATE
-        "src/temp.cpp"
+        src/Edge.cpp
         )
 
 set(PUBLIC_INCLUDE_DIRECTORIES
