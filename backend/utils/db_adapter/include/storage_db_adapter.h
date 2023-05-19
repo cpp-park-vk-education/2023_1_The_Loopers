@@ -1,11 +1,14 @@
+#pragma once
+
 #include "idb_adapter.h"
+#include "table_after_select.h"
 
 #include <string>
 
 
 namespace inklink::db_adapter
 {
-class StorageDbAdapter : public DbAdapterBase
+class StorageDbAdapter : public DbAdapterBase final
 {
     ~StorageDbAdapter() = default;
 
@@ -13,7 +16,7 @@ class StorageDbAdapter : public DbAdapterBase
     void Insert(const std::string& request) override;
     void Update(const std::string& request) override;
     void Delete(const std::string& request) override;
-    std::string Select(const std::string& request) override;
+    [[nodiscard]] TableAfterSelect Select(const std::string& request) override;
 
 };
 } // namespace inklink::db_adapter

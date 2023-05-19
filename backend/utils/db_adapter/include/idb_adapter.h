@@ -1,5 +1,7 @@
 #pragma once
 
+#include "table_after_select.h"
+
 #include <pqxx/pqxx>
 
 #include <string>
@@ -16,7 +18,7 @@ public:
     virtual void Update(const std::string& request) = 0;
     virtual void Delete(const std::string& request) = 0;
     virtual void Connect(const std::string& connectionString) = 0;
-    virtual std::string Get(const std::string& request) = 0;
+    [[nodiscard]] virtual TableAfterSelect Select(const std::string& request) = 0;
 
 protected:
     pqxx::connection m_connection;

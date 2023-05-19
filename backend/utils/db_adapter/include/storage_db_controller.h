@@ -9,19 +9,19 @@
 
 namespace inklink::db_controller
 {
-namespace filesystem = std::experimental::filesystem;
+using filesystem::path = std::experimental::filesystem::path;
 
 
 class StorageDbController
 {
 public:
-    explicit void SetAdapter(PgSqlIDbAdapter& adapter);
+    explicit void SetAdapter(DbAdapterBase& adapter);
 
-    filesystem::path GetFilePath(std::string fileName, std::string login);
-    std::string GetGraphArcs(std::string vertexName, std::string login);
+    [[nodiscard]] filesystem::path GetFilePath(std::string& fileName, std::string& login) const;
+    [[nodiscard]] std::string GetGraphArcs(std::string& vertexName, std::string& login) const;
 
-    void InsertFile(std::string fileName, std::string login, filesystem::path filePath);
-    void InsertGraphArc(std::string fromFileName, std::string toFileName, std::string login);
+    void InsertFile(std::string& fileName, std::string& login, filesystem::path& filePath) const;
+    void InsertGraphArc(std::string& fromFileName, std::string& toFileName, std::string& login) const;
 
     void Connect(const std::string& connectionString);
 
