@@ -57,7 +57,7 @@ void GraphModel::FillUniqueVertexes(std::set<std::shared_ptr<IVertex>> uniqueVer
     m_uniqueVertexes = std::move(uniqueVertexes);
 }
 
-void GraphModel::FillEdges(std::vector<NamingsEdge> namings)
+void GraphModel::FillEdges(const std::vector<NamingsEdge> namings)
 {
     for (auto rawEdge : namings)
     {
