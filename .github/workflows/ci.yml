@@ -70,7 +70,7 @@ jobs:
         message: |
           ## Results of build with clang-tidy, cpplint, cppcheck
           ```
-          cat ${{ github.workflow }}/build_output.txt
+          echo ${{ steps.build-with-linters-step.outputs.BUILD_OUTPUT }}
           ```
     - name: Save build results to artifact
       uses: actions/upload-artifact@v3
@@ -121,7 +121,7 @@ jobs:
         message: |
           ## Tests Results
           ```
-          cat ${{ github.workflow }}/tests_output.txt
+          echo ${{ steps.run-tests.outputs.TESTS_OUTPUT }}
           ```
 
     - name: Save build results to artifact
