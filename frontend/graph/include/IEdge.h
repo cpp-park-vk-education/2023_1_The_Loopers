@@ -9,8 +9,8 @@ class IEdge
 public:
     //    IEdge(IVertex* source, IVertex* destination): m_sourceVertex(source), m_destinationVertex(destination) {};
 
-    const IVertex* getSourceVertex() const;
-    const IVertex* getDestinationVertex() const;
+    [[nodiscard]] const std::shared_ptr<IVertex> GetSourceVertex() const;
+    [[nodiscard]] const std::shared_ptr<IVertex> GetDestinationVertex() const;
 
 private:
     std::shared_ptr<IVertex> m_sourceVertex;
