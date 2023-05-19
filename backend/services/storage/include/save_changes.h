@@ -12,7 +12,7 @@ using filesystem::path = std::experimental::filesystem::path;
 class SaveChanges
 {
 public:
-    bool SaveFile(const filesystem::path& filePath, const std::string& changes);
+    [[nodiscard]] bool SaveFile(const filesystem::path& filePath, const std::string& changes) noexcept;
 };
 }  // namespace inklink_file_holder
 #endif  // _BACK_SERVICES_STORAGE_INCLUDE_SAVE_CHANGES_H_

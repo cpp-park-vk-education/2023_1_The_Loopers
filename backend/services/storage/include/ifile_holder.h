@@ -16,8 +16,9 @@ using filesystem::path = std::experimental::filesystem::path;
 class IFileHolder
 {
 public:
-    virtual bool Save(const filesystem::path& filePath, std::string fileChanges) = 0;
-    virtual const std::string Get(const filesystem::path& filePath) = 0;
+    [[nodiscard]] virtual bool Save(const filesystem::path& filePath, std::string fileChanges) = 0;
+
+    [[nodiscard]] virtual const std::string Get(const filesystem::path& filePath) = 0;
 
     virtual ~IFileHolder() = default;
 

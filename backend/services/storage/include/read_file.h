@@ -12,7 +12,7 @@ using filesystem::path = std::experimental::filesystem::path;
 class ReadFile
 {
 public:
-    const std::string GetFile(const filesystem::path& filePath);
+    [[nodiscard]] const std::string GetFile(const filesystem::path& filePath) noexcept;
 };
 }  // namespace inklink_file_holder
 #endif  // _BACK_SERVICES_STORAGE_INCLUDE_READ_FILE_H_

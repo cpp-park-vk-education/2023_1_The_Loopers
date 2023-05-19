@@ -10,7 +10,7 @@ namespace inklink_file_holder
 {
 using filesystem::path = std::experimental::filesystem::path;
 
-bool SaveChanges::SaveFile(const filesystem::path& filePath, const std::string& changes)
+bool SaveChanges::SaveFile(const filesystem::path& filePath, const std::string& changes) noexcept
 {
     std::ofstream file(filePath, std::ios::app);
 
