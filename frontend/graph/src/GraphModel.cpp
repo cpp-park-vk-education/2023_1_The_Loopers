@@ -96,7 +96,7 @@ void GraphModel::FillEdges(const std::vector<NamingsEdge> namings)
 
 void GraphModel::SetRandomPositions()
 {
-    for (auto vertex : m_uniqueVertexes)
+    for (auto& vertex : m_uniqueVertexes)
     {
         auto vertexPosition = GeneratePosition();
         vertex->SetCurrentPosition(vertexPosition);
