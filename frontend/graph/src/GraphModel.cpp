@@ -9,6 +9,31 @@
 
 constexpr int kPosition = 300;
 
+using namespace inklink::graph;
+
+namespace
+{
+std::vector<IGraphModel::NamingsEdge> ParseRawData(std::string& rawEdgeString)
+{
+    std::stringstream stringToParse(rawEdgeString);
+    std::string singleEdge;
+    std::vector<IGraphModel::NamingsEdge> namings;
+
+    while (stringToParse >> singleEdge)
+    {
+        IGraphModel::NamingsEdge edge;
+        auto spacePosition = singleEdge.find('\t');
+        auto source = singleEdge.substr(0, spacePosition);
+        auto destination = singleEdge.substr(spacePosition + 1);
+        edge.source = source;
+        edge.destination = destination;
+        namings.push_back(edge); // TODO use emplace_back
+    }
+
+    return namings;
+}
+} // namespace
+
 namespace inklink::graph
 {
 void GraphModel::FillGraphByEdges(std::string& rawData)
@@ -81,23 +106,4 @@ void GraphModel::SetRandomPositions()
     }
 }
 
-std::vector<GraphModel::NamingsEdge> GraphModel::ParseRawData(std::string& rawEdgeString)
-{
-    std::stringstream stringToParse(rawEdgeString);
-    std::string singleEdge;
-    std::vector<NamingsEdge> namings;
-
-    while (stringToParse >> singleEdge)
-    {
-        NamingsEdge edge;
-        auto spacePosition = singleEdge.find('\t');
-        auto source = singleEdge.substr(0, spacePosition);
-        auto destination = singleEdge.substr(spacePosition + 1);
-        edge.source = source;
-        edge.destination = destination;
-        namings.push_back(edge); // TODO use emplace_back
-    }
-
-    return namings;
-}
 } // namespace inklink::graph
