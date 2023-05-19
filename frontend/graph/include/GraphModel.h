@@ -31,6 +31,5 @@ private:
     void FillEdges(const std::vector<NamingsEdge> namings) override;
     [[nodiscard]] IVertex::Position GeneratePosition(); // generates random position for vertex
     void SetRandomPositions();
-    [[nodiscard]] std::vector<NamingsEdge> ParseRawData(std::string& rawEdgeString);
 };
 } // namespace inklink::graph
