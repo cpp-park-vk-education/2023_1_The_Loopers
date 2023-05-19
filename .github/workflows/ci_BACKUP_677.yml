@@ -2,8 +2,13 @@ name: CI
 
 on:
   push:
+<<<<<<< HEAD
+    branches: 
+      - dev/a.danilchenko/db_adapter
+=======
     branches:
       - '**'
+>>>>>>> 225a00379467cdce5599e6ad528b9ef2e2ca0dc0
       - '!main'
 
 env:

@@ -1,27 +1,31 @@
 #pragma once
 
-#include <string>
 #include "idb_adapter.h"
 
-
+#include <string>
+#include <filesystem>
+#include <experimental/filesystem>
 
 
 namespace inklink::db_controller
 {
+namespace filesystem = std::experimental::filesystem;
+
+
 class StorageDbController
 {
 public:
-    void SetAdapter(PgSqlIDbAdapter& adapter);
+    explicit void SetAdapter(PgSqlIDbAdapter& adapter);
 
-    std::string GetFilePath(std::string fileName, std::string login);
+    filesystem::path GetFilePath(std::string fileName, std::string login);
     std::string GetGraphArcs(std::string vertexName, std::string login);
 
-    void InsertFile(std::string fileName, std::string login, std::string filePath);
-    void InsertGraphArc(std::string fromFileName, std::string toFileName);
+    void InsertFile(std::string fileName, std::string login, filesystem::path filePath);
+    void InsertGraphArc(std::string fromFileName, std::string toFileName, std::string login);
 
     void Connect(const std::string& connectionString);
 
 private:
-    PgSqlIDbAdapter& m_adapter;
+    DbAdapterBase& m_adapter;
 };
 } // namespace inklink::db_controller
