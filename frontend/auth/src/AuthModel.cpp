@@ -11,13 +11,14 @@ bool AuthModel::createUser(const std::string& login, const std::string& password
 {
     if (!login.empty() && !password.empty())
     {
-        std::string sault;
+        std::string sault{};
         sault = dinamicSault(password.size());
 
         password += sault;
         password = sha256(password);
 
         result = ParserToJson(login, password, sault);
+        //осталось отправить на web-socket
     }
 }
 
