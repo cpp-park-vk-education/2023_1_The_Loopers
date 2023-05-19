@@ -1,5 +1,7 @@
 #include "Edge.h"
 
+#include <memory>
+
 namespace inklink::graph
 {
 const std::shared_ptr<IVertex> Edge::GetSourceVertex() const
