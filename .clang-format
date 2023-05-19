@@ -32,6 +32,30 @@ Cpp11BracedListStyle: 'true'
 DerivePointerAlignment: 'true'
 FixNamespaceComments: 'true'
 IncludeBlocks: Regroup
+
+IncludeCategories:
+  # gtest headers
+  - Regex:           '^((<|")(gtest|gmock))'
+    Priority:        6
+  # boost headers
+  - Regex:           '^(<boost)'
+    Priority:        5
+  # Qt headers
+  - Regex:           '^(<(Q|qt))'
+    Priority:        4
+  # Third party libraries
+  - Regex:           '((<pqxx)|((<|")spdlog)|(<nlohmann)|(<json))'
+    Priority:        3
+  # Headers in <> without extension
+  - Regex:           '<([A-Za-z0-9\Q/-_\E])+>'
+    Priority:        7
+  # headers <> from this project 
+  - Regex:           '.*>'
+    Priority:        2
+  # Headers in ""
+  - Regex:           '.*"'
+    Priority:        1
+
 IndentCaseLabels: 'false'
 IndentWidth: '4'
 IndentWrappedFunctionNames: 'false'
