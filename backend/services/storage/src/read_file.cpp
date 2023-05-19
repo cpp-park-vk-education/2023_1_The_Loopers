@@ -1,13 +1,18 @@
+#include "read_file.h"
+
 #include <fstream>
 #include <string>
-#include "read_file.h"
+#include <experimental/filesystem>
+
 
 namespace inklink_file_holder
 {
-std::string ReadFile::GetFile(const std::string& filePath)
+namespace filesystem = std::experimental::filesystem;
+
+const std::string ReadFile::GetFile(const filesystem::path& filePath)
 {
     std::ifstream fileRead(filePath);
-    std::string stringFile("");
+    std::string stringFile{""};
     std::string buffer;
 
     if (!fileRead.is_open())

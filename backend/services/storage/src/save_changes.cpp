@@ -1,10 +1,16 @@
+#include "save_changes.h"
+
 #include <fstream>
 #include <string>
-#include "save_changes.h"
+#include <experimental/filesystem>
+
+
 
 namespace inklink_file_holder
 {
-bool SaveChanges::SaveFile(const std::string& filePath, const std::string& changes)
+namespace filesystem = std::experimental::filesystem;
+
+bool SaveChanges::SaveFile(const filesystem::path& filePath, const std::string& changes)
 {
     std::ofstream file(filePath, std::ios::app);
 

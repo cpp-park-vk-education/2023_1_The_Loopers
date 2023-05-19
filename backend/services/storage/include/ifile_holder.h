@@ -6,16 +6,18 @@
 #include "save_changes.h"
 
 #include <string>
-
+#include <experimental/filesystem>
 
 
 namespace inklink_file_holder
 {
+namespace filesystem = std::experimental::filesystem;
+
 class IFileHolder
 {
 public:
-    virtual bool Save(std::string filePath, std::string fileChanges) = 0;
-    virtual const std::string Get(const std::string& filePath) = 0;
+    virtual bool Save(const filesystem::path& filePath, std::string fileChanges) = 0;
+    virtual const std::string Get(const filesystem::path& filePath) = 0;
 
     virtual ~IFileHolder() = default;
 

@@ -5,12 +5,15 @@
 
 #include <string>
 
+
 namespace inklink_file_holder
 {
+namespace filesystem = std::experimental::filesystem;
+
 class FileHolder : public IFileHolder
 {
 public:
-    bool Save(std::string filePath, std::string fileChanges) override;
+    bool Save(const filesystem::path& filePath, std::string fileChanges) override;
     const std::string Get(const std::string& filePath) override;
 
     virtual ~FileHolder() = default;
