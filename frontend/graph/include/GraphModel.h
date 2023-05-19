@@ -10,15 +10,12 @@
 
 namespace inklink::graph
 {
-// DB -[edges string]-> Fill Graph <- {ParseData, FillEdges, MakeUniqueVertexes, FillUniqueVertexes, GeneratePosition}
 class GraphModel
 {
 public:
     void FillGraphByEdges(const std::vector<std::string>& vertexes);
     std::vector<std::shared_ptr<IVertex>> GetUniqueVertexes();
     std::vector<std::shared_ptr<IEdge>> GetEdges();
-
-//    void AddEdge(NamingsEdge);
 
 private:
     struct NamingsEdge
