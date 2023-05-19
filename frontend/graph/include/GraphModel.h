@@ -24,12 +24,13 @@ private:
         std::string destination;
     };
 
-    Position GeneratePosition();                                // generates random position for vertex
+    Position GeneratePosition();                             // generates random position for vertex
     std::set<std::shared_ptr<IVertex>> MakeUniqueVertexes(); // parse edges and find unique vertexes
     void FillUniqueVertexes(std::set<std::shared_ptr<IVertex>>);
     void FillEdges(std::vector<NamingsEdge>);
     void SetRandomPositions();
-    std::vector<NamingsEdge> ParseRawData(std::string& rawString); // parse raw string and makes edges with vertex namings
+    std::vector<NamingsEdge>
+    ParseRawData(std::string& rawString); // parse raw string and makes edges with vertex namings
 
     // first vertex in vector used as center vertex
     std::set<std::shared_ptr<IVertex>> m_uniqueVertexes;

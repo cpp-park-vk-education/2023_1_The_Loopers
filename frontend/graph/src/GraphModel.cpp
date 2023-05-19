@@ -85,7 +85,7 @@ void GraphModel::SetRandomPositions()
     }
 }
 
-std::vector<NamingsEdge> GraphModel::ParseRawData(std::string& rawEdgeString)
+std::vector<GraphModel::NamingsEdge> GraphModel::ParseRawData(std::string& rawEdgeString)
 {
     std::stringstream stringToParse(rawEdgeString);
     std::string singleEdge;
