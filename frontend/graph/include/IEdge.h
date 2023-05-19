@@ -7,7 +7,8 @@ namespace inklink::graph
 class IEdge
 {
 public:
-    //    IEdge(IVertex* source, IVertex* destination): m_sourceVertex(source), m_destinationVertex(destination) {};
+    IEdge(std::shared_ptr<IVertex> source, std::shared_ptr<IVertex> destination)
+            : m_sourceVertex(source), m_destinationVertex(destination){};
 
     [[nodiscard]] const std::shared_ptr<IVertex> GetSourceVertex() const;
     [[nodiscard]] const std::shared_ptr<IVertex> GetDestinationVertex() const;
