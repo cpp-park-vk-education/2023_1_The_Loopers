@@ -93,7 +93,7 @@ void GraphModel::FillEdges(const std::vector<NamingsEdge> namings)
         auto sourceVertex = std::make_shared<IVertex>(rawEdge.source);
         auto destinationVertex = std::make_shared<IVertex>(rawEdge.destination);
 
-        m_edges.emplace_back(sourceVertex, destinationVertex);
+        m_edges.emplace_back(std::make_shared<IEdge>(sourceVertex, destinationVertex));
     }
 }
 
