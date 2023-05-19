@@ -13,7 +13,7 @@ public:
     const IVertex* getDestinationVertex() const;
 
 private:
-    IVertex* m_sourceVertex;
-    IVertex* m_destinationVertex;
+    std::shared_ptr<IVertex> m_sourceVertex;
+    std::shared_ptr<IVertex> m_destinationVertex;
 };
 } // namespace inklink::graph
