@@ -7,7 +7,7 @@
 
 namespace inklink_file_holder
 {
-namespace filesystem = std::experimental::filesystem;
+using filesystem::path = std::experimental::filesystem::path;
 
 const std::string ReadFile::GetFile(const filesystem::path& filePath)
 {
@@ -20,7 +20,7 @@ const std::string ReadFile::GetFile(const filesystem::path& filePath)
         return "Uncorrect file path";
     }
 
-    while (fileRead >> buffer)
+    while (fileRead.getline(fileRead, buffer))
     {
         stringFile = stringFile + buffer;
     }

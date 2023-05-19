@@ -6,7 +6,7 @@
 
 namespace inklink_file_holder
 {
-namespace filesystem = std::experimental::filesystem;
+using filesystem::path = std::experimental::filesystem::path;
 
 bool FileHolder::Save(const filesystem::path& filePath, std::string fileChanges)
 {

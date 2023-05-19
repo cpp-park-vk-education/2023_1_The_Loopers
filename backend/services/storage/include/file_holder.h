@@ -8,7 +8,7 @@
 
 namespace inklink_file_holder
 {
-namespace filesystem = std::experimental::filesystem;
+using filesystem::path = std::experimental::filesystem::path;
 
 class FileHolder : public IFileHolder
 {
