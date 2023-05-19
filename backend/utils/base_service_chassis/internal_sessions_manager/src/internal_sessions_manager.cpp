@@ -81,7 +81,7 @@ void InternalSessionsManager::RemoveSession(IServiceSession* session)
     {
         return;
     }
-    const DocSessionDescriptor& descriptor = m_DescriptorByEndpoint[endpoint];
+    const DocSessionDescriptor descriptor = m_DescriptorByEndpoint[endpoint];
     RemoveSession(descriptor);
 }
 
