@@ -62,7 +62,7 @@ std::string AuthModel::encrypt(const std::string& password)
     return m_enncrypter.encryptString(password);
 }
 
-std::string ParserToJson(const std::string& login, const std::string& password, const std::string& sault)
+std::string AuthModel::parserToJson(const std::string& login, const std::string& password, const std::string& sault)
 {
 std:
     string result;
