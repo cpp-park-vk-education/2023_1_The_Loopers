@@ -29,7 +29,7 @@ private:
     std::set<std::shared_ptr<IVertex>> MakeUniqueVertexes() override; // parse edges and find unique vertexes
     void FillUniqueVertexes(std::set<std::shared_ptr<IVertex>>) override;
     void FillEdges(const std::vector<NamingsEdge> namings) override;
-    Position GeneratePosition(); // generates random position for vertex
+    IVertex::Position GeneratePosition(); // generates random position for vertex
     void SetRandomPositions();
     std::vector<NamingsEdge> ParseRawData(std::string& rawEdgeString);
 };

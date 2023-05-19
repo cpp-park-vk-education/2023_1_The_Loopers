@@ -31,13 +31,13 @@ std::vector<std::shared_ptr<IEdge>> GraphModel::GetEdges() const
 }
 
 // also would be used for shuffle in 'view'
-Position GraphModel::GeneratePosition()
+IVertex::Position GraphModel::GeneratePosition()
 {
     std::random_device seed;
     std::mt19937 gen(seed());
     std::uniform_int_distribution<> dis(-kPosition, kPosition);
 
-    Position temp;
+    IVertex::Position temp;
     temp.yPosition = dis(gen);
     temp.xPosition = dis(gen);
     return temp;
