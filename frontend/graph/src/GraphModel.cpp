@@ -11,16 +11,9 @@ constexpr std::size_t kPosition = 300;
 
 namespace inklink::graph
 {
-// TODO should parse raw data to edges and unique vertexes, then add them to graph
 void GraphModel::FillGraphByEdges(const std::vector<std::string>& vertexes)
 {
-    for (std::string vertexName : vertexes)
-    {
-        auto vertexPosition = GeneratePosition();
-
-        auto newVertex = std::make_shared<IVertex>(vertexName, vertexPosition);
-        m_uniqueVertexes.push_back(std::move(newVertex));
-    }
+    // TODO should parse raw data to edges and unique vertexes, then add them to graph
 }
 
 std::vector<std::shared_ptr<IVertex>> GraphModel::GetUniqueVertexes()
@@ -70,9 +63,8 @@ void GraphModel::FillEdges(std::vector<NamingsEdge> namings)
     {
         auto sourceVertex = std::make_shared<IVertex>(rawEdge.source);
         auto destinationVertex = std::make_shared<IVertex>(rawEdge.destination);
-        IEdge(sourceVertex, destinationVertex);
 
-        m_edges.push_back(IEdge);
+        m_edges.emplace_back(sourceVertex, destinationVertex);
     }
 }
 
@@ -99,7 +91,7 @@ std::vector<GraphModel::NamingsEdge> GraphModel::ParseRawData(std::string& rawEd
         auto destination = singleEdge.substr(spacePosition + 1);
         edge.source = source;
         edge.destination = destination;
-        namings.push_back(edge);
+        namings.push_back(edge); // TODO use emplace_back
     }
 
     return namings;
