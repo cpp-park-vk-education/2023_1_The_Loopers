@@ -1,7 +1,7 @@
 add_library(${AUTH} STATIC "")
 
 target_sources(${AUTH} PRIVATE
-        "src/temp.cpp"
+        "src/AuthModel.cpp"
         )
 
 set(PUBLIC_INCLUDE_DIRECTORIES

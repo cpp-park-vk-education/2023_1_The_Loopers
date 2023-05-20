@@ -10,17 +10,20 @@ namespace inklink::auth
 class AuthModel
 {
 public:
-    bool createUser(const std::string& login, const std::string& password);
-    bool login(const std::string& login, const std::string& password);
-    void exit();
-    const std::string getLogin() const;
-    const std::string getToken() const;
+    bool CreateUser(const std::string& login, std::string& password);
+    bool Login(const std::string& login, const std::string& password);
+    void Exit();
+    const std::string GetLogin() const;
+    const std::string GetToken() const;
 
 protected:
-    void setLogin(const std::string& login);
-    void setToken(const std::string& token);
-    std::string encrypt(const std::string& password);
+    void SetLogin(const std::string& login);
+    void SetToken(const std::string& token);
+    std::string Encrypt(const std::string& password);
+    static std::string DinamicSault(int passwordLength);
+//    std::string ParserToJson(const std::string& login, const std::string& password, const std::string& sault);
 
+    std::string ParserToJson(const std::string& login, const std::string& password);
 private:
     std::string m_login;
     std::string m_token;
