@@ -23,6 +23,6 @@ class StorageDbAdapter final : public DbAdapterBase
     [[nodiscard]] TableAfterSelect Select(const std::string& request) const  override;
 
 private:
-    pqxx::connection m_connection();
+    pqxx::connection m_connection;
 };
 } // namespace inklink::db_adapter
