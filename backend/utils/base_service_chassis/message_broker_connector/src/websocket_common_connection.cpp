@@ -21,15 +21,7 @@ WebsocketCommonConnection::WebsocketCommonConnection(std::shared_ptr<ILogger> lo
 
 void WebsocketCommonConnection::Init(ServiceType type, const Endpoint& self, const Endpoint& other)
 {
-    m_serviceType = type;
-    m_endpointSelf = self;
-    m_endpointOther = other;
-
-    auto session = std::make_shared<
-            WebsocketClientSession<decltype(m_acceptCallback), decltype(m_readCallback), decltype(m_writeCallback)>>(
-            m_ioContext, self.address, self.port, m_acceptCallback, m_readCallback, m_writeCallback);
-    session->RunAsync(other.address, other.port);
-    m_session = session;
+    ChangeConnection(type, self, other);
 
     m_ioContextExecutor =
             boost::asio::require(m_ioContext.get_executor(), boost::asio::execution::outstanding_work.tracked);
@@ -37,11 +29,25 @@ void WebsocketCommonConnection::Init(ServiceType type, const Endpoint& self, con
     m_threadIoContext = std::thread([this]() { this->m_ioContext.run(); });
 }
 
-void WebsocketCommonConnection::ChangeConnection(ServiceType, const Endpoint& self, const Endpoint& other)
+void WebsocketCommonConnection::ChangeConnection(ServiceType type, const Endpoint& self, const Endpoint& other)
 {
     m_serviceType = type;
     m_endpointSelf = self;
     m_endpointOther = other;
+
+    auto sessionOld = m_session.lock();
+    if (sessionOld) [[likely]]
+    {
+        sessionOld->Close();
+    }
+
+    auto session = std::make_shared<
+            WebsocketClientSession<decltype(m_acceptCallback), decltype(m_readCallback), decltype(m_writeCallback)>>(
+            m_ioContext, self.address, self.port, m_acceptCallback, m_readCallback, m_writeCallback);
+    session->RunAsync(other.address, other.port);
+    m_session = session;
+
+    // TODO (a.novak) probably send smth about that we are connected
 }
 
 std::shared_ptr<IClientSession> WebsocketCommonConnection::GetSession() const noexcept
