@@ -26,7 +26,7 @@ concept StringErrorCodeSessionCallbackConcept =
         };
 
 template <typename T>
-concept StringErrorCodeCallbackConcept = requires(T&& t, boost::system::error_code ec) {
+concept ErrorCodeCallbackConcept = requires(T&& t, boost::system::error_code ec) {
     {
         std::forward<T>(t)(ec)
     } -> std::same_as<void>;

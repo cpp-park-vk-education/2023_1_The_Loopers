@@ -25,7 +25,7 @@ namespace inklink::server_network
 namespace beast = boost::beast;
 // clang-format off
 template <StringErrorCodeSessionCallbackConcept ReadCallback, ErrorCodeAndSessionCallbackConcept AcceptCallback,
-          StringErrorCodeCallbackConcept WriteCallback>
+          ErrorCodeCallbackConcept WriteCallback>
 WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::WebsocketServiceSession(
             std::shared_ptr<InternalSessionsManager> manager, 
             std::shared_ptr<IAuthorizer> auth, 
@@ -45,14 +45,14 @@ WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::WebsocketS
 // clang-format on
 
 template <StringErrorCodeSessionCallbackConcept ReadCallback, ErrorCodeAndSessionCallbackConcept AcceptCallback,
-          StringErrorCodeCallbackConcept WriteCallback>
+          ErrorCodeCallbackConcept WriteCallback>
 WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::~WebsocketServiceSession()
 {
     m_manager->RemoveSession(this);
 }
 
 template <StringErrorCodeSessionCallbackConcept ReadCallback, ErrorCodeAndSessionCallbackConcept AcceptCallback,
-          StringErrorCodeCallbackConcept WriteCallback>
+          ErrorCodeCallbackConcept WriteCallback>
 void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::RunAsync()
 {
     // We need to be executing within a strand to perform async operations
@@ -64,7 +64,7 @@ void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::RunAs
 }
 
 template <StringErrorCodeSessionCallbackConcept ReadCallback, ErrorCodeAndSessionCallbackConcept AcceptCallback,
-          StringErrorCodeCallbackConcept WriteCallback>
+          ErrorCodeCallbackConcept WriteCallback>
 void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::OnRun()
 {
     // Set suggested timeout settings for the websocket
@@ -79,7 +79,7 @@ void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::OnRun
 }
 
 template <StringErrorCodeSessionCallbackConcept ReadCallback, ErrorCodeAndSessionCallbackConcept AcceptCallback,
-          StringErrorCodeCallbackConcept WriteCallback>
+          ErrorCodeCallbackConcept WriteCallback>
 void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::Send(const std::string& message)
 {
     auto ss = std::make_shared<std::string const>(message);
@@ -99,7 +99,7 @@ void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::Send(
 }
 
 template <StringErrorCodeSessionCallbackConcept ReadCallback, ErrorCodeAndSessionCallbackConcept AcceptCallback,
-          StringErrorCodeCallbackConcept WriteCallback>
+          ErrorCodeCallbackConcept WriteCallback>
 void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::OnAccept(boost::system::error_code ec)
 {
     m_acceptCallback(ec, this);
@@ -118,7 +118,7 @@ void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::OnAcc
 }
 
 template <StringErrorCodeSessionCallbackConcept ReadCallback, ErrorCodeAndSessionCallbackConcept AcceptCallback,
-          StringErrorCodeCallbackConcept WriteCallback>
+          ErrorCodeCallbackConcept WriteCallback>
 void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::DoRead()
 {
     // Read a message into our buffer
@@ -127,7 +127,7 @@ void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::DoRea
 }
 
 template <StringErrorCodeSessionCallbackConcept ReadCallback, ErrorCodeAndSessionCallbackConcept AcceptCallback,
-          StringErrorCodeCallbackConcept WriteCallback>
+          ErrorCodeCallbackConcept WriteCallback>
 void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::OnRead(boost::system::error_code ec,
                                                                                   std::size_t)
 {
@@ -150,7 +150,7 @@ void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::OnRea
 }
 
 template <StringErrorCodeSessionCallbackConcept ReadCallback, ErrorCodeAndSessionCallbackConcept AcceptCallback,
-          StringErrorCodeCallbackConcept WriteCallback>
+          ErrorCodeCallbackConcept WriteCallback>
 void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::OnWrite(boost::system::error_code ec,
                                                                                    std::size_t)
 {

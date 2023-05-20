@@ -22,7 +22,7 @@ template <StringErrorCodeSessionCallbackConcept ReadCallback =
                   std::function<void(const std::string&, boost::system::error_code, IServiceSession*)>,
           ErrorCodeAndSessionCallbackConcept AcceptCallback =
                   std::function<void(boost::system::error_code, IServiceSession*)>,
-          StringErrorCodeCallbackConcept WriteCallback = std::function<void(boost::system::error_code)>>
+          ErrorCodeCallbackConcept WriteCallback = std::function<void(boost::system::error_code)>>
 class WebsocketServiceSession
         : public IServiceSession,
           public std::enable_shared_from_this<WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>>
