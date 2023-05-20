@@ -26,13 +26,13 @@ struct TextAction
     int posEnd;
     IData* data;
 
-    bool operator==(const TextAction& other) const
+    [[nodiscard]] constexpr bool operator==(const TextAction& other) const noexcept
     {
         return std::tie(type, figureId, endpoint, time, posStart, posEnd, data) ==
                std::tie(other.type, other.figureId, other.endpoint, other.time, other.posStart, other.posEnd,
                         other.data);
     }
-    bool operator!=(const TextAction& other) const
+    [[nodiscard]] constexpr bool operator!=(const TextAction& other) const noexcept
     {
         return !(*this == other);
     }
@@ -43,6 +43,6 @@ class ITextConflictResolver
 public:
     virtual ~ITextConflictResolver() = default;
 
-    virtual std::vector<TextAction> Resolve(std::vector<TextAction>) = 0;
+    virtual void Resolve(std::vector<TextAction>&) const = 0;
 };
 } // namespace inklink::service_simultaneous_access

@@ -5,7 +5,7 @@
 namespace inklink::service_simultaneous_access
 {
 
-std::vector<DrawAction> BlockingDrawResolver::Resolve(std::vector<DrawAction> actions)
+void BlockingDrawResolver::Resolve(std::vector<DrawAction>& actions) const
 {
     std::vector<DrawAction> resolvedActions;
 
@@ -55,7 +55,7 @@ std::vector<DrawAction> BlockingDrawResolver::Resolve(std::vector<DrawAction> ac
         }
     }
 
-    return resolvedActions;
+    actions = std::move(resolvedActions);
 }
 
 } // namespace inklink::service_simultaneous_access
