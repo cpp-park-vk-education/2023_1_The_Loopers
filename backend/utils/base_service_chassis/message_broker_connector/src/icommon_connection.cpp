@@ -26,4 +26,9 @@ void ICommonConnection::AddWriteCallback(std::function<void(error_code)> callbac
     m_writeCallbacks.push_back(callback);
 }
 
+Endpoint ICommonConnection::GetEndpointSelf() const noexcept
+{
+    return m_endpointSelf;
+}
+
 } // namespace inklink::base_service_chassis

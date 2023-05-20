@@ -39,6 +39,8 @@ public:
     void AddReadCallback(std::function<void(const std::string&, error_code, IClientSession*)> callback);
     void AddWriteCallback(std::function<void(error_code)> callback);
 
+    [[nodiscard]] virtual Endpoint GetEndpointSelf() const noexcept;
+
 protected:
     std::weak_ptr<IClientSession> m_session;
 
