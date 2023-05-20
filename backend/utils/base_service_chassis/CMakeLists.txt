@@ -2,6 +2,7 @@ add_library(${BASE_SERVICE_CHASSIS} STATIC "")
 
 target_sources(${BASE_SERVICE_CHASSIS} PRIVATE
     "src/trash.cpp"
+    "local_service_registry/src/local_service_registry.cpp"
 )
 
 set(PUBLIC_INCLUDE_DIRECTORIES
