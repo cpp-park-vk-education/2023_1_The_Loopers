@@ -22,8 +22,5 @@ public:
     virtual void Update(const std::string& request) const = 0;
     virtual void Delete(const std::string& request) const = 0;
     [[nodiscard]] virtual TableAfterSelect Select(const std::string& request) const = 0;
-
-protected:
-    pqxx::connection m_connection;
 };
 } // namespace inklink::db_adapter

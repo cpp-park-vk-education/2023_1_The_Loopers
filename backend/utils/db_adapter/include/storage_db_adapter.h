@@ -22,5 +22,7 @@ class StorageDbAdapter final : public DbAdapterBase
     void Delete(const std::string& request) const  override;
     [[nodiscard]] TableAfterSelect Select(const std::string& request) const  override;
 
+private:
+    pqxx::connection m_connection();
 };
 } // namespace inklink::db_adapter
