@@ -27,7 +27,7 @@ public:
     void SetFileHolder(std::shared_ptr<IFileHolder> fileHolder) override;
 
 private:
-    [[nodiscard]] bool Create(std::string& fileName, std::string& login, filesystem::path& filePath) override;
+    [[nodiscard]] bool Create(std::string& fileName, std::string& login) override;
 };
 } // namespace inklink:storage
 #endif // _BACKEND_SERVICES_STORAGE_INCLUDE_STORAGE_H_

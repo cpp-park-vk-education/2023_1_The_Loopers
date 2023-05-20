@@ -30,7 +30,7 @@ public:
     virtual void SetFileHolder(std::shared_ptr<IFileHolder> fileHolder) = 0;
 
 protected:
-    virtual [[nodiscard]] bool Create(std::string& fileName, std::string& login, filesystem::path& filePath) = 0;
+    virtual [[nodiscard]] bool Create(std::string& fileName, std::string& login) = 0;
 
     std::shared_ptr<IFileHolder> m_fileWorker;
     std::shared_ptr<IStorageDbController> m_dbController;

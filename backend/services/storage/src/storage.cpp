@@ -18,5 +18,13 @@ using IExternalServiceChassis = external_service_chassis:IExternalServiceChassis
     return m_fileWorker->Get(m_dbController->GetFilePath(fileName, login));
 }
 
+[[nodiscard]] bool Storage::Update(std::string& fileName, std::string& login, std::string& fileChanges)
+{
+    if (m_dbController->GetFilePath(fileName, login) == "")
+    {
+        Create(fileName, login);
+    }
 
+    m_fileWorker->Save(m_dbController->GetFilePath(fileName, login), fileChanges);
+}
 } // namespace inklink: storage
