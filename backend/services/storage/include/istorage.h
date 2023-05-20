@@ -1,5 +1,5 @@
 #ifndef _BACKEND_SERVICES_STORAGE_INCLUDE_ISTORAGE_H_
-#define_BACKEND_SERVICES_STORAGE_INCLUDE_ISTORAGE_H_
+#define _BACKEND_SERVICES_STORAGE_INCLUDE_ISTORAGE_H_
 
 #include "ifile_holder.h"
 #include "idb_adapter"
@@ -29,7 +29,7 @@ public:
     virtual void SetDbController(std::shared_ptr<IStorageDbController> dbController) = 0;
     virtual void SetFileHolder(std::shared_ptr<IFileHolder> fileHolder) = 0;
 
-private:
+protected:
     virtual [[nodiscard]] bool Create(std::string& fileName, std::string& login, filesystem::path& filePath) = 0;
 
     std::shared_ptr<IFileHolder> m_fileWorker;
