@@ -12,7 +12,12 @@ namespace inklink::db_adapter
 using namespace data_types;
 
 
-void StorageDbAdapter::Insert(const std::string& request)
+void StorageDbAdapter::Connect(const std::string& connectionString)
+{
+    m_connection = pqxx::connection(connectionString);
+}
+
+void StorageDbAdapter::Insert(const std::string& request) const
 {
     pqxx::work inserter(m_connection);
     inserter.exec(request);
@@ -20,7 +25,7 @@ void StorageDbAdapter::Insert(const std::string& request)
     inserter.commit();
 }
 
-TableAfterSelect StorageDbAdapter::Select(const std::string& request)
+TableAfterSelect StorageDbAdapter::Select(const std::string& request) const
 {
     pqxx::work selector(m_connection);
     TableAfterSelect result;
@@ -42,7 +47,7 @@ TableAfterSelect StorageDbAdapter::Select(const std::string& request)
     return result;
 }
 
-void StorageDbAdapter::Update(const std::string& request)
+void StorageDbAdapter::Update(const std::string& request) const
 {
     pqxx::work updator(m_connection);
     updator.exec(request);
@@ -50,7 +55,7 @@ void StorageDbAdapter::Update(const std::string& request)
     updator.commit();
 }
 
-void StorageDbAdapter::Delete(const std::string& request)
+void StorageDbAdapter::Delete(const std::string& request) const
 {
     pqxx::work deletor(m_connection);
     deletor.exec(request);
