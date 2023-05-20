@@ -23,19 +23,19 @@ class MessageBrokerEvent
     using error_code = boost::system::error_code;
 
 public:
-    MessageBrokerEvent(std::shared_ptr<ICommonConnection> cc,
-                       std::function<void(const std::string&, error_code, IClientSession*)> readCallback,
-                       std::shared_ptr<ILogger> logger);
+    MessageBrokerEvent(std::shared_ptr<ICommonConnection>,
+                       std::function<void(int /*event type*/, const std::string&, Endpoint /*from*/)> notifiedCallback,
+                       std::shared_ptr<ILogger>);
     virtual ~MessageBrokerEvent() = default;
 
-    virtual void SetDoOnNotified(std::function<void(int, const std::string&, IClientSession*)>) = 0;
+    virtual void Publish(int event, const std::string&, ServiceType subscribersType = ServiceType::kAll);
+    virtual void Subscribe(int event);
 
-    virtual void Publish(int event, const std::string&, ServiceType) = 0;
-    virtual void Subscribe(int event, const Endpoint&) = 0;
+private:
+    void DoOnNotified(const std::string&, error_code, IClientSession*) const;
 
-protected:
     std::shared_ptr<ICommonConnection> m_connectionToMsgBroker;
-    std::function<void(int, const std::string&, IClientSession*)> m_doOnNotified;
+    std::function<void(int, const std::string&, Endpoint)> m_notifiedCallback;
     std::shared_ptr<ILogger> m_logger;
 };
 } // namespace inklink::base_service_chassis

@@ -23,8 +23,8 @@ class MessageBrokerSignal
     using IClientSession = client_connector::IClientSession;
 
 public:
-    MessageBrokerSignal(std::shared_ptr<ICommonConnection> cc, std::function<void(const std::string&)> readCallback,
-                        std::shared_ptr<ILogger> logger);
+    MessageBrokerSignal(std::shared_ptr<ICommonConnection>, std::function<void(const std::string&)> readCallback,
+                        std::shared_ptr<ILogger>);
     virtual ~MessageBrokerSignal() = default;
 
     // virtual void SetDoOnRead(std::function<void(const std::string&, error_code, IClientSession*)>);

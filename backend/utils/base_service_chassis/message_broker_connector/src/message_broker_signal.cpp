@@ -1,5 +1,9 @@
 #include "message_broker_signal.h"
 
+#include "ilogger.h"
+
+#include <iclient_session.h>
+
 #include <boost/system/error_code.hpp>
 
 #include <algorithm>
@@ -58,7 +62,7 @@ void MessageBrokerSignal::Send(const std::string& msgBody, const Endpoint& sendT
         std::replace(msgTruncated.begin(), msgTruncated.end(), '\n', ' ');
         // TODO (a.novak) <<endpoint when will add overload
         ss << "No connection to MsgBroker. Tried sending to '"
-           << "' with msg " << msgTruncated;
+           << "' with msg: " << msgTruncated;
 
         m_logger->LogDebug(ss.str());
         return;
