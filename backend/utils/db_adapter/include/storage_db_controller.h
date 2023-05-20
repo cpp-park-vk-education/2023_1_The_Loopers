@@ -18,7 +18,9 @@ public:
     explicit void SetAdapter(DbAdapterBase& adapter);
 
     [[nodiscard]] filesystem::path GetFilePath(std::string& fileName, std::string& login) const;
-    [[nodiscard]] std::string GetGraphArcs(std::string& vertexName, std::string& login) const;
+    [[nodiscard]] std::string GetGraphArcs(std::string& vertexName, std::string& sessionId) const;
+    [[nodiscard]] std::string GetAllFilesForUser(std::string& login) const;
+
 
     void InsertFile(std::string& fileName, std::string& login, filesystem::path& filePath) const;
     void InsertGraphArc(std::string& fromFileName, std::string& toFileName, std::string& login) const;

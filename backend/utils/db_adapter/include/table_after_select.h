@@ -9,6 +9,11 @@ namespace inklink::db_controller
 struct TableAfterSelect
 {
 public:
+    [[nodiscard]] int TableSize() const
+    {
+        return table.size();
+    }
+
     [[nodiscard]] std::vector<std::string> operator[](const int iterator) const
     {
         return table[iterator];
