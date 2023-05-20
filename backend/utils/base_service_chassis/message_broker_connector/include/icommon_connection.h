@@ -23,21 +23,20 @@ class ILogger;
 class ICommonConnection
 {
     using IClientSession = client_connector::IClientSession;
+    using ConnectType = client_connector::ConnectType;
     using error_code = boost::system::error_code;
 
 public:
-    explicit ICommonConnection(std::shared_ptr<ILogger> logger) : m_logger{logger}
-    {
-    }
+    explicit ICommonConnection(std::shared_ptr<ILogger> logger);
     virtual ~ICommonConnection() = default;
 
     virtual void Init(ServiceType, const Endpoint& self, const Endpoint& other) = 0;
     virtual void ChangeConnection(ServiceType, const Endpoint& self, const Endpoint& other) = 0;
     [[nodiscard]] virtual std::shared_ptr<IClientSession> GetSession() const noexcept = 0;
 
-    void SetAcceptCallback(std::function<void(ConnectType, error_code, IClientSession*)>);
-    void SetReadCallback(std::function<void(const std::string&, error_code, IClientSession*)>);
-    void SetWriteCallback(std::function<void(error_code, IClientSession*)>);
+    void SetAcceptCallback(std::function<void(ConnectType, error_code, IClientSession*)> callback) noexcept;
+    void SetReadCallback(std::function<void(const std::string&, error_code, IClientSession*)> callback) noexcept;
+    void SetWriteCallback(std::function<void(error_code, IClientSession*)> callback) noexcept;
 
 protected:
     std::weak_ptr<IClientSession> m_session;
