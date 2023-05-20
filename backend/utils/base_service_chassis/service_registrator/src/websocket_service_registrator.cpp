@@ -19,26 +19,8 @@ using error_code = boost::system::error_code;
 using ConnectType = client_connector::ConnectType;
 } // namespace
 
-class YourClass
-{
-public:
-    // remember, it will be called from different thread! (where running io_context)
-    void DoOnAccept(error_code)
-    {
-        // your logic (log if (ec), for example)
-        return;
-    }
-
-    void DoOnRead(ConnectType, error_code ec, IClientSession*)
-    {
-        // your logic
-        return;
-    }
-};
-
 namespace inklink::base_service_chassis
 {
-
 WebsocketServiceRegistrator::WebsocketServiceRegistrator(std::shared_ptr<ILogger> logger)
         : IServiceRegistrator{}, m_logger{logger}
 {
