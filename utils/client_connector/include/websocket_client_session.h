@@ -57,12 +57,6 @@ namespace beast = boost::beast;
  * using namespace inklink::client_connector;
  * using error_code = boost::system::error_code;
  *
- * // TODO (a.novak) write example thread-safe class wrapper for io_context.
- * // Program may be a lot easier if one will define callbacks here and just raise some flags in main class
- * class ThreadSafeIoContextWrapper {
- *
- * }
- *
  * class YourClass {
  *      std::weak_ptr<IClientSession> m_session;
  *      boost::asio::io_context m_ioContext;
@@ -84,7 +78,7 @@ namespace beast = boost::beast;
  *              session->RunAsync();
  *
  *              // running in separate thread, because io_context blocks thread where is running
- *              // TODO (a.novak) write example thread-safe class wrapper for io_context
+ *              // One cane freely add sessions while io_context running: it is thread safe
  *              m_thread_ioContext = std::thread([&m_ioContext]() { m_ioContext.run(); });
  *      }
  *      ~YourClass() {
