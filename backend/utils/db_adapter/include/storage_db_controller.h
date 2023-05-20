@@ -18,7 +18,7 @@ class StorageDbController final
 public:
     explicit void SetAdapter(DbAdapterBase& adapter);
 
-    void Connect(const std::string& connectionString) = 0;
+    void Connect(const std::string& connectionString);
 
     [[nodiscard]] filesystem::path GetFilePath(std::string& fileName, std::string& login) const;
     [[nodiscard]] std::string GetGraphArcs(std::string& vertexName, std::string& sessionId) const;
