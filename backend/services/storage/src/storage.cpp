@@ -13,17 +13,17 @@ using IFileHolder = file_holder::IFileHolder;
 using IStorageDbController = db_controller::IStorageDbController;
 using IExternalServiceChassis = external_service_chassis:IExternalServiceChassis;
 
-[[nodiscard]] std::string Storage::GetFile(std::string& fileName, std::string& login) const
+std::string Storage::GetFile(std::string& fileName, std::string& login) const
 {
     return m_fileWorker->Get(m_dbController->GetFilePath(fileName, login));
 }
 
-[[nodiscard]] std::string Storage::GetAllFilesNames(std::string & login) const
+std::string Storage::GetAllFilesNames(std::string & login) const
 {
     return m_dbController->GetAllFilesForUser(login);
 }
 
-[[nodiscard]] bool Storage::Update(std::string& fileName, std::string& login, std::string& fileChanges) const
+bool Storage::Update(std::string& fileName, std::string& login, std::string& fileChanges) const
 {
     if (m_dbController->GetFilePath(fileName, login) == "")
     {
@@ -32,6 +32,13 @@ using IExternalServiceChassis = external_service_chassis:IExternalServiceChassis
 
     m_fileWorker->Save(m_dbController->GetFilePath(fileName, login), fileChanges);
 }
+
+
+std::string GetGraphArcsForOneVertex(std::string& rootFileName, std::string& vertexFileName, std::string& login) const
+{
+    return m_dbController->GetGraphArcs(rootFileName, vertexFileName, login);
+}
+
 
 void Storage::SetChassis(std::shared_ptr<IExternalServiceChassis> serviceChassis)
 {
@@ -47,6 +54,7 @@ void Storage::SetFileHolder(std::shared_ptr<IFileHolder> fileHolder)
 {
     m_fileWorker = fileHolder;
 }
+
 
 [[nodiscard]] bool Storage::Create(std::string & fileName, std::string & login)
 {

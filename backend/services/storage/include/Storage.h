@@ -29,6 +29,8 @@ public:
 
 
     [[nodiscard]] std::string GetAllFilesNames(std::string& login) const override;
+    [[nodiscard]] std::string GetGraphArcsForOneVertex(std::string& rootFileName, std::string& vertexFileName,
+                                                       std::string& login) const override;
 
 private:
     [[nodiscard]] bool Create(std::string& fileName, std::string& login) const override;

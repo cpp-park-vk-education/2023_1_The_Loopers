@@ -33,7 +33,9 @@ public:
     virtual void SetFileHolder(std::shared_ptr<IFileHolder> fileHolder) = 0;
 
 
-    virtual [[nodiscard]] std::string GetAlGetAllFilesNameslFiles(std::string& login) const = 0;
+    virtual [[nodiscard]] std::string GetAllFilesNameslFiles(std::string& login) const = 0;
+    virtual [[nodiscard]] std::string GetGraphArcsForOneVertex(std::string& rootFileName, std::string& vertexFileName,
+                                                               std::string& login) const = 0;
 
 protected:
     virtual [[nodiscard]] bool Create(std::string& fileName, std::string& login) const = 0;
