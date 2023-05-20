@@ -6,7 +6,6 @@
 #include <filesystem>
 #include <string>
 
-
 namespace inklink::db_controller
 {
 using filesystem::path = std::experimental::filesystem::path;
@@ -20,11 +19,15 @@ public:
     virtual void Connect(const std::string& connectionString) = 0;
 
     virtual [[nodiscard]] filesystem::path GetFilePath(std::string& fileName, std::string& login) const = 0;
-    virtual [[nodiscard]] std::string GetGraphArcs(std::string& vertexName, std::string& sessionId) const = 0;
+
+    // root - is the file that created session
+    virtual [[nodiscard]] std::string GetGraphArcs(std::string& rootFileName, std::string& vertexFileName,
+                                                   std::string& login) const = 0;
     virtual [[nodiscard]] std::string GetAllFilesForUser(std::string& login) const = 0;
 
     virtual void InsertFile(std::string& fileName, std::string& login, filesystem::path& filePath) const = 0;
-    virtual void InsertGraphArc(std::string& fromFileName, std::string& toFileName, std::string& login) const = 0;
+    virtual void InsertGraphArc(std::string rootFileName, std::string& fromFileName, std::string& toFileName,
+                                std::string& sessionId) const = 0;
 
 private:
     DbAdapterBase& m_adapter;

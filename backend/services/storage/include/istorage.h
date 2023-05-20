@@ -23,7 +23,7 @@ using IExternalServiceChassis = external_service_chassis:IExternalServiceChassis
 
 public:
     virtual void Run(int port);
-    virtual bool DoOnRead(error_code errocCode, std::string request, std::shared_ptr<IServiceSession> serviceSession)
+    virtual bool DoOnRead(error_code errocCode, std::string request, IServiceSession* serviceSession)
     virtual [[nodiscard]] std::string GetFile(std::string& fileName, std::string& login) const = 0;
     virtual [[nodiscard]] bool Update(std::string& fileName, std::string& login, std::string& fileChanges) const = 0;
 
@@ -31,6 +31,9 @@ public:
     virtual void SetChassis(std::shared_ptr<IExternalServiceChassis> serviceChassis) = 0;
     virtual void SetDbController(std::shared_ptr<IStorageDbController> dbController) = 0;
     virtual void SetFileHolder(std::shared_ptr<IFileHolder> fileHolder) = 0;
+
+
+    virtual [[nodiscard]] std::string GetAlGetAllFilesNameslFiles(std::string& login) const = 0;
 
 protected:
     virtual [[nodiscard]] bool Create(std::string& fileName, std::string& login) const = 0;

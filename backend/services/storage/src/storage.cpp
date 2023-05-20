@@ -18,6 +18,11 @@ using IExternalServiceChassis = external_service_chassis:IExternalServiceChassis
     return m_fileWorker->Get(m_dbController->GetFilePath(fileName, login));
 }
 
+[[nodiscard]] std::string Storage::GetAllFilesNames(std::string & login) const
+{
+    return m_dbController->GetAllFilesForUser(login);
+}
+
 [[nodiscard]] bool Storage::Update(std::string& fileName, std::string& login, std::string& fileChanges) const
 {
     if (m_dbController->GetFilePath(fileName, login) == "")

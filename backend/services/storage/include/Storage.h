@@ -27,6 +27,9 @@ public:
     void SetDbController(std::shared_ptr<IStorageDbController> dbController) override;
     void SetFileHolder(std::shared_ptr<IFileHolder> fileHolder) override;
 
+
+    [[nodiscard]] std::string GetAllFilesNames(std::string& login) const override;
+
 private:
     [[nodiscard]] bool Create(std::string& fileName, std::string& login) const override;
 };
