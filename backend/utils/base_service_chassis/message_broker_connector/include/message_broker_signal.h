@@ -14,24 +14,22 @@ class IClientSession;
 
 namespace inklink::base_service_chassis
 {
-class IMessageBrokerEvent
+class MessageBrokerSignal
 {
     using IClientSession = client_connector::IClientSession;
 
 public:
-    explicit IMessageBrokerEvent(std::shared_ptr<ICommonConnection> cc) noexcept
+    explicit MessageBrokerSignal(std::shared_ptr<ICommonConnection> cc) noexcept
             : m_connectionToMsgBroker{std::move(cc)}
     {
     }
-    virtual ~IMessageBrokerEvent() = default;
+    virtual ~MessageBrokerSignal() = default;
 
-    virtual void SetDoOnNotified(std::function<void(int, const std::string&, IClientSession*)>) = 0;
-
-    virtual void Publish(int event, const std::string&, ServiceType) = 0;
-    virtual void Subscribe(int event, const Endpoint&) = 0;
+    virtual void SetDoOnRead(std::function<void(const std::string&, IClientSession*)>) = 0;
+    virtual void Request(const std::string&, const Endpoint&) = 0;
 
 protected:
     std::shared_ptr<ICommonConnection> m_connectionToMsgBroker;
-    std::function<void(int, const std::string&, IClientSession*)> m_doOnNotified;
+    std::function<void(const std::string&, IClientSession*)> m_doOnRead;
 };
 } // namespace inklink::base_service_chassis
