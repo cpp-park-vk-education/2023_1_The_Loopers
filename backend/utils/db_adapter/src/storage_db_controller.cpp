@@ -1,5 +1,6 @@
 #include "storage_db_controller.h"
 #include "idb_adapter.h"
+#include "table_after_select.h"
 
 #include <string>
 #include <filesystem>
