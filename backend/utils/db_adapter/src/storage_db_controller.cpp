@@ -9,6 +9,7 @@
 namespace inklink::db_controller
 {
 using filesystem::path = std::experimental::filesystem::path;
+using namespace data_types;
 
 
 explicit void StorageDbController::SetAdapter(DbAdapterBase& adapter)

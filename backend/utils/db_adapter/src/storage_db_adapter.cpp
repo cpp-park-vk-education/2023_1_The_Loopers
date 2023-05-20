@@ -9,6 +9,9 @@
 
 namespace inklink::db_adapter
 {
+using namespace data_types;
+
+
 void StorageDbAdapter::Connect(const std::string& connectionString) 
 {
     m_connection(connectionString.c_str());

@@ -4,7 +4,7 @@
 #include <string>
 
 
-namespace inklink::db_controller
+namespace inklink::data_types
 {
 struct TableAfterSelect
 {

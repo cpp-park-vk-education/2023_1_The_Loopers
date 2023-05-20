@@ -8,7 +8,10 @@
 
 namespace inklink::db_adapter
 {
-class StorageDbAdapter : public DbAdapterBase final
+using namespace data_types;
+
+
+class StorageDbAdapter final : public DbAdapterBase
 {
     ~StorageDbAdapter() = default;
 

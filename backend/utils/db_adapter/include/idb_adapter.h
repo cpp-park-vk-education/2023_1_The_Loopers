@@ -9,6 +9,9 @@
 
 namespace inklink::db_adapter
 {
+using namespace data_types;
+
+
 class DbAdapterBase
 {
 public:
