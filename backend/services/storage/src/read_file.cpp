@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <string>
+#include <sstream>
 #include <experimental/filesystem>
 
 
@@ -13,17 +14,15 @@ const std::string ReadFile::GetFile(const filesystem::path& filePath) noexcept
 {
     std::ifstream fileRead(filePath);
     std::string stringFile{""};
-    std::string buffer;
+    std::stringstream buffer;
 
     if (!fileRead.is_open())
     {
         return "Uncorrect file path";
     }
 
-    while (fileRead.getline(fileRead, buffer))
-    {
-        stringFile = stringFile + buffer;
-    }
+    buffer << fileRead.rdbuf();
+    stringFile = buffer;
 
     return stringFile;
 }
