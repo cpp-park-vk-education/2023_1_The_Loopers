@@ -1,6 +1,7 @@
 #ifndef _WEBSOCKETSERVICESESSION_H_
 #define _WEBSOCKETSERVICESESSION_H_
 
+#include "inklink/server_network/callback_concepts.h"
 #include "iservice_session.h"
 
 #include <boost/asio.hpp>
@@ -16,28 +17,6 @@ namespace inklink::server_network
 {
 namespace net = boost::asio;
 namespace websocket = boost::beast::websocket;
-
-template <typename T>
-concept ErrorCodeAndSessionCallbackConcept = requires(T&& t, boost::system::error_code ec, IServiceSession* session) {
-    {
-        std::forward<T>(t)(ec, session)
-    } -> std::same_as<void>;
-};
-
-template <typename T>
-concept StringErrorCodeSessionCallbackConcept =
-        requires(T&& t, const std::string& msgBody, boost::system::error_code ec, IServiceSession* session) {
-            {
-                std::forward<T>(t)(msgBody, ec, session)
-            } -> std::same_as<void>;
-        };
-
-template <typename T>
-concept StringErrorCodeCallbackConcept = requires(T&& t, boost::system::error_code ec) {
-    {
-        std::forward<T>(t)(ec)
-    } -> std::same_as<void>;
-};
 
 template <StringErrorCodeSessionCallbackConcept ReadCallback =
                   std::function<void(const std::string&, boost::system::error_code, IServiceSession*)>,
