@@ -15,7 +15,7 @@ template <StringErrorCodeSessionCallbackConcept ReadCallback =
                   std::function<void(const std::string&, boost::system::error_code, IServiceSession*)>,
           ErrorCodeAndSessionCallbackConcept AcceptCallback =
                   std::function<void(boost::system::error_code, IServiceSession*)>,
-          ErrorCodeCallbackConcept WriteCallback = std::function<void(boost::system::error_code)>>
+          ErrorCodeCallbackConcept WriteCallback = std::function<void(boost::system::error_code, IServiceSession*)>>
 class WebsocketSessionsFactory final : public ISessionsFactory
 {
     using IAuthorizer = authorizer::IAuthorizer;
@@ -31,7 +31,7 @@ public:
             std::shared_ptr<IAuthorizer>,
             ReadCallback = [](boost::system::error_code, IServiceSession*) {},
             AcceptCallback = [](boost::system::error_code, IServiceSession*) {},
-            WriteCallback = [](boost::system::error_code) {}) noexcept;
+            WriteCallback = [](boost::system::error_code, IServiceSession*) {}) noexcept;
     // clang-format on
 
     WebsocketSessionsFactory(const WebsocketSessionsFactory&) noexcept = default;
