@@ -83,7 +83,7 @@ namespace beast = boost::beast;
  *                                                                      decltype(lamOnAccept),
  *                                                                      decltype(bindOnRead)>>
  *                                                      (m_ioContext, lamOnAccept, bindOnRead);
- *              session->RunAsync();
+ *              session->RunAsync("example.org", 80); // or ("127.0.0.1", 80)
  *
  *              // prevents ioContext from stopping before .stop(). If you want this only until smth happens
  *              // you can do following:
