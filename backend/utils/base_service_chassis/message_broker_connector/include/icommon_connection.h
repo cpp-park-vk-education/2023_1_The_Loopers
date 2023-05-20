@@ -10,6 +10,7 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace inklink::client_connector
 {
@@ -34,9 +35,9 @@ public:
     virtual void ChangeConnection(ServiceType, const Endpoint& self, const Endpoint& other) = 0;
     [[nodiscard]] virtual std::shared_ptr<IClientSession> GetSession() const noexcept = 0;
 
-    void SetAcceptCallback(std::function<void(ConnectType, error_code, IClientSession*)> callback) noexcept;
-    void SetReadCallback(std::function<void(const std::string&, error_code, IClientSession*)> callback) noexcept;
-    void SetWriteCallback(std::function<void(error_code)> callback) noexcept;
+    void AddAcceptCallback(std::function<void(ConnectType, error_code, IClientSession*)> callback);
+    void AddReadCallback(std::function<void(const std::string&, error_code, IClientSession*)> callback);
+    void AddWriteCallback(std::function<void(error_code)> callback);
 
 protected:
     std::weak_ptr<IClientSession> m_session;
@@ -46,9 +47,9 @@ protected:
     Endpoint m_endpointOther;
     bool m_connected{false};
 
-    std::function<void(ConnectType, error_code, IClientSession*)> m_acceptCallback;
-    std::function<void(const std::string&, error_code, IClientSession*)> m_readCallback;
-    std::function<void(error_code)> m_writeCallback;
+    std::vector<std::function<void(ConnectType, error_code, IClientSession*)>> m_acceptCallbacks;
+    std::vector<std::function<void(const std::string&, error_code, IClientSession*)>> m_readCallbacks;
+    std::vector<std::function<void(error_code)>> m_writeCallbacks;
 
     std::shared_ptr<ILogger> m_logger;
 };
