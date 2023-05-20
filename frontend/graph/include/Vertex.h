@@ -1,6 +1,5 @@
 #pragma once
 
-#include "GraphModel.h"
 #include "IEdge.h"
 
 #include <string>
@@ -14,7 +13,7 @@ struct Position{
     std::size_t yPosition;
 };
 
-class IVertex
+class Vertex
 {
 public:
     void calculateForces();
@@ -29,6 +28,5 @@ public:
 private:
     std::string m_name;
     Position m_currentPosition;
-//    Position m_newPosition;
 };
 } // namespace inklink::graph
