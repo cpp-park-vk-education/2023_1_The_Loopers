@@ -79,7 +79,7 @@ namespace beast = boost::beast;
  *              auto bindOnRead = std::bind(&YourClass::DoOnRead, this,
  *                                      std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
  *                                      // probably can skip _1 etc, if you need only error_code, but not 100% sure
- *              std::shared_ptr session = std::make_shared<websocket_client_session<
+ *              auto session = std::make_shared<WebsocketClientSession<
  *                                                                      decltype(lamOnAccept),
  *                                                                      decltype(bindOnRead)>>
  *                                                      (m_ioContext, lamOnAccept, bindOnRead);
