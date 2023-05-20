@@ -9,7 +9,7 @@ namespace inklink_file_holder
 {
 using filesystem::path = std::experimental::filesystem::path;
 
-class ReadFile
+class ReadFile final
 {
 public:
     [[nodiscard]] const std::string GetFile(const filesystem::path& filePath) noexcept;

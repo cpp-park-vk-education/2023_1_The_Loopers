@@ -10,7 +10,7 @@ namespace inklink_file_holder
 {
 using filesystem::path = std::experimental::filesystem::path;
 
-class FileHolder : public IFileHolder
+class FileHolder final: public IFileHolder
 {
 public:
     [[nodiscard]] bool Save(const filesystem::path& filePath, std::string fileChanges) override;
