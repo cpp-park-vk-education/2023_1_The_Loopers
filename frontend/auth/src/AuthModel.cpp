@@ -2,9 +2,6 @@
 
 #include <openssl/sha.h>
 
-#include <cstdlib>
-#include <ctime>
-#include <memory>
 #include <string>
 
 namespace inklink::auth
@@ -22,7 +19,9 @@ bool AuthModel::CreateUser(const std::string& login, std::string& password)
         auto result = ParserToJson(login, password);
         //        result = ParserToJson(login, password, sault);
         // осталось отправить на web-socket
+        return true;
     }
+    return false;
 }
 
 bool AuthModel::Login(const std::string& login, const std::string& password)
@@ -56,22 +55,22 @@ void AuthModel::SetToken(const std::string& token)
     m_token = token;
 }
 
-//std::string AuthModel::Encrypt(const std::string& password)
+// std::string AuthModel::Encrypt(const std::string& password)
 //{
-//    return m_encrypter.encryptString(password);
-//}
+//     return m_encrypter.encryptString(password);
+// }
 
 std::string AuthModel::DinamicSault(int passwordLength)
 {
     std::string result{};
 
-    int saultLength = 20 - passwordLength;
+    auto saultLength = 20 - passwordLength;
 
     srand(time(NULL));
 
     for (int i = 0; i < saultLength; i++)
     {
-        char ch = 'a' + rand() % 26;
+        auto ch = 'a' + rand() % 26;
         result.push_back(ch);
     }
 
@@ -88,8 +87,7 @@ std::string AuthModel::DinamicSault(int passwordLength)
 
 std::string AuthModel::ParserToJson(const std::string& login, const std::string& password)
 {
-    std::string result{};
-    result = "{\n" + "\"login\": " + login + ",\n" + "\"password\": " + password + "\n" + "}";
+    std::string result = "{\n\"login\": " + login + ",\n\"password\": " + password + "\n" + "}";
     return result;
 }
 } // namespace inklink::auth
