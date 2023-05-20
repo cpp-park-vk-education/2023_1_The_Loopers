@@ -93,14 +93,13 @@ namespace beast = boost::beast;
  *              // in case of end of operations it's ok to stop automatically)
  *              // if boost::asio version >= 1.79
  *              // m_ioContextExecutor = boost::asio::make_work_guard(m_ioContext);
- *              // running in separate thread, because io_context blocks thread where is running
- *              // One cane freely add sessions while io_context running: it is thread safe
- *              // boost::asio version >= 1.79 (use with caution)
- *              // m_thread_ioContext = std::thread([&m_ioContext]() { m_ioContext.run(); });
  *              // boost::asio version >= 1.74 (verified: may be older too)
  *              m_ioContextExecutor = boost::asio::require(io_context.get_executor(),
  *                                                         boost::asio::execution::outstanding_work.tracked);
-
+ *
+ *              // running in separate thread, because io_context blocks thread where is running
+ *              // One cane freely add sessions while io_context running: it is thread safe
+ *              m_thread_ioContext = std::thread([&m_ioContext]() { m_ioContext.run(); });
  *
  *              // see https://www.boost.org/doc/libs/1_74_0/doc/html/boost_asio/reference/io_context.html or newer for
  *              // more information about io_context. Some notable things from there:
