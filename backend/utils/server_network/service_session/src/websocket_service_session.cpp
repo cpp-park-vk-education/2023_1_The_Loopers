@@ -157,7 +157,7 @@ void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::OnWri
     // remove send string from queue
     m_sendQueue.pop_front();
 
-    m_writeCallback(ec);
+    m_writeCallback(ec, this);
     if (ec)
     {
         return;

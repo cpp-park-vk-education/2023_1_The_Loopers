@@ -21,7 +21,7 @@ template <StringErrorCodeSessionCallbackConcept ReadCallback =
                   std::function<void(const std::string&, boost::system::error_code, IServiceSession*)>,
           ErrorCodeAndSessionCallbackConcept AcceptCallback =
                   std::function<void(boost::system::error_code, IServiceSession*)>,
-          ErrorCodeCallbackConcept WriteCallback = std::function<void(boost::system::error_code)>>
+          ErrorCodeCallbackConcept WriteCallback = std::function<void(boost::system::error_code, IServiceSession*)>>
 class WebsocketServiceSession
         : public IServiceSession,
           public std::enable_shared_from_this<WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>>
@@ -39,7 +39,7 @@ public:
             net::ip::tcp::socket&&,
             ReadCallback = [](const std::string&, error_code, IServiceSession*) {},
             AcceptCallback = [](error_code, IServiceSession*) {}, 
-            WriteCallback = [](error_code) {}) noexcept;
+            WriteCallback = [](error_code, IServiceSession*) {}) noexcept;
     // clang-format on
 
     WebsocketServiceSession() = delete;
