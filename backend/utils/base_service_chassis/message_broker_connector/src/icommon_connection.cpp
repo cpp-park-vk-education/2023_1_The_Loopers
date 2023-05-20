@@ -13,19 +13,17 @@ ICommonConnection::ICommonConnection(std::shared_ptr<ILogger> logger) : m_logger
 {
 }
 
-void ICommonConnection::SetAcceptCallback(
-        std::function<void(ConnectType, error_code, IClientSession*)> callback) noexcept
+void ICommonConnection::AddAcceptCallback(std::function<void(ConnectType, error_code, IClientSession*)> callback)
 {
-    m_acceptCallback = callback;
+    m_acceptCallbacks.push_back(callback);
 }
-void ICommonConnection::SetReadCallback(
-        std::function<void(const std::string&, error_code, IClientSession*)> callback) noexcept
+void ICommonConnection::AddReadCallback(std::function<void(const std::string&, error_code, IClientSession*)> callback)
 {
-    m_readCallback = callback;
+    m_readCallbacks.push_back(callback);
 }
-void ICommonConnection::SetWriteCallback(std::function<void(error_code, IClientSession*)> callback) noexcept
+void ICommonConnection::AddWriteCallback(std::function<void(error_code)> callback)
 {
-    m_writeCallback = callback;
+    m_writeCallbacks.push_back(callback);
 }
 
 } // namespace inklink::base_service_chassis
