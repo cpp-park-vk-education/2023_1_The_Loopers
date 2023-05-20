@@ -14,7 +14,7 @@ using namespace data_types;
 
 void StorageDbAdapter::Connect(const std::string& connectionString) 
 {
-    m_connection(connectionString.c_str());
+    m_connection(connectionString);
     return m_connection.is_open();
 }
 
@@ -39,7 +39,7 @@ TableAfterSelect StorageDbAdapter::Select(const std::string& request)
 
         for (auto field : row)
         {
-            currentRow.push_back(field);
+            currentRow.push_back(field.as<std::string>);
         }
 
         result.PushBackRow(currentRow);
