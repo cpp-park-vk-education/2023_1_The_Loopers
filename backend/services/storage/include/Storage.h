@@ -19,15 +19,15 @@ using IStorageDbController = db_controller::IStorageDbController;
 using IExternalServiceChassis = external_service_chassis:IExternalServiceChassis;
 
 public:
-    [[nodiscard]] std::string GetFile(std::string& fileName, std::string& login) override;
-    [[nodiscard]] bool Update(std::string& fileName, std::string& login, std::string& fileChanges) override;
+    [[nodiscard]] std::string GetFile(std::string& fileName, std::string& login) const override;
+    [[nodiscard]] bool Update(std::string& fileName, std::string& login, std::string& fileChanges) const override;
 
-    void SetChassis(std::shared_ptr<IExternalServiceChassis> serviceChassis) override;
+    void SetChassis(std::shared_ptr<IExternalServiceChassis> serviceChassis)  override;
     void SetDbController(std::shared_ptr<IStorageDbController> dbController) override;
     void SetFileHolder(std::shared_ptr<IFileHolder> fileHolder) override;
 
 private:
-    [[nodiscard]] bool Create(std::string& fileName, std::string& login) override;
+    [[nodiscard]] bool Create(std::string& fileName, std::string& login) const override;
 };
 } // namespace inklink:storage
 #endif // _BACKEND_SERVICES_STORAGE_INCLUDE_STORAGE_H_
