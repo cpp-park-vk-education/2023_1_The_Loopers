@@ -3,6 +3,8 @@
 #include "idb_adapter.h"
 #include "table_after_select.h"
 
+#include <pqxx/pqxx> 
+
 #include <string>
 
 
