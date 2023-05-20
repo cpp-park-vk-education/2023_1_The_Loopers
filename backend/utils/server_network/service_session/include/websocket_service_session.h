@@ -1,5 +1,4 @@
-#ifndef _WEBSOCKETSERVICESESSION_H_
-#define _WEBSOCKETSERVICESESSION_H_
+#pragma once
 
 #include "inklink/server_network/callback_concepts.h"
 #include "iservice_session.h"
@@ -76,5 +75,3 @@ private:
     WriteCallback m_writeCallback;
 };
 } // namespace inklink::server_network
-
-#endif // _WEBSOCKETSERVICESESSION_H_
