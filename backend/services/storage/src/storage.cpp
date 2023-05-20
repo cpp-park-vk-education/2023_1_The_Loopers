@@ -6,6 +6,8 @@
 #include <filesystem>
 
 
+constexpr std::string kDbConnectionString;
+
 namespace inklink : storage
 {
 using filesystem::path = std::experimental::filesystem::path;
@@ -13,7 +15,16 @@ using IFileHolder = file_holder::IFileHolder;
 using IStorageDbController = db_controller::IStorageDbController;
 using IExternalServiceChassis = external_service_chassis:IExternalServiceChassis;
 
-
+void Run(int port)
+{
+    try
+    {
+        m_dbController->Connect(kDbConnectionString);
+    }
+    catch (const std::exception&)
+    {
+    }
+}
 
 std::string Storage::GetFile(std::string& fileName, std::string& login) const
 {
