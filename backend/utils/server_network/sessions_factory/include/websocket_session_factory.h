@@ -1,5 +1,6 @@
 #pragma once
 
+#include "inklink/server_network/callback_concepts.h"
 #include "isessions_factory.h"
 
 #include <concepts>
@@ -9,22 +10,9 @@
 
 namespace inklink::server_network
 {
-template <typename T>
-concept ErrorCodeAndSessionCallbackConcept = requires(T&& t, boost::system::error_code ec, IServiceSession* session) {
-    {
-        std::forward<T>(t)(ec, session)
-    } -> std::same_as<void>;
-};
 
-template <typename T>
-concept ErrorCodeCallbackConcept = requires(T&& t, boost::system::error_code ec) {
-    {
-        std::forward<T>(t)(ec)
-    } -> std::same_as<void>;
-};
-
-template <ErrorCodeAndSessionCallbackConcept ReadCallback =
-                  std::function<void(boost::system::error_code, IServiceSession*)>,
+template <StringErrorCodeSessionCallbackConcept ReadCallback =
+                  std::function<void(const std::string&, boost::system::error_code, IServiceSession*)>,
           ErrorCodeAndSessionCallbackConcept AcceptCallback =
                   std::function<void(boost::system::error_code, IServiceSession*)>,
           ErrorCodeCallbackConcept WriteCallback = std::function<void(boost::system::error_code)>>
