@@ -36,13 +36,17 @@ filesystem::path StorageDbController::GetFilePath(std::string& fileName, std::st
     }
 }
 
-std::string StorageDbController::GetGraphArcs(std::string& vertexName, std::string& sessionId) const
+std::string StorageDbController::GetGraphArcs(std::string& rootFileName, std::string& vertexFileName, std::string& login) const
 {
     if (!vertexName && !sessionId)
     {
+        std::string sessionId = "(SELECT Id FROM Sessions WHERE RootId = (SELECT Id FROM Files WHERE Login = '" +
+                                login + "' AND Name = '" + rootFileName + "'))";
+
         std::string innerRequest =
-                "SELECT Graph.Id_Second FROM Graph JOIN Files ON Graph.Id_First = Files.Id WHERE Graph.Id_Session = '" +
-                sessionId + "' AND Files.Name = '" + vertexName + "'";
+                "SELECT Graph.Id_Second FROM Graph JOIN Files ON Graph.Id_First = Files.Id WHERE Files.Name = '" +
+                vertexFileName + "' AND Graph.Id_Session = " + sessionId;
+
 
         std::stirng request = "SELECT Name FROM Files WHERE Id IN (" + innerRequest + ")"; 
           
@@ -82,27 +86,30 @@ void StorageDbController::InsertFile(std::string& fileName, std::string& login, 
 {
     if (!fileName && !login && !filePath)
     {
-        std::string request =
+        std::string requestToFilesTable =
                 "INSERT INTO Files(Name, Login, Path) VALUES ('" + fileName + "', '" + login + "', '" + filePath + "')";
 
-        m_adapter.Insert(request);
+        std::string requestToGraphTable = "INSERT INTO Sessions VALUES ((SELECT Id FROM Files WHERE Login = '" + login +
+                                          "' AND Name = '" + fileName + "'))";
+
+        m_adapter.Insert(requestToFilesTable);
+        m_adapter.Insert(requestToGraphTable);
     }
 }
 
-void StorageDbController::InsertGraphArc(std::string& fromFileName, std::string& toFileName,
+void StorageDbController::InsertGraphArc(std::string rootFileName, std::string& fromFileName, std::string& toFileName,
                                          std::string& sessionId) const
 {
-    if (!fromFileName && !toFileName && !sessionId)
+    if (!fromFileName && !toFileName && !sessionId && !rootFileName)
     {
-        std::string idFirst =
-                "(SELECT Id FROM Files LEFT JOIN Graph ON Files.Id = Graph.Id_First WHERE Graph.Id_Session = '" + sessionId +
-                "' AND Name = '" + fromFileName + "')";
+        std::string idFirst = "(SELECT Id FROM Files WHERE Login = '" + login "' AND Name = '" + fromFileName + "')";
 
-        std::string idSecond =
-                "(SELECT Id FROM Files LEFT JOIN Graph ON Files.Id = Graph.Id_First WHERE Graph.Id_Session = '" + sessionId +
-                "' AND Name = '" + toFileName + "')";
+        std::string idSecond = "(SELECT Id FROM Files WHERE Login = '" + login "' AND Name = '" + toFileName + "')";
 
-        std::string request = "INSERT INTO Graph VALUES (" + idFirst + ", " + idSecond + ", '" + login + "')";
+        std::string sessionId = "(SELECT Id FROM Sessions WHERE RootId = (SELECT Id FROM Files WHERE Login = '" +
+                                login + "' AND Name = '" + rootFileName + "'))";
+
+        std::string request = "INSERT INTO Graph VALUES (" + idFirst + ", " + idSecond + ", " + sessionId + ")";
 
         m_adapter.Insert(request);
     }
