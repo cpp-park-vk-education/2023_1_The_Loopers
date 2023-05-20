@@ -61,8 +61,13 @@ namespace beast = boost::beast;
  *      std::weak_ptr<IClientSession> m_session;
  *
  *      boost::asio::io_context m_ioContext;
- *      // necessary to prevent ioContext from stopping on its own (when no more work to do)
- *      boost::asio::executor_work_guard<boost::asio::io_context::executor_type> m_ioContextExecutor;
+ *
+ *      // to prevent ioContext from stopping on its own (when no more work to do)
+ *      // if boost::asio version >= 1.79 (use with caution: for now it's very rare)
+ *      // boost::asio::executor_work_guard<boost::asio::io_context::executor_type> m_ioContextExecutor;
+ *      // version >= 1.74 (default on ubuntu 23; verified: may be older too)
+ *      boost::asio::any_io_executor m_ioContextExecutor;
+ *
  *      std::thread m_thread_ioContext;
  *
  * public:
@@ -81,16 +86,24 @@ namespace beast = boost::beast;
  *              session->RunAsync();
  *
  *              // prevents ioContext from stopping before .stop(). If you want this only until smth happens
- *              // you can call m_ioContextExecutor.reset()
+ *              // you can do following:
+ *              // m_ioContextExecutor = boost::asio::any_io_executor(); (or call m_ioContextExecutor.reset() on
+ *              // boost::asio >= 1.79)
  *              // (for example, until user goes to different tab: you do not want to stop ioContext but
  *              // in case of end of operations it's ok to stop automatically)
- *              m_ioContextExecutor = boost::asio::make_work_guard(m_ioContext);
+ *              // if boost::asio version >= 1.79
+ *              // m_ioContextExecutor = boost::asio::make_work_guard(m_ioContext);
  *              // running in separate thread, because io_context blocks thread where is running
  *              // One cane freely add sessions while io_context running: it is thread safe
- *              m_thread_ioContext = std::thread([&m_ioContext]() { m_ioContext.run(); });
+ *              // boost::asio version >= 1.79 (use with caution)
+ *              // m_thread_ioContext = std::thread([&m_ioContext]() { m_ioContext.run(); });
+ *              // boost::asio version >= 1.74 (verified: may be older too)
+ *              m_ioContextExecutor = boost::asio::require(io_context.get_executor(),
+ *                                                         boost::asio::execution::outstanding_work.tracked);
+
  *
- *              // see https://www.boost.org/doc/libs/master/doc/html/boost_asio/reference/io_context.html for more
- *              // information about io_context. Some notable things from there:
+ *              // see https://www.boost.org/doc/libs/1_74_0/doc/html/boost_asio/reference/io_context.html or newer for
+ *              // more information about io_context. Some notable things from there:
  *              // 1) exceptions will be propagated to thread where .run() was called. So you can write wrapper around
  *              // io context which catches exceptions and propagates to app as uou want.
  *              // 2) you can run anything in io_context if you want to: boost::asio::post(io_context, MyTask); => the
