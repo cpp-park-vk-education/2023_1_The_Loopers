@@ -36,7 +36,7 @@ public:
 
     void SetAcceptCallback(std::function<void(ConnectType, error_code, IClientSession*)> callback) noexcept;
     void SetReadCallback(std::function<void(const std::string&, error_code, IClientSession*)> callback) noexcept;
-    void SetWriteCallback(std::function<void(error_code, IClientSession*)> callback) noexcept;
+    void SetWriteCallback(std::function<void(error_code)> callback) noexcept;
 
 protected:
     std::weak_ptr<IClientSession> m_session;
@@ -48,7 +48,7 @@ protected:
 
     std::function<void(ConnectType, error_code, IClientSession*)> m_acceptCallback;
     std::function<void(const std::string&, error_code, IClientSession*)> m_readCallback;
-    std::function<void(error_code, IClientSession*)> m_writeCallback;
+    std::function<void(error_code)> m_writeCallback;
 
     std::shared_ptr<ILogger> m_logger;
 };
