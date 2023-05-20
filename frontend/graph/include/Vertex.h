@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IEdge.h"
+#include "IVertex.h"
 
 #include <string>
 #include <vector>
@@ -8,12 +9,13 @@
 namespace inklink::graph
 {
 
-struct Position{
+struct Position
+{
     std::size_t xPosition;
     std::size_t yPosition;
 };
 
-class Vertex
+class Vertex : public IVertex
 {
 public:
     void calculateForces();
