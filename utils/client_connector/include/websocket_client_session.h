@@ -59,7 +59,10 @@ namespace beast = boost::beast;
  *
  * class YourClass {
  *      std::weak_ptr<IClientSession> m_session;
+ *
  *      boost::asio::io_context m_ioContext;
+ *      // necessary to prevent ioContext from stopping on its own (when no more work to do)
+ *      boost::asio::executor_work_guard<boost::asio::io_context::executor_type> m_ioContextExecutor;
  *      std::thread m_thread_ioContext;
  *
  * public:
@@ -77,9 +80,21 @@ namespace beast = boost::beast;
  *                                                      (m_ioContext, lamOnAccept, bindOnRead);
  *              session->RunAsync();
  *
+ *              // prevents ioContext from stopping before .stop(). If you want this only until smth happens
+ *              // you can call m_ioContextExecutor.reset()
+ *              // (for example, until user goes to different tab: you do not want to stop ioContext but
+ *              // in case of end of operations it's ok to stop automatically)
+ *              m_ioContextExecutor = boost::asio::make_work_guard(m_ioContext);
  *              // running in separate thread, because io_context blocks thread where is running
  *              // One cane freely add sessions while io_context running: it is thread safe
  *              m_thread_ioContext = std::thread([&m_ioContext]() { m_ioContext.run(); });
+ *
+ *              // see https://www.boost.org/doc/libs/master/doc/html/boost_asio/reference/io_context.html for more
+ *              // information about io_context. Some notable things from there:
+ *              // 1) exceptions will be propagated to thread where .run() was called. So you can write wrapper around
+ *              // io context which catches exceptions and propagates to app as uou want.
+ *              // 2) you can run anything in io_context if you want to: boost::asio::post(io_context, MyTask); => the
+ *              // whole application too
  *      }
  *      ~YourClass() {
  *              m_ioContext.stop(); // stops io_context => all async operations in all sessions will end and
