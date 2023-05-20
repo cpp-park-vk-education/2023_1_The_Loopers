@@ -26,8 +26,6 @@ public:
     void InsertFile(std::string& fileName, std::string& login, filesystem::path& filePath) const;
     void InsertGraphArc(std::string& fromFileName, std::string& toFileName, std::string& login) const;
 
-    void Connect(const std::string& connectionString);
-
 private:
     DbAdapterBase& m_adapter;
 };

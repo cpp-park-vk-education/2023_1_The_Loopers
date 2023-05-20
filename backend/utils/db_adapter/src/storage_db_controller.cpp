@@ -18,10 +18,6 @@ explicit void StorageDbController::SetAdapter(DbAdapterBase& adapter)
     m_adapter = adapter;
 }
 
-void Connect(const std::string& connectionString) const {
-    m_adapter.Connect(connectionString);
-}
-
 
 filesystem::path StorageDbController::GetFilePath(std::string& fileName, std::string& login) const
 {

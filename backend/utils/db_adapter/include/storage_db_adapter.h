@@ -15,7 +15,6 @@ class StorageDbAdapter final : public DbAdapterBase
 {
     ~StorageDbAdapter() = default;
 
-    void Connect(const std::string& connectionString) override;
     void Insert(const std::string& request) override;
     void Update(const std::string& request) override;
     void Delete(const std::string& request) override;

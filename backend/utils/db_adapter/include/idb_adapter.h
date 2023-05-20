@@ -20,7 +20,6 @@ public:
     virtual void Insert(const std::string& request) = 0;
     virtual void Update(const std::string& request) = 0;
     virtual void Delete(const std::string& request) = 0;
-    virtual void Connect(const std::string& connectionString) = 0;
     [[nodiscard]] virtual TableAfterSelect Select(const std::string& request) = 0;
 
 protected:
