@@ -15,12 +15,15 @@ namespace inklink:storage
 {
 class IStorage
 {
+using error_code = boost::system::error_code;
 using filesystem::path = std::experimental::filesystem::path;
 using IFileHolder = file_holder::IFileHolder;
 using IStorageDbController = db_controller::IStorageDbController;
 using IExternalServiceChassis = external_service_chassis:IExternalServiceChassis;
 
 public:
+    virtual void Run(int port);
+    virtual bool DoOnRead(error_code errocCode, std::string request, std::shared_ptr<IServiceSession> serviceSession)
     virtual [[nodiscard]] std::string GetFile(std::string& fileName, std::string& login) const = 0;
     virtual [[nodiscard]] bool Update(std::string& fileName, std::string& login, std::string& fileChanges) const = 0;
 

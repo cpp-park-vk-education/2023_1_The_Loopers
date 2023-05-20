@@ -19,6 +19,7 @@ using IStorageDbController = db_controller::IStorageDbController;
 using IExternalServiceChassis = external_service_chassis:IExternalServiceChassis;
 
 public:
+    void Run(int port) override;
     [[nodiscard]] std::string GetFile(std::string& fileName, std::string& login) const override;
     [[nodiscard]] bool Update(std::string& fileName, std::string& login, std::string& fileChanges) const override;
 

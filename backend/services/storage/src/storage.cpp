@@ -44,7 +44,7 @@ void Storage::SetFileHolder(std::shared_ptr<IFileHolder> fileHolder)
 }
 
 [[nodiscard]] bool Storage::Create(std::string & fileName, std::string & login)
-    {
+{
     filesystem::path filePath = "files/" + login + "/" + fileName + ".txt";
 
     m_dbController->InsertFile(fileName, login, filePath);
