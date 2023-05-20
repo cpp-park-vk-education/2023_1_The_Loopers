@@ -21,12 +21,10 @@ class ILogger;
 class MessageBrokerSignal
 {
     using IClientSession = client_connector::IClientSession;
-    using error_code = boost::system::error_code;
 
 public:
-    explicit MessageBrokerSignal(std::shared_ptr<ICommonConnection> cc,
-                                 std::function<void(const std::string&, error_code, IClientSession*)> readCallback,
-                                 std::shared_ptr<ILogger> logger);
+    MessageBrokerSignal(std::shared_ptr<ICommonConnection> cc, std::function<void(const std::string&)> readCallback,
+                        std::shared_ptr<ILogger> logger);
     virtual ~MessageBrokerSignal() = default;
 
     // virtual void SetDoOnRead(std::function<void(const std::string&, error_code, IClientSession*)>);
@@ -48,8 +46,11 @@ public:
     virtual void Send(const std::string& msgBody, const Endpoint& sendTo);
 
 private:
+    using error_code = boost::system::error_code;
+    void DoOnRead(const std::string&, error_code, IClientSession*) const;
+
     std::shared_ptr<ICommonConnection> m_connectionToMsgBroker;
-    std::function<void(const std::string&, error_code, IClientSession*)> m_doOnRead;
+    std::function<void(const std::string&)> m_readCallback;
     std::shared_ptr<ILogger> m_logger;
 };
 } // namespace inklink::base_service_chassis
