@@ -7,38 +7,31 @@
 #include <memory>
 #include <string>
 
-bool AuthModel::createUser(const std::string& login, const std::string& password)
+bool AuthModel::createUser(const std::string& login, std::string& password)
 {
     if (!login.empty() && !password.empty())
     {
-        std::string sault{};
-        sault = dinamicSault(password.size());
+        //        std::string sault{};
+        //        sault = dinamicSault(password.size());
+        //
+        //        password += sault;
+        //        password = sha256(password);
 
-        password += sault;
-        password = sha256(password);
-
-        result = ParserToJson(login, password, sault);
-        //осталось отправить на web-socket
+        result = ParserToJson(login, password);
+        //        result = ParserToJson(login, password, sault);
+        // осталось отправить на web-socket
     }
 }
 
 bool AuthModel::login(const std::string& login, const std::string& password)
 {
-    if (login != m_login)
-    {
-        return false;
-    }
-
-    if (password != m_token)
-    {
-        return false;
-    }
-
-    return true;
+    // отправляю логин и пароль на веб-сокет
+    // получаю true/false и пускаю/не пускаю пользователя
 }
 
 void AuthModel::exit()
 {
+    //???
 }
 
 const std::string AuthModel::getLogin() const
@@ -68,23 +61,30 @@ std::string AuthModel::encrypt(const std::string& password)
 
 std::string AuthModel::dinamicSault(int passwordLength)
 {
-        std::string result{};
+    std::string result{};
 
-        int saultLength = 20 - passwordLength;
+    int saultLength = 20 - passwordLength;
 
-        srand(time(NULL));
+    srand(time(NULL));
 
-        for (int i = 0; i < saultLength; i++) {
-            char ch = 'a' + rand() % 26;
-            result.push_back(ch);
-        }
+    for (int i = 0; i < saultLength; i++)
+    {
+        char ch = 'a' + rand() % 26;
+        result.push_back(ch);
+    }
 
-        return result;
+    return result;
 }
 
-std::string AuthModel::parserToJson(const std::string& login, const std::string& password, const std::string& sault)
+// std::string AuthModel::parserToJson(const std::string& login, const std::string& password, const std::string& sault)
+//{
+//     std::string result{};
+//     result = "{\n" + "\"login\": " + login + ",\n" + "\"password\": " + password + ",\n" + "\"sault\": " + sault +
+//              "\n" + "}";
+// }
+
+std::string AuthModel::parserToJson(const std::string& login, const std::string& password
 {
     std::string result{};
-    result = "{\n" + "\"login\": " + login + ",\n" + "\"password\": " + password + ",\n" + "\"sault\": " + sault +
-             "\n" + "}";
+    result = "{\n" + "\"login\": " + login + ",\n" + "\"password\": " + password + "\n" + "}";
 }
