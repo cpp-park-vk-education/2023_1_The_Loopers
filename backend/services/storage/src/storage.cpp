@@ -28,8 +28,23 @@ using IExternalServiceChassis = external_service_chassis:IExternalServiceChassis
     m_fileWorker->Save(m_dbController->GetFilePath(fileName, login), fileChanges);
 }
 
-[[nodiscard]] bool Storage::Create(std::string& fileName, std::string& login)
+void Storage::SetChassis(std::shared_ptr<IExternalServiceChassis> serviceChassis)
 {
+    m_serviceChassis = serviceChassis;
+}
+
+void Storage::SetDbController(std::shared_ptr<IStorageDbController> dbController)
+{
+    m_dbController = dbController;
+}
+
+void Storage::SetFileHolder(std::shared_ptr<IFileHolder> fileHolder)
+{
+    m_fileWorker = fileHolder;
+}
+
+[[nodiscard]] bool Storage::Create(std::string & fileName, std::string & login)
+    {
     filesystem::path filePath = "files/" + login + "/" + fileName + ".txt";
 
     m_dbController->InsertFile(fileName, login, filePath);
