@@ -31,7 +31,8 @@ jobs:
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v3
-# default version is 5.15
+      with:
+        version: '6.*'
 
     - name: Install cppcheck
       run: |
