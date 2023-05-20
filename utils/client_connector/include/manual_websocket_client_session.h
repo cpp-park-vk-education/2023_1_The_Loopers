@@ -1,5 +1,4 @@
-#ifndef _MANUAL_WEBSOCKET_CLIENT_SESSION_H_
-#define _MANUAL_WEBSOCKET_CLIENT_SESSION_H_
+#pragma once
 
 #include "global_websocket_client_session.h"
 #include "iclient_session.h"
@@ -33,8 +32,8 @@ public:
     ManualWebsocketClientSession(
             boost::asio::io_context&, 
             const std::string& address, unsigned short port,
-            ConnectCallback = [](ConnectType, boost::system::error_code) {},
-            ReadCallback = [](const std::string&, boost::system::error_code) {},
+            ConnectCallback = [](ConnectType, boost::system::error_code, IClientSession*) {},
+            ReadCallback = [](const std::string&, boost::system::error_code, IClientSession*) {},
             WriteCallback = [](boost::system::error_code) {}, 
             CloseCallback = [](boost::system::error_code) {});
     // clang-format on
@@ -80,5 +79,3 @@ private:
     CloseCallback m_closeCallback;
 };
 } // namespace inklink::client_connector
-
-#endif // _MANUAL_WEBSOCKET_CLIENT_SESSION_H_
