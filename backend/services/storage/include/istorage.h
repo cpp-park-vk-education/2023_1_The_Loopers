@@ -37,6 +37,8 @@ public:
     virtual [[nodiscard]] std::string GetGraphArcsForOneVertex(std::string& rootFileName, std::string& vertexFileName,
                                                                std::string& login) const = 0;
 
+    virtual void SaveGraphArc(std::string& rootFileName, std::string& fromFileName, std::string& toFileName) const = 0;
+
 protected:
     virtual [[nodiscard]] bool Create(std::string& fileName, std::string& login) const = 0;
 

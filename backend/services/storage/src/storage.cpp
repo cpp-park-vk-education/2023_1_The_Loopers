@@ -34,11 +34,16 @@ bool Storage::Update(std::string& fileName, std::string& login, std::string& fil
 }
 
 
-std::string GetGraphArcsForOneVertex(std::string& rootFileName, std::string& vertexFileName, std::string& login) const
+std::string Storage::GetGraphArcsForOneVertex(std::string & rootFileName, std::string & vertexFileName,
+                                            std::string & login) const
 {
     return m_dbController->GetGraphArcs(rootFileName, vertexFileName, login);
 }
 
+void Storage::SaveGraphArc(std::string & rootFileName, std::string & fromFileName, std::string & toFileName) const
+{
+    m_dbController->InsertGraphArc(rootFileName, fromFileName, toFileName);
+}
 
 void Storage::SetChassis(std::shared_ptr<IExternalServiceChassis> serviceChassis)
 {

@@ -26,8 +26,7 @@ public:
     virtual [[nodiscard]] std::string GetAllFilesForUser(std::string& login) const = 0;
 
     virtual void InsertFile(std::string& fileName, std::string& login, filesystem::path& filePath) const = 0;
-    virtual void InsertGraphArc(std::string rootFileName, std::string& fromFileName, std::string& toFileName,
-                                std::string& sessionId) const = 0;
+    virtual void InsertGraphArc(std::string& rootFileName, std::string& fromFileName, std::string& toFileName) const = 0;
 
 private:
     DbAdapterBase& m_adapter;
