@@ -17,6 +17,95 @@ namespace inklink::client_connector
 namespace net = boost::asio;
 namespace beast = boost::beast;
 
+/**
+ * @class WebsocketClientSession
+ *
+ * @brief Websocket session
+ *
+ * @tparam ConnectCallback callback with signature void( @ref ConnectType "ConnectType", boost::system::error_code,
+ * IClientSession*). It's called on resolve, connect
+ * @tparam ReadCallback callback with signature void(const std::string&, boost::system::error_code, IClientSession*).
+ * It's called on new message from network
+ * @tparam WriteCallback callback with signature void(const std::string&, boost::system::error_code, IClientSession*)
+ * @tparam CloseCallback
+ *
+ * You can find more information about callbacks in the @ref ClientConcepts "client concepts" documentation
+ *
+ * @note Callbacks will be called from io_context thread!
+ * @note It's recommended to read code example: there are some things needed to take into account for proper use
+ *
+ * @warning MUST be constructed using shared_ptr
+ * @warning If you want to store session somewhere, you MUST store it as weak_ptr (preferred) or raw ptr. Under the hood
+ * it calls every async operation with shared_ptr<WebsocketClientSession>(this) and when there is no more async
+ * operations running it will destruct itself (for example, when connection is closed)
+ * @warning You MUST NOT delete session if any error occurred! It will destruct itself automatically without your
+ * intervention
+ *
+ * @see IClientSession
+ *
+ * @code {.cpp}
+ * // Example code demonstrating the usage
+ *
+ * #include <websocket_client_session.h>
+ *
+ * #include <boost/asio.hpp>
+ * #include <boost/system/error_code.hpp>
+ *
+ * #include <thread>
+ * #include <functional> // if you are preferring std::bind
+ *
+ * using namespace inklink::client_connector;
+ * using error_code = boost::system::error_code;
+ *
+ * // TODO (a.novak) write example thread-safe class wrapper for io_context.
+ * // Program may be a lot easier if one will define callbacks here and just raise some flags in main class
+ * class ThreadSafeIoContextWrapper {
+ *
+ * }
+ *
+ * class YourClass {
+ *      std::weak_ptr<IClientSession> m_session;
+ *      boost::asio::io_context m_ioContext;
+ *      std::thread m_thread_ioContext;
+ *
+ * public:
+ *      YourClass() {
+ *              // I could not find the way to deduce template params automatically
+ *              auto lamOnAccept = [this](ConnectType, error_code ec, IClientSession*) {
+ *                      this->DoOnAccept(ec);
+ *              };
+ *              auto bindOnRead = std::bind(&YourClass::DoOnRead, this,
+ *                                      std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+ *                                      // probably can skip _1 etc, if you need only error_code, but not 100% sure
+ *              std::shared_ptr session = std::make_shared<websocket_client_session<
+ *                                                                      decltype(lamOnAccept),
+ *                                                                      decltype(bindOnRead)>>
+ *                                                      (m_ioContext, lamOnAccept, bindOnRead);
+ *              session->RunAsync();
+ *
+ *              // running in separate thread, because io_context blocks thread where is running
+ *              // TODO (a.novak) write example thread-safe class wrapper for io_context
+ *              m_thread_ioContext = std::thread([&m_ioContext]() { m_ioContext.run(); });
+ *      }
+ *      ~YourClass() {
+ *              m_ioContext.stop(); // stops io_context => all async operations in all sessions will end and
+ *                                  // all sessions will be properly destroyed
+ *              m_thread_ioContext.join(); // wait for thread end
+ *      }
+ *
+ *      // remember, it will be called from different thread! (where running io_context)
+ *      void DoOnAccept(error_code) {
+ *              // your logic (log if (ec), for example)
+ *              return;
+ *      }
+ *
+ *      void DoOnRead(ConnectType, error_code ec, IClientSession*) {
+ *              // your logic
+ *              return;
+ *      }
+ * };
+ * @endcode
+ */
 template <ConnectTypeErrorCodeCallbackConcept ConnectCallback =
                   std::function<void(ConnectType, boost::system::error_code, IClientSession*)>,
           StringErrorCodeCallbackConcept ReadCallback =
