@@ -13,6 +13,8 @@ using IFileHolder = file_holder::IFileHolder;
 using IStorageDbController = db_controller::IStorageDbController;
 using IExternalServiceChassis = external_service_chassis:IExternalServiceChassis;
 
+
+
 std::string Storage::GetFile(std::string& fileName, std::string& login) const
 {
     return m_fileWorker->Get(m_dbController->GetFilePath(fileName, login));
@@ -20,29 +22,53 @@ std::string Storage::GetFile(std::string& fileName, std::string& login) const
 
 std::string Storage::GetAllFilesNames(std::string & login) const
 {
-    return m_dbController->GetAllFilesForUser(login);
+    try
+    {
+        return m_dbController->GetAllFilesForUser(login);
+    }
+    catch (const std::exception&)
+    {
+    }
 }
 
 bool Storage::Update(std::string& fileName, std::string& login, std::string& fileChanges) const
 {
-    if (m_dbController->GetFilePath(fileName, login) == "")
+    try
     {
-        Create(fileName, login);
-    }
+        if (m_dbController->GetFilePath(fileName, login) == "")
+        {
+            Create(fileName, login);
+        }
 
-    m_fileWorker->Save(m_dbController->GetFilePath(fileName, login), fileChanges);
+        m_fileWorker->Save(m_dbController->GetFilePath(fileName, login), fileChanges);
+    }
+    catch (const std::exception&)
+    {
+    }
 }
 
 
 std::string Storage::GetGraphArcsForOneVertex(std::string & rootFileName, std::string & vertexFileName,
                                             std::string & login) const
 {
-    return m_dbController->GetGraphArcs(rootFileName, vertexFileName, login);
+    try
+    {
+        return m_dbController->GetGraphArcs(rootFileName, vertexFileName, login);
+    }
+    catch (const std::exception&)
+    {
+    }
 }
 
-void Storage::SaveGraphArc(std::string & rootFileName, std::string & fromFileName, std::string & toFileName) const
+void Storage::SaveGraphArc(std::string& rootFileName, std::string& fromFileName, std::string& toFileName) const
 {
-    m_dbController->InsertGraphArc(rootFileName, fromFileName, toFileName);
+    try
+    {
+        m_dbController->InsertGraphArc(rootFileName, fromFileName, toFileName);
+    }
+    catch (const std::exception&)
+    {
+    }
 }
 
 void Storage::SetChassis(std::shared_ptr<IExternalServiceChassis> serviceChassis)
