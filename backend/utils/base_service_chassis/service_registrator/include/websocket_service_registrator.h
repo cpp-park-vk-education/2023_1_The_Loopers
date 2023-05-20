@@ -26,10 +26,15 @@ public:
     void Deregister(ServiceType, const Endpoint&) final;
 
     [[nodiscard]] std::vector<Endpoint> GetEndpoints(ServiceType desiredServicesType) final;
-    void GetEndpoints(ServiceType desiredServicesType, std::function<void(std::vector<Endpoint>&&)> GetCallback) final;
+    void GetEndpoints(ServiceType desiredServicesType, std::function<void(std::vector<Endpoint>&&)> GotCallback) final;
 
 private:
+    [[nodiscard]] std::shared_ptr<IClientSession> InitSending(const std::string& errorMsg, bool critical = false);
     void DoOnRead(const std::string& str, error_code ec);
+
+    bool m_newMsg{false};
+    std::string m_msg;
+    error_code m_errCode;
 
     boost::asio::io_context m_ioContext;
     std::thread m_threadIoContext;
