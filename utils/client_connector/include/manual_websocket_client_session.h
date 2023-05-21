@@ -1,12 +1,13 @@
 #pragma once
 
-#include "global_websocket_client_session.h"
 #include "iclient_session.h"
+#include "websocket_fwd.h"
 
 #include <boost/asio.hpp>
 #include <boost/beast.hpp>
 #include <boost/system/error_code.hpp>
 
+#include <atomic>
 #include <deque>
 #include <functional>
 #include <memory>
@@ -44,11 +45,11 @@ public:
     ManualWebsocketClientSession& operator=(const ManualWebsocketClientSession&) = delete;
     ManualWebsocketClientSession& operator=(ManualWebsocketClientSession&&) = delete;
 
-    ~ManualWebsocketClientSession() final;
+    ~ManualWebsocketClientSession() override;
 
-    void RunAsync(const std::string& host, unsigned short port) final;
-    void Send(const std::string&) final;
-    void Close() final;
+    void RunAsync(const std::string& host, unsigned short port) override;
+    void Send(const std::string&) override;
+    void Close() override;
 
 private:
     using error_code = boost::system::error_code;
@@ -64,13 +65,13 @@ private:
     boost::asio::ip::tcp::socket m_socket;
     boost::asio::deadline_timer m_timer;
 
-    bool m_close{false};
-    bool m_writing{false};
+    std::atomic_bool m_close{false};
+    std::atomic_bool m_writing{false};
 
     std::string m_host;
-    beast::websocket::stream<beast::tcp_stream> m_websocketStream;
+    boost::beast::websocket::stream<boost::beast::tcp_stream>* m_websocketStream; // because operator= deleted
 
-    beast::flat_buffer m_readBuffer;
+    boost::beast::flat_buffer m_readBuffer;
     std::deque<std::shared_ptr<std::string const>> m_sendQueue;
 
     ConnectCallback m_connectCallback;
