@@ -29,7 +29,7 @@ public:
     WebsocketSessionsFactory(
             std::shared_ptr<InternalSessionsManager>, 
             std::shared_ptr<IAuthorizer>,
-            ReadCallback = [](boost::system::error_code, IServiceSession*) {},
+            ReadCallback = [](const std::string&, boost::system::error_code, IServiceSession*) {},
             AcceptCallback = [](boost::system::error_code, IServiceSession*) {},
             WriteCallback = [](boost::system::error_code, IServiceSession*) {}) noexcept;
     // clang-format on
