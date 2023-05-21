@@ -1,5 +1,6 @@
 #include "VertexView.h"
 #include "GraphView.h"
+#include "EdgeView.h"
 
 #include <QPainter>
 #include <QRadialGradient>
@@ -18,7 +19,7 @@ VertexView::VertexView(GraphView* graphView) : m_graph(graphView)
 void VertexView::AddEdge(EdgeView *edge)
 {
     m_edgeList << edge;
-    edge->adjust();
+    edge->Adjust();
 }
 
 QList<EdgeView *> VertexView::GetEdges() const
