@@ -1,4 +1,5 @@
 #include "VertexView.h"
+#include "GraphView.h"
 
 #include <QPainter>
 #include <QRadialGradient>

@@ -4,10 +4,10 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QStyleOption>
 
-class GraphView;
-
 namespace inklink::graph
 {
+class GraphView;
+
 class VertexView : public QGraphicsItem
 {
 public:

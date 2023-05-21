@@ -9,3 +9,5 @@ set(PRIVATE_INCLUDE_DIRECTORIES
         )
 
 target_include_directories(${GENERAL} PRIVATE ${PRIVATE_INCLUDE_DIRECTORIES})
+
+target_link_libraries(${GENERAL} PRIVATE ${GRAPH})
