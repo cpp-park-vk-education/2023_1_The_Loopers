@@ -86,6 +86,9 @@ else()
             "-Wno-error=return-type"
             "-Wno-error=unused-parameter"
         )
+        if (WIN32)
+            list(APPEND ${WARNINGS_FLAGS} "-Wno-error=nested-anon-types") # boost/winapi/file_management.hpp
+        endif()
         if(NOT ENABLE_CLANG_TIDY)
             list(APPEND ${WARNINGS_FLAGS} "-Wabi=${CMAKE_CXX_STANDARD}")
         endif()
