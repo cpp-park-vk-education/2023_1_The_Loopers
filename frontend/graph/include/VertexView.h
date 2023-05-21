@@ -1,9 +1,10 @@
 #pragma once
 
 #include <QGraphicsItem>
+#include <QGraphicsSceneMouseEvent>
+#include <QStyleOption>
 
 class GraphView;
-
 
 namespace inklink::graph
 {
