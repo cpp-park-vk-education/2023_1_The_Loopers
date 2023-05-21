@@ -1,6 +1,7 @@
 #include "VertexView.h"
-#include "GraphView.h"
+
 #include "EdgeView.h"
+#include "GraphView.h"
 
 #include <QPainter>
 #include <QRadialGradient>
@@ -16,13 +17,13 @@ VertexView::VertexView(GraphView* graphView) : m_graph(graphView)
     setZValue(1);
 }
 
-void VertexView::AddEdge(EdgeView *edge)
+void VertexView::AddEdge(EdgeView* edge)
 {
     m_edgeList << edge;
     edge->Adjust();
 }
 
-QList<EdgeView *> VertexView::GetEdges() const
+QList<EdgeView*> VertexView::GetEdges() const
 {
     return m_edgeList;
 }
@@ -61,13 +62,11 @@ QPainterPath VertexView::shape() const
 
 QVariant VertexView::itemChange(GraphicsItemChange change, const QVariant& value)
 {
-    switch (change)
-    {
-    case ItemPositionHasChanged:
-        // TODO: (zakharov) add method to change edges
-        break;
-    default:
-        break;
+    if (change == ItemPositionHasChanged){
+        for (EdgeView* edge : std::as_const(m_edgeList))
+        {
+            edge->Adjust();
+        }
     };
 
     return QGraphicsItem::itemChange(change, value);
