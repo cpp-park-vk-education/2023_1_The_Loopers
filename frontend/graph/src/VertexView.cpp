@@ -10,6 +10,12 @@ VertexView::VertexView(GraphView *graphView) : m_graph(graphView)
     setZValue(1);
 }
 
+QRectF VertexView::boundingRect() const
+{
+    qreal penWidth = 2;
+    return QRectF( -10 - penWidth/2, -10 - penWidth/2, 23 + penWidth/2, 23 + penWidth/2);
+}
+
 QPainterPath VertexView::shape() const
 {
     QPainterPath path;
