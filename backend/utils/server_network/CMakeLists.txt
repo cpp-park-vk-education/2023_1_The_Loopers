@@ -3,6 +3,7 @@ add_library(${SERVER_NETWORK} STATIC "")
 target_sources(${SERVER_NETWORK} PRIVATE
     "service_session/src/iservice_session.cpp"
     "sessions_factory/src/isessions_factory.cpp"
+    "listener/src/beast_websocket_listener.cpp"
 )
 
 set(PUBLIC_LINK_LIBRARIES
@@ -26,6 +27,7 @@ target_link_libraries(${SERVER_NETWORK} PRIVATE ${PRIVATE_LINK_LIBRARIES})
 
 set(PUBLIC_INCLUDE_DIRECTORIES
     "${UTILS_DIR}/include"
+    "include"
     "listener/include"
     "service_session/include"
     "sessions_factory/include"
