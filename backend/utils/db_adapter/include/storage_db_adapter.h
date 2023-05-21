@@ -1,7 +1,6 @@
 #pragma once
 
 #include "idb_adapter.h"
-#include "table_after_select.h"
 
 #include <pqxx/pqxx> 
 
@@ -10,7 +9,7 @@
 
 namespace inklink::db_adapter
 {
-using namespace data_types;
+using DbTable = std::vector<std::vector<std::string>>;
 
 
 class StorageDbAdapter final : public DbAdapterBase
@@ -22,7 +21,7 @@ class StorageDbAdapter final : public DbAdapterBase
     void Insert(const std::string& request) const  override;
     void Update(const std::string& request) const  override;
     void Delete(const std::string& request) const  override;
-    [[nodiscard]] TableAfterSelect Select(const std::string& request) const  override;
+    [[nodiscard]] DbTable Select(const std::string& request) const override;
 
 private:
     pqxx::connection m_connection;

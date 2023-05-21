@@ -14,9 +14,9 @@ public:
         return table.size();
     }
 
-    [[nodiscard]] std::vector<std::string> operator[](const int iterator) const
+    [[nodiscard]] std::vector<std::string> operator[](const int row) const
     {
-        return table[iterator];
+        return table[row];
     }
 
     void PushBackRow(std::vector<std::string>& row)

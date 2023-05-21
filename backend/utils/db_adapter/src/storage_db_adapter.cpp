@@ -1,5 +1,4 @@
 #include "storage_db_adapter.h"
-#include "table_after_select.h"
 
 #include <pqxx/pqxx> 
 
@@ -9,7 +8,7 @@
 
 namespace inklink::db_adapter
 {
-using namespace data_types;
+using DbTable = std::vector<std::vector<std::string>>;
 
 
 void StorageDbAdapter::Connect(const std::string& connectionString)
@@ -25,10 +24,10 @@ void StorageDbAdapter::Insert(const std::string& request) const
     inserter.commit();
 }
 
-TableAfterSelect StorageDbAdapter::Select(const std::string& request) const
+DbTable StorageDbAdapter::Select(const std::string& request) const
 {
     pqxx::work selector(m_connection);
-    TableAfterSelect result;
+    DbTable result;
 
     pqxx::result response = selector.exec(request);
 

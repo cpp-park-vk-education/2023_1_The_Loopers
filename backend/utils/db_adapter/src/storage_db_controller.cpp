@@ -1,6 +1,5 @@
 #include "storage_db_controller.h"
 #include "idb_adapter.h"
-#include "table_after_select.h"
 
 #include <string>
 #include <filesystem>
@@ -10,7 +9,7 @@
 namespace inklink::db_controller
 {
 using filesystem::path = std::experimental::filesystem::path;
-using namespace data_types;
+using DbTable = std::vector<std::vector<std::string>>;
 
 
 explicit void StorageDbController::SetAdapter(DbAdapterBase& adapter)
@@ -30,7 +29,7 @@ filesystem::path StorageDbController::GetFilePath(std::string& fileName, std::st
         std::string request =
                 "SELECT filePath FROM Files WHERE fileName = '" + fileName + "' AND login = '" + login + "'";
 
-        TableAfterSelect filePath = m_adapter.Select(request);
+        DbTable filePath = m_adapter.Select(request);
         
         return filePath[0][0];
     }
@@ -51,7 +50,7 @@ std::string StorageDbController::GetGraphArcs(std::string& rootFileName, std::st
         std::stirng request = "SELECT Name FROM Files WHERE Id IN (" + innerRequest + ")"; 
           
 
-        TableAfterSelect graphNodeNeighboringNodes = m_adapter.Select(request);
+        DbTable graphNodeNeighboringNodes = m_adapter.Select(request);
 
         std::string neighbouringNodesString{""};
         for (int i = 0; i < graphNodeNeighboringNodes.TableSize(); ++i)
@@ -69,7 +68,7 @@ std::string GetAllFilesForUser(std::string& login) const
     {
         std::string request = "SELECT Names FROM Files WHERE Login = '" + login + "'";
 
-        TableAfterSelect allFiles = m_adapter.Select(request);
+        DbTable allFiles = m_adapter.Select(request);
 
         std::string allFilesString{""};
         for (int i = 0; i < allFiles.TableSize(); ++i)

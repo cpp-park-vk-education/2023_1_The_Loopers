@@ -1,15 +1,14 @@
 #pragma once
 
-#include "table_after_select.h"
-
 #include <pqxx/pqxx>
 
 #include <string>
+#include <vector>
 
 
 namespace inklink::db_adapter
 {
-using namespace data_types;
+using DbTable = std::vector<std::vector<std::string>>;
 
 
 class DbAdapterBase
@@ -21,6 +20,6 @@ public:
     virtual void Insert(const std::string& request) const = 0;
     virtual void Update(const std::string& request) const = 0;
     virtual void Delete(const std::string& request) const = 0;
-    [[nodiscard]] virtual TableAfterSelect Select(const std::string& request) const = 0;
+    [[nodiscard]] virtual DbTable Select(const std::string& request) const = 0;
 };
 } // namespace inklink::db_adapter
