@@ -45,4 +45,17 @@ QPainterPath VertexView::shape() const
     path.addEllipse(-10, -10, 20, 20);
     return path;
 }
+
+QVariant VertexView::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+    switch (change) {
+    case ItemPositionHasChanged:
+        //TODO: (zakharov) add method to change edges
+        break;
+    default:
+        break;
+    };
+
+    return QGraphicsItem::itemChange(change, value);
+}
 } // namespace inklink::graph
