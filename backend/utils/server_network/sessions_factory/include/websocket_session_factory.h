@@ -18,6 +18,7 @@ template <StringErrorCodeSessionCallbackConcept ReadCallback =
           ErrorCodeCallbackConcept WriteCallback = std::function<void(boost::system::error_code, IServiceSession*)>>
 class WebsocketSessionsFactory final : public ISessionsFactory
 {
+private:
     using IAuthorizer = authorizer::IAuthorizer;
     using InternalSessionsManager = base_service_chassis::InternalSessionsManager;
     using tcp = boost::asio::ip::tcp;
