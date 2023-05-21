@@ -2,14 +2,14 @@
 
 #include <QGraphicsItem>
 
-class VertexView;
-
 namespace inklink::graph
 {
+class VertexView;
+
 class EdgeView : public QGraphicsItem
 {
 public:
-    EdgeView();
+    EdgeView(VertexView* source, VertexView* destination);
 
     [[nodiscard]] VertexView* SourceVertex() const;
     [[nodiscard]] VertexView* DestinationVertex() const;
@@ -20,9 +20,9 @@ protected:
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 
 private:
-    VertexView* source;
-    VertexView* destination;
-    QPointF sourcePoint;
-    QPointF destPoint;
+    VertexView* m_source;
+    VertexView* m_destination;
+    QPointF m_sourcePoint;
+    QPointF m_destinationPoint;
 };
 } // namespace inklink::graph
