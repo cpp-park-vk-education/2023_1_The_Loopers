@@ -41,7 +41,7 @@ DbTable StorageDbAdapter::Select(const std::string& request) const
             currentRow.push_back(field.as<std::string>());
         }
 
-        result.PushBackRow(currentRow);
+        result.push_back(currentRow);
     }
 
     return result;
