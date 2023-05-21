@@ -1,7 +1,7 @@
 add_library(${SERIALIZER} STATIC "")
 
 target_sources(${SERIALIZER} PRIVATE
-    "src/trash.cpp"
+    "src/json_data.cpp"
 )
 
 set(PUBLIC_INCLUDE_DIRECTORIES
@@ -25,4 +25,4 @@ set(PRIVATE_LINK_LIBRARIES ${PRIVATE_LINK_LIBRARIES}
     "nlohmann_json::nlohmann_json"
 )
 
-target_link_libraries(${BASE_SERVICE_CHASSIS} PRIVATE ${PRIVATE_LINK_LIBRARIES})
+target_link_libraries(${SERIALIZER} PRIVATE ${PRIVATE_LINK_LIBRARIES})
