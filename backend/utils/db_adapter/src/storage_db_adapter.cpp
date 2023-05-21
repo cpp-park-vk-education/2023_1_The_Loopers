@@ -8,7 +8,8 @@
 
 namespace inklink::db_adapter
 {
-using DbTable = std::vector<std::vector<std::string>>;
+using DbRow = std::vector<std::string>;
+using DbTable = std::vector<DbRow>;
 
 
 void StorageDbAdapter::Connect(const std::string& connectionString)
@@ -31,11 +32,11 @@ DbTable StorageDbAdapter::Select(const std::string& request) const
 
     pqxx::result response = selector.exec(request);
 
-    for (auto row: response)
+    for (const auto& row: response)
     {
-        std::vector<std::string> currentRow;
+        DbRow currentRow;
 
-        for (auto field : row)
+        for (const auto& field : row)
         {
             currentRow.push_back(field.as<std::string>());
         }
