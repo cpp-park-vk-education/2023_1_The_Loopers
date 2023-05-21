@@ -2,7 +2,7 @@
 
 namespace inklink::graph
 {
-VertexView::VertexView(GraphView *graphView) : graph(graphView)
+VertexView::VertexView(GraphView *graphView) : m_graph(graphView)
 {
     setFlag(ItemIsMovable);
     setFlag(ItemSendsGeometryChanges);
