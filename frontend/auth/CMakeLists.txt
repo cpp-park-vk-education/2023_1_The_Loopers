@@ -1,9 +1,5 @@
 add_library(${AUTH} STATIC "")
 
-add_executable(${AUTH}
-        src/AuthView.cpp
-        )
-
 target_sources(${AUTH} PRIVATE
         "src/AuthView.cpp"
         )
