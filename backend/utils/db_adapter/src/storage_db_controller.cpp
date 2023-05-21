@@ -8,10 +8,6 @@
 
 namespace inklink::db_controller
 {
-using filesystem::path = std::experimental::filesystem::path;
-using DbTable = std::vector<std::vector<std::string>>;
-
-
 explicit void StorageDbController::SetAdapter(DbAdapterBase& adapter)
 {
     m_adapter = adapter;

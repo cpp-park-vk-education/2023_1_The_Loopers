@@ -9,9 +9,6 @@
 
 namespace inklink::db_adapter
 {
-using DbTable = std::vector<std::vector<std::string>>;
-
-
 class StorageDbAdapter final : public DbAdapterBase
 {
     ~StorageDbAdapter() = default;

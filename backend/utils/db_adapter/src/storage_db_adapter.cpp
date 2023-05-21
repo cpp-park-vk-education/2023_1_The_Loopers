@@ -8,10 +8,6 @@
 
 namespace inklink::db_adapter
 {
-using DbRow = std::vector<std::string>;
-using DbTable = std::vector<DbRow>;
-
-
 void StorageDbAdapter::Connect(const std::string& connectionString)
 {
     m_connection = std::move(pqxx::connection(connectionString));
