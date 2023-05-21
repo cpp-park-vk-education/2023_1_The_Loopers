@@ -4,6 +4,9 @@
 
 class GraphView;
 
+
+namespace inklink::graph
+{
 class VertexView : public QGraphicsItem
 {
 public:
@@ -21,3 +24,4 @@ protected:
 private:
     GraphView* m_graph;
 };
+}
