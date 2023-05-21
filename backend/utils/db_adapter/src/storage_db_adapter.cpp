@@ -3,7 +3,6 @@
 #include <pqxx/pqxx> 
 
 #include <string>
-#include <vector>
 
 
 namespace inklink::db_adapter
