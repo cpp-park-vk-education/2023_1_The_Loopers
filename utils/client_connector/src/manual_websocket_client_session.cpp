@@ -7,7 +7,7 @@ namespace beast = boost::beast;
 namespace websocket = beast::websocket;
 using error_code = boost::system::error_code;
 
-constexpr char* kClientName = beast::BOOST_BEAST_VERSION_STRING " inklink-client";
+constexpr const char* kClientName = "inklink-client";
 } // namespace
 
 namespace inklink::client_connector
@@ -28,8 +28,8 @@ ManualWebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, Close
           m_writeCallback{writeCallback}, 
           m_closeCallback{closeCallback}
 {
-    net::ip::tcp::endpoint localEndpoint(boost::asio::ip::address::from_string(address), port);
-    // do not realy need strand here, and I'm not sure can be socket constructed using strand
+    const net::ip::tcp::endpoint localEndpoint(boost::asio::ip::address::from_string(address), port);
+    // do not really need strand here, and I'm not sure can be socket constructed using strand
     m_socket = boost::asio::ip::tcp::socket(ioc, localEndpoint);
 }
 // clang-format on
