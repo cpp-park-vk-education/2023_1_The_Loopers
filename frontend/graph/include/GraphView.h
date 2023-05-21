@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QGraphicsView>
+#include <QKeyEvent>
 
 namespace inklink::graph
 {

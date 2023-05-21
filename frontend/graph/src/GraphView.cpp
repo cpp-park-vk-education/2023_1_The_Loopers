@@ -1,7 +1,21 @@
 #include "GraphView.h"
 
+#include <QGraphicsView>
+
 namespace inklink::graph
 {
+GraphView::GraphView(QWidget *parent) : QGraphicsView(parent)
+{
+    QGraphicsScene *scene = new QGraphicsScene(this);
+    scene->setSceneRect(-640, -460, 1280, 920);
+    setScene(scene);
+    setFrameShape(QFrame::NoFrame);
+    setRenderHint(QPainter::Antialiasing);
+    setTransformationAnchor(AnchorUnderMouse);
+    this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+}
+
 void GraphView::wheelEvent(QWheelEvent *event)
 {
     scaleView(pow(2., event->angleDelta().y() / 400.0));
