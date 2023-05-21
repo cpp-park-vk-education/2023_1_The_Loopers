@@ -1,5 +1,6 @@
 #include "GraphView.h"
 #include "VertexView.h"
+#include "EdgeView.h"
 
 #include <QGraphicsView>
 
@@ -21,6 +22,12 @@ GraphView::GraphView(QWidget* parent) : QGraphicsView(parent)
     auto* vert = new VertexView(this);
     scene->addItem(vert);
     vert->setPos(-10,-10);
+
+    auto* vert2 = new VertexView(this);
+    scene->addItem(vert2);
+    vert->setPos(10,10);
+
+    scene->addItem(new EdgeView(vert, vert2));
 }
 
 void GraphView::wheelEvent(QWheelEvent* event)
