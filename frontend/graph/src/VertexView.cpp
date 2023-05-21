@@ -15,6 +15,11 @@ VertexView::VertexView(GraphView* graphView) : m_graph(graphView)
     setZValue(1);
 }
 
+QList<EdgeView *> VertexView::GetEdges() const
+{
+    return m_edgeList;
+}
+
 void VertexView::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget*)
 {
     QRadialGradient gradient(0, 0, 10);

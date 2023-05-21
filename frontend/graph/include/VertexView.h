@@ -7,11 +7,14 @@
 namespace inklink::graph
 {
 class GraphView;
+class EdgeView;
 
 class VertexView : public QGraphicsItem
 {
 public:
     VertexView(GraphView* graphView);
+
+    QList<EdgeView *> GetEdges() const;
 
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
     QRectF boundingRect() const override;
@@ -23,6 +26,8 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
 
 private:
+    QList<EdgeView *> m_edgeList;
+    QPointF m_newPosition;
     GraphView* m_graph;
 };
 }
