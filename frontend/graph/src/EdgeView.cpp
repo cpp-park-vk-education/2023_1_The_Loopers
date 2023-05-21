@@ -1,6 +1,9 @@
 #include "EdgeView.h"
+#include "VertexView.h"
 
 #include <QPainter>
+#include <QtMath>
+#include <QStyleOption>
 
 namespace inklink::graph
 {
@@ -17,6 +20,25 @@ VertexView* EdgeView::SourceVertex() const
 VertexView* EdgeView::DestinationVertex() const
 {
     return m_destination;
+}
+
+void EdgeView::Adjust()
+{
+    if (!m_source || !m_destination)
+        return;
+
+    QLineF line(mapFromItem(m_source, 0, 0), mapFromItem(m_destination, 0, 0));
+    qreal length = line.length();
+
+    prepareGeometryChange();
+
+    if (length > qreal(20.)) {
+        QPointF edgeOffset((line.dx() * 10) / length, (line.dy() * 10) / length);
+        m_sourcePoint = line.p1() + edgeOffset;
+        m_destinationPoint = line.p2() - edgeOffset;
+    } else {
+        m_sourcePoint = m_destinationPoint = line.p1();
+    }
 }
 
 QRectF EdgeView::boundingRect() const
