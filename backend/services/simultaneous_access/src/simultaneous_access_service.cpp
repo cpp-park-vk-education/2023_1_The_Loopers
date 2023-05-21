@@ -13,6 +13,7 @@
 #include <chrono>
 #include <filesystem>
 #include <format>
+#include <memory>
 #include <thread>
 
 namespace
@@ -44,6 +45,8 @@ int SimultaneousAccessService::Run()
 {
     boost::asio::io_context ioContext;
 
+    m_chassis = std::make_unique<external_service_chassis::IExternalServiceChassis>();
+
     auto manager = std::make_shared<InternalSessionsManager>();
     auto auhorizer = std::make_shared<IAuthorizer>();
     auto factory = std::make_unique<WebsocketSessionsFactory>( // I think, it's ok with default template params
@@ -60,7 +63,7 @@ int SimultaneousAccessService::Run()
     const std::string logPath{std::string(kLogPathPrefix) + "simultaneous_access_.txt"};
     //      + std::format("{:%Y_%m_%d_%H_%M}", startTime) + ".txt"};
     // clang-format off
-    m_chassis = base_service_chassis::BaseChassisWebsocketConfigurator::CreateAndInitializeFullChassis(
+    m_chassis->baseServiceChassis = base_service_chassis::BaseChassisWebsocketConfigurator::CreateAndInitializeFullChassis(
             "simultaneous access", logPath, 
             ioContext, std::move(factory), manager, 
             ServiceType::kSimultaneousAccess, {.address = m_address, .port = m_port},
