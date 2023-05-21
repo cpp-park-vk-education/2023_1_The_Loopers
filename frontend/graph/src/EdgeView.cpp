@@ -9,6 +9,8 @@ namespace inklink::graph
 {
 EdgeView::EdgeView(VertexView* source, VertexView* destination) : m_source(source), m_destination(destination)
 {
+    source->AddEdge(this);
+    destination->AddEdge(this);
     Adjust();
 }
 
