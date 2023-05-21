@@ -9,7 +9,7 @@
 namespace
 {
 using IServiceSession = inklink::server_network::IServiceSession;
-}
+} // namespace
 
 namespace inklink::base_service_chassis
 {
