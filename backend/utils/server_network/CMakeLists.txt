@@ -27,6 +27,7 @@ target_link_libraries(${SERVER_NETWORK} PRIVATE ${PRIVATE_LINK_LIBRARIES})
 
 set(PUBLIC_INCLUDE_DIRECTORIES
     "${UTILS_DIR}/include"
+    "include"
     "listener/include"
     "service_session/include"
     "sessions_factory/include"
