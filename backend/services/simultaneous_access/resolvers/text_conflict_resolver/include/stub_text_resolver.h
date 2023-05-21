@@ -12,6 +12,6 @@ class StubTextResolver final : public ITextConflictResolver
 public:
     ~StubTextResolver() final = default;
 
-    void Resolve(std::vector<TextAction>&) const final;
+    void Resolve(std::vector<TextAction>&) final;
 };
 } // namespace inklink::service_simultaneous_access

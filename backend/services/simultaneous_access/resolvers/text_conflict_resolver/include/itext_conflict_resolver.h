@@ -40,9 +40,18 @@ struct TextAction
 
 class ITextConflictResolver
 {
+    using time_point = std::chrono::time_point<std::chrono::system_clock>;
+
 public:
     virtual ~ITextConflictResolver() = default;
 
-    virtual void Resolve(std::vector<TextAction>&) const = 0;
+    virtual void Resolve(std::vector<TextAction>&) = 0;
+    [[nodiscard]] std::vector<TextAction> GetHistory() const
+    {
+        return m_history;
+    }
+
+protected:
+    std::vector<TextAction> m_history;
 };
 } // namespace inklink::service_simultaneous_access

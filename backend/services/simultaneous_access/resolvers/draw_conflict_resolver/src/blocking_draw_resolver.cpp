@@ -4,8 +4,12 @@
 
 namespace inklink::service_simultaneous_access
 {
+BlockingDrawResolver::BlockingDrawResolver(std::size_t maxFigureId) noexcept
+        : IDrawConflictResolver{}, m_maxFigureId{maxFigureId}
+{
+}
 
-void BlockingDrawResolver::Resolve(std::vector<DrawAction>& actions) const
+void BlockingDrawResolver::Resolve(std::vector<DrawAction>& actions)
 {
     std::vector<DrawAction> resolvedActions;
 
@@ -16,6 +20,12 @@ void BlockingDrawResolver::Resolve(std::vector<DrawAction>& actions) const
     {
         switch (action.type)
         {
+        case ResolverActionType::kInsertion:
+            action.figureId = std::to_string(++m_maxFigureId);
+            m_userBySelectedFigure[action.figureId] = action.endpoint;
+            resolvedActions.push_back(std::move(action));
+            m_history.push_back(action);
+            break;
         case ResolverActionType::kSelect:
             if (!m_userBySelectedFigure.contains(action.figureId))
             {
@@ -43,6 +53,7 @@ void BlockingDrawResolver::Resolve(std::vector<DrawAction>& actions) const
                 // so that no one in future could select this figure (in this resolving session)
                 m_userBySelectedFigure[action.figureId] = {.address = "impossible endpoint", .port = 0};
                 resolvedActions.push_back(std::move(action));
+                m_history.push_back(action);
             }
             break;
         default:
@@ -50,6 +61,7 @@ void BlockingDrawResolver::Resolve(std::vector<DrawAction>& actions) const
                 m_userBySelectedFigure[action.figureId] == action.endpoint)
             {
                 resolvedActions.push_back(std::move(action));
+                m_history.push_back(action);
             }
             break;
         }

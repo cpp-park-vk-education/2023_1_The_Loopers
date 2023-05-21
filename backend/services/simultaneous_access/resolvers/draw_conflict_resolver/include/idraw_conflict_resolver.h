@@ -39,10 +39,19 @@ struct DrawAction
 
 class IDrawConflictResolver
 {
+    using time_point = std::chrono::time_point<std::chrono::system_clock>;
+
 public:
     virtual ~IDrawConflictResolver() = default;
 
     // vector by value because a lot of implementation will change it => no additional copies from const&
-    virtual void Resolve(std::vector<DrawAction>&) const = 0;
+    virtual void Resolve(std::vector<DrawAction>&) = 0;
+    [[nodiscard]] std::vector<DrawAction> GetHistory() const
+    {
+        return m_history;
+    }
+
+protected:
+    std::vector<DrawAction> m_history;
 };
 } // namespace inklink::service_simultaneous_access

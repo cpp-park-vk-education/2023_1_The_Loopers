@@ -6,9 +6,12 @@
 namespace inklink::service_simultaneous_access
 {
 
-void StubTextResolver::Resolve(std::vector<TextAction>&) const
+void StubTextResolver::Resolve(std::vector<TextAction>& actions)
 {
-    // does nothing
+    for (const auto& action : actions)
+    {
+        m_history.push_back(action);
+    }
 }
 
 } // namespace inklink::service_simultaneous_access
