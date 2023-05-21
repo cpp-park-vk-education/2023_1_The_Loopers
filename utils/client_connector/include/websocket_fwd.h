@@ -11,7 +11,7 @@ namespace inklink::client_connector
 {
 class IClientSession;
 
-enum ConnectType
+enum class ConnectType
 {
     kResolve,
     kConnect,
