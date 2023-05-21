@@ -4,10 +4,12 @@
 
 class VertexView;
 
+namespace inklink::graph
+{
 class EdgeView : public QGraphicsItem
 {
 public:
-    EdgeView(VertexView* sourceVertex, VertexView* destinationVertex);
+    EdgeView();
 
     [[nodiscard]] VertexView* SourceVertex() const;
     [[nodiscard]] VertexView* DestinationVertex() const;
@@ -23,3 +25,4 @@ private:
     QPointF sourcePoint;
     QPointF destPoint;
 };
+} // namespace inklink::graph
