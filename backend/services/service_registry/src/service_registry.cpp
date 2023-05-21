@@ -1,7 +1,10 @@
 #include "service_registry.h"
 
+#include "iexternal_service_chassis.h"
+
 namespace
 {
+using IBaseServiceChassis = inklink::base_service_chassis::IBaseServiceChassis;
 using IExternalServiceChassis = inklink::external_service_chassis::IExternalServiceChassis;
 using InternalSessionsManager = inklink::base_service_chassis::InternalSessionsManager;
 using IServiceSession = inklink::server_network::IServiceSession;
@@ -24,6 +27,8 @@ int ServiceRegistry::Run()
 {
     boost::asio::io_context ioContext;
 
+    m_chassis = std::make_unique<IExternalServiceChassis>();
+
     auto manager = std::make_shared<InternalSessionsManager>();
     auto auhorizer = std::make_shared<IAuthorizer>();
     auto factory = std::make_unique<WebsocketSessionsFactory>( // I think, it's ok with default template params
@@ -40,7 +45,7 @@ int ServiceRegistry::Run()
     const std::string logPath{std::string(kLogPathPrefix) + "service_registry_.txt"};
     //      + std::format("{:%Y_%m_%d_%H_%M}", startTime) + ".txt"};
     // clang-format off
-    m_chassis = base_service_chassis::BaseChassisWebsocketConfigurator::
+    m_chassis->baseServiceChassis = base_service_chassis::BaseChassisWebsocketConfigurator::
             CreateAndInitializeChassisWithoutRegistratorAndMsgBroker("simultaneous access", logPath, 
                                                                       ioContext, std::move(factory), manager,
                                                                      {.address = m_address, .port = m_port});
