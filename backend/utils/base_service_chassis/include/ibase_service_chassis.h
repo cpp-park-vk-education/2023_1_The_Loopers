@@ -32,12 +32,12 @@ struct IBaseServiceChassis
 {
 public:
     std::shared_ptr<ILogger> logger;
-    std::unique_ptr<server_network::IListener> listener;
+    std::weak_ptr<server_network::IListener> listener;
     std::unique_ptr<IServiceRegistrator> registrator;
     std::unique_ptr<IMessageBrokerSignal> signalBroker;
     std::unique_ptr<IMessageBrokerEvent> eventBroker;
     std::unique_ptr<ILocalServiceRegistry> localServiceRegistry;
-    std::unique_ptr<InternalSessionsManager> internalSessionsManager;
+    std::shared_ptr<InternalSessionsManager> internalSessionsManager;
     // std::shared_ptr<ISerializer> m_serializer{std::make_shared<ISerializer>()};
 
     // virtual ~IBaseServiceChassis() = default;
