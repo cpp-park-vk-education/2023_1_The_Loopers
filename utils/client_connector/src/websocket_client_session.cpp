@@ -44,28 +44,23 @@ template <ConnectTypeErrorCodeCallbackConcept ConnectCallback, StringErrorCodeCa
           ErrorCodeCallbackConcept WriteCallback, ErrorCodeCallbackConcept CloseCallback>
 WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallback>::~WebsocketClientSession()
 {
-    try
+    // TODO (a.novak) try-catch
+    if (m_websocketStream.is_open())
     {
-        if (m_websocketStream.is_open())
+        // may throw due to another simultaneous write => just so that app won't crush
+        // also does not stop async operations, therefore if isn't called because all operations ended other async
+        // will throw.
+        // to avoid last, before destruction of main app need must call io_context.stop() (to not think about order
+        // of destruction of sessions and io_context)
+        m_close = true;
+        while (m_writing.load())
         {
-            // may throw due to another simultaneous write => just so that app won't crush
-            // also does not stop async operations, therefore if isn't called because all operations ended other async
-            // will throw.
-            // to avoid last, before destruction of main app need must call io_context.stop() (to not think about order
-            // of destruction of sessions and io_context)
-            m_close = true;
-            while (m_writing)
-            {
-                continue;
-            }
-
-            error_code ec;
-            m_websocketStream.close(websocket::close_code::normal, ec);
-            m_closeCallback(ec);
+            continue;
         }
-    }
-    catch (...)
-    {
+
+        error_code ec;
+        m_websocketStream.close(websocket::close_code::normal, ec);
+        m_closeCallback(ec);
     }
 }
 
@@ -97,7 +92,7 @@ void WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseC
 {
     m_close = true;
 
-    if (!m_writing)
+    if (!m_writing.load())
     {
         m_websocketStream.async_close(
                 websocket::close_code::normal,
@@ -109,7 +104,7 @@ template <ConnectTypeErrorCodeCallbackConcept ConnectCallback, StringErrorCodeCa
           ErrorCodeCallbackConcept WriteCallback, ErrorCodeCallbackConcept CloseCallback>
 void WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallback>::DoRead()
 {
-    if (!m_close)
+    if (!m_close.load())
     {
         m_websocketStream.async_read(
                 m_readBuffer, beast::bind_front_handler(&WebsocketClientSession::OnRead, this->shared_from_this()));

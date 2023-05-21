@@ -1,12 +1,13 @@
 #pragma once
 
-#include "global_websocket_client_session.h"
 #include "iclient_session.h"
+#include "websocket_fwd.h"
 
 #include <boost/asio.hpp>
 #include <boost/beast.hpp>
 #include <boost/system/error_code.hpp>
 
+#include <atomic>
 #include <deque>
 #include <functional>
 #include <memory>
@@ -126,6 +127,7 @@ namespace beast = boost::beast;
  *              return;
  *      }
  * };
+ *
  * @endcode
  */
 template <ConnectTypeErrorCodeCallbackConcept ConnectCallback =
@@ -179,8 +181,8 @@ private:
     net::ip::tcp::resolver m_resolver;
     beast::websocket::stream<beast::tcp_stream> m_websocketStream;
 
-    bool m_close{false};
-    bool m_writing{false};
+    std::atomic_bool m_close{false};
+    std::atomic_bool m_writing{false};
 
     beast::flat_buffer m_readBuffer;
     std::deque<std::shared_ptr<std::string const>> m_sendQueue;
