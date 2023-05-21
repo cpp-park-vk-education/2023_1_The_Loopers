@@ -46,16 +46,29 @@ QPainterPath VertexView::shape() const
     return path;
 }
 
-QVariant VertexView::itemChange(GraphicsItemChange change, const QVariant &value)
+QVariant VertexView::itemChange(GraphicsItemChange change, const QVariant& value)
 {
-    switch (change) {
+    switch (change)
+    {
     case ItemPositionHasChanged:
-        //TODO: (zakharov) add method to change edges
+        // TODO: (zakharov) add method to change edges
         break;
     default:
         break;
     };
 
     return QGraphicsItem::itemChange(change, value);
+}
+
+void VertexView::mousePressEvent(QGraphicsSceneMouseEvent* event)
+{
+    update();
+    QGraphicsItem::mousePressEvent(event);
+}
+
+void VertexView::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
+{
+    update();
+    QGraphicsItem::mouseReleaseEvent(event);
 }
 } // namespace inklink::graph
