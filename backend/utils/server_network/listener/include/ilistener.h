@@ -10,7 +10,7 @@ namespace inklink::server_network
 class IListener
 {
 public:
-    explicit IListener(std::shared_ptr<ISessionsFactory> factory) noexcept : m_factory{std::move(factory)}
+    explicit IListener(std::unique_ptr<ISessionsFactory> factory) noexcept : m_factory{std::move(factory)}
     {
     }
     virtual ~IListener() = default;
@@ -18,6 +18,6 @@ public:
     virtual void AsyncRun() = 0;
 
 protected:
-    std::shared_ptr<ISessionsFactory> m_factory;
+    std::unique_ptr<ISessionsFactory> m_factory;
 };
 } // namespace inklink::server_network
