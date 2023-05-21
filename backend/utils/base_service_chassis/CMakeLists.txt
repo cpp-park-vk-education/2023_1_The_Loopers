@@ -1,7 +1,7 @@
 add_library(${BASE_SERVICE_CHASSIS} STATIC "")
 
 target_sources(${BASE_SERVICE_CHASSIS} PRIVATE
-    "src/trash.cpp"
+    "internal_sessions_manager/src/internal_sessions_manager.cpp"
 )
 
 set(PUBLIC_INCLUDE_DIRECTORIES
