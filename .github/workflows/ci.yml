@@ -2,8 +2,8 @@ name: CI
 
 on:
   push:
-    branches: 
-      - '!*'
+    branches:
+      - '**'
       - '!main'
 
 env:
@@ -12,9 +12,7 @@ env:
   LINTERS_FLAGS_OFF: -DENABLE_CLANG_TIDY=OFF -DENABLE_CPPLINT=OFF -DENABLE_CPPCHECK=OFF
   TEST_FLAGS_ON: -DENABLE_TEST=ON -DENABLE_SANITIZER=ON
   TEST_FLAGS_OFF: -DENABLE_TEST=OFF -DENABLE_SANITIZER=OFF
-  BACK_FRONT_ON: -DENABLE_BACK=ON -DENABLE_FRONT=ON
-
-
+  BACK_FRONT_ON: -DENABLE_BACKEND=ON -DENABLE_FRONTEND=ON
 
 jobs:
   build-with-linters:
@@ -25,8 +23,22 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Install boost
+      run:  sudo apt-get install libboost-all-dev    
+
+    - name: Install pqxx for postgresql
+      run:  sudo apt-get install libpqxx-dev
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '6.*'
+
     - name: Install cppcheck
-      run: sudo apt-get install -y cppcheck
+      run: |
+        sudo sed -i 's/azure\.//' /etc/apt/sources.list
+        sudo apt-get update
+        sudo apt-get install -y cppcheck
 
     - name: Install clang-tidy
       run: sudo apt-get install -y clang-tidy
@@ -38,16 +50,20 @@ jobs:
       run: sudo pip install cpplint
 
     - name: Configure cmake
-      run: | 
+      run: |
         cmake -B ${{ github.workflow }}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
         ${{ env.LINTERS_FLAGS_ON }} ${{ env.TEST_FLAGS_OFF }} ${{ env.BACK_FRONT_ON }}
+        cd ${{ github.workflow }}
 
     - name: Build with linters
       id: build-with-linters-step
-      uses: selfagency/capture-output@v1
-      with:
-        cmd: cmake --build ${{ github.workflow }}/build
-        file: ${{ github.workflow }}/build_output.txt
+      run: |
+        cmake --build ${{ github.workflow }}/build 2>&1 | tee ${{ github.workflow }}/build_output.txt
+        RESULT_CODE=${PIPESTATUS[0]}
+        echo "BUILD_OUTPUT<<EOF" >> $GITHUB_OUTPUT
+        echo "$(cat ${{ github.workflow }}/build_output.txt)" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+        exit $RESULT_CODE
 
     - name: Save results to PR comment
       uses: mshick/add-pr-comment@v2
@@ -55,7 +71,7 @@ jobs:
         message: |
           ## Results of build with clang-tidy, cpplint, cppcheck
           ```
-          cat ${{ github.workflow }}/build_output.txt
+          echo ${{ steps.build-with-linters-step.outputs.BUILD_OUTPUT }}
           ```
     - name: Save build results to artifact
       uses: actions/upload-artifact@v3
@@ -72,8 +88,20 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Install boost
+      run: |
+        sudo apt-get install libboost-all-dev    
+
+    - name: Install pqxx for postgresql
+      run:  sudo apt-get install libpqxx-dev
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '6.*'
+
     - name: Configure cmake
-      run: | 
+      run: |
         cmake -B ${{ github.workflow }}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
         ${{ env.LINTERS_FLAGS_OFF }} ${{ env.TEST_FLAGS_ON }} ${{ env.BACK_FRONT_ON }}
 
@@ -82,10 +110,13 @@ jobs:
 
     - name: Run tests
       id: run-tests
-      uses: selfagency/capture-output@v1
-      with:
-        cmd: ${{ github.workflow }}/build/tests/run_tests.sh
-        file: ${{ github.workflow }}/tests_output.txt
+      run: |
+        ${{ github.workflow }}/build/tests/run_tests.sh 2>&1 | tee ${{ github.workflow }}/tests_output.txt
+        RESULT_CODE=${PIPESTATUS[0]}
+        echo "TESTS_OUTPUT<<EOF" >> $GITHUB_OUTPUT
+        echo "$(cat ${{ github.workflow }}/tests_output.txt)" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+        exit $RESULT_CODE
 
     - name: Save results to PR comment
       uses: mshick/add-pr-comment@v2
@@ -93,7 +124,7 @@ jobs:
         message: |
           ## Tests Results
           ```
-          cat ${{ github.workflow }}/tests_output.txt
+          echo ${{ steps.run-tests.outputs.TESTS_OUTPUT }}
           ```
 
     - name: Save build results to artifact
