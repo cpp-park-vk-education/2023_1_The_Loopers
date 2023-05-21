@@ -4,57 +4,42 @@
 #include "ilogger.h"
 #include "imessage_broker_event.h"
 #include "imessage_broker_signal.h"
+#include "inklink_global.h"
 #include "internal_sessions_manager.h"
+#include "iservice_registrator.h"
 
 // #include "iserializer.h"
-#include "inklink_global.h"
-#include "iservice_registator.h"
 
 #include <ilistener.h>
+
 #include <memory>
 #include <string>
 #include <vector>
 
 namespace inklink::base_service_chassis
 {
-class IBaseServiceChassis
+/**
+ * @class IBaseServiceChassis
+ *
+ * @brief BaseServiceChassis stores tools in on place
+ *
+ * @note May be in future it'll provide convience methods to log standard messages (now logging is done by tools itself,
+ * which is not perfect because it can be duplicated in each of inherited classes) and to perform standard sequence of
+ * operations (at the moment initialization done by configurator (it'll stay as is), but there may be some additional
+ * sequences: for example add to localRegistry endpoints when got from global service registry)
+ */
+struct IBaseServiceChassis
 {
 public:
-    virtual ~IBaseServiceChassis() = default;
-
-    virtual void Init(ServiceType, const std::string&, const Endpoint&) = 0;
-
-    // Service register
-    virtual bool Register(ServiceType, const Endpoint&) = 0;
-    virtual std::vector<Endpoint> GetEndpoints(ServiceType) = 0;
-
-    // local registry
-    virtual void AddService(ServiceType, const Endpoint&) = 0;
-    virtual std::vector<Endpoint> GetServices(ServiceType) = 0;
-
-    // message broker
-    virtual void SetReqResCommonConnection(ICommonConnection*) = 0;
-    virtual void Request(const std::string&, const Endpoint&) = 0;
-    virtual void SetPubSubCommonConnection(ICommonConnection*) = 0;
-    virtual void Publish(int event, const std::string&, ServiceType) = 0;
-    virtual void Subscribe(int event, const Endpoint&) = 0;
-
-    // sessions manager
-    virtual void AddSession(DocSessionDescriptor, server_network::IServiceSession*) = 0;
-    virtual void RemoveSession(DocSessionDescriptor) = 0;
-
-    std::shared_ptr<ILogger> m_logger;
-    std::shared_ptr<server_network::IListener> m_listener;
+    std::shared_ptr<ILogger> logger;
+    std::unique_ptr<server_network::IListener> listener;
+    std::unique_ptr<IServiceRegistrator> registrator;
+    std::unique_ptr<IMessageBrokerSignal> signalBroker;
+    std::unique_ptr<IMessageBrokerEvent> eventBroker;
+    std::unique_ptr<ILocalServiceRegistry> localServiceRegistry;
+    std::unique_ptr<InternalSessionsManager> internalSessionsManager;
     // std::shared_ptr<ISerializer> m_serializer{std::make_shared<ISerializer>()};
-    std::shared_ptr<IServiceRegistrator> m_register;
-    std::shared_ptr<IMessageBrokerSignal> m_signalBroker;
-    std::shared_ptr<IMessageBrokerEvent> m_eventBroker;
-    std::shared_ptr<ILocalServiceRegistry> m_localServiceRegistry;
-    std::shared_ptr<InternalSessionsManager> m_internalSessionsManager;
 
-protected:
-    ServiceType m_selfType;
-    std::string m_name;
-    Endpoint m_selfEndpoint;
+    // virtual ~IBaseServiceChassis() = default;
 };
 } // namespace inklink::base_service_chassis

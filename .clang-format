@@ -44,7 +44,7 @@ IncludeCategories:
   - Regex:           '^(<(Q|qt))'
     Priority:        4
   # Third party libraries
-  - Regex:           '((<pqxx)|((<|")spdlog)|(<nlohmann)|(<json))'
+  - Regex:           '((<pqxx)|((<|")spdlog\/)|(<nlohmann)|(<json))'
     Priority:        3
   # Headers in <> without extension
   - Regex:           '<([A-Za-z0-9\Q/-_\E])+>'
