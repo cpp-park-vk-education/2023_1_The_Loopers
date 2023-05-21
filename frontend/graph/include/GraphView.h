@@ -2,6 +2,8 @@
 
 #include <QGraphicsView>
 
+namespace inklink::graph
+{
 class GraphView : public QGraphicsView
 {
     Q_OBJECT
@@ -13,3 +15,4 @@ protected:
     void scaleView(qreal scaleFactor);
     void drawBackground(QPainter *painter, const QRectF &rect) override;
 };
+} // namespace inklink::graph
