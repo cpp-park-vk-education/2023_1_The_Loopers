@@ -1,8 +1,7 @@
 #pragma once
 
+#include "ibase_service_chassis.h"
 #include "inklink_global.h"
-
-#include <iexternal_service_chassis.h>
 
 #include <chrono>
 #include <memory>
@@ -15,6 +14,11 @@ namespace inklink::server_network
 class IServiceSession;
 } // namespace inklink::server_network
 
+namespace inklink::base_service_chassis
+{
+struct IBaseServiceChassis;
+}
+
 namespace inklink::service_registry
 {
 class ServiceRegistry
@@ -23,7 +27,7 @@ public:
     int Run();
 
 private:
-    using IExternalServiceChassis = external_service_chassis::IExternalServiceChassis;
+    using IBaseServiceChassis = base_service_chassis::IBaseServiceChassis;
     using IServiceSession = server_network::IServiceSession;
 
     using error_code = boost::system::error_code;
@@ -40,6 +44,6 @@ private:
     std::string m_address{"127.0.0.1"};
     std::uint16_t m_port{3998};
 
-    std::unique_ptr<IExternalServiceChassis> m_chassis;
+    std::unique_ptr<IBaseServiceChassis> m_chassis;
 };
 } // namespace inklink::service_registry

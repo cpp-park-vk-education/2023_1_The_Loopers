@@ -1,6 +1,6 @@
 #include "service_registry.h"
 
-#include "iexternal_service_chassis.h"
+#include <ibase_service_chassis.h>
 
 namespace
 {
@@ -27,8 +27,6 @@ int ServiceRegistry::Run()
 {
     boost::asio::io_context ioContext;
 
-    m_chassis = std::make_unique<IExternalServiceChassis>();
-
     auto manager = std::make_shared<InternalSessionsManager>();
     auto auhorizer = std::make_shared<IAuthorizer>();
     auto factory = std::make_unique<WebsocketSessionsFactory>( // I think, it's ok with default template params
@@ -45,12 +43,12 @@ int ServiceRegistry::Run()
     const std::string logPath{std::string(kLogPathPrefix) + "service_registry_.txt"};
     //      + std::format("{:%Y_%m_%d_%H_%M}", startTime) + ".txt"};
     // clang-format off
-    m_chassis->baseServiceChassis = base_service_chassis::BaseChassisWebsocketConfigurator::
+    m_chassis = base_service_chassis::BaseChassisWebsocketConfigurator::
             CreateAndInitializeChassisWithoutRegistratorAndMsgBroker("simultaneous access", logPath, 
                                                                       ioContext, std::move(factory), manager,
                                                                      {.address = m_address, .port = m_port});
     // clang-format on
-    m_chassis->baseServiceChassis->logger->LogInfo("Service registry service is initted");
+    m_chassis->logger->LogInfo("Service registry service is initted");
 
     // for now only one thread is supported
     ioContext.run();
@@ -67,8 +65,7 @@ void ServiceRegistry::DoOnConnect(error_code ec, IServiceSession*)
 {
     if (ec)
     {
-        m_chassis->baseServiceChassis->logger->LogDebug(
-                std::string("Got error from ... when tried to accept. Error: ") + ec.what());
+        m_chassis->logger->LogDebug(std::string("Got error from ... when tried to accept. Error: ") + ec.what());
     }
 }
 
@@ -76,8 +73,7 @@ void ServiceRegistry::DoOnWrite(error_code, IServiceSession*)
 {
     if (ec)
     {
-        m_chassis->baseServiceChassis->logger->LogDebug(std::string("Got error from ... while writing. Error: ") +
-                                                        ec.what());
+        m_chassis->logger->LogDebug(std::string("Got error from ... while writing. Error: ") + ec.what());
     }
 }
 } // namespace inklink::service_registry
