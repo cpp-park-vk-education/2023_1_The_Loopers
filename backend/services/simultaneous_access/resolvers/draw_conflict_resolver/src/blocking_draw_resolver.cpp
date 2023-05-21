@@ -4,9 +4,10 @@
 
 namespace inklink::service_simultaneous_access
 {
-BlockingDrawResolver::BlockingDrawResolver(std::size_t maxFigureId) noexcept
-        : IDrawConflictResolver{}, m_maxFigureId{maxFigureId}
+
+void BlockingDrawResolver::SetCurrentMaxFigureId(std::size_t maxFigureId) noexcept
 {
+    m_maxFigureId = maxFigureId;
 }
 
 void BlockingDrawResolver::Resolve(std::vector<DrawAction>& actions)

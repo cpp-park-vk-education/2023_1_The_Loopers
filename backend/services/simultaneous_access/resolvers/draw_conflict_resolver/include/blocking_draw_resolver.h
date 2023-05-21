@@ -10,8 +10,8 @@ namespace inklink::service_simultaneous_access
 class BlockingDrawResolver final : public IDrawConflictResolver
 {
 public:
-    explicit BlockingDrawResolver(std::size_t maxFigureId) noexcept;
     ~BlockingDrawResolver() final = default;
+    void SetCurrentMaxFigureId(std::size_t) noexcept;
 
     // kSelect should be passed each time => caller should track selections and
     // deselections and remember selections
