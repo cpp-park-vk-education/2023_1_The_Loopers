@@ -13,7 +13,7 @@ public:
 
 protected:
     void wheelEvent(QWheelEvent *event) override;
-    void scaleView(qreal scaleFactor);
+    void ScaleView(qreal scaleFactor);
     void drawBackground(QPainter *painter, const QRectF &rect) override;
 };
 } // namespace inklink::graph

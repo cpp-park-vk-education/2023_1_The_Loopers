@@ -18,10 +18,10 @@ GraphView::GraphView(QWidget *parent) : QGraphicsView(parent)
 
 void GraphView::wheelEvent(QWheelEvent *event)
 {
-    scaleView(pow(2., event->angleDelta().y() / 400.0));
+    ScaleView(pow(2., event->angleDelta().y() / 400.0));
 }
 
-void GraphView::scaleView(qreal scaleFactor) {
+void GraphView::ScaleView(qreal scaleFactor) {
     qreal factor = transform().scale(scaleFactor, scaleFactor).mapRect(QRectF(0, 0, 1, 1)).width();
     if (factor < 0.5 || factor > 5)
         return;
