@@ -14,6 +14,7 @@ class VertexView : public QGraphicsItem
 public:
     VertexView(GraphView* graphView);
 
+    void AddEdge(EdgeView *edge);
     QList<EdgeView *> GetEdges() const;
 
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;

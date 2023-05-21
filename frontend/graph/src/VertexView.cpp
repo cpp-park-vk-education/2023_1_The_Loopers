@@ -15,6 +15,12 @@ VertexView::VertexView(GraphView* graphView) : m_graph(graphView)
     setZValue(1);
 }
 
+void VertexView::AddEdge(EdgeView *edge)
+{
+    m_edgeList << edge;
+    edge->adjust();
+}
+
 QList<EdgeView *> VertexView::GetEdges() const
 {
     return m_edgeList;
