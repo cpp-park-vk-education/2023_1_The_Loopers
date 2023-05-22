@@ -90,7 +90,7 @@ void StorageDbController::InsertFile(const std::string& fileName, const std::str
     }
 }
 
-void StorageDbController::InsertGraphArc(const std::string rootFileName, const std::string& fromFileName,
+void StorageDbController::InsertGraphArc(const std::string& rootFileName, const std::string& fromFileName,
                                          const std::string& toFileName, const std::string& sessionId) const
 {
     if (!(fromFileName || toFileName || sessionId || rootFileName))
@@ -106,5 +106,13 @@ void StorageDbController::InsertGraphArc(const std::string rootFileName, const s
 
         m_adapter.Insert(request);
     }
+}
+
+void StorageDbController::SetFileDeleted(const std::string& fileName, const std::string& login) const
+{
+    std::string request = "UPDATE Files SET Deleted_at = CURRENT_TIMESTAMP WHERE Login = '" + login + "' AND Name = '" +
+                          fileName + "'";
+
+    m_adapter.Update(request);
 }
 } // namespace inklink::db_controller

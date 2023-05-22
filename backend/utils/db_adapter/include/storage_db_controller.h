@@ -27,8 +27,10 @@ public:
     void InsertFile(const std::string& fileName, const std::string& login,
                     const std::filesystem::path& filePath) const override;
 
-    void InsertGraphArc(const std::string rootFileName, const std::string& fromFileName, const std::string& toFileName,
+    void InsertGraphArc(const std::string& rootFileName, const std::string& fromFileName, const std::string& toFileName,
                         const std::string& sessionId) const override;
+
+    void SetFileDeleted(const std::string& fileName, const std::string& login) const override;
 
 private:
     DbAdapterBase& m_adapter;

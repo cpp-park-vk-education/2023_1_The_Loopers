@@ -24,8 +24,10 @@ public:
 
     virtual void InsertFile(const std::string& fileName, const std::string& login,
                             const std::filesystem::path& filePath) const = 0;
-    virtual void InsertGraphArc(const std::string rootFileName, const std::string& fromFileName,
+    virtual void InsertGraphArc(const std::string& rootFileName, const std::string& fromFileName,
                                 const std::string& toFileName, const std::string& sessionId) const = 0;
+
+    virtual void SetFileDeleted(const std::string& fileName, const std::string& login) const = 0;
 
 private:
     DbAdapterBase& m_adapter;
