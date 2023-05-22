@@ -1,6 +1,7 @@
 #include "GraphModel.h"
-#include "Vertex.h"
+
 #include "Edge.h"
+#include "Vertex.h"
 
 #include <iostream>
 #include <memory>
@@ -74,7 +75,7 @@ std::vector<IVertex> GraphModel::MakeUniqueVertexes()
 
     for (const auto& edge : m_edges)
     {
-// currently don't know how
+        // currently don't know how
     }
 
     return uniqueVertexes;
@@ -89,7 +90,7 @@ void GraphModel::FillEdges(const std::vector<NamingsEdge> namings)
 {
     for (auto rawEdge : namings)
     {
- //don't know how
+        // don't know how
     }
 }
 
