@@ -11,15 +11,18 @@
 
 namespace inklink::graph
 {
+// forward declaration
 class IEdge;
 class IVertex;
 
+// class declaration
 class IGraphModel
 {
 public:
     struct NamingsEdge
     {
-        NamingsEdge(std::string source_, std::string destination_):source(std::move(source_)),destination(std::move(destination_)){};
+        NamingsEdge(std::string source_, std::string destination_)
+                : source(std::move(source_)), destination(std::move(destination_)){};
 
         std::string source;
         std::string destination;
