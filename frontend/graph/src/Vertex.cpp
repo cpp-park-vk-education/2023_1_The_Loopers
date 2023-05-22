@@ -1,15 +1,26 @@
 #include "Vertex.h"
 
+#include <math.h>
+
 namespace
 {
 constexpr double k_damping = 0.9;
 constexpr double k_maxDistance = 100;
+
+double Distance(inklink::graph::Vertex& firstVertex, inklink::graph::Vertex& secondVertex)
+{
+    auto firstVertexPosition = firstVertex.GetCurrentPosition();
+    auto secondVertexPosition = secondVertex.GetCurrentPosition();
+    return std::sqrt(std::pow(secondVertexPosition.xPosition - firstVertexPosition.xPosition, 2) +
+                     std::pow(secondVertexPosition.yPosition - firstVertexPosition.yPosition, 2));
 }
+} // namespace
 
 namespace inklink::graph
 {
-void Vertex::ApplyAttractionForce(Vertex& firstVertex, Vertex& secondVertex, double attractionForce) {
-    auto dist = distance(firstVertex, secondVertex);
+void Vertex::ApplyAttractionForce(Vertex& firstVertex, Vertex& secondVertex, double attractionForce)
+{
+    auto dist = Distance(firstVertex, secondVertex);
     auto force = attractionForce * (dist - k_maxDistance);
     auto dx = (secondVertex.GetCurrentPosition().xPosition - firstVertex.GetCurrentPosition().xPosition) / dist;
     auto dy = (secondVertex.GetCurrentPosition().yPosition - firstVertex.GetCurrentPosition().yPosition) / dist;
