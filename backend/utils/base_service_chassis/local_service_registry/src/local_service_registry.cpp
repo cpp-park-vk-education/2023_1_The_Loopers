@@ -33,7 +33,7 @@ bool LocalServiceRegistry::RemoveService(const Endpoint& endpoint)
     return true;
 }
 
-std::vector<Endpoint> LocalServiceRegistry::GetServices(ServiceType serviceType) const noexcept
+const std::vector<Endpoint> LocalServiceRegistry::GetServices(ServiceType serviceType) const noexcept
 {
     auto it = m_serviceMap.find(serviceType);
     if (it != m_serviceMap.end())
