@@ -15,17 +15,17 @@ namespace
 {
 constexpr int kPosition = 300;
 
-[[nodiscard]] std::vector<IGraphModel::NamingsEdge> ParseRawData(std::string& rawEdgeString)
+[[nodiscard]] auto ParseRawData(const std::string& rawEdgeString)
 {
     std::stringstream stringToParse(rawEdgeString);
-    std::string singleEdge;
-    std::vector<IGraphModel::NamingsEdge> namings;
+    std::string singleEdge{};
+    std::vector<IGraphModel::NamingsEdge> namings{};
 
     while (stringToParse >> singleEdge)
     {
-        auto spacePosition = singleEdge.find('\t');
-        auto source = singleEdge.substr(0, spacePosition);
-        auto destination = singleEdge.substr(spacePosition + 1);
+        const auto spacePosition = singleEdge.find('\t');
+        const auto source = singleEdge.substr(0, spacePosition);
+        const auto destination = singleEdge.substr(spacePosition + 1);
         namings.emplace_back(source, destination);
     }
 
