@@ -69,7 +69,7 @@ IVertex::Position GraphModel::GeneratePosition()
 
 std::set<std::shared_ptr<IVertex>> GraphModel::MakeUniqueVertexes()
 {
-    std::set<std::shared_ptr<IVertex>> uniqueVertexes;
+    std::set<std::shared_ptr<IVertex>> uniqueVertexes{};
 
     for (const auto& edge : m_edges)
     {
