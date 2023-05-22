@@ -1,4 +1,6 @@
 #include "GraphModel.h"
+#include "IVertex.h"
+#include "IEdge.h"
 
 #include <iostream>
 #include <memory>
@@ -7,12 +9,12 @@
 #include <sstream>
 #include <string>
 
-constexpr int kPosition = 300;
-
 using namespace inklink::graph;
 
 namespace
 {
+constexpr int kPosition = 300;
+
 [[nodiscard]] std::vector<IGraphModel::NamingsEdge> ParseRawData(std::string& rawEdgeString)
 {
     std::stringstream stringToParse(rawEdgeString);
