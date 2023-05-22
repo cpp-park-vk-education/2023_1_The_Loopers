@@ -1,6 +1,7 @@
 #pragma once
 
 #include <exception>
+#include <filesystem>
 #include <string>
 
 namespace inklink::base_service_chassis
@@ -39,5 +40,6 @@ public:
     virtual void SetLevel(LogLevel) = 0;
     virtual void SetPattern(const std::string&) = 0;
     virtual void SetFile(const std::string& loggerName, const std::string& path) = 0;
+    virtual void SetFile(const std::string& loggerName, const std::filesystem::path& path) = 0;
 };
 } // namespace inklink::base_service_chassis

@@ -156,4 +156,9 @@ void SpdlogAdapter::SetFile(const std::string& loggerName, const std::string& pa
         throw LoggerException(ex.what());
     }
 }
+
+void SpdlogAdapter::SetFile(const std::string& loggerName, const std::filesystem::path& path)
+{
+    SetFile(loggerName, path.string());
+}
 } // namespace inklink::base_service_chassis
