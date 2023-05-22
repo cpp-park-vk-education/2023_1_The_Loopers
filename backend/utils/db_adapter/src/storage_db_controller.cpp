@@ -45,7 +45,7 @@ std::string StorageDbController::GetGraphArcs(const std::string& rootFileName, c
 
         DbTable graphNodeNeighboringNodes = m_adapter.Select(request);
 
-        std::string neighbouringNodesString{""};
+        std::string neighbouringNodesString{};
         for (int i = 0; i < graphNodeNeighboringNodes.TableSize(); ++i)
         {
             neighbouringNodesString = neighbouringNodesString + graphNodeNeighboringNodes[i][0] + " \n";
@@ -63,7 +63,7 @@ std::string GetAllFilesForUser(const std::string& login) const
 
         DbTable allFiles = m_adapter.Select(request);
 
-        std::string allFilesString{""};
+        std::string allFilesString{};
         for (int i = 0; i < allFiles.TableSize(); ++i)
         {
             allFilesString = allFilesString + allFiles[i][0] + " \n";
