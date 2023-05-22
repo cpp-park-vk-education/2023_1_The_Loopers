@@ -1,19 +1,14 @@
 #include "file_holder.h"
 
-#include <string>
-#include <experimental/filesystem>
-
 
 namespace inklink_file_holder
 {
-using filesystem::path = std::experimental::filesystem::path;
-
-bool FileHolder::Save(const filesystem::path& filePath, std::string fileChanges)
+bool FileHolder::Save(const std::filesystem::path& filePath, const std::string& fileChanges) const
 {
     return m_changesSavior.SaveFile(filePath, fileChanges);
 }
 
-const std::string FileHolder::Get(const filesystem::path& filePath)
+std::string FileHolder::Get(const std::filesystem::path& filePath) const
 {
     return m_fileReader.GetFile(filePath);
 }

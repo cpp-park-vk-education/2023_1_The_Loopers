@@ -3,19 +3,15 @@
 
 #include "ifile_holder.h"
 
-#include <string>
-
 
 namespace inklink_file_holder
 {
-using filesystem::path = std::experimental::filesystem::path;
-
 class FileHolder final: public IFileHolder
 {
 public:
-    [[nodiscard]] bool Save(const filesystem::path& filePath, std::string fileChanges) override;
+    [[nodiscard]] bool Save(const std::filesystem::path& filePath, const std::string& fileChanges) const override;
 
-    [[nodiscard]] const std::string Get(const std::string& filePath) override;
+    [[nodiscard]] std::string Get(const std::string& filePath) const override;
 
     virtual ~FileHolder() = default;
 

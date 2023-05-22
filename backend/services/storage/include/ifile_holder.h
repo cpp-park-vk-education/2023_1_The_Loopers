@@ -5,20 +5,15 @@
 #include "read_file.h"
 #include "save_changes.h"
 
-#include <string>
-#include <experimental/filesystem>
-
 
 namespace inklink_file_holder
 {
-using filesystem::path = std::experimental::filesystem::path;
-
 class IFileHolder
 {
 public:
-    [[nodiscard]] virtual bool Save(const filesystem::path& filePath, std::string fileChanges) = 0;
+    [[nodiscard]] virtual bool Save(const std::filesystem::path& filePath, const std::string& fileChanges) const = 0;
 
-    [[nodiscard]] virtual const std::string Get(const filesystem::path& filePath) = 0;
+    [[nodiscard]] virtual std::string Get(const filesystem::path& filePath) const = 0;
 
     virtual ~IFileHolder() = default;
 
