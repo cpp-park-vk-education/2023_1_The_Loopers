@@ -1,14 +1,12 @@
 #pragma once
 
 #include "GraphModel.h"
-#include "IEdge.h"
 
 #include <string>
 #include <vector>
 
 namespace inklink::graph
 {
-
 class IVertex
 {
 public:
@@ -22,8 +20,8 @@ public:
 
     void calculateForces();
     bool advancePosition();
-    [[nodiscard]] std::string getName();
-    [[nodiscard]] Position GetCurrentPosition();
+    [[nodiscard]] const std::string& getName() const;
+    [[nodiscard]] Position GetCurrentPosition() const;
     void SetCurrentPosition(Position);
 
 private:
