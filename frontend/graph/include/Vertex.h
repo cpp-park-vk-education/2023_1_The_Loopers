@@ -25,11 +25,14 @@ public:
     void SetCurrentPosition(Position) override;
     [[nodiscard]] Velocity GetCurrentVelocity() const;
     void SetCurrentVelocity(Velocity);
+    [[nodiscard]] Velocity GetMass() const;
+    void SetMass(Velocity);
 
 private:
     std::string m_name;
     Position m_currentPosition;
     Velocity m_velocity;
+    double m_mass;
 
 private:
     void UpdateVertices(std::vector<Vertex>& vertices, double deltaTime, double attractionForce);
