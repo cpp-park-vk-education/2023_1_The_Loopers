@@ -1,14 +1,15 @@
 #pragma once
 
-#include "IVertex.h"
+#include "IEdge.h"
 
 #include <memory>
 
 namespace inklink::graph
 {
-class IEdge;
+// forward declaration
 class IVertex;
 
+// class declaration
 class Edge : public IEdge
 {
 public:
