@@ -135,7 +135,7 @@ JsonData::JsonData(nlohmann::json&& jsonData)
         }
         else if (value.is_object())
         {
-            m_data[key] = std::make_shared<JsonData>(std::move(value));
+            m_data[key] = std::make_shared<JsonData>(std::move(jsonData[key]));
         }
     }
 }
@@ -185,6 +185,7 @@ JsonData::CellTypeEnum JsonData::GetCellType(const std::string& key) const
     {
         return CellTypeEnum::kDouble;
     }
+    // return CellTypeEnum::kString;
 }
 
 bool JsonData::IsJsonData(const std::string& key) const

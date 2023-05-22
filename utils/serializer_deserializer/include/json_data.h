@@ -23,6 +23,8 @@ public:
     JsonData() = default;
     ~JsonData() override = default;
 
+    /*implicit*/ JsonData(nlohmann::json&&);
+
     [[nodiscard]] std::string SerializeAsString() const override;
     void ParseString(const std::string&) override;
 
@@ -60,7 +62,6 @@ private:
         kString,
         kJsonData
     };
-    /*implicit*/ JsonData(nlohmann::json&&);
     [[nodiscard]] nlohmann::json ToJson() const;
 
     [[nodiscard]] CellTypeEnum GetCellType(const std::string&) const;
