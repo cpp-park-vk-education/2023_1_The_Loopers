@@ -4,121 +4,143 @@
 
 namespace inklink::serializer
 {
-std::string DataWrapper::SerializeAsString() const
+template <DerivedFromIData T>
+DataWrapper<T>::DataWrapper() : m_pData{std::make_unique<T>()}
 {
-    if (m_pData)
-    {
-        return m_pData->SerializeAsString();
-    }
-    return "";
 }
 
-void DataWrapper::ParseString(const std::string& str)
+template <DerivedFromIData T>
+/*implicit*/ DataWrapper<T>::DataWrapper(IData& data) : m_pData{std::unique_ptr<IData>(&data)}
 {
-    if (m_pData)
-    {
-        m_pData->ParseString(str);
-    }
 }
 
-std::string& DataWrapper::AsString(const std::string& key)
+template <DerivedFromIData T>
+/*implicit*/ DataWrapper<T>::DataWrapper(const IData& data) : m_pData{std::make_unique<IData>(data)}
 {
-    if (m_pData)
-    {
-        return m_pData->AsString(key);
-    }
-    throw std::runtime_error("DataWrapper: No data present");
 }
 
-const std::string& DataWrapper::AsString(const std::string& key) const
+template <DerivedFromIData T>
+DataWrapper<T>::DataWrapper(const DataWrapper& other)
 {
-    if (m_pData)
-    {
-        return m_pData->AsString(key);
-    }
-    throw std::runtime_error("DataWrapper: No data present");
+    m_pData = std::make_unique<IData>(*other.m_pData);
 }
 
-int& DataWrapper::AsInt(const std::string& key)
+template <DerivedFromIData T>
+DataWrapper<T>::DataWrapper(DataWrapper&& other) noexcept
 {
-    if (m_pData)
-    {
-        return m_pData->AsInt(key);
-    }
-    throw std::runtime_error("DataWrapper: No data present");
+    m_pData = std::move(other.m_pData);
 }
 
-const int& DataWrapper::AsInt(const std::string& key) const
+template <DerivedFromIData T>
+DataWrapper<T>& DataWrapper<T>::operator=(const DataWrapper& other)
 {
-    if (m_pData)
+    if (this != &other)
     {
-        return m_pData->AsInt(key);
+        m_pData = std::make_unique<IData>(*other.m_pData);
     }
-    throw std::runtime_error("DataWrapper: No data present");
+    return *this;
 }
 
-bool DataWrapper::Has(const std::string& key) const
+template <DerivedFromIData T>
+DataWrapper<T>& DataWrapper<T>::operator=(DataWrapper&& other) noexcept
 {
-    if (m_pData)
-    {
-        return m_pData->Has(key);
-    }
-    return false;
+    m_pData = std::move(other.m_pData);
+    return *this;
 }
 
-void DataWrapper::Clear()
+template <DerivedFromIData T>
+std::string DataWrapper<T>::SerializeAsString() const
 {
-    if (m_pData)
-    {
-        m_pData->Clear();
-    }
+    return m_pData->SerializeAsString();
 }
 
-DataWrapper& DataWrapper::operator[](const std::string& key) noexcept
+template <DerivedFromIData T>
+void DataWrapper<T>::ParseString(const std::string& data)
 {
-    IData* element = (*m_pData)[key];
-    m_buffForValidReferences.push_back(std::unique_ptr<DataWrapper>(element));
-    return m_buffForValidRefernces.back();
+    m_pData->ParseString(data);
 }
 
-const DataWrapper& DataWrapper::operator[](const std::string& key) const noexcept
+template <DerivedFromIData T>
+std::string& DataWrapper<T>::AsString(const std::string& field)
 {
-    IData* element = (*m_pData)[key];
-    m_buffForValidReferences.push_back(std::unique_ptr<DataWrapper>(element));
-    return m_buffForValidRefernces.back();
+    return m_pData->AsString(field);
 }
 
-DataWrapper& DataWrapper::At(const std::string& key)
+template <DerivedFromIData T>
+const std::string& DataWrapper<T>::AsString(const std::string& field) const
 {
-    try
-    {
-        if (m_pData)
-        {
-            IData* element = m_pData->At(key);
-            m_buffForValidReferences.push_back(std::unique_ptr<IData>(element));
-            return m_buffForValidRefernces.back();
-        }
-        throw std::runtime_error("DataWrapper: No data present");
-    }
-    catch (...) // from push_back
-    {
-    }
+    return m_pData->AsString(field);
 }
 
-const DataWrapper& DataWrapper::At(const std::string& key) const
+template <DerivedFromIData T>
+bool DataWrapper<T>::IsString(const std::string& field) const
 {
-    try
-    {
-        if (m_pData)
-        {
-            IData* element = m_pData->At(key);
-            m_buffForValidReferences.push_back(std::unique_ptr<IData>(element));
-            return m_buffForValidRefernces.back();
-        }
-        throw std::runtime_error("DataWrapper: No data present");
-    }
-    catch (...) // from push_back
-    {
-    }
+    return m_pData->IsString(field);
+}
+
+template <DerivedFromIData T>
+int& DataWrapper<T>::AsInt(const std::string& field)
+{
+    return m_pData->AsInt(field);
+}
+
+template <DerivedFromIData T>
+const int& DataWrapper<T>::AsInt(const std::string& field) const
+{
+    return m_pData->AsInt(field);
+}
+
+template <DerivedFromIData T>
+bool DataWrapper<T>::IsInt(const std::string& field) const
+{
+    return m_pData->IsInt(field);
+}
+
+template <DerivedFromIData T>
+double& DataWrapper<T>::AsDouble(const std::string& field)
+{
+    return m_pData->AsDouble(field);
+}
+
+template <DerivedFromIData T>
+const double& DataWrapper<T>::AsDouble(const std::string& field) const
+{
+    return m_pData->AsDouble(field);
+}
+
+template <DerivedFromIData T>
+bool DataWrapper<T>::IsDouble(const std::string& field) const
+{
+    return m_pData->IsDouble(field);
+}
+
+template <DerivedFromIData T>
+void DataWrapper<T>::Clear()
+{
+    m_pData.reset();
+}
+
+template <DerivedFromIData T>
+DataWrapper<T>& DataWrapper<T>::operator[](const std::string& field) noexcept
+{
+    return (*m_pData)[field];
+}
+
+template <DerivedFromIData T>
+const DataWrapper<T>& DataWrapper<T>::operator[](const std::string& field) const noexcept
+{
+    return (*m_pData)[field];
+}
+
+template <DerivedFromIData T>
+DataWrapper<T>& DataWrapper<T>::At(const std::string& field)
+{
+    return m_pData->At(field);
+}
+
+template <DerivedFromIData T>
+const DataWrapper<T>& DataWrapper<T>::At(const std::string& field) const
+{
+    return m_pData->At(field);
 }
 } // namespace inklink::serializer

@@ -20,8 +20,7 @@ void JsonData::ParseString(const std::string& jsonString)
 {
     try
     {
-        nlohmann::json jsonData = nlohmann::json::parse(jsonString); // Parse JSON from string
-        *this = JsonData(std::move(jsonData));                       // Construct JsonData object from parsed JSON
+        *this = JsonData(nlohmann::json::parse(jsonString));
     }
     catch (const nlohmann::json::exception& e)
     {
@@ -100,9 +99,9 @@ const IData& JsonData::operator[](const std::string& key) const noexcept
 {
     try
     {
-        return *std::get<std::shared_ptr<JsonData>>(m_data[key]);
+        return *std::get<std::shared_ptr<JsonData>>(m_data.at(key));
     }
-    catch (const std::bad_variant_access&)
+    catch (...) // (const std::bad_variant_access&)
     {
         return *this;
     }
