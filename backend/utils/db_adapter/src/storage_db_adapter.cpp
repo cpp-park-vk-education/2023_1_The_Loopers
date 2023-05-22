@@ -9,7 +9,7 @@ namespace inklink::db_adapter
 {
 void StorageDbAdapter::Connect(const std::string& connectionString)
 {
-    m_connection = std::move(pqxx::connection(connectionString));
+    m_connection = pqxx::connection::connection(connectionString);
 }
 
 void StorageDbAdapter::Insert(const std::string& request) const
