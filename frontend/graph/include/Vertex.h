@@ -25,7 +25,7 @@ public:
     void SetCurrentPosition(Position newPosition) override;
     [[nodiscard]] Velocity GetCurrentVelocity() const;
     void SetCurrentVelocity(Velocity newVelocity);
-    [[nodiscard]] Velocity GetMass() const;
+    [[nodiscard]] double GetMass() const;
     void SetMass(double newMass);
 
 private:
