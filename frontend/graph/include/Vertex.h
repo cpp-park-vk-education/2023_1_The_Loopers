@@ -33,6 +33,6 @@ private:
 
 private:
     void UpdateVertices(std::vector<Vertex>& vertices, double deltaTime, double attractionForce);
-    void ApplyAttractionForce(Vertex& currentVertex, Vertex& otherVertex, double attractionForce);
+    void ApplyAttractionForce(Vertex& firstVertex, Vertex& secondVertex, double attractionForce);
 };
 } // namespace inklink::graph
