@@ -13,7 +13,7 @@ class StorageDbController final
 public:
     explicit void SetAdapter(DbAdapterBase& adapter) override;
 
-    void Connect(const std::string& connectionString) override;
+    void Run(const std::string& connectionString) override;
 
     [[nodiscard]] std::filesystem::path GetFilePath(const std::string& fileName,
                                                     const std::string& login) const override;
@@ -24,11 +24,10 @@ public:
     [[nodiscard]] std::string GetAllFilesForUser(const std::string& login) const override;
 
 
-    void InsertFile(const std::string& fileName, const std::string& login,
+    void InsertRootFile(const std::string& fileName, const std::string& login,
                     const std::filesystem::path& filePath) const override;
 
-    void InsertGraphArc(const std::string& rootFileName, const std::string& fromFileName, const std::string& toFileName,
-                        const std::string& sessionId) const override;
+    void InsertGraphArc(const std::string& rootFileName, const std::string& fromFileName, const std::string& toFileName) const override;
 
     void SetFileDeleted(const std::string& fileName, const std::string& login) const override;
 

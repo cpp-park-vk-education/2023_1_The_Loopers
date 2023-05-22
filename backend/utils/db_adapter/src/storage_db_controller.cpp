@@ -9,19 +9,49 @@ explicit void StorageDbController::SetAdapter(DbAdapterBase& adapter)
     m_adapter = adapter;
 }
 
-void StorageDbAdapter::Connect(const std::string& connectionString)
+void StorageDbAdapter::Run(const std::string& connectionString)
 {
     m_adapter.Connect(connectionString);
+
+
+    pqxx::connection& settings = m_adapter.GetConnection();
+
+    settings.prepare("GetFilePath",
+                     "SELECT filePath FROM Files "
+                     "WHERE fileName = $1 AND login = $2 AND Deleted_at IS NULL");
+
+    settings.prepare("GetGraphArcs",
+                     "SELECT Name FROM Files "
+                     "WHERE Id IN "
+                     "(SELECT Graph.Id_Second FROM Graph JOIN Files "
+                     "ON Graph.Id_First = Files.Id "
+                     "WHERE Files.Name = $1 AND Graph.Id_Session = "
+                     "(SELECT Id FROM Sessions "
+                     "WHERE RootId = (SELECT Id FROM Files WHERE Login = $2 AND Name = $3))) AND Deleted_at IS NULL");
+
+    settings.prepare("GetAllFilesForUser", "SELECT Names FROM Files WHERE Login = $1 AND Deleted_at IS NULL");
+
+    settings.prepare("InsertFile", "INSERT INTO Files(Name, Login, Path) VALUES ($1, $2, $3)");
+
+    settings.prepare("InsertNewSession",
+                     "INSERT INTO Sessions VALUES ((SELECT Id FROM Files WHERE Login = $1 AND Name = $2))");
+
+    settings.prepare("InsertGraphArc",
+                     "INSERT INTO Graph VALUES "
+                     "((SELECT Id FROM Files WHERE Login = $1 AND Name = $2), "
+                     "(SELECT Id FROM Files WHERE Login = $1 AND Name = $3), "
+                     "(SELECT Id FROM Sessions WHERE RootId = "
+                     "(SELECT Id FROM Files WHERE Login = $1 AND Name = $4)))");
+
+    settings.prepare("SetFileDeleted",
+                     "UPDATE Files SET Deleted_at = CURRENT_TIMESTAMP WHERE Login = $1 AND Name = $2");
 }
 
 std::filesystem::path StorageDbController::GetFilePath(const std::string& fileName, const std::string& login) const
 {
     if (!(fileName || login))
     {
-        std::string request =
-                "SELECT filePath FROM Files WHERE fileName = '" + fileName + "' AND login = '" + login + "' AND Deleted_at IS NULL";
-
-        DbTable filePath = m_adapter.Select(request);
+        DbTable filePath = m_adapter.Select("GetFilePath", fileName, login);
         
         return filePath[0][0];
     }
@@ -32,18 +62,7 @@ std::string StorageDbController::GetGraphArcs(const std::string& rootFileName, c
 {
     if (!(vertexName || sessionId))
     {
-        std::string sessionId = "(SELECT Id FROM Sessions WHERE RootId = (SELECT Id FROM Files WHERE Login = '" +
-                                login + "' AND Name = '" + rootFileName + "'))";
-
-        std::string innerRequest =
-                "SELECT Graph.Id_Second FROM Graph JOIN Files ON Graph.Id_First = Files.Id WHERE Files.Name = '" +
-                vertexFileName + "' AND Graph.Id_Session = " + sessionId;
-
-
-        std::stirng request = "SELECT Name FROM Files WHERE Id IN (" + innerRequest + ") AND Deleted_at IS NULL"; 
-          
-
-        DbTable graphNodeNeighboringNodes = m_adapter.Select(request);
+        DbTable graphNodeNeighboringNodes = m_adapter.Select("GetGraphArcs", vertexFileName, login, rootFileName);
 
         std::string neighbouringNodesString{};
         for (int i = 0; i < graphNodeNeighboringNodes.TableSize(); ++i)
@@ -55,13 +74,11 @@ std::string StorageDbController::GetGraphArcs(const std::string& rootFileName, c
     }
 }
 
-std::string GetAllFilesForUser(const std::string& login) const
+std::string StorageDbController::GetAllFilesForUser(const std::string& login) const
 {
     if (!login)
     {
-        std::string request = "SELECT Names FROM Files WHERE Login = '" + login + "' AND Deleted_at IS NULL";
-
-        DbTable allFiles = m_adapter.Select(request);
+        DbTable allFiles = m_adapter.Select("GetAllFilesForUser", login);
 
         std::string allFilesString{};
         for (int i = 0; i < allFiles.TableSize(); ++i)
@@ -74,45 +91,36 @@ std::string GetAllFilesForUser(const std::string& login) const
 }
 
 
-void StorageDbController::InsertFile(const std::string& fileName, const std::string& login,
+void StorageDbController::InsertRootFile(const std::string& fileName, const std::string& login,
                                      const std::filesystem::path& filePath) const
 {
     if (!(fileName || login || !filePath))
     {
-        std::string requestToFilesTable =
-                "INSERT INTO Files(Name, Login, Path) VALUES ('" + fileName + "', '" + login + "', '" + filePath + "')";
+        m_adapter.Insert("InsertFile", fileName, login, filePath);
+        m_adapter.Insert("InsertNewSession", login, fileName);
+    }
+}
 
-        std::string requestToGraphTable = "INSERT INTO Sessions VALUES ((SELECT Id FROM Files WHERE Login = '" + login +
-                                          "' AND Name = '" + fileName + "'))";
-
-        m_adapter.Insert(requestToFilesTable);
-        m_adapter.Insert(requestToGraphTable);
+void StorageDbController::InsertNonRootFile(const std::string& rootFileName, const std::string& fileName,
+                                            const std::string& login, const std::filesystem::path& filePath) const
+{
+    if (!(fileName || rootFileName || filePath || login))
+    {
+        m_adapter.Insert("InsertFile", fileName, login, filePath);
     }
 }
 
 void StorageDbController::InsertGraphArc(const std::string& rootFileName, const std::string& fromFileName,
-                                         const std::string& toFileName, const std::string& sessionId) const
+                                         const std::string& toFileName) const
 {
     if (!(fromFileName || toFileName || sessionId || rootFileName))
     {
-        std::string idFirst = "(SELECT Id FROM Files WHERE Login = '" + login "' AND Name = '" + fromFileName + "')";
-
-        std::string idSecond = "(SELECT Id FROM Files WHERE Login = '" + login "' AND Name = '" + toFileName + "')";
-
-        std::string sessionId = "(SELECT Id FROM Sessions WHERE RootId = (SELECT Id FROM Files WHERE Login = '" +
-                                login + "' AND Name = '" + rootFileName + "'))";
-
-        std::string request = "INSERT INTO Graph VALUES (" + idFirst + ", " + idSecond + ", " + sessionId + ")";
-
-        m_adapter.Insert(request);
+        m_adapter.Insert("InsertGraphArc", login, fromFileName, toFileName, rootFileName);
     }
 }
 
 void StorageDbController::SetFileDeleted(const std::string& fileName, const std::string& login) const
 {
-    std::string request = "UPDATE Files SET Deleted_at = CURRENT_TIMESTAMP WHERE Login = '" + login + "' AND Name = '" +
-                          fileName + "'";
-
-    m_adapter.Update(request);
+    m_adapter.Update("SetFileDeleted", login, fileName);
 }
 } // namespace inklink::db_controller
