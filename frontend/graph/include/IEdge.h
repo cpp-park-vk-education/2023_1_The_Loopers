@@ -1,23 +1,19 @@
 #pragma once
 
-#include <memory>
-#include <utility>
+#include "IVertex.h"
 
 namespace inklink::graph
 {
-class IVertex;
-
 class IEdge
 {
 public:
-    IEdge(std::shared_ptr<IVertex> source, std::shared_ptr<IVertex> destination)
-            : m_sourceVertex(source), m_destinationVertex(destination){};
+    //    IEdge(IVertex* source, IVertex* destination): m_sourceVertex(source), m_destinationVertex(destination) {};
 
-    [[nodiscard]] const IVertex& GetSourceVertex() const;
-    [[nodiscard]] const IVertex& GetDestinationVertex() const;
+    const IVertex* getSourceVertex() const;
+    const IVertex* getDestinationVertex() const;
 
 private:
-    std::shared_ptr<IVertex> m_sourceVertex;
-    std::shared_ptr<IVertex> m_destinationVertex;
+    IVertex* m_sourceVertex;
+    IVertex* m_destinationVertex;
 };
 } // namespace inklink::graph
