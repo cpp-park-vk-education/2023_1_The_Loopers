@@ -1,8 +1,5 @@
 #include "storage.h"
 
-#include <memory>
-#include <string>
-#include <experimental/filesystem>
 #include <filesystem>
 
 
@@ -10,7 +7,6 @@ constexpr std::string kDbConnectionString;
 
 namespace inklink : storage
 {
-using filesystem::path = std::experimental::filesystem::path;
 using IFileHolder = file_holder::IFileHolder;
 using IStorageDbController = db_controller::IStorageDbController;
 using IExternalServiceChassis = external_service_chassis:IExternalServiceChassis;
@@ -26,12 +22,12 @@ void Run(int port)
     }
 }
 
-std::string Storage::GetFile(std::string& fileName, std::string& login) const
+std::string Storage::GetFile(const std::string& fileName, const std::string& login) const
 {
     return m_fileWorker->Get(m_dbController->GetFilePath(fileName, login));
 }
 
-std::string Storage::GetAllFilesNames(std::string & login) const
+std::string Storage::GetAllFilesNames(const std::string& login) const
 {
     try
     {
@@ -42,7 +38,7 @@ std::string Storage::GetAllFilesNames(std::string & login) const
     }
 }
 
-bool Storage::Update(std::string& fileName, std::string& login, std::string& fileChanges) const
+bool Storage::Update(const std::string& fileName, const std::string& login, const std::string& fileChanges) const
 {
     try
     {
@@ -59,8 +55,8 @@ bool Storage::Update(std::string& fileName, std::string& login, std::string& fil
 }
 
 
-std::string Storage::GetGraphArcsForOneVertex(std::string & rootFileName, std::string & vertexFileName,
-                                            std::string & login) const
+std::string Storage::GetGraphArcsForOneVertex(const std::string & rootFileName, const std::string & vertexFileName,
+                                            const std::string & login) const
 {
     try
     {
@@ -71,7 +67,7 @@ std::string Storage::GetGraphArcsForOneVertex(std::string & rootFileName, std::s
     }
 }
 
-void Storage::SaveGraphArc(std::string& rootFileName, std::string& fromFileName, std::string& toFileName) const
+void Storage::SaveGraphArc(const std::string& rootFileName, const std::string& fromFileName, const std::string& toFileName) const
 {
     try
     {
@@ -80,6 +76,11 @@ void Storage::SaveGraphArc(std::string& rootFileName, std::string& fromFileName,
     catch (const std::exception&)
     {
     }
+}
+
+void DeleteFile(const std::string& fileName, const std::string& login) const
+{
+    m_dbController.SetFileDeleted(fileName, login);
 }
 
 void Storage::SetChassis(std::shared_ptr<IExternalServiceChassis> serviceChassis)
@@ -98,9 +99,9 @@ void Storage::SetFileHolder(std::shared_ptr<IFileHolder> fileHolder)
 }
 
 
-[[nodiscard]] bool Storage::Create(std::string & fileName, std::string & login)
+[[nodiscard]] bool Storage::Create(const std::string & fileName, std::string & login)
 {
-    filesystem::path filePath = "files/" + login + "/" + fileName + ".txt";
+    std::filesystem::path filePath = "files/" + login + "/" + fileName + ".txt";
 
     m_dbController->InsertFile(fileName, login, filePath);
 }

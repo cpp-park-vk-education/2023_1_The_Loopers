@@ -1,14 +1,12 @@
 #ifndef _BACKEND_SERVICES_STORAGE_INCLUDE_ISTORAGE_H_
 #define _BACKEND_SERVICES_STORAGE_INCLUDE_ISTORAGE_H_
 
-#include "ifile_holder.h"
 #include "idb_adapter"
 #include "iexternal_service_chassis.h"
+#include "ifile_holder.h"
 
 #include <memory>
 #include <string>
-#include <experimental/filesystem>
-#include <filesystem>
 
 
 namespace inklink:storage
@@ -16,14 +14,13 @@ namespace inklink:storage
 class IStorage
 {
 using error_code = boost::system::error_code;
-using filesystem::path = std::experimental::filesystem::path;
 using IFileHolder = file_holder::IFileHolder;
 using IStorageDbController = db_controller::IStorageDbController;
 using IExternalServiceChassis = external_service_chassis:IExternalServiceChassis;
 
 public:
     virtual void Run(int port);
-    virtual bool DoOnRead(error_code errocCode, std::string request, IServiceSession* serviceSession)
+    virtual bool DoOnRead(error_code errocCode, const std::string& request, IServiceSession* serviceSession)
     virtual [[nodiscard]] std::string GetFile(std::string& fileName, std::string& login) const = 0;
     virtual [[nodiscard]] bool Update(std::string& fileName, std::string& login, std::string& fileChanges) const = 0;
 
@@ -33,14 +30,16 @@ public:
     virtual void SetFileHolder(std::shared_ptr<IFileHolder> fileHolder) = 0;
 
 
-    virtual [[nodiscard]] std::string GetAllFilesNameslFiles(std::string& login) const = 0;
-    virtual [[nodiscard]] std::string GetGraphArcsForOneVertex(std::string& rootFileName, std::string& vertexFileName,
-                                                               std::string& login) const = 0;
+    virtual [[nodiscard]] std::string GetAllFilesNameslFiles(const std::string& login) const = 0;
+    virtual [[nodiscard]] std::string GetGraphArcsForOneVertex(const std::string& rootFileName, const std::string& vertexFileName,
+                                                               const std::string& login) const = 0;
 
-    virtual void SaveGraphArc(std::string& rootFileName, std::string& fromFileName, std::string& toFileName) const = 0;
+    virtual void SaveGraphArc(const std::string& rootFileName, const std::string& fromFileName, const std::string& toFileName) const = 0;
+    
+    virtual void DeleteFile(const std::string& fileName, const std::string& login) const = 0;
 
 protected:
-    virtual [[nodiscard]] bool Create(std::string& fileName, std::string& login) const = 0;
+    virtual [[nodiscard]] bool Create(const std::string& fileName, const std::string& login) const = 0;
 
     std::shared_ptr<IFileHolder> m_fileWorker;
     std::shared_ptr<IStorageDbController> m_dbController;
