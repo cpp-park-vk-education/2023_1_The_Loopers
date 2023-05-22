@@ -149,7 +149,7 @@ void SpdlogAdapter::SetFile(const std::string& loggerName, const std::string& pa
 {
     try
     {
-        m_logger = std::make_shared<spdlog::logger>(spdlog::basic_logger_mt(loggerName, path));
+        m_logger = spdlog::basic_logger_mt(loggerName, path);
     }
     catch (const spdlog::spdlog_ex& ex)
     {
