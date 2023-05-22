@@ -16,6 +16,7 @@ public:
     virtual bool AddService(ServiceType, const Endpoint&);
     virtual bool RemoveService(const Endpoint&);
 
+    [[nodiscard]] virtual const std::vector<Endpoint>& GetServices(ServiceType);
     [[nodiscard]] virtual std::vector<Endpoint> GetServices(ServiceType) const noexcept;
     [[nodiscard]] virtual ServiceType GetServiceType(const Endpoint&) const;
     [[nodiscard]] virtual bool HasEndpoint(const Endpoint&) const noexcept;
