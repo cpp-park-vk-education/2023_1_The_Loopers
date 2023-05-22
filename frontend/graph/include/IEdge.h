@@ -1,7 +1,5 @@
 #pragma once
 
-#include "IVertex.h"
-
 #include <memory>
 #include <utility>
 

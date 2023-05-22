@@ -1,8 +1,5 @@
 #pragma once
 
-#include "IEdge.h"
-#include "IVertex.h"
-
 #include <memory>
 #include <set>
 #include <string>
