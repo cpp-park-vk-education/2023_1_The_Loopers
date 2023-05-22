@@ -61,4 +61,39 @@ void Vertex::UpdateVertices(std::vector<Vertex>& vertices, double deltaTime, dou
         SetCurrentPosition(position);
     }
 }
+
+const std::string& Vertex::getName() const
+{
+    return m_name;
+}
+
+IVertex::Position Vertex::GetCurrentPosition() const
+{
+    return m_currentPosition;
+}
+
+void Vertex::SetCurrentPosition(IVertex::Position newPosition)
+{
+    m_currentPosition = newPosition;
+}
+
+Vertex::Velocity Vertex::GetCurrentVelocity() const
+{
+    return m_velocity;
+}
+
+void Vertex::SetCurrentVelocity(Vertex::Velocity newVelocity)
+{
+    m_velocity = newVelocity;
+}
+
+double Vertex::GetMass() const
+{
+    return m_mass;
+}
+
+void Vertex::SetMass(double newMass)
+{
+    m_mass = newMass;
+}
 } // namespace inklink::graph
