@@ -1,6 +1,7 @@
 #pragma once
 
 #include "idata.h"
+#include "nlohmann/json_fwd.hpp"
 
 #include <memory.h>
 
@@ -8,6 +9,8 @@
 
 #include <memory>
 #include <string>
+#include <unordered_map>
+#include <variant>
 
 namespace inklink::serializer
 {
@@ -17,16 +20,7 @@ namespace inklink::serializer
 class JsonData final : public IData
 {
 public:
-    JsonData();
-    /*implicit*/ JsonData(nlohmann::json&) noexcept;
-    /*implicit*/ JsonData(nlohmann::json&&) noexcept;
-
-    JsonData(const JsonData&);
-    JsonData(JsonData&&) noexcept;
-
-    JsonData& operator=(const JsonData&);
-    JsonData& operator=(JsonData&&) noexcept;
-
+    JsonData() = default;
     ~JsonData() override = default;
 
     [[nodiscard]] std::string SerializeAsString() const override;
@@ -34,10 +28,15 @@ public:
 
     [[nodiscard]] std::string& AsString(const std::string&) override;
     [[nodiscard]] const std::string& AsString(const std::string&) const override;
+    [[nodiscard]] bool IsString(const std::string&) const override;
+
     [[nodiscard]] int& AsInt(const std::string&) override;
     [[nodiscard]] const int& AsInt(const std::string&) const override;
+    [[nodiscard]] bool IsInt(const std::string&) const override;
+
     [[nodiscard]] double& AsDouble(const std::string&) override;
     [[nodiscard]] const double& AsDouble(const std::string&) const override;
+    [[nodiscard]] bool IsDouble(const std::string&) const override;
 
     [[nodiscard]] bool Has(const std::string&) const override;
 
@@ -46,14 +45,27 @@ public:
     /**
      * @brief Accesses or creates IData given field name
      */
-    [[nodiscard]] IData* operator[](const std::string&) noexcept override;
-    [[nodiscard]] const IData* operator[](const std::string&) const noexcept override;
-    [[nodiscard]] IData* At(const std::string&) override;
-    [[nodiscard]] const IData* At(const std::string&) const override;
+    [[nodiscard]] IData& operator[](const std::string&) noexcept override;
+    [[nodiscard]] const IData& operator[](const std::string&) const noexcept override;
+    [[nodiscard]] IData& At(const std::string&) override;
+    [[nodiscard]] const IData& At(const std::string&) const override;
 
 private:
-    std::shared_ptr<nlohmann::json> m_data;
-    // std::shared_ptr<nlohmann::json> m_rootData; // if in nlohmann json deletion of parent object when childs are in
-    // use is possible. But I don't think so
+    using CellType = std::variant<int, double, std::string, std::shared_ptr<JsonData>>;
+
+    enum class CellTypeEnum
+    {
+        kInt,
+        kDouble,
+        kString,
+        kJsonData
+    };
+    /*implicit*/ JsonData(nlohmann::json&&);
+    [[nodiscard]] nlohmann::json ToJson() const;
+
+    [[nodiscard]] CellTypeEnum GetCellType(const std::string&) const;
+    [[nodiscard]] bool IsJsonData(const std::string&) const;
+
+    std::unordered_map<std::string, CellType> m_data;
 };
 } // namespace inklink::serializer

@@ -77,14 +77,14 @@ void DataWrapper::Clear()
 DataWrapper& DataWrapper::operator[](const std::string& key) noexcept
 {
     IData* element = (*m_pData)[key];
-    m_buffForValidReferences.push_back(std::unique_ptr<IData>(element));
+    m_buffForValidReferences.push_back(std::unique_ptr<DataWrapper>(element));
     return m_buffForValidRefernces.back();
 }
 
 const DataWrapper& DataWrapper::operator[](const std::string& key) const noexcept
 {
     IData* element = (*m_pData)[key];
-    m_buffForValidReferences.push_back(std::unique_ptr<IData>(element));
+    m_buffForValidReferences.push_back(std::unique_ptr<DataWrapper>(element));
     return m_buffForValidRefernces.back();
 }
 
