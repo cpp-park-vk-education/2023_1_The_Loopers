@@ -37,7 +37,7 @@ public:
     [[nodiscard]] const DataWrapper& At(const std::string&) const;
 
 private:
-    mutable std::vector<std::unique_ptr<IData>> m_buffForValidReferences; // TODO (a.novak) bad design
+    mutable std::vector<std::unique_ptr<DataWrapper>> m_buffForValidReferences; // TODO (a.novak) bad design
     std::unique_ptr<IData> m_pData;
 };
 } // namespace inklink::serializer
