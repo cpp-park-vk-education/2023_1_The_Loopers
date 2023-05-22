@@ -1,10 +1,6 @@
 #include "storage_db_controller.h"
 #include "idb_adapter.h"
 
-#include <string>
-#include <filesystem>
-#include <experimental/filesystem>
-
 
 namespace inklink::db_controller
 {
@@ -18,9 +14,9 @@ void StorageDbAdapter::Connect(const std::string& connectionString)
     m_adapter.Connect(connectionString);
 }
 
-filesystem::path StorageDbController::GetFilePath(std::string& fileName, std::string& login) const
+std::filesystem::path StorageDbController::GetFilePath(const std::string& fileName, const std::string& login) const
 {
-    if (!fileName && !login)
+    if (!(fileName || login))
     {
         std::string request =
                 "SELECT filePath FROM Files WHERE fileName = '" + fileName + "' AND login = '" + login + "'";
@@ -31,9 +27,10 @@ filesystem::path StorageDbController::GetFilePath(std::string& fileName, std::st
     }
 }
 
-std::string StorageDbController::GetGraphArcs(std::string& rootFileName, std::string& vertexFileName, std::string& login) const
+std::string StorageDbController::GetGraphArcs(const std::string& rootFileName, const std::string& vertexFileName,
+                                              const std::string& login) const
 {
-    if (!vertexName && !sessionId)
+    if (!(vertexName || sessionId))
     {
         std::string sessionId = "(SELECT Id FROM Sessions WHERE RootId = (SELECT Id FROM Files WHERE Login = '" +
                                 login + "' AND Name = '" + rootFileName + "'))";
@@ -58,7 +55,7 @@ std::string StorageDbController::GetGraphArcs(std::string& rootFileName, std::st
     }
 }
 
-std::string GetAllFilesForUser(std::string& login) const
+std::string GetAllFilesForUser(const std::string& login) const
 {
     if (!login)
     {
@@ -77,9 +74,10 @@ std::string GetAllFilesForUser(std::string& login) const
 }
 
 
-void StorageDbController::InsertFile(std::string& fileName, std::string& login, filesystem::path& filePath) const
+void StorageDbController::InsertFile(const std::string& fileName, const std::string& login,
+                                     const std::filesystem::path& filePath) const
 {
-    if (!fileName && !login && !filePath)
+    if (!(fileName || login || !filePath))
     {
         std::string requestToFilesTable =
                 "INSERT INTO Files(Name, Login, Path) VALUES ('" + fileName + "', '" + login + "', '" + filePath + "')";
@@ -92,10 +90,10 @@ void StorageDbController::InsertFile(std::string& fileName, std::string& login, 
     }
 }
 
-void StorageDbController::InsertGraphArc(std::string rootFileName, std::string& fromFileName, std::string& toFileName,
-                                         std::string& sessionId) const
+void StorageDbController::InsertGraphArc(const std::string rootFileName, const std::string& fromFileName,
+                                         const std::string& toFileName, const std::string& sessionId) const
 {
-    if (!fromFileName && !toFileName && !sessionId && !rootFileName)
+    if (!(fromFileName || toFileName || sessionId || rootFileName))
     {
         std::string idFirst = "(SELECT Id FROM Files WHERE Login = '" + login "' AND Name = '" + fromFileName + "')";
 

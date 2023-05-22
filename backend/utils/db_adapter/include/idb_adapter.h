@@ -8,7 +8,8 @@
 
 namespace inklink::db_adapter
 {
-using DbTable = std::vector<std::vector<std::string>>;
+using DbRow = std::vector<std::string>;
+using DbTable = std::vector<DbRow>;
 
 
 class DbAdapterBase

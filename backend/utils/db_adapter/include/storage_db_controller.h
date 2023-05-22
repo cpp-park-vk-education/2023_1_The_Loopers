@@ -2,32 +2,34 @@
 
 #include "idb_adapter.h"
 
-#include <string>
 #include <filesystem>
-#include <experimental/filesystem>
+#include <string>
 
 
 namespace inklink::db_controller
 {
-using filesystem::path = std::experimental::filesystem::path;
-
-
 class StorageDbController final
 {
 public:
-    explicit void SetAdapter(DbAdapterBase& adapter);
+    explicit void SetAdapter(DbAdapterBase& adapter) override;
 
-    void Connect(const std::string& connectionString);
+    void Connect(const std::string& connectionString) override;
 
-    [[nodiscard]] filesystem::path GetFilePath(std::string& fileName, std::string& login) const;
-    [[nodiscard]] std::string GetGraphArcs(std::string& rootFileName, std::string& vertexFileName,
-                                           std::string& login) const;
-    [[nodiscard]] std::string GetAllFilesForUser(std::string& login) const;
+    [[nodiscard]] std::filesystem::path GetFilePath(const std::string& fileName,
+                                                    const std::string& login) const override;
+
+    [[nodiscard]] std::string GetGraphArcs(const std::string& rootFileName, const std::string& vertexFileName,
+                                           const std::string& login) const override;
+
+    [[nodiscard]] std::string GetAllFilesForUser(const std::string& login) const override;
 
 
-    void InsertFile(std::string& fileName, std::string& login, filesystem::path& filePath) const;
-    void InsertGraphArc(std::string rootFileName, std::string& fromFileName, std::string& toFileName,
-                        std::string& sessionId) const;
+    void InsertFile(const std::string& fileName, const std::string& login,
+                    const std::filesystem::path& filePath) const override;
+
+    void InsertGraphArc(const std::string rootFileName, const std::string& fromFileName, const std::string& toFileName,
+                        const std::string& sessionId) const override;
+
 private:
     DbAdapterBase& m_adapter;
 };
