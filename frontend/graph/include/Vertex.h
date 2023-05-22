@@ -35,6 +35,7 @@ private:
     double m_mass;
 
 private:
+    // maybe should be public
     void UpdateVertices(std::vector<Vertex>& vertices, double deltaTime, double attractionForce);
     void ApplyAttractionForce(Vertex& firstVertex, Vertex& secondVertex, double attractionForce);
 };

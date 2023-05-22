@@ -1,6 +1,7 @@
 #include "GraphView.h"
-#include "VertexView.h"
+
 #include "EdgeView.h"
+#include "VertexView.h"
 
 #include <QGraphicsView>
 
@@ -17,15 +18,15 @@ GraphView::GraphView(QWidget* parent) : QGraphicsView(parent)
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    //only example for now
-    //TODO (zakharov) add method to add vertexes and edges from model
+    // only example for now
+    // TODO (zakharov) add method to add vertexes and edges from model
     auto* vert = new VertexView(this);
     scene->addItem(vert);
-    vert->setPos(-10,-10);
+    vert->setPos(-10, -10);
 
     auto* vert2 = new VertexView(this);
     scene->addItem(vert2);
-    vert->setPos(10,10);
+    vert->setPos(10, 10);
 
     scene->addItem(new EdgeView(vert, vert2));
 }
