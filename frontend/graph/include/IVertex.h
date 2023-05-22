@@ -1,28 +1,25 @@
 #pragma once
 
-#include "GraphModel.h"
-
 #include <string>
 #include <vector>
 
 namespace inklink::graph
 {
+// class declaration
 class IVertex
 {
 public:
     struct Position
     {
-        std::size_t xPosition;
-        std::size_t yPosition;
+        double xPosition;
+        double yPosition;
     };
 
-    explicit IVertex(std::string& name) : m_name(name){};
+    ~IVertex();
 
-    void calculateForces();
-    bool advancePosition();
-    [[nodiscard]] const std::string& getName() const;
-    [[nodiscard]] Position GetCurrentPosition() const;
-    void SetCurrentPosition(Position);
+    [[nodiscard]] virtual const std::string& getName() const = 0;
+    [[nodiscard]] virtual Position GetCurrentPosition() const = 0;
+    virtual void SetCurrentPosition(Position) = 0;
 
 private:
     std::string m_name;

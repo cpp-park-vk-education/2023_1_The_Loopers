@@ -1,31 +1,38 @@
 #pragma once
 
-#include "IEdge.h"
 #include "IVertex.h"
 
+#include <set>
 #include <string>
 #include <vector>
 
 namespace inklink::graph
 {
-
-struct Position
-{
-    std::size_t xPosition;
-    std::size_t yPosition;
-};
-
+// class declaration
 class Vertex : public IVertex
 {
 public:
-    void calculateForces();
-    bool advancePosition();
-    std::string getName();
-    Position getCurrentPosition();
-    void setCurrentPosition(Position);
+    struct Velocity
+    {
+        double xVelocity;
+        double yVelocity;
+    };
+
+    explicit Vertex(std::string& name) : m_name(name){};
+
+    [[nodiscard]] const std::string& getName() const override;
+    [[nodiscard]] Position GetCurrentPosition() const override;
+    void SetCurrentPosition(Position) override;
+    [[nodiscard]] Velocity GetCurrentVelocity() const;
+    void SetCurrentVelocity(Velocity);
 
 private:
     std::string m_name;
     Position m_currentPosition;
+    Velocity m_velocity;
+
+private:
+    void UpdateVertices(std::vector<Vertex>& vertices, double deltaTime, double attractionForce);
+    void ApplyAttractionForce(Vertex& currentVertex, Vertex& otherVertex, double attractionForce);
 };
 } // namespace inklink::graph
