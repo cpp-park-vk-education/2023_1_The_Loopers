@@ -26,9 +26,9 @@ public:
     /**
      * @brief Accesses or creates IData given field name
      */
-    virtual IData& operator[](const std::string&) noexcept = 0;
-    virtual const IData& operator[](const std::string&) const noexcept = 0;
-    virtual IData& At(const std::string&) = 0;
-    virtual const IData& At(const std::string&) const = 0;
+    [[nodiscard]] virtual IData* operator[](const std::string&) noexcept = 0;
+    [[nodiscard]] virtual const IData* operator[](const std::string&) const noexcept = 0;
+    [[nodiscard]] virtual IData* At(const std::string&) = 0;
+    [[nodiscard]] virtual const IData* At(const std::string&) const = 0;
 };
 } // namespace inklink::serializer
