@@ -1,6 +1,6 @@
 #include "GraphModel.h"
-#include "IVertex.h"
-#include "IEdge.h"
+#include "Vertex.h"
+#include "Edge.h"
 
 #include <iostream>
 #include <memory>
@@ -69,7 +69,7 @@ IVertex::Position GraphModel::GeneratePosition()
 
 std::set<std::shared_ptr<IVertex>> GraphModel::MakeUniqueVertexes()
 {
-    std::set<std::shared_ptr<IVertex>> uniqueVertexes{};
+    std::set<std::shared_ptr<Vertex>> uniqueVertexes{};
 
     for (const auto& edge : m_edges)
     {
@@ -89,16 +89,16 @@ void GraphModel::FillEdges(const std::vector<NamingsEdge> namings)
 {
     for (auto rawEdge : namings)
     {
-        auto sourceVertex = std::make_shared<IVertex>(rawEdge.source);
-        auto destinationVertex = std::make_shared<IVertex>(rawEdge.destination);
+        auto sourceVertex = std::make_shared<Vertex>(rawEdge.source);
+        auto destinationVertex = std::make_shared<Vertex>(rawEdge.destination);
 
-        m_edges.emplace_back(std::make_shared<IEdge>(sourceVertex, destinationVertex));
+        m_edges.emplace_back(std::make_shared<Edge>(sourceVertex, destinationVertex));
     }
 }
 
 void GraphModel::SetRandomPositions()
 {
-    for (auto& vertex : m_uniqueVertexes)
+    for (const auto& vertex : m_uniqueVertexes)
     {
         auto vertexPosition = GeneratePosition();
         vertex->SetCurrentPosition(vertexPosition);

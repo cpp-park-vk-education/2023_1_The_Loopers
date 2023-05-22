@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IGraphModel.h"
+#include "IVertex.h"
 
 #include <memory>
 #include <set>
@@ -10,8 +11,10 @@
 namespace inklink::graph
 {
 // forward declaration
+class Edge;
+class Vertex;
 class IEdge;
-class IVertex;
+//class IVertex;
 
 // class declaration
 class GraphModel : public IGraphModel
@@ -22,8 +25,8 @@ public:
     [[nodiscard]] std::vector<std::shared_ptr<IEdge>> GetEdges() const override;
 
 private:
-    std::set<std::shared_ptr<IVertex>> m_uniqueVertexes; // first vertex in container used as center vertex
-    std::vector<std::shared_ptr<IEdge>> m_edges;
+    std::set<std::shared_ptr<Vertex>> m_uniqueVertexes; // first vertex in container used as center vertex
+    std::vector<std::shared_ptr<Edge>> m_edges;
 
 private:
     [[nodiscard]] std::set<std::shared_ptr<IVertex>>
