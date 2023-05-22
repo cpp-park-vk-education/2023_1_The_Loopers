@@ -19,7 +19,7 @@ std::filesystem::path StorageDbController::GetFilePath(const std::string& fileNa
     if (!(fileName || login))
     {
         std::string request =
-                "SELECT filePath FROM Files WHERE fileName = '" + fileName + "' AND login = '" + login + "'";
+                "SELECT filePath FROM Files WHERE fileName = '" + fileName + "' AND login = '" + login + "' AND Deleted_at IS NULL";
 
         DbTable filePath = m_adapter.Select(request);
         
@@ -40,7 +40,7 @@ std::string StorageDbController::GetGraphArcs(const std::string& rootFileName, c
                 vertexFileName + "' AND Graph.Id_Session = " + sessionId;
 
 
-        std::stirng request = "SELECT Name FROM Files WHERE Id IN (" + innerRequest + ")"; 
+        std::stirng request = "SELECT Name FROM Files WHERE Id IN (" + innerRequest + ") AND Deleted_at IS NULL"; 
           
 
         DbTable graphNodeNeighboringNodes = m_adapter.Select(request);
@@ -59,7 +59,7 @@ std::string GetAllFilesForUser(const std::string& login) const
 {
     if (!login)
     {
-        std::string request = "SELECT Names FROM Files WHERE Login = '" + login + "'";
+        std::string request = "SELECT Names FROM Files WHERE Login = '" + login + "' AND Deleted_at IS NULL";
 
         DbTable allFiles = m_adapter.Select(request);
 
