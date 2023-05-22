@@ -15,6 +15,7 @@ namespace
 {
 constexpr int kPosition = 300;
 
+// should be used serializer-deserializer
 [[nodiscard]] auto ParseRawData(const std::string& rawEdgeString)
 {
     std::stringstream stringToParse(rawEdgeString);
@@ -44,12 +45,12 @@ void GraphModel::FillGraphByEdges(std::string& rawData)
     SetRandomPositions();
 }
 
-std::set<std::shared_ptr<IVertex>> GraphModel::GetUniqueVertexes() const
+std::vector<IVertex> GraphModel::GetUniqueVertexes() const
 {
     return m_uniqueVertexes;
 }
 
-std::vector<std::shared_ptr<IEdge>> GraphModel::GetEdges() const
+std::vector<IEdge> GraphModel::GetEdges() const
 {
     return m_edges;
 }
@@ -67,20 +68,19 @@ IVertex::Position GraphModel::GeneratePosition()
     return temp;
 }
 
-std::set<std::shared_ptr<IVertex>> GraphModel::MakeUniqueVertexes()
+std::vector<IVertex> GraphModel::MakeUniqueVertexes()
 {
-    std::set<std::shared_ptr<Vertex>> uniqueVertexes{};
+    std::vector<IVertex> uniqueVertexes;
 
     for (const auto& edge : m_edges)
     {
-        uniqueVertexes.insert(edge->GetSourceVertex());
-        uniqueVertexes.insert(edge->GetDestinationVertex());
+// currently don't know how
     }
 
     return uniqueVertexes;
 }
 
-void GraphModel::FillUniqueVertexes(std::set<std::shared_ptr<IVertex>> uniqueVertexes)
+void GraphModel::FillUniqueVertexes(std::vector<IVertex> uniqueVertexes)
 {
     m_uniqueVertexes = std::move(uniqueVertexes);
 }
@@ -89,19 +89,16 @@ void GraphModel::FillEdges(const std::vector<NamingsEdge> namings)
 {
     for (auto rawEdge : namings)
     {
-        auto sourceVertex = std::make_shared<Vertex>(rawEdge.source);
-        auto destinationVertex = std::make_shared<Vertex>(rawEdge.destination);
-
-        m_edges.emplace_back(std::make_shared<Edge>(sourceVertex, destinationVertex));
+ //don't know how
     }
 }
 
 void GraphModel::SetRandomPositions()
 {
-    for (const auto& vertex : m_uniqueVertexes)
+    for (auto& vertex : m_uniqueVertexes)
     {
         auto vertexPosition = GeneratePosition();
-        vertex->SetCurrentPosition(vertexPosition);
+        vertex.SetCurrentPosition(vertexPosition);
     }
 }
 
