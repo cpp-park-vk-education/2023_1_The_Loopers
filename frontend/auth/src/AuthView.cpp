@@ -20,20 +20,22 @@ AuthView::AuthView(QWidget *parent) : QGraphicsView(parent)
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 }
 
-void AuthView::drawBackground(QPainter *painter, const QRectF &rect) {
+void AuthView::drawBackground(QPainter *painter, const QRectF &rect)
+{
     painter->setPen(Qt::NoPen);
     painter->setBrush(QColor(255, 255, 255));
     painter->drawRect(rect);
 }
 
-AuthDialog::AuthDialog(QWidget *parent) : QDialog(parent){
+AuthDialog::AuthDialog(QWidget *parent) : QDialog(parent)
+{
     setWindowTitle("Login");
 
     QLineEdit *usernameLine = new QLineEdit(this);
     QLineEdit *passwordLine = new QLineEdit(this);
 
-    QLabel* usernameLabel = new QLabel(tr("Username"), this);
-    QLabel* passwordLabel = new QLabel(tr("Password"), this);
+    QLabel *usernameLabel = new QLabel(tr("Username"), this);
+    QLabel *passwordLabel = new QLabel(tr("Password"), this);
 
     QPushButton *acceptButton = new QPushButton(tr("Log in"), this);
     acceptButton->setAutoDefault(false);
@@ -41,12 +43,12 @@ AuthDialog::AuthDialog(QWidget *parent) : QDialog(parent){
     QPushButton *registrationButton = new QPushButton(tr("Registration"), this);
     registrationButton->setAutoDefault(false);
 
-    QHBoxLayout* buttonsLayout = new QHBoxLayout;
+    QHBoxLayout *buttonsLayout = new QHBoxLayout;
     buttonsLayout->setAlignment(Qt::AlignCenter);
     buttonsLayout->addWidget(acceptButton);
     buttonsLayout->addWidget(registrationButton);
 
-    QVBoxLayout* mainLayout = new QVBoxLayout(this);
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(usernameLabel);
     mainLayout->addWidget(usernameLine);
 
