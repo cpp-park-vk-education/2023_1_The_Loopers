@@ -25,6 +25,7 @@ private:
     std::set<std::shared_ptr<IVertex>> m_uniqueVertexes; // first vertex in container used as center vertex
     std::vector<std::shared_ptr<IEdge>> m_edges;
 
+private:
     [[nodiscard]] std::set<std::shared_ptr<IVertex>>
     MakeUniqueVertexes() override; // parse edges and find unique vertexes
     void FillUniqueVertexes(std::set<std::shared_ptr<IVertex>>) override;
