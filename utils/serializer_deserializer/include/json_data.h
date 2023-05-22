@@ -1,7 +1,6 @@
 #pragma once
 
 #include "idata.h"
-#include "nlohmann/json_fwd.hpp"
 
 #include <memory.h>
 
@@ -23,6 +22,12 @@ public:
     JsonData() = default;
     ~JsonData() override = default;
 
+    JsonData(const JsonData&);
+    JsonData(JsonData&&) noexcept;
+
+    JsonData& operator=(const JsonData&);
+    JsonData& operator=(JsonData&&) noexcept;
+
     /*implicit*/ JsonData(nlohmann::json&&);
 
     [[nodiscard]] std::string SerializeAsString() const override;
@@ -40,6 +45,10 @@ public:
     [[nodiscard]] const double& AsDouble(const std::string&) const override;
     [[nodiscard]] bool IsDouble(const std::string&) const override;
 
+    [[nodiscard]] IDataArray& AsArray(const std::string&) override;
+    [[nodiscard]] const IDataArray& AsArray(const std::string&) const override;
+    [[nodiscard]] bool IsArray(const std::string&) const override;
+
     [[nodiscard]] bool Has(const std::string&) const override;
 
     void Clear() override;
@@ -53,13 +62,15 @@ public:
     [[nodiscard]] const IData& At(const std::string&) const override;
 
 private:
-    using CellType = std::variant<int, double, std::string, std::shared_ptr<JsonData>>;
+    using CellType =
+            std::variant<int, double, std::string, std::vector<std::shared_ptr<JsonData>>, std::shared_ptr<JsonData>>;
 
     enum class CellTypeEnum
     {
         kInt,
         kDouble,
         kString,
+        kArray,
         kJsonData
     };
     [[nodiscard]] nlohmann::json ToJson() const;

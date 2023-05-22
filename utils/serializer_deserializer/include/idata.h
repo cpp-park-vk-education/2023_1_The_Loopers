@@ -7,6 +7,8 @@ namespace inklink::serializer
 class IData
 {
 public:
+    using IDataArray = std::vector<std::shared_ptr<IData>>;
+
     virtual ~IData() = default;
 
     [[nodiscard]] virtual std::string SerializeAsString() const = 0;
@@ -23,6 +25,10 @@ public:
     [[nodiscard]] virtual double& AsDouble(const std::string&) = 0;
     [[nodiscard]] virtual const double& AsDouble(const std::string&) const = 0;
     [[nodiscard]] virtual bool IsDouble(const std::string&) const = 0;
+
+    [[nodiscard]] virtual IDataArray& AsArray(const std::string&) = 0;
+    [[nodiscard]] virtual const IDataArray& AsArray(const std::string&) const = 0;
+    [[nodiscard]] virtual bool IsArray(const std::string&) const = 0;
 
     [[nodiscard]] virtual bool Has(const std::string&) const = 0;
 
