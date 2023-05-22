@@ -1,6 +1,7 @@
 #include "simultaneous_access_service.h"
 
-#include "boost/asio/io_context.hpp"
+#include "data_wrapper.h"
+#include "json_data.h"
 
 #include <idb_adapter.h>
 #include <iexternal_service_chassis.h>
@@ -8,6 +9,7 @@
 #include <websocket_sessions_factory.h>
 
 #include <boost/asio.hpp>
+#include <boost/asio/io_context.hpp>
 #include <boost/system/error_code.hpp>
 
 #include <chrono>
@@ -121,6 +123,26 @@ void DoOnNotified(int, const std::string&, Endpoint)
 void DoOnSignal(const std::string&)
 {
     // TODO (a.novak)
+}
+
+DrawAction ParseDrawAction(const std::string& inputString, const Endpoint& endpoint)
+{
+    DataWrapper<JsonData> dataWrapper;
+    dataWrapper.ParseString(inputString);
+
+    DrawAction drawAction;
+
+    // Extract fields from DataWrapper
+    drawAction.type = static_cast<ResolverActionType>(dataWrapper["action"].AsInt("action_type"));
+    if (dataWrapper.Has("figure_id"))
+    {
+        drawAction.figureId = dataWrapper.AsInt("figure_id");
+    }
+    drawAction.endpoint = endpoint;
+    drawAction.time = std::chrono::system_clock::now();
+    drawAction.data = dataWrapper["action"];
+
+    return drawAction;
 }
 
 } // namespace inklink::service_simultaneous_access

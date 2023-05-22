@@ -55,6 +55,9 @@ private:
     void DoOnNotified(int eventType, const std::string&, Endpoint from);
     void DoOnSignal(const std::string&);
 
+    DrawAction ParseDrawAction(const std::string&, const Endpoint&);
+    DrawAction ParseTextAction(const std::string&, const Endpoint&);
+
     std::unordered_map<DocSessionDescriptor, std::map<time_point, DrawAction>> m_drawNotApplied;
     std::unordered_map<DocSessionDescriptor, std::map<time_point, TextAction>> m_textNotApplied;
 
