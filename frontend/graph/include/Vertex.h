@@ -22,11 +22,11 @@ public:
 
     [[nodiscard]] const std::string& getName() const override;
     [[nodiscard]] Position GetCurrentPosition() const override;
-    void SetCurrentPosition(Position) override;
+    void SetCurrentPosition(Position newPosition) override;
     [[nodiscard]] Velocity GetCurrentVelocity() const;
-    void SetCurrentVelocity(Velocity);
+    void SetCurrentVelocity(Velocity newVelocity);
     [[nodiscard]] Velocity GetMass() const;
-    void SetMass(Velocity);
+    void SetMass(double newMass);
 
 private:
     std::string m_name;
