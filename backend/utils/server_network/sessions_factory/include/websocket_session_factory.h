@@ -2,6 +2,7 @@
 
 #include "inklink/server_network/callback_concepts.h"
 #include "isessions_factory.h"
+#include "websocket_service_session.h"
 
 #include <concepts>
 #include <functional>
@@ -50,4 +51,33 @@ private:
     AcceptCallback m_acceptCallback;
     WriteCallback m_writeCallback;
 };
+} // namespace inklink::server_network
+
+namespace inklink::server_network
+{
+// clang-format off
+template <StringErrorCodeSessionCallbackConcept ReadCallback, ErrorCodeAndSessionCallbackConcept AcceptCallback,
+          ErrorCodeCallbackConcept WriteCallback> inline
+WebsocketSessionsFactory<ReadCallback, AcceptCallback, WriteCallback>::WebsocketSessionsFactory(
+        std::shared_ptr<InternalSessionsManager> manager, 
+        std::shared_ptr<IAuthorizer> auth, 
+        ReadCallback readCallback,
+        AcceptCallback acceptCallback, 
+        WriteCallback writeCallback) noexcept
+        : ISessionsFactory{std::move(manager), std::move(auth)},
+          m_readCallback{readCallback},
+          m_acceptCallback{acceptCallback}, 
+          m_writeCallback{writeCallback}
+{
+}
+// clang-format on
+
+template <StringErrorCodeSessionCallbackConcept ReadCallback, ErrorCodeAndSessionCallbackConcept AcceptCallback,
+          ErrorCodeCallbackConcept WriteCallback>
+inline std::shared_ptr<IServiceSession>
+WebsocketSessionsFactory<ReadCallback, AcceptCallback, WriteCallback>::GetSession(boost::asio::ip::tcp::socket&& socket)
+{
+    return std::make_shared<WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>>(
+            std::move(socket), m_readCallback, m_acceptCallback, m_writeCallback);
+}
 } // namespace inklink::server_network
