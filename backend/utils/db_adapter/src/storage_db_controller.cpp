@@ -48,7 +48,7 @@ void StorageDbAdapter::Run(const std::string& connectionString)
 
 std::filesystem::path StorageDbController::GetFilePath(const std::string& fileName, const std::string& login) const
 {
-    if (!(fileName || login))
+    if (!(fileName.empty() || login.empty()))
     {
         DbTable filePath = m_adapter.Select("GetFilePath", fileName, login);
         
@@ -59,7 +59,7 @@ std::filesystem::path StorageDbController::GetFilePath(const std::string& fileNa
 std::string StorageDbController::GetGraphArcs(const std::string& rootFileName, const std::string& vertexFileName,
                                               const std::string& login) const
 {
-    if (!(vertexName || sessionId))
+    if (!(vertexName.empty() || sessionId.empty()))
     {
         DbTable graphNodeNeighboringNodes = m_adapter.Select("GetGraphArcs", vertexFileName, login, rootFileName);
 
@@ -75,7 +75,7 @@ std::string StorageDbController::GetGraphArcs(const std::string& rootFileName, c
 
 std::string StorageDbController::GetAllFilesForUser(const std::string& login) const
 {
-    if (!login)
+    if (!login.empty())
     {
         DbTable allFiles = m_adapter.Select("GetAllFilesForUser", login);
 
@@ -93,7 +93,7 @@ std::string StorageDbController::GetAllFilesForUser(const std::string& login) co
 void StorageDbController::InsertRootFile(const std::string& fileName, const std::string& login,
                                      const std::filesystem::path& filePath) const
 {
-    if (!(fileName || login || !filePath))
+    if (!(fileName.empty() || login.empty() || !filePath.empty()))
     {
         m_adapter.Insert("InsertFile", fileName, login, filePath);
         m_adapter.Insert("InsertNewSession", login, fileName);
@@ -103,7 +103,7 @@ void StorageDbController::InsertRootFile(const std::string& fileName, const std:
 void StorageDbController::InsertNonRootFile(const std::string& rootFileName, const std::string& fileName,
                                             const std::string& login, const std::filesystem::path& filePath) const
 {
-    if (!(fileName || rootFileName || filePath || login))
+    if (!(fileName.empty() || rootFileName.empty() || filePath.empty() || login.empty()))
     {
         m_adapter.Insert("InsertFile", fileName, login, filePath);
     }
@@ -112,7 +112,7 @@ void StorageDbController::InsertNonRootFile(const std::string& rootFileName, con
 void StorageDbController::InsertGraphArc(const std::string& rootFileName, const std::string& fromFileName,
                                          const std::string& toFileName) const
 {
-    if (!(fromFileName || toFileName || sessionId || rootFileName))
+    if (!(fromFileName.empty() || toFileName.empty() || rootFileName.empty()))
     {
         m_adapter.Insert("InsertGraphArc", login, fromFileName, toFileName, rootFileName);
     }
