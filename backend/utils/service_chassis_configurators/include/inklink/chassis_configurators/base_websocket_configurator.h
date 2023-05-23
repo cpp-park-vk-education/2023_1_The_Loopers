@@ -23,12 +23,16 @@ namespace inklink::chassis_configurator
 using namespace base_service_chassis;
 class BaseChassisWebsocketConfigurator
 {
+public:
     using io_context = boost::asio::io_context;
     using error_code = boost::system::error_code;
 
     using BeastWebsocketListener = server_network::BeastWebsocketListener;
     using ISessionsFactory = server_network::ISessionsFactory;
     using IServiceSession = server_network::IServiceSession;
+
+    using NotifiedFunctor = std::function<void(int /*event type*/, const std::string&, const Endpoint& /*from*/)>;
+    using ReadFunctor = std::function<void(const std::string&)>;
 
 public:
     ~BaseChassisWebsocketConfigurator() = delete;
@@ -37,13 +41,13 @@ public:
     [[nodiscard]] static std::unique_ptr<IBaseServiceChassis>
     CreateAndInitializeFullChassis(
         const std::string& loggerName, const std::string& logFilePath, 
-        // TODO (a.novak) add in factory separate method SetSessionsManager
+        // TODO (a.novak) add in factory separate method SetSessionsManager (to be able to create factory without 
+        // manager and pass it do not pass manager here)
         io_context& ioContext, std::unique_ptr<ISessionsFactory> factory, // for listener
         std::shared_ptr<InternalSessionsManager> manager, // specified in factory: needed in constructor
         ServiceType typeSelf, const Endpoint& endpointSelf, // to register in registry
-        std::function<void(int /*event type*/, const std::string&, Endpoint /*from*/)> 
-                      notifiedCallback, // event from message broker
-        std::function<void(const std::string&)> readCallback // signal from message broker
+        NotifiedFunctor notifiedCallback, // event from message broker
+        ReadFunctor readCallback // signal from message broker
     )
     // clang-format on
     {
@@ -80,7 +84,7 @@ public:
     [[nodiscard]] static std::unique_ptr<IBaseServiceChassis>
     CreateAndInitializeChassisWithoutRegistratorAndMsgBroker(
         const std::string& loggerName, const std::string& logFilePath, 
-        // TODO (a.novak) same as line 40
+        // TODO (a.novak) same as line 40 (add in factory separate method SetSessionsManager)
         io_context& ioContext, std::unique_ptr<ISessionsFactory> factory, // for listener
         std::shared_ptr<InternalSessionsManager> manager, // specified in factory: needed in constructor
         const Endpoint& endpointSelf
@@ -118,7 +122,7 @@ private:
         return logger;
     }
 
-    static void AddListener(std::unique_ptr<IBaseServiceChassis>& chassis, io_context& ioContext,
+    static void AddListener(const std::unique_ptr<IBaseServiceChassis>& chassis, io_context& ioContext,
                             std::unique_ptr<ISessionsFactory> factory, const Endpoint& endpointSelf)
     {
         auto listener = std::make_shared<BeastWebsocketListener>(
@@ -145,10 +149,10 @@ private:
         }
     }
 
-    static void AddMsgBrokerConnection(
-            std::unique_ptr<IBaseServiceChassis>& chassis, ServiceType typeSelf, const Endpoint& endpointSelf,
-            std::function<void(int, const std::string&, Endpoint)> notifiedCallback, // event from message broker
-            std::function<void(const std::string&)> readCallback                     // signal from message broker
+    static void AddMsgBrokerConnection(std::unique_ptr<IBaseServiceChassis>& chassis, ServiceType typeSelf,
+                                       const Endpoint& endpointSelf,
+                                       NotifiedFunctor notifiedCallback, // event from message broker
+                                       ReadFunctor readCallback          // signal from message broker
     )
     {
         auto msgBrokerServices = chassis->registrator->GetEndpoints(ServiceType::kMessageBroker);
