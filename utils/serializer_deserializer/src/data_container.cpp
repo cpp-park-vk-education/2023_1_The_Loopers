@@ -13,6 +13,66 @@ namespace
 
 namespace inklink::serializer
 {
+DataContainer::DataContainer(const DataContainer& other) : m_data(other.m_data)
+{
+    // Recursively copy child DataContainer objects
+    if (IsObjectsContainer())
+    {
+        for (auto& pair : AsObjectsContainer())
+        {
+            pair.second = std::make_shared<DataContainer>(*pair.second);
+        }
+    }
+}
+
+DataContainer::DataContainer(DataContainer&& other) noexcept : m_data(std::move(other.m_data))
+{
+    // Recursively move child DataContainer objects
+    if (IsObjectsContainer())
+    {
+        for (auto& pair : AsObjectsContainer())
+        {
+            pair.second = std::make_shared<DataContainer>(std::move(*pair.second));
+        }
+    }
+}
+
+DataContainer& DataContainer::operator=(const DataContainer& other)
+{
+    if (this != &other)
+    {
+        m_data = other.m_data;
+
+        // Recursively assign child DataContainer objects
+        if (IsObjectsContainer())
+        {
+            for (auto& pair : AsObjectsContainer())
+            {
+                pair.second = std::make_shared<DataContainer>(*pair.second);
+            }
+        }
+    }
+    return *this;
+}
+
+DataContainer& DataContainer::operator=(DataContainer&& other) noexcept
+{
+    if (this != &other)
+    {
+        m_data = std::move(other.m_data);
+
+        // Recursively move child DataContainer objects
+        if (IsObjectsContainer())
+        {
+            for (auto& pair : AsObjectsContainer())
+            {
+                pair.second = std::make_shared<DataContainer>(std::move(*pair.second));
+            }
+        }
+    }
+    return *this;
+}
+
 DataContainer& DataContainer::operator=(int value)
 {
     m_data = value;
@@ -120,12 +180,12 @@ bool DataContainer::IsObjectsContainer() const
 
 std::string& DataContainer::AsString(const std::string& field)
 {
-    return std::get<ObjectsContainer>(m_data).at(field).AsString();
+    return std::get<ObjectsContainer>(m_data).at(field)->AsString();
 }
 
 const std::string& DataContainer::AsString(const std::string& field) const
 {
-    return std::get<ObjectsContainer>(m_data).at(field).AsString();
+    return std::get<ObjectsContainer>(m_data).at(field)->AsString();
 }
 
 bool DataContainer::IsString(const std::string& field) const
@@ -135,17 +195,17 @@ bool DataContainer::IsString(const std::string& field) const
     {
         throw std::out_of_range(OutOfRangeMessage(field));
     }
-    return map.at(field).IsString();
+    return map.at(field)->IsString();
 }
 
 int& DataContainer::AsInt(const std::string& field)
 {
-    return std::get<ObjectsContainer>(m_data).at(field).AsInt();
+    return std::get<ObjectsContainer>(m_data).at(field)->AsInt();
 }
 
 const int& DataContainer::AsInt(const std::string& field) const
 {
-    return std::get<ObjectsContainer>(m_data).at(field).AsInt();
+    return std::get<ObjectsContainer>(m_data).at(field)->AsInt();
 }
 
 bool DataContainer::IsInt(const std::string& field) const
@@ -155,17 +215,17 @@ bool DataContainer::IsInt(const std::string& field) const
     {
         throw std::out_of_range(OutOfRangeMessage(field));
     }
-    return map.at(field).IsInt();
+    return map.at(field)->IsInt();
 }
 
 double& DataContainer::AsDouble(const std::string& field)
 {
-    return std::get<ObjectsContainer>(m_data).at(field).AsDouble();
+    return std::get<ObjectsContainer>(m_data).at(field)->AsDouble();
 }
 
 const double& DataContainer::AsDouble(const std::string& field) const
 {
-    return std::get<ObjectsContainer>(m_data).at(field).AsDouble();
+    return std::get<ObjectsContainer>(m_data).at(field)->AsDouble();
 }
 
 bool DataContainer::IsDouble(const std::string& field) const
@@ -175,17 +235,17 @@ bool DataContainer::IsDouble(const std::string& field) const
     {
         throw std::out_of_range(OutOfRangeMessage(field));
     }
-    return map.at(field).IsDouble();
+    return map.at(field)->IsDouble();
 }
 
 std::vector<DataContainer>& DataContainer::AsArray(const std::string& field)
 {
-    return std::get<ObjectsContainer>(m_data).at(field).AsArray();
+    return std::get<ObjectsContainer>(m_data).at(field)->AsArray();
 }
 
 const std::vector<DataContainer>& DataContainer::AsArray(const std::string& field) const
 {
-    return std::get<ObjectsContainer>(m_data).at(field).AsArray();
+    return std::get<ObjectsContainer>(m_data).at(field)->AsArray();
 }
 
 bool DataContainer::IsArray(const std::string& field) const
@@ -195,17 +255,17 @@ bool DataContainer::IsArray(const std::string& field) const
     {
         throw std::out_of_range(OutOfRangeMessage(field));
     }
-    return map.at(field).IsArray();
+    return map.at(field)->IsArray();
 }
 
 DataContainer::ObjectsContainer& DataContainer::AsObjectsContainer(const std::string& field)
 {
-    return std::get<ObjectsContainer>(m_data).at(field).AsObjectsContainer();
+    return std::get<ObjectsContainer>(m_data).at(field)->AsObjectsContainer();
 }
 
 const DataContainer::ObjectsContainer& DataContainer::AsObjectsContainer(const std::string& field) const
 {
-    return std::get<ObjectsContainer>(m_data).at(field).AsObjectsContainer();
+    return std::get<ObjectsContainer>(m_data).at(field)->AsObjectsContainer();
 }
 
 bool DataContainer::IsObjectsContainer(const std::string& field) const
@@ -215,7 +275,7 @@ bool DataContainer::IsObjectsContainer(const std::string& field) const
     {
         throw std::out_of_range(OutOfRangeMessage(field));
     }
-    return map.at(field).IsObjectsContainer();
+    return map.at(field)->IsObjectsContainer();
 }
 
 bool DataContainer::Has(const std::string& field) const
@@ -233,7 +293,7 @@ DataContainer& DataContainer::operator[](const std::string& field) noexcept
 {
     try
     {
-        return std::get<ObjectsContainer>(m_data)[field];
+        return *std::get<ObjectsContainer>(m_data)[field];
     }
     catch (const std::bad_variant_access&)
     {
@@ -245,7 +305,7 @@ const DataContainer& DataContainer::operator[](const std::string& field) const n
 {
     try
     {
-        return std::get<ObjectsContainer>(m_data).at(field);
+        return *std::get<ObjectsContainer>(m_data).at(field);
     }
     catch (...) // const std::bad_variant_access& and from at
     {
@@ -255,12 +315,12 @@ const DataContainer& DataContainer::operator[](const std::string& field) const n
 
 DataContainer& DataContainer::At(const std::string& field)
 {
-    return std::get<ObjectsContainer>(m_data).at(field);
+    return *std::get<ObjectsContainer>(m_data).at(field);
 }
 
 const DataContainer& DataContainer::At(const std::string& field) const
 {
-    return std::get<ObjectsContainer>(m_data).at(field);
+    return *std::get<ObjectsContainer>(m_data).at(field);
 }
 
 DataContainer::CellTypeEnum DataContainer::GetCellType(const std::string& field) const
@@ -268,7 +328,7 @@ DataContainer::CellTypeEnum DataContainer::GetCellType(const std::string& field)
     const auto& map = std::get<ObjectsContainer>(m_data);
     if (map.contains(field)) [[likely]]
     {
-        const auto& cell = map.at(field).m_data;
+        const auto& cell = map.at(field)->m_data;
         if (std::holds_alternative<ObjectsContainer>(cell))
         {
             return CellTypeEnum::kObjectsContainer;

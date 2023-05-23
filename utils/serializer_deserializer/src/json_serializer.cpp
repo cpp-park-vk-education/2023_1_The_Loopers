@@ -39,7 +39,7 @@ json SerializeDataContainer(const DataContainer& data)
         const auto& mapData = data.AsObjectsContainer();
         for (const auto& pair : mapData)
         {
-            jsonData[pair.first] = SerializeDataContainer(pair.second);
+            jsonData[pair.first] = SerializeDataContainer(*pair.second);
         }
     }
 

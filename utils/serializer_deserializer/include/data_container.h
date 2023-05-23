@@ -11,9 +11,18 @@ namespace inklink::serializer
 class DataContainer
 {
 public:
-    using ObjectsContainer = std::unordered_map<std::string, DataContainer>;
+    using ObjectsContainer = std::unordered_map<std::string, std::shared_ptr<DataContainer>>;
 
 public:
+    DataContainer() = default;
+    ~DataContainer() = default;
+
+    DataContainer(const DataContainer&);
+    DataContainer(DataContainer&&) noexcept;
+
+    DataContainer& operator=(const DataContainer&);
+    DataContainer& operator=(DataContainer&&) noexcept;
+
     DataContainer& operator=(int);
     DataContainer& operator=(double);
     DataContainer& operator=(std::string);
@@ -92,8 +101,6 @@ private:
     };
 
 private:
-    // [[nodiscard]] nlohmann::json ToJson() const;
-
     [[nodiscard]] CellTypeEnum GetCellType(const std::string&) const;
 
 private:
