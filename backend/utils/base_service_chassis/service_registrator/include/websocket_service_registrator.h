@@ -14,6 +14,7 @@ class ILogger;
 
 class WebsocketServiceRegistrator final : public IServiceRegistrator
 {
+public:
     using IClientSession = client_connector::IClientSession;
     using error_code = boost::system::error_code;
     using GotEndpointsCallback = std::function<void(std::vector<Endpoint>&&)>;
@@ -33,6 +34,7 @@ private:
     [[nodiscard]] std::shared_ptr<IClientSession> InitSending(const std::string& errorMsg, bool critical = false);
     void DoOnRead(const std::string& str, error_code ec);
 
+private:
     bool m_newMsg{false};
     std::string m_msg;
     error_code m_errCode;
