@@ -48,8 +48,11 @@ public:
 
 private:
     using error_code = boost::system::error_code;
+
+private:
     void DoOnRead(const std::string&, error_code, IClientSession*) const;
 
+private:
     std::shared_ptr<ICommonConnection> m_connectionToMsgBroker;
     ReadFunctor m_readCallback;
     std::shared_ptr<ILogger> m_logger;

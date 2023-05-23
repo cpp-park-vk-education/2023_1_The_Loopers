@@ -23,7 +23,7 @@ class ILogger;
 
 class ICommonConnection
 {
-private:
+public:
     using IClientSession = client_connector::IClientSession;
     using ConnectType = client_connector::ConnectType;
     using error_code = boost::system::error_code;

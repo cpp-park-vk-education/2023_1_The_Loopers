@@ -19,7 +19,7 @@ namespace inklink::base_service_chassis
 class ILogger;
 class MessageBrokerEvent
 {
-private:
+public:
     using IClientSession = client_connector::IClientSession;
     using error_code = boost::system::error_code;
 
@@ -35,6 +35,7 @@ public:
 private:
     void DoOnNotified(const std::string&, error_code, IClientSession*) const;
 
+private:
     std::shared_ptr<ICommonConnection> m_connectionToMsgBroker;
     NotifiedFunctor m_notifiedCallback;
     std::shared_ptr<ILogger> m_logger;
