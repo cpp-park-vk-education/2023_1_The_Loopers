@@ -3,14 +3,17 @@
 
 #include <filesystem>
 #include <string>
+#include <tuple>
 
 
 namespace inklink_file_holder
 {
 class ReadFile final
 {
+using ReadFileResult = std::tuple<std::string, bool>;
+
 public:
-    [[nodiscard]] std::string GetFile(const std::filesystem::path& filePath) const  noexcept;
+    [[nodiscard]] ReadFileResult GetFile(const std::filesystem::path& filePath) const noexcept;
 };
 }  // namespace inklink_file_holder
 #endif  // _BACK_SERVICES_STORAGE_INCLUDE_READ_FILE_H_

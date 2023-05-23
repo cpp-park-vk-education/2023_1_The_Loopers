@@ -6,18 +6,18 @@
 
 namespace inklink_file_holder
 {
-std::string ReadFile::GetFile(const std::filesystem::path& filePath) const noexcept
+ReadFileResult ReadFile::GetFile(const std::filesystem::path& filePath) const noexcept
 {
     std::ifstream fileRead(filePath);
     std::stringstream stringFile;
 
     if (!fileRead.is_open())
     {
-        return "Uncorrect file path";
+        return {stringFile, false};
     }
 
     stringFile << fileRead.rdbuf();
 
-    return stringFile;
+    return {stringFile, true};
 }
 }  // namespace inklink_file_holder

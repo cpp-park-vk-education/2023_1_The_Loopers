@@ -8,7 +8,7 @@ bool FileHolder::Save(const std::filesystem::path& filePath, const std::string& 
     return m_changesSavior.SaveFile(filePath, fileChanges);
 }
 
-std::string FileHolder::Get(const std::filesystem::path& filePath) const
+ReadFileResult FileHolder::Get(const std::filesystem::path& filePath) const
 {
     return m_fileReader.GetFile(filePath);
 }
