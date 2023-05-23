@@ -7,12 +7,12 @@
 
 namespace inklink::db_controller
 {
-class IStorageDbController final
+class IStorageDbController
 {
 public:
-    virtual explicit void SetAdapter(DbAdapterBase& adapter) = 0;
+    virtual void SetAdapter(DbAdapterBase& adapter) = 0;
 
-    virtual void Connect(const std::string& connectionString) = 0;
+    virtual void Run(const std::string& connectionString) = 0;
 
     virtual [[nodiscard]] std::filesystem::path GetFilePath(const std::string& fileName,
                                                             const std::string& login) const = 0;
@@ -22,10 +22,13 @@ public:
                                                    const std::string& login) const = 0;
     virtual [[nodiscard]] std::string GetAllFilesForUser(std::string& login) const = 0;
 
-    virtual void InsertFile(const std::string& fileName, const std::string& login,
-                            const std::filesystem::path& filePath) const = 0;
+    virtual void InsertRootFile(const std::string& fileName, const std::string& login,
+                                const std::filesystem::path& filePath) const = 0;
     virtual void InsertGraphArc(const std::string& rootFileName, const std::string& fromFileName,
-                                const std::string& toFileName, const std::string& sessionId) const = 0;
+                                const std::string& toFileName) const = 0;
+
+    virtual void InsertNonRootFile(const std::string& rootFileName, const std::string& fileName,
+                                   const std::string& login, const std::filesystem::path& filePath) const;
 
     virtual void SetFileDeleted(const std::string& fileName, const std::string& login) const = 0;
 

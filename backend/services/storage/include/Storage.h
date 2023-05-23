@@ -8,11 +8,11 @@ namespace inklink : storage
 {
 class Storage final : public IStorage
 {
-using IFileHolder = file_holder::IFileHolder;
-using IStorageDbController = db_controller::IStorageDbController;
-using IExternalServiceChassis = external_service_chassis:IExternalServiceChassis;
-
 public:
+    using IFileHolder = file_holder::IFileHolder;
+    using IStorageDbController = db_controller::IStorageDbController;
+    using IExternalServiceChassis = external_service_chassis:IExternalServiceChassis;
+
     void Run(int port) override;
     [[nodiscard]] std::string GetFile(const std::string& fileName, const std::string& login) const override;
     [[nodiscard]] bool Update(const std::string& fileName, const std::string& login, const std::string& fileChanges) const override;
@@ -33,4 +33,5 @@ private:
     [[nodiscard]] bool Create(const std::string& fileName, const std::string& login) const override;
 };
 } // namespace inklink:storage
+
 #endif // _BACKEND_SERVICES_STORAGE_INCLUDE_STORAGE_H_

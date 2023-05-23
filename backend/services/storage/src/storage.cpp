@@ -7,10 +7,6 @@ constexpr std::string kDbConnectionString;
 
 namespace inklink : storage
 {
-using IFileHolder = file_holder::IFileHolder;
-using IStorageDbController = db_controller::IStorageDbController;
-using IExternalServiceChassis = external_service_chassis:IExternalServiceChassis;
-
 void Run(int port)
 {
     try
@@ -24,7 +20,11 @@ void Run(int port)
 
 std::string Storage::GetFile(const std::string& fileName, const std::string& login) const
 {
-    return m_fileWorker->Get(m_dbController->GetFilePath(fileName, login));
+    auto[file, isCorrect] = m_fileWorker->Get(m_dbController->GetFilePath(fileName, login));
+    if (isCorrect)
+    {
+        return file;
+    }
 }
 
 std::string Storage::GetAllFilesNames(const std::string& login) const
