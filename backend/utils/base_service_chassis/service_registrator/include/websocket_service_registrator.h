@@ -16,17 +16,18 @@ class WebsocketServiceRegistrator final : public IServiceRegistrator
 {
     using IClientSession = client_connector::IClientSession;
     using error_code = boost::system::error_code;
+    using GotEndpointsCallback = std::function<void(std::vector<Endpoint>&&)>;
 
 public:
     explicit WebsocketServiceRegistrator(std::shared_ptr<ILogger>);
-    ~WebsocketServiceRegistrator() final;
+    ~WebsocketServiceRegistrator() override;
 
     // can discard
-    bool Register(ServiceType, const Endpoint&) final;
-    void Deregister(ServiceType, const Endpoint&) final;
+    bool Register(ServiceType, const Endpoint&) override;
+    void Deregister(ServiceType, const Endpoint&) override;
 
-    [[nodiscard]] std::vector<Endpoint> GetEndpoints(ServiceType desiredServicesType) final;
-    void GetEndpoints(ServiceType desiredServicesType, std::function<void(std::vector<Endpoint>&&)> GotCallback) final;
+    [[nodiscard]] std::vector<Endpoint> GetEndpoints(ServiceType desiredServicesType) override;
+    void GetEndpoints(ServiceType desiredServicesType, GotEndpointsCallback GotCallback) override;
 
 private:
     [[nodiscard]] std::shared_ptr<IClientSession> InitSending(const std::string& errorMsg, bool critical = false);

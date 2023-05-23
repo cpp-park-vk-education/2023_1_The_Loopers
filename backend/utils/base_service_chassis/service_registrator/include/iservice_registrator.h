@@ -17,6 +17,7 @@ namespace inklink::base_service_chassis
 {
 class IServiceRegistrator
 {
+private:
     using IClientSession = client_connector::IClientSession;
 
 public:

@@ -2,7 +2,6 @@
 
 #include "ilogger.h"
 
-#include <global_websocket_client_session.h>
 #include <websocket_client_session.h>
 
 #include <boost/system/error_code.hpp>
@@ -25,7 +24,7 @@ WebsocketServiceRegistrator::WebsocketServiceRegistrator(std::shared_ptr<ILogger
         : IServiceRegistrator{}, m_logger{logger}
 {
     // I could not find the way to deduce template params automatically
-    auto lamOnAccept = [this](ConnectType type, error_code ec, IClientSession*)
+    auto onAcceptFunctor = [this](ConnectType type, error_code ec, IClientSession*)
     {
         if (ec)
         {
@@ -48,10 +47,10 @@ WebsocketServiceRegistrator::WebsocketServiceRegistrator(std::shared_ptr<ILogger
         }
     };
 
-    auto lamOnRead = [this](const std::string& str, error_code ec) { this->DoOnRead(str, ec); };
+    auto onReadFunctor = [this](const std::string& msg, error_code ec) { this->DoOnRead(msg, ec); };
 
-    auto session = std::make_shared<WebsocketClientSession<decltype(lamOnAccept), decltype(lamOnRead)>>(
-            m_ioContext, lamOnAccept, lamOnRead);
+    auto session = std::make_shared<WebsocketClientSession<decltype(onAcceptFunctor), decltype(onReadFunctor)>>(
+            m_ioContext, onAcceptFunctor, onReadFunctor);
     session->RunAsync(m_serviceRegistryAddress, m_serviceRegistryPort);
     m_connectionToRegistry = session;
 
@@ -122,8 +121,7 @@ void WebsocketServiceRegistrator::Deregister(ServiceType type, const Endpoint& e
     }
     // TODO (a.novak) parse m_msg
 }
-void WebsocketServiceRegistrator::GetEndpoints(ServiceType desiredServicesType,
-                                               std::function<void(std::vector<Endpoint>&&)> GotCallback)
+void WebsocketServiceRegistrator::GetEndpoints(ServiceType desiredServicesType, GotEndpointsCallback GotCallback)
 {
     auto session = InitSending("Session with service registry expired. Can not get new endpoints.");
 
@@ -174,10 +172,10 @@ std::shared_ptr<IClientSession> WebsocketServiceRegistrator::InitSending(const s
     m_msg.clear();
 }
 
-void WebsocketServiceRegistrator::DoOnRead(const std::string& str, error_code ec)
+void WebsocketServiceRegistrator::DoOnRead(const std::string& msg, error_code ec)
 {
     m_newMsg = true;
-    m_msg = str;
+    m_msg = msg;
     m_errCode = ec;
 }
 
