@@ -13,7 +13,6 @@ void StorageDbAdapter::Run(const std::string& connectionString)
 {
     m_adapter.Connect(connectionString);
 
-
     pqxx::connection& settings = m_adapter.GetConnection();
 
     settings.prepare("GetFilePath",
