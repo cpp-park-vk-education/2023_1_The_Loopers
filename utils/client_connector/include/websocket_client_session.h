@@ -168,6 +168,7 @@ public:
 private:
     using error_code = boost::system::error_code;
 
+private:
     void DoRead();
 
     void OnResolve(error_code ec, net::ip::tcp::resolver::results_type results);
@@ -177,6 +178,7 @@ private:
     void OnRead(error_code ec, std::size_t bytes_transferred);
     void OnClose(error_code ec);
 
+private:
     std::string m_host;
     net::ip::tcp::resolver m_resolver;
     boost::beast::websocket::stream<beast::tcp_stream> m_websocketStream;

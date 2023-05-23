@@ -54,6 +54,7 @@ public:
 private:
     using error_code = boost::system::error_code;
 
+private:
     void DoRead();
 
     void OnConnect(error_code ec);
@@ -62,6 +63,7 @@ private:
     void OnRead(error_code ec, std::size_t bytes_transferred);
     void OnClose(error_code ec);
 
+private:
     boost::asio::ip::tcp::socket m_socket;
     boost::asio::deadline_timer m_timer;
 
