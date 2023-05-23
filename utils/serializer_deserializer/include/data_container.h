@@ -1,11 +1,5 @@
 #pragma once
 
-#include "idata.h"
-
-#include <memory.h>
-
-// #include <nlohmann/json.hpp>
-
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -15,6 +9,9 @@ namespace inklink::serializer
 {
 class DataContainer
 {
+public:
+    using ObjectsContainer = std::unordered_map<std::string, DataContainer>;
+
 public:
     DataContainer& operator=(int);
     DataContainer& operator=(double);
@@ -44,9 +41,11 @@ public:
     [[nodiscard]] const std::vector<DataContainer>& AsArray() const;
     [[nodiscard]] bool IsArray() const;
 
-    [[nodiscard]] bool IsUnorderedMap() const;
+    [[nodiscard]] ObjectsContainer& AsObjectsContainer();
+    [[nodiscard]] const ObjectsContainer& AsObjectsContainer() const;
+    [[nodiscard]] bool IsObjectsContainer() const;
 
-    // for childs (if current is std::unordered_map<std::string, DataContainer>)
+    // for childs (if current is ObjectsContainer)
     [[nodiscard]] std::string& AsString(const std::string&);
     [[nodiscard]] const std::string& AsString(const std::string&) const;
     [[nodiscard]] bool IsString(const std::string&) const;
@@ -63,7 +62,9 @@ public:
     [[nodiscard]] const std::vector<DataContainer>& AsArray(const std::string&) const;
     [[nodiscard]] bool IsArray(const std::string&) const;
 
-    [[nodiscard]] bool IsUnorderedMap(const std::string&) const;
+    [[nodiscard]] ObjectsContainer& AsObjectsContainer(const std::string&);
+    [[nodiscard]] const ObjectsContainer& AsObjectsContainer(const std::string&) const;
+    [[nodiscard]] bool IsObjectsContainer(const std::string&) const;
 
     [[nodiscard]] bool Has(const std::string&) const;
 
@@ -78,8 +79,7 @@ public:
     [[nodiscard]] const DataContainer& At(const std::string&) const;
 
 private:
-    using CellType = std::variant<std::unordered_map<std::string, DataContainer>, int, double, std::string,
-                                  std::vector<DataContainer>>;
+    using CellType = std::variant<ObjectsContainer, int, double, std::string, std::vector<DataContainer>>;
 
     enum class CellTypeEnum
     {

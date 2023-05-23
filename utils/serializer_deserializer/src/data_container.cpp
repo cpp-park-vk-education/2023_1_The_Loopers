@@ -103,24 +103,34 @@ bool DataContainer::IsArray() const
     return std::holds_alternative<std::vector<DataContainer>>(m_data);
 }
 
-bool DataContainer::IsUnorderedMap() const
+DataContainer::ObjectsContainer& DataContainer::AsObjectsContainer()
 {
-    return std::holds_alternative<std::unordered_map<std::string, DataContainer>>(m_data);
+    return std::get<ObjectsContainer>(m_data);
+}
+
+const DataContainer::ObjectsContainer& DataContainer::AsObjectsContainer() const
+{
+    return std::get<ObjectsContainer>(m_data);
+}
+
+bool DataContainer::IsObjectsContainer() const
+{
+    return std::holds_alternative<ObjectsContainer>(m_data);
 }
 
 std::string& DataContainer::AsString(const std::string& field)
 {
-    return std::get<std::unordered_map<std::string, DataContainer>>(m_data).at(field).AsString();
+    return std::get<ObjectsContainer>(m_data).at(field).AsString();
 }
 
 const std::string& DataContainer::AsString(const std::string& field) const
 {
-    return std::get<std::unordered_map<std::string, DataContainer>>(m_data).at(field).AsString();
+    return std::get<ObjectsContainer>(m_data).at(field).AsString();
 }
 
 bool DataContainer::IsString(const std::string& field) const
 {
-    const auto& map = std::get<std::unordered_map<std::string, DataContainer>>(m_data);
+    const auto& map = std::get<ObjectsContainer>(m_data);
     if (!map.contains(field)) [[unlikely]]
     {
         throw std::out_of_range(OutOfRangeMessage(field));
@@ -130,17 +140,17 @@ bool DataContainer::IsString(const std::string& field) const
 
 int& DataContainer::AsInt(const std::string& field)
 {
-    return std::get<std::unordered_map<std::string, DataContainer>>(m_data).at(field).AsInt();
+    return std::get<ObjectsContainer>(m_data).at(field).AsInt();
 }
 
 const int& DataContainer::AsInt(const std::string& field) const
 {
-    return std::get<std::unordered_map<std::string, DataContainer>>(m_data).at(field).AsInt();
+    return std::get<ObjectsContainer>(m_data).at(field).AsInt();
 }
 
 bool DataContainer::IsInt(const std::string& field) const
 {
-    const auto& map = std::get<std::unordered_map<std::string, DataContainer>>(m_data);
+    const auto& map = std::get<ObjectsContainer>(m_data);
     if (!map.contains(field)) [[unlikely]]
     {
         throw std::out_of_range(OutOfRangeMessage(field));
@@ -150,17 +160,17 @@ bool DataContainer::IsInt(const std::string& field) const
 
 double& DataContainer::AsDouble(const std::string& field)
 {
-    return std::get<std::unordered_map<std::string, DataContainer>>(m_data).at(field).AsDouble();
+    return std::get<ObjectsContainer>(m_data).at(field).AsDouble();
 }
 
 const double& DataContainer::AsDouble(const std::string& field) const
 {
-    return std::get<std::unordered_map<std::string, DataContainer>>(m_data).at(field).AsDouble();
+    return std::get<ObjectsContainer>(m_data).at(field).AsDouble();
 }
 
 bool DataContainer::IsDouble(const std::string& field) const
 {
-    const auto& map = std::get<std::unordered_map<std::string, DataContainer>>(m_data);
+    const auto& map = std::get<ObjectsContainer>(m_data);
     if (!map.contains(field)) [[unlikely]]
     {
         throw std::out_of_range(OutOfRangeMessage(field));
@@ -170,17 +180,17 @@ bool DataContainer::IsDouble(const std::string& field) const
 
 std::vector<DataContainer>& DataContainer::AsArray(const std::string& field)
 {
-    return std::get<std::unordered_map<std::string, DataContainer>>(m_data).at(field).AsArray();
+    return std::get<ObjectsContainer>(m_data).at(field).AsArray();
 }
 
 const std::vector<DataContainer>& DataContainer::AsArray(const std::string& field) const
 {
-    return std::get<std::unordered_map<std::string, DataContainer>>(m_data).at(field).AsArray();
+    return std::get<ObjectsContainer>(m_data).at(field).AsArray();
 }
 
 bool DataContainer::IsArray(const std::string& field) const
 {
-    const auto& map = std::get<std::unordered_map<std::string, DataContainer>>(m_data);
+    const auto& map = std::get<ObjectsContainer>(m_data);
     if (!map.contains(field)) [[unlikely]]
     {
         throw std::out_of_range(OutOfRangeMessage(field));
@@ -188,19 +198,29 @@ bool DataContainer::IsArray(const std::string& field) const
     return map.at(field).IsArray();
 }
 
-bool DataContainer::IsUnorderedMap(const std::string& field) const
+DataContainer::ObjectsContainer& DataContainer::AsObjectsContainer(const std::string& field)
 {
-    const auto& map = std::get<std::unordered_map<std::string, DataContainer>>(m_data);
+    return std::get<ObjectsContainer>(m_data).at(field).AsObjectsContainer();
+}
+
+const DataContainer::ObjectsContainer& DataContainer::AsObjectsContainer(const std::string& field) const
+{
+    return std::get<ObjectsContainer>(m_data).at(field).AsObjectsContainer();
+}
+
+bool DataContainer::IsObjectsContainer(const std::string& field) const
+{
+    const auto& map = std::get<ObjectsContainer>(m_data);
     if (!map.contains(field)) [[unlikely]]
     {
         throw std::out_of_range(OutOfRangeMessage(field));
     }
-    return map.at(field).IsUnorderedMap();
+    return map.at(field).IsObjectsContainer();
 }
 
 bool DataContainer::Has(const std::string& field) const
 {
-    const auto& map = std::get<std::unordered_map<std::string, DataContainer>>(m_data);
+    const auto& map = std::get<ObjectsContainer>(m_data);
     return map.contains(field);
 }
 
@@ -213,7 +233,7 @@ DataContainer& DataContainer::operator[](const std::string& field) noexcept
 {
     try
     {
-        return std::get<std::unordered_map<std::string, DataContainer>>(m_data)[field];
+        return std::get<ObjectsContainer>(m_data)[field];
     }
     catch (const std::bad_variant_access&)
     {
@@ -225,7 +245,7 @@ const DataContainer& DataContainer::operator[](const std::string& field) const n
 {
     try
     {
-        return std::get<std::unordered_map<std::string, DataContainer>>(m_data).at(field);
+        return std::get<ObjectsContainer>(m_data).at(field);
     }
     catch (...) // const std::bad_variant_access& and from at
     {
@@ -235,21 +255,21 @@ const DataContainer& DataContainer::operator[](const std::string& field) const n
 
 DataContainer& DataContainer::At(const std::string& field)
 {
-    return std::get<std::unordered_map<std::string, DataContainer>>(m_data).at(field);
+    return std::get<ObjectsContainer>(m_data).at(field);
 }
 
 const DataContainer& DataContainer::At(const std::string& field) const
 {
-    return std::get<std::unordered_map<std::string, DataContainer>>(m_data).at(field);
+    return std::get<ObjectsContainer>(m_data).at(field);
 }
 
 DataContainer::CellTypeEnum DataContainer::GetCellType(const std::string& field) const
 {
-    const auto& map = std::get<std::unordered_map<std::string, DataContainer>>(m_data);
+    const auto& map = std::get<ObjectsContainer>(m_data);
     if (map.contains(field)) [[likely]]
     {
         const auto& cell = map.at(field).m_data;
-        if (std::holds_alternative<std::unordered_map<std::string, DataContainer>>(cell))
+        if (std::holds_alternative<ObjectsContainer>(cell))
         {
             return CellTypeEnum::kDataContainer;
         }

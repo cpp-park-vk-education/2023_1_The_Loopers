@@ -1,7 +1,8 @@
 add_library(${SERIALIZER} STATIC "")
 
 target_sources(${SERIALIZER} PRIVATE
-    "src/json_data.cpp"
+    "src/data_container.cpp"
+    "src/json_serializer.cpp"
 )
 
 set(PUBLIC_INCLUDE_DIRECTORIES
