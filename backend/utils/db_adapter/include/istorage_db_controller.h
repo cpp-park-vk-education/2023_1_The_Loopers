@@ -7,10 +7,10 @@
 
 namespace inklink::db_controller
 {
-class IStorageDbController final
+class IStorageDbController
 {
 public:
-    virtual explicit void SetAdapter(DbAdapterBase& adapter) = 0;
+    virtual void SetAdapter(DbAdapterBase& adapter) = 0;
 
     virtual void Run(const std::string& connectionString) = 0;
 

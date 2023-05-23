@@ -8,10 +8,10 @@
 
 namespace inklink::db_controller
 {
-class StorageDbController final
+class StorageDbController final : public IStorageDbController
 {
 public:
-    explicit void SetAdapter(DbAdapterBase& adapter) override;
+    void SetAdapter(DbAdapterBase& adapter) override;
 
     void Run(const std::string& connectionString) override;
 
