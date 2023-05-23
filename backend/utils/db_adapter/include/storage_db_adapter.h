@@ -13,7 +13,7 @@ class StorageDbAdapter final : public DbAdapterBase
 
     void Connect(const std::string& connectionString) override;
 
-    [[nodiscard]] pqxx::connection& GetConnection() const;
+    [[nodiscard]] pqxx::connection& GetConnection();
 
     void Insert(const std::string& request, const std::string& argument1, const std::string& argument2,
                 const std::string& argument3, const std::string& argument4) const override;
