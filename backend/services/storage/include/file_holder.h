@@ -20,4 +20,5 @@ protected:
     ReadFile m_fileReader;
 };
 } // namespace inklink_file_holder
+
 #endif // _BACK_SERVICES_STORAGE_INCLUDE_FILE_HOLDER_H_
