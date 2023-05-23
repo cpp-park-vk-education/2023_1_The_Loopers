@@ -1,7 +1,7 @@
 #pragma once
 
-#include "boost::beast::websocket_fwd.h"
 #include "iclient_session.h"
+#include "websocket_fwd.h"
 
 #include <boost/asio.hpp>
 #include <boost/beast.hpp>
@@ -47,7 +47,7 @@ namespace beast = boost::beast;
  * @code {.cpp}
  * // Example code demonstrating the usage
  *
- * #include <boost::beast::websocket_client_session.h>
+ * #include <websocket_client_session.h>
  *
  * #include <boost/asio.hpp>
  * #include <boost/system/error_code.hpp>
@@ -179,7 +179,7 @@ private:
 
     std::string m_host;
     net::ip::tcp::resolver m_resolver;
-    beast::beast::websocket::stream<beast::tcp_stream> m_websocketStream;
+    boost::beast::websocket::stream<beast::tcp_stream> m_websocketStream;
 
     std::atomic_bool m_close{false};
     std::atomic_bool m_writing{false};
@@ -206,7 +206,7 @@ inline WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, Clos
         WriteCallback writeCallback, 
         CloseCallback closeCallback)
         : m_resolver{net::make_strand(ioc)}, 
-          m_boost::beast::websocketStream{net::make_strand(ioc)},
+          m_websocketStream{net::make_strand(ioc)},
           m_connectCallback{connectCallback}, 
           m_readCallback{readCallback}, 
           m_writeCallback{writeCallback},
@@ -234,7 +234,7 @@ template <ConnectTypeErrorCodeCallbackConcept ConnectCallback, StringErrorCodeCa
 inline WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallback>::~WebsocketClientSession()
 {
     // TODO (a.novak) try-catch
-    if (m_boost::beast::websocketStream.is_open())
+    if (m_websocketStream.is_open())
     {
         // may throw due to another simultaneous write => just so that app won't crush
         // also does not stop async operations, therefore if isn't called because all operations ended other async
@@ -248,7 +248,7 @@ inline WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, Clos
         }
 
         error_code ec;
-        m_boost::beast::websocketStream.close(boost::beast::websocket::close_code::normal, ec);
+        m_websocketStream.close(boost::beast::websocket::close_code::normal, ec);
         m_closeCallback(ec);
     }
 }
@@ -270,7 +270,7 @@ WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallba
     }
 
     // We are not currently writing, so send this immediately
-    m_boost::beast::websocketStream.async_write(
+    m_websocketStream.async_write(
             net::buffer(*m_sendQueue.front()),
             beast::bind_front_handler(&WebsocketClientSession::OnWrite, this->shared_from_this()));
 }
@@ -283,7 +283,7 @@ inline void WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback,
 
     if (!m_writing.load())
     {
-        m_boost::beast::websocketStream.async_close(
+        m_websocketStream.async_close(
                 boost::beast::websocket::close_code::normal,
                 beast::bind_front_handler(&WebsocketClientSession::OnClose, this->shared_from_this()));
     }
@@ -295,7 +295,7 @@ inline void WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback,
 {
     if (!m_close.load())
     {
-        m_boost::beast::websocketStream.async_read(
+        m_websocketStream.async_read(
                 m_readBuffer, beast::bind_front_handler(&WebsocketClientSession::OnRead, this->shared_from_this()));
     }
 }
@@ -312,10 +312,10 @@ inline void WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback,
     }
 
     // Set the timeout for the operation
-    beast::get_lowest_layer(m_boost::beast::websocketStream).expires_after(std::chrono::seconds(30));
+    beast::get_lowest_layer(m_websocketStream).expires_after(std::chrono::seconds(30));
 
     // Make the connection on the IP address we get from a lookup
-    beast::get_lowest_layer(m_boost::beast::websocketStream)
+    beast::get_lowest_layer(m_websocketStream)
             .async_connect(results,
                            beast::bind_front_handler(&WebsocketClientSession::OnConnect, this->shared_from_this()));
 }
@@ -333,14 +333,13 @@ inline void WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback,
 
     // Turn off the timeout on the tcp_stream, because
     // the boost::beast::websocket stream has its own timeout system.
-    beast::get_lowest_layer(m_boost::beast::websocketStream).expires_never();
+    beast::get_lowest_layer(m_websocketStream).expires_never();
 
     // Set suggested timeout settings for the boost::beast::websocket
-    m_boost::beast::websocketStream.set_option(
-            boost::beast::websocket::stream_base::timeout::suggested(beast::role_type::client));
+    m_websocketStream.set_option(boost::beast::websocket::stream_base::timeout::suggested(beast::role_type::client));
 
     // Set a decorator to change the User-Agent of the handshake
-    m_boost::beast::websocketStream.set_option(boost::beast::websocket::stream_base::decorator(
+    m_websocketStream.set_option(boost::beast::websocket::stream_base::decorator(
             [](boost::beast::websocket::request_type& req)
             { req.set(beast::http::field::user_agent, std::string(BOOST_BEAST_VERSION_STRING) + " inklink-client"); }));
 
@@ -350,7 +349,7 @@ inline void WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback,
     m_host += ':' + std::to_string(ep.port());
 
     // Perform the boost::beast::websocket handshake
-    m_boost::beast::websocketStream.async_handshake(
+    m_websocketStream.async_handshake(
             m_host, "/", beast::bind_front_handler(&WebsocketClientSession::OnHandshake, this->shared_from_this()));
 }
 
@@ -366,7 +365,7 @@ WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallba
     }
 
     // set to binary (because we don't know in wich format will be sending)
-    m_boost::beast::websocketStream.binary(true);
+    m_websocketStream.binary(true);
 
     DoRead();
 }
@@ -389,7 +388,7 @@ inline void WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback,
     if (m_close)
     {
         m_sendQueue.clear();
-        m_boost::beast::websocketStream.async_close(
+        m_websocketStream.async_close(
                 boost::beast::websocket::close_code::normal,
                 beast::bind_front_handler(&WebsocketClientSession::OnClose, this->shared_from_this()));
     }
@@ -397,7 +396,7 @@ inline void WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback,
     // Send the next message if any
     if (!m_sendQueue.empty())
     {
-        m_boost::beast::websocketStream.async_write(
+        m_websocketStream.async_write(
                 net::buffer(*m_sendQueue.front()),
                 beast::bind_front_handler(&WebsocketClientSession::OnWrite, this->shared_from_this()));
     }
