@@ -1,22 +1,19 @@
-add_library(${CHASSIS_CONFIGURATOR} INTERFACE)
+add_library(${CHASSIS_CONFIGURATOR} STATIC "")
 
-# target_sources(${CHASSIS_CONFIGURATOR} PRIVATE
-#     "src/trash.cpp"
-# )
-
-# set(PRIVATE_INCLUDE_DIRECTORIES
-# "${UTILS_DIR}/include"
-# )
-
-set(INTERFACE_INCLUDE_DIRECTORIES
-    "include"
+target_sources(${CHASSIS_CONFIGURATOR} PRIVATE
+    "src/base_websocket_configurator.cpp"
 )
 
-target_include_directories(${CHASSIS_CONFIGURATOR} INTERFACE ${INTERFACE_INCLUDE_DIRECTORIES})
+set(PUBLIC_INCLUDE_DIRECTORIES
+    "include"
+    "${UTILS_DIR}/include"
+)
 
-set(INTERFACE_LINK_LIBRARIES
+target_include_directories(${CHASSIS_CONFIGURATOR} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
+
+set(PUBLIC_LINK_LIBRARIES
     "${BASE_SERVICE_CHASSIS}"
     "${EXTERNAL_SERVICE_CHASSIS}"
 )
 
-target_link_libraries(${CHASSIS_CONFIGURATOR} INTERFACE ${INTERFACE_LINK_LIBRARIES})
+target_link_libraries(${CHASSIS_CONFIGURATOR} PUBLIC ${PUBLIC_LINK_LIBRARIES})
