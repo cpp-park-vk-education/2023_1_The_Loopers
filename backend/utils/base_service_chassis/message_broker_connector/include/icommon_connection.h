@@ -3,7 +3,7 @@
 #include "ilogger.h"
 #include "inklink_global.h"
 
-#include <global_websocket_client_session.h>
+#include <websocket_fwd.h>
 
 #include <boost/system/error_code.hpp>
 
@@ -23,9 +23,14 @@ class ILogger;
 
 class ICommonConnection
 {
+private:
     using IClientSession = client_connector::IClientSession;
     using ConnectType = client_connector::ConnectType;
     using error_code = boost::system::error_code;
+
+    using AcceptFunctor = std::vector<std::function<void(ConnectType, error_code, IClientSession*)>>;
+    using ReadFunctor = std::vector<std::function<void(const std::string&, error_code, IClientSession*)>>;
+    using WriteFunctor = std::vector<std::function<void(error_code)>>;
 
 public:
     explicit ICommonConnection(std::shared_ptr<ILogger> logger);
@@ -35,9 +40,9 @@ public:
     virtual void ChangeConnection(ServiceType, const Endpoint& self, const Endpoint& other) = 0;
     [[nodiscard]] virtual std::shared_ptr<IClientSession> GetSession() const noexcept = 0;
 
-    void AddAcceptCallback(std::function<void(ConnectType, error_code, IClientSession*)> callback);
-    void AddReadCallback(std::function<void(const std::string&, error_code, IClientSession*)> callback);
-    void AddWriteCallback(std::function<void(error_code)> callback);
+    void AddAcceptCallback(AcceptFunctor callback);
+    void AddReadCallback(ReadFunctor callback);
+    void AddWriteCallback(WriteFunctor callback);
 
     [[nodiscard]] virtual Endpoint GetEndpointSelf() const noexcept;
 
@@ -49,9 +54,9 @@ protected:
     Endpoint m_endpointOther;
     bool m_connected{false};
 
-    std::vector<std::function<void(ConnectType, error_code, IClientSession*)>> m_acceptCallbacks;
-    std::vector<std::function<void(const std::string&, error_code, IClientSession*)>> m_readCallbacks;
-    std::vector<std::function<void(error_code)>> m_writeCallbacks;
+    AcceptFunctor m_acceptCallbacks;
+    ReadFunctor m_readCallbacks;
+    WriteFunctor m_writeCallbacks;
 
     std::shared_ptr<ILogger> m_logger;
 };

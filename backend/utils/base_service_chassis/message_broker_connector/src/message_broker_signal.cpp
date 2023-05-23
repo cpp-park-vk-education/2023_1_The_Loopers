@@ -13,13 +13,24 @@ namespace
 {
 using IClientSession = inklink::client_connector::IClientSession;
 using error_code = boost::system::error_code;
+
+using ReadFunctor = std::function<void(const std::string&)>;
+
+std::string CreateLogMsg(std::string&& prefix, const std::string& msgBody, const inklink::Endpoint& requestFrom)
+{
+    std::stringstream ss{};
+    auto msgTruncated = msgBody.substr(0, 50);
+    std::replace(msgTruncated.begin(), msgTruncated.end(), '\n', ' ');
+    // TODO (a.novak) <<endpoint when will add overload
+    ss << prefix << " Endpoint: '" << requestFrom.port << "' with msg " << msgTruncated;
+    return ss.str();
+}
 } // namespace
 
 namespace inklink::base_service_chassis
 {
 
-MessageBrokerSignal::MessageBrokerSignal(std::shared_ptr<ICommonConnection> cc,
-                                         std::function<void(const std::string&, IClientSession*)> readCallback,
+MessageBrokerSignal::MessageBrokerSignal(std::shared_ptr<ICommonConnection> cc, ReadFunctor readCallback,
                                          std::shared_ptr<ILogger> logger)
         : m_connectionToMsgBroker{cc}, m_readCallback{readCallback}, m_logger{logger}
 {
@@ -35,13 +46,7 @@ void MessageBrokerSignal::Request(const std::string& msgBody, const Endpoint& re
 
     if (!session) [[unlikely]]
     {
-        std::stringstream ss{};
-        auto msgTruncated = msgBody.substr(0, 50);
-        std::replace(msgTruncated.begin(), msgTruncated.end(), '\n', ' ');
-        // TODO (a.novak) <<endpoint when will add overload
-        ss << "No connection to MsgBroker. Tried requesting from '"
-           << "' with msg " << msgTruncated;
-        m_logger->LogDebug(ss.str());
+        m_logger->LogDebug(CreateLogMsg("No connection to MsgBroker.", msgBody, requestFrom));
 
         return;
     }
@@ -57,14 +62,7 @@ void MessageBrokerSignal::Send(const std::string& msgBody, const Endpoint& sendT
 
     if (!session) [[unlikely]]
     {
-        std::stringstream ss{};
-        auto msgTruncated = msgBody.substr(0, 50);
-        std::replace(msgTruncated.begin(), msgTruncated.end(), '\n', ' ');
-        // TODO (a.novak) <<endpoint when will add overload
-        ss << "No connection to MsgBroker. Tried sending to '"
-           << "' with msg: " << msgTruncated;
-
-        m_logger->LogDebug(ss.str());
+        m_logger->LogDebug(CreateLogMsg("No connection to MsgBroker.", msgBody, sendTo));
         return;
     }
 

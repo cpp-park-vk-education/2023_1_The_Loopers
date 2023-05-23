@@ -13,12 +13,13 @@ namespace
 {
 using IClientSession = inklink::client_connector::IClientSession;
 using error_code = boost::system::error_code;
+
+using NotifiedFunctor = std::function<void(int /*event type*/, const std::string&, const Endpoint& /*from*/)>;
 } // namespace
 
 namespace inklink::base_service_chassis
 {
-MessageBrokerEvent::MessageBrokerEvent(std::shared_ptr<ICommonConnection> cc,
-                                       std::function<void(int, const std::string&, Endpoint)> notifiedCallback,
+MessageBrokerEvent::MessageBrokerEvent(std::shared_ptr<ICommonConnection> cc, NotifiedFunctor notifiedCallback,
                                        std::shared_ptr<ILogger> logger)
         : m_connectionToMsgBroker{cc}, m_notifiedCallback{notifiedCallback}, m_logger{logger}
 {
@@ -64,7 +65,7 @@ void MessageBrokerEvent::Subscribe(int event)
     session->Send(serializedMsg);
 }
 
-void MessageBrokerEvent::DoOnNotified(const std::string& msgBody, error_code, IClientSession*) const
+void MessageBrokerEvent::DoOnNotified(const std::string& msgBody, error_code ec, IClientSession*) const
 {
     if (ec) [[unlikely]]
     {
@@ -75,9 +76,9 @@ void MessageBrokerEvent::DoOnNotified(const std::string& msgBody, error_code, IC
         return;
     }
     // TODO (a.novak) parse msgBrokerSignal
-    std::string msgBody;
+    std::string newMsgBody{msgBody};
     int eventType;
-    m_readCallback(eventType, msgBody, m_connectionToMsgBroker->GetEndpointSelf());
+    m_readCallback(eventType, newMsgBody, m_connectionToMsgBroker->GetEndpointSelf());
 }
 
 } // namespace inklink::base_service_chassis

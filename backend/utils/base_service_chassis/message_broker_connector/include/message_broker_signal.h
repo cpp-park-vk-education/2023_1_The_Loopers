@@ -20,11 +20,12 @@ class ILogger;
 
 class MessageBrokerSignal
 {
+private:
     using IClientSession = client_connector::IClientSession;
+    using ReadFunctor = std::function<void(const std::string&)>;
 
 public:
-    MessageBrokerSignal(std::shared_ptr<ICommonConnection>, std::function<void(const std::string&)> readCallback,
-                        std::shared_ptr<ILogger>);
+    MessageBrokerSignal(std::shared_ptr<ICommonConnection>, ReadFunctor readCallback, std::shared_ptr<ILogger>);
     virtual ~MessageBrokerSignal() = default;
 
     // virtual void SetDoOnRead(std::function<void(const std::string&, error_code, IClientSession*)>);
@@ -50,7 +51,7 @@ private:
     void DoOnRead(const std::string&, error_code, IClientSession*) const;
 
     std::shared_ptr<ICommonConnection> m_connectionToMsgBroker;
-    std::function<void(const std::string&)> m_readCallback;
+    ReadFunctor m_readCallback;
     std::shared_ptr<ILogger> m_logger;
 };
 } // namespace inklink::base_service_chassis
