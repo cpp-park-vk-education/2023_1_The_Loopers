@@ -271,7 +271,7 @@ DataContainer::CellTypeEnum DataContainer::GetCellType(const std::string& field)
         const auto& cell = map.at(field).m_data;
         if (std::holds_alternative<ObjectsContainer>(cell))
         {
-            return CellTypeEnum::kDataContainer;
+            return CellTypeEnum::kObjectsContainer;
         }
         if (std::holds_alternative<int>(cell))
         {

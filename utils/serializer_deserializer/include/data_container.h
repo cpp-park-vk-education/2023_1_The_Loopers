@@ -88,7 +88,7 @@ private:
         kDouble,
         kString,
         kArray,
-        kDataContainer
+        kObjectsContainer
     };
 
 private:
