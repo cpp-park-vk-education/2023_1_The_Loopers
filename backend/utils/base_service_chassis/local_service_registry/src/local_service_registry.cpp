@@ -15,8 +15,8 @@ bool LocalServiceRegistry::AddService(ServiceType serviceType, const Endpoint& e
         return false;
     }
 
-    m_serviceMap[serviceType].push_back(endpoint);
-    m_endpointMap[endpoint] = serviceType;
+    m_endpointsByServiceType[serviceType].push_back(endpoint);
+    m_serviceTypeByEndpoint[endpoint] = serviceType;
     return true;
 }
 
@@ -27,31 +27,21 @@ bool LocalServiceRegistry::RemoveService(const Endpoint& endpoint)
         return false;
     }
 
-    auto type = m_endpointMap[endpoint];
-    std::erase(m_serviceMap[type], endpoint);
-    m_endpointMap.erase(endpoint);
+    auto type = m_serviceTypeByEndpoint[endpoint];
+    std::erase(m_endpointsByServiceType[type], endpoint);
+    m_serviceTypeByEndpoint.erase(endpoint);
     return true;
 }
 
-const std::vector<Endpoint>& LocalServiceRegistry::GetServices(ServiceType serviceType)
+const std::vector<Endpoint>& LocalServiceRegistry::GetServices(ServiceType serviceType) const
 {
-    return m_serviceMap[serviceType];
-}
-
-std::vector<Endpoint> LocalServiceRegistry::GetServices(ServiceType serviceType) const noexcept
-{
-    auto it = m_serviceMap.find(serviceType);
-    if (it != m_serviceMap.end())
-    {
-        return it->second;
-    }
-    return {};
+    return m_endpointsByServiceType[serviceType];
 }
 
 ServiceType LocalServiceRegistry::GetServiceType(const Endpoint& endpoint) const
 {
-    auto it = m_endpointMap.find(endpoint);
-    if (it != m_endpointMap.end())
+    auto it = m_serviceTypeByEndpoint.find(endpoint);
+    if (it != m_serviceTypeByEndpoint.end())
     {
         return it->second;
     }
@@ -62,8 +52,8 @@ ServiceType LocalServiceRegistry::GetServiceType(const Endpoint& endpoint) const
 bool LocalServiceRegistry::HasEndpoint(const Endpoint& endpoint) const noexcept
 {
     auto has{false};
-    auto it = m_endpointMap.find(endpoint);
-    if (it != m_endpointMap.end())
+    auto it = m_serviceTypeByEndpoint.find(endpoint);
+    if (it != m_serviceTypeByEndpoint.end())
     {
         has = true;
     }
