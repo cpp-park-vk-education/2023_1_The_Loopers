@@ -63,8 +63,8 @@ private:
 
     void HandleNewUser(const DataContainer&, IServiceSession* sessionFrom);
     void HandleUserExit(const DataContainer&);
-    void HandleDraw(const DataContainer&);
-    void HandleText(const DataContainer&);
+    void HandleDraw(const DataContainer&, IServiceSession*);
+    void HandleText(const DataContainer&, IServiceSession*);
 
     DataContainer ContainerFromVectorOfDrawActions(const std::vector<DrawAction>&);
     DataContainer ContainerFromVectorOTextActions(const std::vector<TextAction>&);

@@ -168,11 +168,11 @@ void SimultaneousAccessService::DoOnRead(const std::string& msg, error_code ec, 
         }
         else if (IsDrawAction(msgData["action"].AsInt("action_type")))
         {
-            HandleDraw(msgData);
+            HandleDraw(msgData, sessionFrom);
         }
         else
         {
-            HandleText(msgData);
+            HandleText(msgData, sessionFrom);
         }
     }
     catch (const InvalidMessageFormat&)
@@ -260,7 +260,7 @@ void SimultaneousAccessService::HandleUserExit(const DataContainer& msgData)
     }
 }
 
-void SimultaneousAccessService::HandleDraw(const DataContainer& msgData)
+void SimultaneousAccessService::HandleDraw(const DataContainer& msgData, IServiceSession* session)
 {
     const auto& docId = msgData.AsString("document_id");
 
@@ -292,7 +292,7 @@ void SimultaneousAccessService::HandleDraw(const DataContainer& msgData)
     }
 }
 
-void SimultaneousAccessService::HandleText(const DataContainer& msgData)
+void SimultaneousAccessService::HandleText(const DataContainer& msgData, IServiceSession* session)
 {
     const auto& docId = msgData.AsString("document_id");
 
