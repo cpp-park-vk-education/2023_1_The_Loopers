@@ -9,7 +9,7 @@ void StorageDbController::SetAdapter(DbAdapterBase& adapter)
     m_adapter = adapter;
 }
 
-void StorageDbAdapter::Run(const std::string& connectionString)
+void StorageDbController::Run(const std::string& connectionString)
 {
     m_adapter.Connect(connectionString);
 
