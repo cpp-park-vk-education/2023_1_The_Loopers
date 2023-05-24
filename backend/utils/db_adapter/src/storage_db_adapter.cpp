@@ -16,7 +16,7 @@ pqxx::connection& GetConnection()
 void StorageDbAdapter::Insert(const std::string& request, const std::string& argument1, const std::string& argument2,
                               const std::string& argument3, const std::string& argument4) const
 {
-    pqxx::work inserter(m_connection);
+    pqxx::work inserter(*m_connection);
     inserter.exec_prepared(request, argument1, argument2, argument3, argument4);
 
     inserter.commit();
@@ -25,7 +25,7 @@ void StorageDbAdapter::Insert(const std::string& request, const std::string& arg
 void StorageDbAdapter::Insert(const std::string& request, const std::string& argument1, const std::string& argument2,
                               const std::string& argument3) const
 {
-    pqxx::work inserter(m_connection);
+    pqxx::work inserter(*m_connection);
     inserter.exec_prepared(request, argument1, argument2, argument3);
 
     inserter.commit();
@@ -33,7 +33,7 @@ void StorageDbAdapter::Insert(const std::string& request, const std::string& arg
 
 DbTable StorageDbAdapter::Select(const std::string& request, const std::string& argument) const
 {
-    pqxx::work selector(m_connection);
+    pqxx::work selector(*m_connection);
     DbTable result;
 
     pqxx::result response = selector.exec_prepared(request, argument);
@@ -56,7 +56,7 @@ DbTable StorageDbAdapter::Select(const std::string& request, const std::string& 
 DbTable StorageDbAdapter::Select(const std::string& request, const std::string& argument1,
                                  const std::string& argument2) const
 {
-    pqxx::work selector(m_connection);
+    pqxx::work selector(*m_connection);
     DbTable result;
 
     pqxx::result response = selector.exec_prepared(request, argument1, argument2);
@@ -79,7 +79,7 @@ DbTable StorageDbAdapter::Select(const std::string& request, const std::string& 
 DbTable StorageDbAdapter::Select(const std::string& request, const std::string& argument1,
                                  const std::string& argument2, const std::string& argument3) const
 {
-    pqxx::work selector(m_connection);
+    pqxx::work selector(*m_connection);
     DbTable result;
 
     pqxx::result response = selector.exec_prepared(request, argument1, argument2, argument3);
@@ -102,7 +102,7 @@ DbTable StorageDbAdapter::Select(const std::string& request, const std::string& 
 void StorageDbAdapter::Update(const std::string& request, const std::string& argument1,
                               const std::string& argument2) const
 {
-    pqxx::work updator(m_connection);
+    pqxx::work updator(*m_connection);
     updator.exec_prepared(request, argument1, argument2);
 
     updator.commit();
@@ -110,7 +110,7 @@ void StorageDbAdapter::Update(const std::string& request, const std::string& arg
 
 void StorageDbAdapter::Delete(const std::string& request) const
 {
-    pqxx::work deletor(m_connection);
+    pqxx::work deletor(*m_connection);
     deletor.exec(request);
 
     deletor.commit();

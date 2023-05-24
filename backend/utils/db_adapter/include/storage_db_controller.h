@@ -35,6 +35,6 @@ public:
     void SetFileDeleted(const std::string& fileName, const std::string& login) const override;
 
 private:
-    DbAdapterBase& m_adapter;
+    DbAdapterBase m_adapter;
 };
 } // namespace inklink::db_controller
