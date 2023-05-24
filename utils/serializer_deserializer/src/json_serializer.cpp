@@ -4,15 +4,15 @@
 
 #include <nlohmann/json.hpp>
 
-using json = nlohmann::json;
-
 namespace
 {
+using json = nlohmann::json;
+
 using DataContainer = inklink::serializer::DataContainer;
 
 json SerializeDataContainer(const DataContainer& data)
 {
-    json jsonData;
+    json jsonData{};
 
     if (data.IsInt())
     {
@@ -48,7 +48,7 @@ json SerializeDataContainer(const DataContainer& data)
 
 DataContainer DeserializeDataContainer(const json& jsonData)
 {
-    DataContainer data;
+    DataContainer data{};
 
     if (jsonData.is_number_integer())
     {

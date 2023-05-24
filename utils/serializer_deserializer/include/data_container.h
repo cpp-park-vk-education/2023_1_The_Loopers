@@ -1,5 +1,6 @@
 #pragma once
 
+#include <concepts>
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -8,6 +9,13 @@
 
 namespace inklink::serializer
 {
+template <typename T>
+concept AllowedSimpleType = std::same_as<T, int> || std::same_as<T, std::string> || std::same_as<T, double>;
+
+template <typename T>
+concept AllowedVectorType = std::same_as<T, std::vector<int>> || std::same_as<T, std::vector<std::string>> ||
+                            std::same_as<T, std::vector<double>>;
+
 class DataContainer
 {
 public:
@@ -17,17 +25,24 @@ public:
     DataContainer() = default;
     ~DataContainer() = default;
 
+    template <AllowedSimpleType T>
+    /*implicit*/ DataContainer(T value);
+    template <AllowedVectorType T>
+    /*implicit*/ DataContainer(T vector);
+    /*implicit*/ DataContainer(std::vector<DataContainer> vector);
+
     DataContainer(const DataContainer&);
     DataContainer(DataContainer&&) noexcept;
 
     DataContainer& operator=(const DataContainer&);
     DataContainer& operator=(DataContainer&&) noexcept;
 
-    DataContainer& operator=(int);
-    DataContainer& operator=(double);
-    DataContainer& operator=(std::string);
-    DataContainer& operator=(std::vector<DataContainer>);
-    DataContainer& CreateArray();
+    template <AllowedSimpleType T>
+    DataContainer& operator=(T value);
+    template <AllowedVectorType T>
+    DataContainer& operator=(T vector);
+    DataContainer& operator=(std::vector<DataContainer> vector);
+    std::vector<DataContainer>& CreateArray();
 
     // /*implicit*/ DataContainer(nlohmann::json&&);
 
@@ -106,4 +121,53 @@ private:
 private:
     CellType m_data;
 };
+
+template <AllowedSimpleType T>
+inline /*implicit*/ DataContainer::DataContainer(T value) : m_data{std::move(value)}
+{
+}
+
+template <AllowedVectorType T>
+inline /*implicit*/ DataContainer::DataContainer(T vector)
+{
+    auto& array = CreateArray();
+    for (auto& value : vector)
+    {
+        // will implicitly call constructor DataContainer<AllowedSimpleType> for each value
+        array.push_back(std::move(value));
+    }
+}
+
+inline /*implicit*/ DataContainer::DataContainer(std::vector<DataContainer> vector) : m_data{std::move(vector)}
+{
+}
+
+template <AllowedSimpleType T>
+inline DataContainer& DataContainer::operator=(T value)
+{
+    m_data = std::move(value);
+    return *this;
+}
+
+template <AllowedVectorType T>
+inline DataContainer& DataContainer::operator=(T vector)
+{
+    auto& array = CreateArray();
+    for (auto& value : vector)
+    {
+        // will implicitly call constructor DataContainer<AllowedSimpleType> for each value
+        array.push_back(std::move(value));
+    }
+    return *this;
+}
+inline DataContainer& DataContainer::operator=(std::vector<DataContainer> vector)
+{
+    auto& array = CreateArray();
+    for (auto& value : vector)
+    {
+        array.push_back(std::move(value));
+    }
+    return *this;
+}
+
 } // namespace inklink::serializer

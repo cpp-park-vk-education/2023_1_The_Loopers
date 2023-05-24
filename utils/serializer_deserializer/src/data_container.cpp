@@ -5,7 +5,7 @@
 
 namespace
 {
-[[nodiscard]] std::string OutOfRangeMessage(const std::string& field)
+[[nodiscard]] auto GetOutOfRangeMessage(const std::string& field)
 {
     return std::string("Field '") + field + std::string("' does not exist.");
 }
@@ -13,7 +13,7 @@ namespace
 
 namespace inklink::serializer
 {
-DataContainer::DataContainer(const DataContainer& other) : m_data(other.m_data)
+DataContainer::DataContainer(const DataContainer& other) : m_data{other.m_data}
 {
     // Recursively copy child DataContainer objects
     if (IsObjectsContainer())
@@ -25,7 +25,7 @@ DataContainer::DataContainer(const DataContainer& other) : m_data(other.m_data)
     }
 }
 
-DataContainer::DataContainer(DataContainer&& other) noexcept : m_data(std::move(other.m_data))
+DataContainer::DataContainer(DataContainer&& other) noexcept : m_data{std::move(other.m_data)}
 {
     // Recursively move child DataContainer objects
     if (IsObjectsContainer())
@@ -73,34 +73,10 @@ DataContainer& DataContainer::operator=(DataContainer&& other) noexcept
     return *this;
 }
 
-DataContainer& DataContainer::operator=(int value)
+std::vector<DataContainer>& DataContainer::CreateArray()
 {
-    m_data = value;
-    return *this;
-}
-
-DataContainer& DataContainer::operator=(double value)
-{
-    m_data = value;
-    return *this;
-}
-
-DataContainer& DataContainer::operator=(std::string value)
-{
-    m_data = std::move(value);
-    return *this;
-}
-
-DataContainer& DataContainer::operator=(std::vector<DataContainer> value)
-{
-    m_data = std::move(value);
-    return *this;
-}
-
-DataContainer& DataContainer::CreateArray()
-{
-    m_data = std::vector<DataContainer>();
-    return *this;
+    m_data = std::vector<DataContainer>{};
+    return std::get<std::vector<DataContainer>>(m_data);
 }
 
 std::string& DataContainer::AsString()
@@ -193,7 +169,7 @@ bool DataContainer::IsString(const std::string& field) const
     const auto& map = std::get<ObjectsContainer>(m_data);
     if (!map.contains(field)) [[unlikely]]
     {
-        throw std::out_of_range(OutOfRangeMessage(field));
+        throw std::out_of_range(GetOutOfRangeMessage(field));
     }
     return map.at(field)->IsString();
 }
@@ -213,7 +189,7 @@ bool DataContainer::IsInt(const std::string& field) const
     const auto& map = std::get<ObjectsContainer>(m_data);
     if (!map.contains(field)) [[unlikely]]
     {
-        throw std::out_of_range(OutOfRangeMessage(field));
+        throw std::out_of_range(GetOutOfRangeMessage(field));
     }
     return map.at(field)->IsInt();
 }
@@ -233,7 +209,7 @@ bool DataContainer::IsDouble(const std::string& field) const
     const auto& map = std::get<ObjectsContainer>(m_data);
     if (!map.contains(field)) [[unlikely]]
     {
-        throw std::out_of_range(OutOfRangeMessage(field));
+        throw std::out_of_range(GetOutOfRangeMessage(field));
     }
     return map.at(field)->IsDouble();
 }
@@ -253,7 +229,7 @@ bool DataContainer::IsArray(const std::string& field) const
     const auto& map = std::get<ObjectsContainer>(m_data);
     if (!map.contains(field)) [[unlikely]]
     {
-        throw std::out_of_range(OutOfRangeMessage(field));
+        throw std::out_of_range(GetOutOfRangeMessage(field));
     }
     return map.at(field)->IsArray();
 }
@@ -273,7 +249,7 @@ bool DataContainer::IsObjectsContainer(const std::string& field) const
     const auto& map = std::get<ObjectsContainer>(m_data);
     if (!map.contains(field)) [[unlikely]]
     {
-        throw std::out_of_range(OutOfRangeMessage(field));
+        throw std::out_of_range(GetOutOfRangeMessage(field));
     }
     return map.at(field)->IsObjectsContainer();
 }
@@ -350,6 +326,6 @@ DataContainer::CellTypeEnum DataContainer::GetCellType(const std::string& field)
             return CellTypeEnum::kArray;
         }
     }
-    throw std::out_of_range(OutOfRangeMessage(field));
+    throw std::out_of_range(GetOutOfRangeMessage(field));
 }
 } // namespace inklink::serializer
