@@ -6,13 +6,12 @@
 
 namespace inklink::db_adapter
 {
-using DbRow = std::vector<std::string>;
-using DbTable = std::vector<DbRow>;
-
-
 class DbAdapterBase
 {
 public:
+    using DbRow = std::vector<std::string>;
+    using DbTable = std::vector<DbRow>;
+
     virtual ~DbAdapterBase() = default;
 
     virtual void Connect(const std::string& connectionString) = 0;

@@ -4,6 +4,7 @@
 
 #include <pqxx/pqxx> 
 
+#include <memory>
 
 namespace inklink::db_adapter
 {
@@ -34,6 +35,6 @@ class StorageDbAdapter final : public DbAdapterBase
                                  const std::string& argument3) const override;
 
 private:
-    pqxx::connection m_connection;
+    std::shared_ptr<pqxx::connection> m_connection;
 };
 } // namespace inklink::db_adapter

@@ -5,7 +5,7 @@ namespace inklink::db_adapter
 {
 void StorageDbAdapter::Connect(const std::string& connectionString)
 {
-    m_connection = pqxx::connection(connectionString);
+    m_connection = std::make_shared<pqxx::connection>(connectionString);
 }
 
 pqxx::connection& GetConnection()
