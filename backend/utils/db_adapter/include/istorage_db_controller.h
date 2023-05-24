@@ -3,7 +3,6 @@
 #include "idb_adapter.h"
 
 #include <filesystem>
-#include <string>
 
 namespace inklink::db_controller
 {

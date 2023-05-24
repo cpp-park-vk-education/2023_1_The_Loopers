@@ -8,7 +8,7 @@ void StorageDbAdapter::Connect(const std::string& connectionString)
     m_connection = std::make_shared<pqxx::connection>(connectionString);
 }
 
-pqxx::connection& GetConnection()
+std::shared_ptr<pqxx::connection> GetConnection()
 {
     return m_connection;
 }

@@ -1,9 +1,6 @@
 #pragma once
 
-#include "idb_adapter.h"
-
-#include <filesystem>
-#include <string>
+#include "istorage_db_controller.h"
 
 
 namespace inklink::db_controller
