@@ -8,6 +8,9 @@ namespace inklink::db_controller
 class StorageDbController final : public IStorageDbController
 {
 public:
+    using DbRow = std::vector<std::string>;
+    using DbTable = std::vector<DbRow>;
+
     void SetAdapter(DbAdapterBase& adapter) override;
 
     void Run(const std::string& connectionString) override;
