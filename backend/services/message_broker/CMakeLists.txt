@@ -5,12 +5,12 @@ PRIVATE
     "src/main.cpp"
     "src/message_broker_service.cpp"
     "signal_handler/src/isignals_handler.cpp"
-    "eventss_handler/src/ievents_handler.cpp"
+    "events_handler/src/ievents_handler.cpp"
 )
 
 set(PRIVATE_INCLUDE_DIRECTORIES
     "${UTILS_DIR}/include"
-    "eventss_handler/include"
+    "events_handler/include"
     "signal_handler/include"
     "include"
 )

@@ -1,7 +1,9 @@
 #pragma once
 
-#include "ibase_service_chassis.h"
 #include "inklink_global.h"
+
+#include <data_container.h>
+#include <ibase_service_chassis.h>
 
 #include <memory>
 #include <unordered_map>
@@ -22,6 +24,9 @@ public:
     explicit ISignalsHandler(std::unique_ptr<IBaseServiceChassis>&);
     virtual ~ISignalsHandler() = default;
 
+    bool Handle(const DataContainer&, const Endpoint& sender);
+
+protected:
     virtual void Send(const Endpoint&, const std::string&);
 
 protected:

@@ -1,8 +1,13 @@
 #include "message_broker_service.h"
 
+#include "data_container.h"
+
+#include <data_container.h>
 #include <iexternal_service_chassis.h>
 #include <inklink/chassis_configurators/websocket_configurator.h>
 #include <websocket_sessions_factory.h>
+
+#include <json_serializer.h>
 
 #include <boost/asio.hpp>
 #include <boost/system/error_code.hpp>
@@ -23,6 +28,9 @@ using InternalSessionsManager = inklink::base_service_chassis::InternalSessionsM
 
 using IAuthorizer = inklink::server_network::IAuthorizer;
 using IServiceSession = inklink::server_network::IServiceSession;
+
+using DataContainer = inklink::serializer::DataContainer;
+using JsonSerializer = inklink::serializer::JsonSerializer;
 
 // is it ok to use define for such things? With define you can just write LOG_PATH"file_name.txt"
 // and constexpr string is not possible in most cases. And string_view is not a lot more convenient (as far as I know)
@@ -78,10 +86,27 @@ void MessageBrokerService::DoOnRead(const std::string& msg, error_code ec, IServ
     {
         m_chassis->logger->LogDebug(std::string("Got error while reading from '...'. Error: ") + ec.what());
     }
-    // TODO (a.novak) parse msg and do logic
+    const auto& msgData = JsonSerializer::ParseString(msg);
+    if (msgData.Has("event"))
+    {
+        if (!m_eventsHandler->Handle(msgData, session->GetClientEndpoint()))
+        {
+            m_chassis->logger->LogDebug(std::string("Got message with invalid format: ") + msg);
+        }
+        return;
+    }
+    if (msgData.Has("receiver"))
+    {
+        if (!m_signalsHandler->Handle(msgData, session->GetClientEndpoint()))
+        {
+            m_chassis->logger->LogDebug(std::string("Got message with invalid format: ") + msg);
+        }
+        return;
+    }
+    m_chassis->logger->LogDebug(std::string("Got message with invalid format: ") + msg);
 }
 
-void MessageBrokerService::DoOnConnect(error_code ec, IServiceSession* session)
+void MessageBrokerService::DoOnConnect(error_code ec, IServiceSession*)
 {
     if (ec)
     {
@@ -89,7 +114,7 @@ void MessageBrokerService::DoOnConnect(error_code ec, IServiceSession* session)
     }
 }
 
-void MessageBrokerService::DoOnWrite(error_code ec, IServiceSession* session)
+void MessageBrokerService::DoOnWrite(error_code ec, IServiceSession*)
 {
     if (ec)
     {

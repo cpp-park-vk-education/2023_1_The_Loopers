@@ -1,6 +1,9 @@
 #pragma once
 
+#include "data_container.h"
 #include "inklink_global.h"
+
+#include <data_container.h>
 
 #include <memory>
 #include <unordered_map>
@@ -19,9 +22,10 @@ class IEventsHandler
 
 public:
     explicit IEventsHandler(std::unique_ptr<IBaseServiceChassis>&);
-
     virtual ~IEventsHandler() = default;
+    virtual bool Handle(const serializer::DataContainer&, const Endpoint& sender);
 
+protected:
     virtual void RemoveSubscriber(int, const Endpoint&);
     virtual void AddSubscriber(int, const Endpoint&);
     virtual void SendEvent(int, const std::string&);
