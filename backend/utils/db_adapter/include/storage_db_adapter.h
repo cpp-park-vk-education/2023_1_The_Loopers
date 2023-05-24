@@ -10,6 +10,10 @@ namespace inklink::db_adapter
 {
 class StorageDbAdapter final : public DbAdapterBase
 {
+public:
+    using DbRow = std::vector<std::string>;
+    using DbTable = std::vector<DbRow>;
+
     ~StorageDbAdapter() = default;
 
     void Connect(const std::string& connectionString) override;

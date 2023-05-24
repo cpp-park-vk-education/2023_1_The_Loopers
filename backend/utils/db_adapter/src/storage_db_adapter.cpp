@@ -8,9 +8,9 @@ void StorageDbAdapter::Connect(const std::string& connectionString)
     m_connection = std::make_shared<pqxx::connection>(connectionString);
 }
 
-std::shared_ptr<pqxx::connection> GetConnection()
+pqxx::connection GetConnection()
 {
-    return m_connection;
+    return *m_connection;
 }
 
 void StorageDbAdapter::Insert(const std::string& request, const std::string& argument1, const std::string& argument2,

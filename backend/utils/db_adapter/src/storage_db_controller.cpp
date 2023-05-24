@@ -12,13 +12,13 @@ void StorageDbController::Run(const std::string& connectionString)
 {
     m_adapter.Connect(connectionString);
 
-    std::shared_ptr<pqxx::connection> settings = m_adapter.GetConnection();
+    pqxx::connection settings = m_adapter.GetConnection();
 
-    settings->prepare("GetFilePath",
+    settings.prepare("GetFilePath",
                      "SELECT filePath FROM Files "
                      "WHERE fileName = $1 AND login = $2 AND Deleted_at IS NULL");
 
-    settings->prepare("GetGraphArcs",
+    settings.prepare("GetGraphArcs",
                      "SELECT Name FROM Files "
                      "WHERE Id IN "
                      "(SELECT Graph.Id_Second FROM Graph JOIN Files "
@@ -27,21 +27,21 @@ void StorageDbController::Run(const std::string& connectionString)
                      "(SELECT Id FROM Sessions "
                      "WHERE RootId = (SELECT Id FROM Files WHERE Login = $2 AND Name = $3))) AND Deleted_at IS NULL");
 
-    settings->prepare("GetAllFilesForUser", "SELECT Names FROM Files WHERE Login = $1 AND Deleted_at IS NULL");
+    settings.prepare("GetAllFilesForUser", "SELECT Names FROM Files WHERE Login = $1 AND Deleted_at IS NULL");
 
-    settings->prepare("InsertFile", "INSERT INTO Files(Name, Login, Path) VALUES ($1, $2, $3)");
+    settings.prepare("InsertFile", "INSERT INTO Files(Name, Login, Path) VALUES ($1, $2, $3)");
 
-    settings->prepare("InsertNewSession",
+    settings.prepare("InsertNewSession",
                      "INSERT INTO Sessions VALUES ((SELECT Id FROM Files WHERE Login = $1 AND Name = $2))");
 
-    settings->prepare("InsertGraphArc",
+    settings.prepare("InsertGraphArc",
                      "INSERT INTO Graph VALUES "
                      "((SELECT Id FROM Files WHERE Login = $1 AND Name = $2), "
                      "(SELECT Id FROM Files WHERE Login = $1 AND Name = $3), "
                      "(SELECT Id FROM Sessions WHERE RootId = "
                      "(SELECT Id FROM Files WHERE Login = $1 AND Name = $4)))");
 
-    settings->prepare("SetFileDeleted",
+    settings.prepare("SetFileDeleted",
                      "UPDATE Files SET Deleted_at = CURRENT_TIMESTAMP WHERE Login = $1 AND Name = $2");
 }
 
