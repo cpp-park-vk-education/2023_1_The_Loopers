@@ -142,7 +142,7 @@ int SimultaneousAccessService::Run()
     return 0;
 }
 
-void SimultaneousAccessService::DoOnRead(const std::string& msg, error_code ec, IServiceSession* session)
+void SimultaneousAccessService::DoOnRead(const std::string& msg, error_code ec, IServiceSession* sessionFrom)
 {
     if (ec)
     {
@@ -158,95 +158,21 @@ void SimultaneousAccessService::DoOnRead(const std::string& msg, error_code ec, 
             throw InvalidMessageFormat();
         }
 
-        const auto& docId = msgData.AsString("document_id");
-
         if (msgData["action"].AsInt("action_type") == 0 /*auth*/)
         {
-            if (!m_usersCount.contains(docId))
-            {
-                m_usersCount[docId] = 0;
-            }
-            ++m_usersCount[docId];
-
-            if (!m_drawResolvers.contains(docId))
-            {
-                m_drawResolvers[docId] = std::shared_ptr(m_factory->GetDrawConflictResolver());
-            }
-
-            const auto actionsHistory = m_drawResolvers[docId]->GetHistory();
-
-            const auto sessions = m_chassis->baseServiceChassis->manager->GetSessionsByDocument(docId);
-            for (const auto& session : sessions)
-            {
-                for (const auto& action : actionsHistory)
-                {
-                    session->Send(JsonSerializer::SerializeAsString(action.data));
-                }
-            }
+            HandleNewUser(msgData, sessionFrom);
         }
         else if (msgData["action"].AsInt("action_type") == 14 /*end of session*/)
         {
-            --m_usersCount[docId];
-            if (m_usersCount[docId] == 0)
-            {
-                const auto actionsHistory = m_drawResolvers[docId]->GetHistory();
-                // TODO (a.novak) send signal with actions
-
-                m_drawResolvers.erase(docId);
-            }
+            HandleUserExit(msgData);
         }
         else if (IsDrawAction(msgData["action"].AsInt("action_type")))
         {
-            DrawAction action{};
-            action.type = GetActionType(msgData["action"].AsInt("action_type"));
-            action.time = std::chrono::system_clock::now();
-            action.figureId = msgData.AsInt("figure_id");
-            action.endpoint = session->GetClientEndpoint();
-            action.data = msgData;
-
-            // TODO delete (should not accept if not authorized)
-            if (!m_drawResolvers.contains(docId))
-            {
-                m_drawResolvers.push_back(std::shared_ptr(m_factory->GetDrawConflictResolver()));
-            }
-
-            const auto resolvedActions = m_drawResolvers[docId]->Resolve({action});
-
-            const auto sessions = m_chassis->baseServiceChassis->manager->GetSessionsByDocument(docId);
-            for (const auto& session : sessions)
-            {
-                for (const auto& action : resolvedActions)
-                {
-                    session->Send(JsonSerializer::SerializeAsString(action.data));
-                }
-            }
+            HandleDraw(msgData);
         }
         else
         {
-            TextAction action{};
-            action.type = GetActionType(msgData["action"].AsInt("action_type"));
-            action.time = std::chrono::system_clock::now();
-            action.figureId = msgData.AsInt("figure_id");
-            action.endpoint = session->GetClientEndpoint();
-            action.posStart = msgData["action"]["action_description"].AsInt("start_position");
-            action.posEnd = msgData["action"]["action_description"].AsInt("end_position");
-            action.data = msgData;
-
-            if (!m_textResolvers.contains(docId))
-            {
-                m_textResolvers.push_back(std::shared_ptr(m_factory->GetTextConflictResolver()));
-            }
-
-            const auto resolvedActions = m_textResolvers[docId]->Resolve({action});
-
-            const auto sessions = m_chassis->baseServiceChassis->manager->GetSessionsByDocument(docId);
-            for (const auto& session : sessions)
-            {
-                for (const auto& action : resolvedActions)
-                {
-                    session->Send(JsonSerializer::SerializeAsString(action.data));
-                }
-            }
+            HandleText(msgData);
         }
     }
     catch (const InvalidMessageFormat&)
@@ -273,13 +199,152 @@ void SimultaneousAccessService::DoOnWrite(error_code ec, IServiceSession*)
     }
 }
 
-void DoOnNotified(int, const std::string&, Endpoint)
+void SimultaneousAccessService::DoOnNotified(int, const std::string&, Endpoint)
 {
-    // TODO (a.novak)
+    return; // no known events to handle
 }
 
-void DoOnSignal(const std::string&)
+void SimultaneousAccessService::DoOnSignal(const std::string&)
 {
-    // TODO (a.novak)
+    return; // no known signals to handle
+}
+
+void SimultaneousAccessService::HandleNewUser(const DataContainer& msgData, IServiceSession* sessionFrom)
+{
+    const auto& docId = msgData.AsString("document_id");
+
+    if (!m_usersCount.contains(docId))
+    {
+        m_usersCount[docId] = 0;
+    }
+    ++m_usersCount[docId];
+
+    if (!m_drawResolvers.contains(docId))
+    {
+        m_drawResolvers[docId] = std::shared_ptr(m_factory->GetDrawConflictResolver());
+        m_textResolvers[docId] = std::shared_ptr(m_factory->GetTextConflictResolver());
+    }
+
+    const auto drawActionsHistory = m_drawResolvers[docId]->GetHistory();
+    const auto textActionsHistory = m_textResolvers[docId]->GetHistory();
+
+    auto sendDrawData{ContainerFromVectorOfDrawActions(drawActionsHistory)};
+    auto sendTextData{ContainerFromVectorOfTextActions(textActionsHistory)};
+
+    DataContainer sendMessage{};
+    sendMessage["draw_actions"] = sendDrawData;
+    sendMessage["text_actions"] = sendTextData;
+
+    sessionFrom->Send(JsonSerializer::SerializeAsString(sendMessage));
+}
+
+void SimultaneousAccessService::HandleUserExit(const DataContainer& msgData)
+{
+    const auto& docId = msgData.AsString("document_id");
+
+    --m_usersCount[docId];
+    if (m_usersCount[docId] == 0)
+    {
+        const auto drawActionsHistory = m_drawResolvers[docId]->GetHistory();
+        const auto textActionsHistory = m_textResolvers[docId]->GetHistory();
+
+        auto sendDrawData{ContainerFromVectorOfDrawActions(drawActionsHistory)};
+        auto sendTextData{ContainerFromVectorOfTextActions(textActionsHistory)};
+
+        DataContainer sendMessage{};
+        sendMessage["draw_actions"] = sendDrawData;
+        sendMessage["text_actions"] = sendTextData;
+
+        m_chassis->baseServiceChassis->signalBroker->Send(JsonSerializer::SerializeAsString(sendMessage));
+        m_drawResolvers.erase(docId);
+    }
+}
+
+void SimultaneousAccessService::HandleDraw(const DataContainer& msgData)
+{
+    const auto& docId = msgData.AsString("document_id");
+
+    DrawAction action{};
+    action.type = GetActionType(msgData["action"].AsInt("action_type"));
+    action.time = std::chrono::system_clock::now();
+    action.figureId = msgData.AsInt("figure_id");
+    action.endpoint = session->GetClientEndpoint();
+    action.data = msgData;
+
+    if (!m_drawResolvers.contains(docId))
+    {
+        m_drawResolvers.push_back(std::shared_ptr(m_factory->GetDrawConflictResolver()));
+    }
+
+    const auto resolvedActions = m_drawResolvers[docId]->Resolve({action});
+
+    const auto sessions = m_chassis->baseServiceChassis->manager->GetSessionsByDocument(docId);
+
+    auto sendData{ContainerFromVectorOfDrawActions(resolvedActions)};
+
+    for (const auto& session : sessions)
+    {
+        auto sessionLocked = session.lock();
+        if (sessionLocked)
+        {
+            sessionLocked->Send(JsonSerializer::SerializeAsString(sendData));
+        }
+    }
+}
+
+void SimultaneousAccessService::HandleText(const DataContainer& msgData)
+{
+    const auto& docId = msgData.AsString("document_id");
+
+    TextAction action{};
+    action.type = GetActionType(msgData["action"].AsInt("action_type"));
+    action.time = std::chrono::system_clock::now();
+    action.figureId = msgData.AsInt("figure_id");
+    action.endpoint = session->GetClientEndpoint();
+    action.posStart = msgData["action"]["action_description"].AsInt("start_position");
+    action.posEnd = msgData["action"]["action_description"].AsInt("end_position");
+    action.data = msgData;
+
+    if (!m_textResolvers.contains(docId))
+    {
+        m_textResolvers.push_back(std::shared_ptr(m_factory->GetTextConflictResolver()));
+    }
+
+    const auto resolvedActions = m_textResolvers[docId]->Resolve({action});
+
+    const auto sessions = m_chassis->baseServiceChassis->manager->GetSessionsByDocument(docId);
+
+    auto sendData{ContainerFromVectorOfTextActions(resolvedActions)};
+
+    for (const auto& session : sessions)
+    {
+        auto sessionLocked = session.lock();
+        if (sessionLocked)
+        {
+            sessionLocked->Send(JsonSerializer::SerializeAsString(sendData));
+        }
+    }
+}
+
+DataContainer SimultaneousAccessService::ContainerFromVectorOfDrawActions(const std::vector<DrawAction>& actions)
+{
+    DataContainer container{};
+    auto& dataArray = container.CreateArray();
+    for (const auto& action : actions)
+    {
+        dataArray.push_back(action.data);
+    }
+    return container;
+}
+
+DataContainer SimultaneousAccessService::ContainerFromVectorOTextActions(const std::vector<TextAction>& actions)
+{
+    DataContainer container{};
+    auto& dataArray = container.CreateArray();
+    for (const auto& action : actions)
+    {
+        dataArray.push_back(action.data);
+    }
+    return container;
 }
 } // namespace inklink::service_simultaneous_access

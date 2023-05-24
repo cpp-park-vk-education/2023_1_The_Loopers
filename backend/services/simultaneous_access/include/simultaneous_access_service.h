@@ -4,6 +4,7 @@
 #include "inklink_global.h"
 #include "itext_conflict_resolver.h"
 
+#include <data_container.h>
 #include <internal_sessions_manager.h>
 
 #include <boost/system/error_code.hpp>
@@ -46,6 +47,7 @@ private:
     using IDBAdapter = db_adapter::IDBAdapter;
     using IExternalServiceChassis = external_service_chassis::IExternalServiceChassis;
     using IServiceSession = server_network::IServiceSession;
+    using DataContainer = serializer::DataContainer;
 
     using error_code = boost::system::error_code;
 
@@ -59,8 +61,13 @@ private:
     void DoOnNotified(int eventType, const std::string&, Endpoint from);
     void DoOnSignal(const std::string&);
 
-    DrawAction ParseDrawAction(const std::string&, const Endpoint&);
-    DrawAction ParseTextAction(const std::string&, const Endpoint&);
+    void HandleNewUser(const DataContainer&, IServiceSession* sessionFrom);
+    void HandleUserExit(const DataContainer&);
+    void HandleDraw(const DataContainer&);
+    void HandleText(const DataContainer&);
+
+    DataContainer ContainerFromVectorOfDrawActions(const std::vector<DrawAction>&);
+    DataContainer ContainerFromVectorOTextActions(const std::vector<TextAction>&);
 
 private:
     std::unordered_map<std::string /*document id*/, std::map<time_point, DrawAction>> m_drawNotApplied;
