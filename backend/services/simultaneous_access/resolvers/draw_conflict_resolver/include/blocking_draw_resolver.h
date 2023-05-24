@@ -15,7 +15,7 @@ public:
 
     // kSelect should be passed each time => caller should track selections and
     // deselections and remember selections
-    void Resolve(std::vector<DrawAction>&) final;
+    void Resolve(std::vector<DrawAction>&) override;
 
 private:
     /// @brief stores selected figures and users by whom it was selected

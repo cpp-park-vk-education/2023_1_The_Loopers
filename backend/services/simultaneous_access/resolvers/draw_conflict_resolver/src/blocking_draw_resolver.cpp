@@ -27,6 +27,7 @@ void BlockingDrawResolver::Resolve(std::vector<DrawAction>& actions)
             resolvedActions.push_back(std::move(action));
             m_history.push_back(action);
             break;
+
         case ResolverActionType::kSelect:
             if (!m_userBySelectedFigure.contains(action.figureId))
             {
@@ -38,6 +39,7 @@ void BlockingDrawResolver::Resolve(std::vector<DrawAction>& actions)
                 resolvedActions.push_back(std::move(action));
             }
             break;
+
         case ResolverActionType::kDeselect:
             if (m_userBySelectedFigure.contains(action.figureId) &&
                 m_userBySelectedFigure[action.figureId] == action.endpoint)
@@ -46,6 +48,7 @@ void BlockingDrawResolver::Resolve(std::vector<DrawAction>& actions)
                 resolvedActions.push_back(std::move(action));
             }
             break;
+
         case ResolverActionType::kDeletion:
             if (m_userBySelectedFigure.contains(action.figureId) &&
                 m_userBySelectedFigure[action.figureId] == action.endpoint)
@@ -57,6 +60,7 @@ void BlockingDrawResolver::Resolve(std::vector<DrawAction>& actions)
                 m_history.push_back(action);
             }
             break;
+
         default:
             if (m_userBySelectedFigure.contains(action.figureId) &&
                 m_userBySelectedFigure[action.figureId] == action.endpoint)

@@ -8,7 +8,6 @@ PRIVATE
 
 set(PRIVATE_INCLUDE_DIRECTORIES
     "${UTILS_DIR}/include"
-    "protocol_decoder/include"
     "resolvers/draw_conflict_resolver/include"
     "resolvers/text_conflict_resolver/include"
     "resolvers_factory/include"
