@@ -3,6 +3,8 @@
 #include "ibase_service_chassis.h"
 #include "inklink_global.h"
 
+#include <data_container.h>
+
 #include <chrono>
 #include <memory>
 #include <string>
@@ -24,6 +26,17 @@ namespace inklink::service_registry
 class ServiceRegistry
 {
 public:
+    using DataContainer = serializer::DataContainer;
+
+public:
+    enum RegistryActionType
+    {
+        kRegister = 0,
+        kExit,
+        kGetServicesList
+    };
+
+public:
     int Run();
 
 private:
@@ -34,10 +47,16 @@ private:
 
     using time_point = std::chrono::time_point<std::chrono::system_clock>;
 
+private:
     void DoOnRead(const std::string&, error_code, IServiceSession*);
     void DoOnConnect(error_code, IServiceSession*);
     void DoOnWrite(error_code, IServiceSession*);
 
+    [[nodiscard]] DataContainer HandleRegisterQuery(const DataContainer&);
+    [[nodiscard]] DataContainer HandleExitQuery(const DataContainer&);
+    [[nodiscard]] DataContainer HandleGetServiceListQuery(const DataContainer&);
+
+private:
     std::unordered_map<ServiceType, std::vector<Endpoint>> m_services;
 
     // TODO (a.novak) from config file
