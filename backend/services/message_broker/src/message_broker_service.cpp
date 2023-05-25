@@ -133,4 +133,5 @@ void MessageBrokerService::DoOnWrite(error_code ec, IServiceSession*)
         m_chassis->logger->LogDebug(std::string("Got error from ... while writing. Error: ") + ec.what());
         return;
     }
+}
 } // namespace inklink::service_message_broker
