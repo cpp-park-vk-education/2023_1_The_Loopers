@@ -1,9 +1,9 @@
-#include <QApplication>
-#include <QWidget>
-#include <QPainter>
-#include <QMouseEvent>
-
 #include "Rectangle.hpp"
+
+#include <QApplication>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QWidget>
 
 RectangleDrawingWidget::RectangleDrawingWidget(QWidget *parent) : QWidget(parent)
 {
@@ -15,8 +15,8 @@ void RectangleDrawingWidget::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing); // Сглаживание
 
-                                                   // Рисуем все сохраненные прямоугольники
-    for (const auto& rectangle : rectangles)
+    // Рисуем все сохраненные прямоугольники
+    for (const auto &rectangle : rectangles)
     {
         painter.drawRect(rectangle);
     }
@@ -42,7 +42,7 @@ void RectangleDrawingWidget::mouseMoveEvent(QMouseEvent *event)
         endPoint = event->pos();
 
         // Обновляем размеры последнего прямоугольника в коллекции
-        QRect& lastRectangle = rectangles.back();
+        QRect &lastRectangle = rectangles.back();
         lastRectangle.setBottomRight(endPoint);
 
         update(); // Перерисовываем холст

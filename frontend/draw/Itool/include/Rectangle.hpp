@@ -1,7 +1,7 @@
 #include <QApplication>
-#include <QWidget>
-#include <QPainter>
 #include <QMouseEvent>
+#include <QPainter>
+#include <QWidget>
 
 class RectangleDrawingWidget : public QWidget
 {
@@ -17,6 +17,6 @@ protected:
 
 private:
     std::vector<QRect> rectangles; // Коллекция прямоугольников
-    QPoint startPoint; // Начальная точка
-    QPoint endPoint; // Конечная точка
+    QPoint startPoint;             // Начальная точка
+    QPoint endPoint;               // Конечная точка
 };
