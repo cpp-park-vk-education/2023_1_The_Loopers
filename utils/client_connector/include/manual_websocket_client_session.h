@@ -98,15 +98,13 @@ inline ManualWebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback
         ReadCallback readCallback, 
         WriteCallback writeCallback, 
         CloseCallback closeCallback)
-        : m_timer{ioc}, 
+        : m_socket{ioc, {boost::asio::ip::address::from_string(address), port}},
+          m_timer{ioc}, 
           m_connectCallback{connectCallback}, 
           m_readCallback{readCallback},
           m_writeCallback{writeCallback}, 
           m_closeCallback{closeCallback}
 {
-    const boost::asio::ip::tcp::endpoint localEndpoint(boost::asio::ip::address::from_string(address), port);
-    // do not really need strand here, and I'm not sure can be socket constructed using strand
-    m_socket = boost::asio::ip::tcp::socket(ioc, localEndpoint);
 }
 // clang-format on
 
