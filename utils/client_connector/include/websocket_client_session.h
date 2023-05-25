@@ -227,7 +227,7 @@ WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallba
     m_host = host;
 
     // Look up the domain name
-    m_resolver.async_resolve(host, port,
+    m_resolver.async_resolve(host, std::to_string(port),
                              beast::bind_front_handler(&WebsocketClientSession::OnResolve, this->shared_from_this()));
 }
 
