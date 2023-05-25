@@ -27,11 +27,12 @@ concept StringErrorCodeCallbackConcept =
         };
 
 template <typename T>
-concept ConnectTypeErrorCodeCallbackConcept = requires(T&& t, ConnectType ct, boost::system::error_code ec) {
-    {
-        std::forward<T>(t)(ct, ec)
-    } -> std::same_as<void>;
-};
+concept ConnectTypeErrorCodeCallbackConcept =
+        requires(T&& t, ConnectType ct, boost::system::error_code ec, IClientSession* session) {
+            {
+                std::forward<T>(t)(ct, ec)
+            } -> std::same_as<void>;
+        };
 
 template <typename T>
 concept ErrorCodeCallbackConcept = requires(T&& t, boost::system::error_code ec) {
