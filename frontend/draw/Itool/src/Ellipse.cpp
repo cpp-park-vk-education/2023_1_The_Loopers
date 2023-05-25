@@ -14,8 +14,7 @@ void EllipseDrawingWidget::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing); // Сглаживание
 
-                                                   // Рисуем все сохраненные эллипсы
-    for (const auto& ellipse : ellipses)
+    for (const auto& ellipse : ellipses) // Рисуем все сохранённые эллипсы
     {
         painter.drawEllipse(ellipse);
     }
