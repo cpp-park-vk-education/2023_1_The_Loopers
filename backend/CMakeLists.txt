@@ -11,3 +11,4 @@ add_subdirectory(utils/external_service_chassis)
 add_subdirectory(utils/service_chassis_configurators)
 
 add_subdirectory(services/simultaneous_access)
+add_subdirectory(services/service_registry)
