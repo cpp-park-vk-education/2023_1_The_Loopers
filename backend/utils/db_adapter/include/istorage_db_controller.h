@@ -12,6 +12,7 @@ public:
     using DbRow = std::vector<std::string>;
     using DbTable = std::vector<DbRow>;
 
+public:
     virtual void SetAdapter(DbAdapterBase& adapter) = 0;
 
     virtual void Run(const std::string& connectionString) = 0;
