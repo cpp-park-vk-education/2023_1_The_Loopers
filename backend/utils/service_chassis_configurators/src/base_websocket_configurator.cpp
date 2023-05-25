@@ -15,6 +15,7 @@
 #include <chrono>
 #include <exception>
 #include <functional>
+#include <iostream>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -58,6 +59,7 @@ constexpr std::chrono::seconds kDelay{1s};
     auto logger = std::make_shared<inklink::base_service_chassis::SpdlogAdapter>();
     logger->SetFile(loggerName, logFilePath.string());
     logger->SetLevel(inklink::base_service_chassis::LogLevel::kDebug);
+    logger->LogDebug("Logger has been set");
     return logger;
 }
 
@@ -87,6 +89,7 @@ void AddServiceRegistrator(std::unique_ptr<IBaseServiceChassis>& chassis, Servic
     chassis->registrator = std::make_unique<WebsocketServiceRegistrator>(chassis->logger);
     if (!chassis->registrator->Register(typeSelf, endpointSelf))
     {
+        std::cout << "Unable to register in registry on startup!" << __LINE__ << std::endl;
         chassis->logger->LogCritical("Unable to register in registry on startup! Stopping.");
         throw std::runtime_error("Unable to register in registry on startup! Stopping.");
     }
@@ -152,6 +155,8 @@ BaseChassisWebsocketConfigurator::CreateAndInitializeFullChassis(
     // add connection to msg broker
     AddMsgBrokerConnection(chassis, typeSelf, endpointSelf, notifiedCallback, readCallback);
 
+    std::cout << "AddMsgBrokerConnection" << __LINE__ << std::endl;
+
     return chassis;
 }
 
@@ -175,6 +180,8 @@ BaseChassisWebsocketConfigurator::CreateAndInitializeChassisWithoutMsgBroker(
     // register at service registry
     AddServiceRegistrator(chassis, typeSelf, endpointSelf);
 
+    std::cout << "AddServiceRegistrator" << __LINE__ << std::endl;
+
     return chassis;
 }
 
@@ -196,10 +203,16 @@ BaseChassisWebsocketConfigurator::CreateAndInitializeChassisWithoutRegistratorAn
     // first configure logger
     chassis->logger = CreateLogger(loggerName, logFilePath);
 
+    std::cout << "Logger created" << __LINE__ << std::endl;
+
     chassis->internalSessionsManager = manager;
+
+    std::cout << "Manager set" << __LINE__ << std::endl;
 
     // start listening network
     AddListener(chassis, ioContext, std::move(factory), endpointSelf);
+
+    std::cout << "Listener added" << __LINE__ << std::endl;
 
     // no service registrator
 
@@ -207,6 +220,8 @@ BaseChassisWebsocketConfigurator::CreateAndInitializeChassisWithoutRegistratorAn
 
     // add local service registry
     chassis->localServiceRegistry = std::make_unique<LocalServiceRegistry>();
+
+    std::cout << "Add service registry" << __LINE__ << std::endl;
 
     return chassis;
 }

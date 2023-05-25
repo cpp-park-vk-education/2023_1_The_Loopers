@@ -31,7 +31,7 @@ using error_code = boost::system::error_code;
 using time_point = std::chrono::time_point<std::chrono::system_clock>;
 
 // comments as in simultaneous access
-constexpr const char* kLogPathPrefix = "inklink/service_registry/service_registry";
+constexpr const char* kLogPathPrefix = "inklink/service_registry/";
 
 class InvalidMessageException
 {
@@ -75,11 +75,11 @@ int ServiceRegistry::Run()
     std::filesystem::create_directories(kLogPathPrefix);
     // TODO (a.novak) add time to file name. For some reason, std format does not work
     //     const auto startTime = std::chrono::system_clock::now();
-    const std::string logPath{std::string(kLogPathPrefix) + "_.txt"};
+    const std::string logPath{std::string(kLogPathPrefix) + "service_registry_.txt"};
     //      + std::format("{:%Y_%m_%d_%H_%M}", startTime) + ".txt"};
     // clang-format off
     m_chassis = chassis_configurator::BaseChassisWebsocketConfigurator::
-            CreateAndInitializeChassisWithoutRegistratorAndMsgBroker("simultaneous access", logPath, 
+            CreateAndInitializeChassisWithoutRegistratorAndMsgBroker("service registry", logPath, 
                                                                       ioContext, std::move(factory), manager,
                                                                      {.address = m_address, .port = m_port});
     // clang-format on

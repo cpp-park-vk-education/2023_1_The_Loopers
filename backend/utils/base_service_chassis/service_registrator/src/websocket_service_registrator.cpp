@@ -8,6 +8,7 @@
 
 #include <chrono>
 #include <exception>
+#include <iostream>
 #include <stdexcept>
 #include <thread>
 
@@ -50,6 +51,8 @@ WebsocketServiceRegistrator::WebsocketServiceRegistrator(std::shared_ptr<ILogger
     };
 
     auto onReadFunctor = [this](const std::string& msg, error_code ec, IClientSession*) { this->DoOnRead(msg, ec); };
+
+    std::cout << "Unable to register in registry on startup!" << __LINE__ << std::endl;
 
     auto session = std::make_shared<
             client_connector::WebsocketClientSession<decltype(onAcceptFunctor), decltype(onReadFunctor)>>(
