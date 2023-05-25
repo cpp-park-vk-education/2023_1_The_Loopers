@@ -13,9 +13,10 @@
 
 namespace
 {
+using namespace std::chrono_literals;
 using IClientSession = inklink::client_connector::IClientSession;
 using error_code = boost::system::error_code;
-using ConnectType = client_connector::ConnectType;
+using ConnectType = inklink::client_connector::ConnectType;
 } // namespace
 
 namespace inklink::base_service_chassis
@@ -47,9 +48,10 @@ WebsocketServiceRegistrator::WebsocketServiceRegistrator(std::shared_ptr<ILogger
         }
     };
 
-    auto onReadFunctor = [this](const std::string& msg, error_code ec) { this->DoOnRead(msg, ec); };
+    auto onReadFunctor = [this](const std::string& msg, error_code ec, IClientSession*) { this->DoOnRead(msg, ec); };
 
-    auto session = std::make_shared<WebsocketClientSession<decltype(onAcceptFunctor), decltype(onReadFunctor)>>(
+    auto session = std::make_shared<
+            client_connector::WebsocketClientSession<decltype(onAcceptFunctor), decltype(onReadFunctor)>>(
             m_ioContext, onAcceptFunctor, onReadFunctor);
     session->RunAsync(m_serviceRegistryAddress, m_serviceRegistryPort);
     m_connectionToRegistry = session;
