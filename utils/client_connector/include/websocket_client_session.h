@@ -147,8 +147,8 @@ public:
     // clang-format off
     explicit WebsocketClientSession(
             boost::asio::io_context&, 
-            ConnectCallback = [](ConnectType, boost::system::error_code) {},
-            ReadCallback = [](const std::string&, boost::system::error_code) {},
+            ConnectCallback = [](ConnectType, boost::system::error_code, IClientSession*) {},
+            ReadCallback = [](const std::string&, boost::system::error_code, IClientSession*) {},
             WriteCallback = [](boost::system::error_code) {}, 
             CloseCallback = [](boost::system::error_code) {});
     // clang-format on
@@ -307,7 +307,7 @@ template <ConnectTypeErrorCodeCallbackConcept ConnectCallback, StringErrorCodeCa
 inline void WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallback>::OnResolve(
         error_code ec, net::ip::tcp::resolver::results_type results)
 {
-    m_connectCallback(ConnectType::kResolve, ec);
+    m_connectCallback(ConnectType::kResolve, ec, this);
     if (ec)
     {
         return;
@@ -327,7 +327,7 @@ template <ConnectTypeErrorCodeCallbackConcept ConnectCallback, StringErrorCodeCa
 inline void WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallback>::OnConnect(
         error_code ec, net::ip::tcp::resolver::results_type::endpoint_type ep)
 {
-    m_connectCallback(ConnectType::kConnect, ec);
+    m_connectCallback(ConnectType::kConnect, ec, this);
     if (ec)
     {
         return;
@@ -360,7 +360,7 @@ template <ConnectTypeErrorCodeCallbackConcept ConnectCallback, StringErrorCodeCa
 inline void
 WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallback>::OnHandshake(error_code ec)
 {
-    m_connectCallback(ConnectType::kHandshake, ec);
+    m_connectCallback(ConnectType::kHandshake, ec, this);
     if (ec)
     {
         return;
@@ -413,7 +413,7 @@ template <ConnectTypeErrorCodeCallbackConcept ConnectCallback, StringErrorCodeCa
 inline void WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallback>::OnRead(error_code ec,
                                                                                                         std::size_t)
 {
-    m_readCallback(beast::buffers_to_string(m_readBuffer.data()), ec);
+    m_readCallback(beast::buffers_to_string(m_readBuffer.data()), ec, this);
     if (ec)
     {
         return;
