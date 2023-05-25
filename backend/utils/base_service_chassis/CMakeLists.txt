@@ -7,6 +7,7 @@ target_sources(${BASE_SERVICE_CHASSIS} PRIVATE
     "local_service_registry/src/local_service_registry.cpp"
     "message_broker_connector/src/icommon_connection.cpp"
     "message_broker_connector/src/websocket_common_connection.cpp"
+    "service_registrator/src/websocket_service_registrator.cpp"
 )
 
 set(PUBLIC_INCLUDE_DIRECTORIES
@@ -16,7 +17,7 @@ set(PUBLIC_INCLUDE_DIRECTORIES
     "local_service_registry/include"
     "logger_adapter/include"
     "message_broker_connector/include"
-    "service_registator/include"
+    "service_registrator/include"
 )
 
 target_include_directories(${BASE_SERVICE_CHASSIS} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
