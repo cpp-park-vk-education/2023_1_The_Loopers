@@ -41,11 +41,11 @@ void WebsocketCommonConnection::ChangeConnection(ServiceType type, const Endpoin
         sessionOld->Close();
     }
 
-    auto onAccept = [this](ConnectType type, error_code ec, IClientSession* session)
+    auto onAccept = [this](ConnectType type, error_code ec)
     {
         for (auto callback : m_acceptCallbacks)
         {
-            callback(type, ec, session);
+            callback(type, ec);
         }
     };
     auto onRead = [this](const std::string& str, error_code ec, IClientSession* session)
@@ -63,7 +63,8 @@ void WebsocketCommonConnection::ChangeConnection(ServiceType type, const Endpoin
         }
     };
 
-    auto session = std::make_shared<WebsocketClientSession<decltype(onAccept), decltype(onRead), decltype(onWrite)>>(
+    auto session = std::make_shared<
+            client_connector::ManualWebsocketClientSession<decltype(onAccept), decltype(onRead), decltype(onWrite)>>(
             m_ioContext, self.address, self.port, onAccept, onRead, onWrite);
     session->RunAsync(other.address, other.port);
     m_session = session;
