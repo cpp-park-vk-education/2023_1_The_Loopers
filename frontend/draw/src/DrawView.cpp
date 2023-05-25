@@ -1,28 +1,104 @@
 #include "DrawView.h"
 
+#include <QPainter>
+#include <QWidget>
+
 namespace inklink::draw
 {
-void DrawView::mousePressEvent(QMouseEvent *event)
+DrawView::DrawView(QWidget* parent) : QWidget(parent)
+{
+    resize(1280, 720);
+    setAutoFillBackground(true);
+}
+
+void DrawView::mousePressEvent(QMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton)
     {
-        drawing = true;
-        lastPoint = event->pos();
+        m_currentLine.clear();
+        m_currentLine.append(event->pos());
     }
     if (event->button() == Qt::RightButton)
     {
-        if (!objects.empty())
+        for (QPolygonF& polygon : m_polygons)
         {
-            for (auto &object : objects)
+            if (polygon.boundingRect().contains(event->pos()))
             {
-                if (object->contains(event->pos()))
-                {
-                    selectedObject = object;
-                    lastOffset = event->pos() - object->pos();
-                    break;
-                }
+                m_selectedPolygon = &polygon;
+                m_offset = polygon.boundingRect().topLeft() - event->pos();
+                break;
             }
         }
     }
 }
+
+void DrawView::mouseMoveEvent(QMouseEvent* event)
+{
+    if (event->buttons() & Qt::LeftButton)
+    {
+        m_currentLine.append(event->pos());
+        update();
+    }
+    if (event->buttons() & Qt::RightButton && m_selectedPolygon != nullptr)
+    {
+        m_selectedPolygon->translate(event->pos() + m_offset - m_selectedPolygon->boundingRect().topLeft());
+        update();
+    }
+}
+
+void DrawView::mouseReleaseEvent(QMouseEvent* event)
+{
+    if (event->button() == Qt::LeftButton)
+    {
+        if (!m_currentLine.isEmpty())
+        {
+            m_polygons.append(m_currentLine);
+            m_currentLine.clear();
+            update();
+        }
+    }
+    if (event->button() == Qt::RightButton)
+    {
+        m_selectedPolygon = nullptr;
+    }
+}
+
+void DrawView::paintEvent(QPaintEvent* event)
+{
+    Q_UNUSED(event);
+
+    QPainter painter(this);
+
+    painter.fillRect(rect(), QColor(30, 30, 30)); // Background | should be variable
+
+    painter.setPen(QPen(QColor(218, 218, 218), 3, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    painter.setRenderHint(QPainter::Antialiasing);
+
+    int pointSize = 70;
+    for (int x = 0; x < width(); x += pointSize)
+    {
+        for (int y = 0; y < height(); y += pointSize)
+        {
+            painter.drawPoint(x, y);
+        }
+    }
+
+    for (const QPolygonF& polygon : m_polygons)
+    {
+        painter.drawPolyline(polygon);
+    }
+
+    if (!m_currentLine.isEmpty())
+    {
+        painter.setPen(Qt::blue);
+        painter.drawPolyline(m_currentLine);
+    }
+
+    if (m_selectedPolygon != nullptr)
+    {
+        painter.setPen(Qt::red);
+        painter.drawRect(m_selectedPolygon->boundingRect());
+    }
+}
+
 } // namespace inklink::draw
