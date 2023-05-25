@@ -17,6 +17,7 @@ using namespace std::chrono_literals;
 using IClientSession = inklink::client_connector::IClientSession;
 using error_code = boost::system::error_code;
 using ConnectType = inklink::client_connector::ConnectType;
+;
 } // namespace
 
 namespace inklink::base_service_chassis
