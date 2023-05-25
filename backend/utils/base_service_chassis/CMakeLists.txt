@@ -4,6 +4,7 @@ target_sources(${BASE_SERVICE_CHASSIS} PRIVATE
     "internal_sessions_manager/src/internal_sessions_manager.cpp"
     "logger_adapter/src/ilogger.cpp"
     "logger_adapter/src/spdlog_adapter.cpp"
+    "local_service_registry/src/local_service_registry.cpp"
 )
 
 set(PUBLIC_INCLUDE_DIRECTORIES
