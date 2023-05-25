@@ -41,11 +41,11 @@ void WebsocketCommonConnection::ChangeConnection(ServiceType type, const Endpoin
         sessionOld->Close();
     }
 
-    auto onAccept = [this](ConnectType type, error_code ec)
+    auto onAccept = [this](ConnectType type, error_code ec, IClientSession* session)
     {
         for (auto callback : m_acceptCallbacks)
         {
-            callback(type, ec);
+            callback(type, ec, session);
         }
     };
     auto onRead = [this](const std::string& str, error_code ec, IClientSession* session)
