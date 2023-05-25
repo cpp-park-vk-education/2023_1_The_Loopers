@@ -8,37 +8,39 @@
 #include <QString>
 #include <QWidget>
 
-
-class AuthDialog : public QDialog {
-    //    Q_OBJECT
+namespace inklink::auth
+{
+class AuthDialog : public QDialog
+{
 public:
     AuthDialog(QWidget *parent = nullptr);
 
-    ~AuthDialog() {}
+    ~AuthDialog() = default;
+
+private:
+    void OnPushButtonLogin();
+
+    void OnPushButtonCreate();
 
 private:
     QLineEdit *usernameLine;
     QLineEdit *passwordLine;
-private slots:
-
-    void OnPushButtonLogin();
-
-    void CreatePushButton();
 };
 
-class LoginDialog : public QDialog {
-    //    Q_OBJECT
+class LoginDialog : public QDialog
+{
 public:
     LoginDialog(QWidget *parent = nullptr);
 
-    ~LoginDialog() {}
+    ~LoginDialog() = default;
+
+private:
+    void OnPushButtonRegistration();
+
+    void OnPushButtonEnter();
 
 private:
     QLineEdit *usernameLine;
     QLineEdit *passwordLine;
-private slots:
-
-    void OnPushButtonRegistration();
-
-    void EnterPushButton();
 };
+} // namespace inklink::auth

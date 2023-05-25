@@ -1,16 +1,19 @@
-#include "AuthModel.hpp"
 #include "AuthView.hpp"
+
+#include "AuthModel.hpp"
 
 #include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
-#include <QPushButton>
 #include <QMessageBox>
+#include <QPushButton>
 #include <QVBoxLayout>
 #include <QWidget>
 
-
-AuthDialog::AuthDialog(QWidget *parent) : QDialog(parent) {
+namespace inklink::auth
+{
+AuthDialog::AuthDialog(QWidget *parent) : QDialog(parent)
+{
     setWindowTitle("Registration");
 
     setFixedSize(300, 200);
@@ -18,23 +21,23 @@ AuthDialog::AuthDialog(QWidget *parent) : QDialog(parent) {
     usernameLine = new QLineEdit(this);
     passwordLine = new QLineEdit(this);
 
-    QLabel *usernameLabel = new QLabel(tr("Username"), this);
-    QLabel *passwordLabel = new QLabel(tr("Password"), this);
+    auto *usernameLabel = new QLabel(tr("Username"), this);
+    auto *passwordLabel = new QLabel(tr("Password"), this);
 
-    QPushButton *acceptButton = new QPushButton(tr("Registrate"), this);
+    auto *acceptButton = new QPushButton(tr("Registrate"), this);
     acceptButton->setAutoDefault(false);
-    connect(acceptButton, &QPushButton::clicked, this, &AuthDialog::CreatePushButton);
+    connect(acceptButton, &QPushButton::clicked, this, &AuthDialog::OnPushButtonCreate);
 
-    QPushButton *loginButton = new QPushButton(tr("Log in"), this);
+    auto *loginButton = new QPushButton(tr("Log in"), this);
     loginButton->setAutoDefault(false);
     connect(loginButton, &QPushButton::clicked, this, &AuthDialog::OnPushButtonLogin);
 
-    QHBoxLayout *buttonsLayout = new QHBoxLayout;
+    auto *buttonsLayout = new QHBoxLayout;
     buttonsLayout->setAlignment(Qt::AlignCenter);
     buttonsLayout->addWidget(acceptButton);
     buttonsLayout->addWidget(loginButton);
 
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    auto *mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(usernameLabel);
     mainLayout->addWidget(usernameLine);
 
@@ -46,13 +49,15 @@ AuthDialog::AuthDialog(QWidget *parent) : QDialog(parent) {
     setLayout(mainLayout);
 }
 
-void AuthDialog::OnPushButtonLogin() {
+void AuthDialog::OnPushButtonLogin()
+{
     auto login = new LoginDialog(this);
     close();
     login->show();
 }
 
-void AuthDialog::CreatePushButton() {
+void AuthDialog::OnPushButtonCreate()
+{
     std::string username;
     std::string password;
 
@@ -62,20 +67,26 @@ void AuthDialog::CreatePushButton() {
     username = usernameEnter.toStdString();
     password = passwordEnter.toStdString();
 
+    auto *authModel = new AuthModel;
 
-    if (username.empty()) {
+    if (username.empty())
+    {
         QMessageBox::warning(this, usernameEnter, "Enter username");
-    } else if (password.empty()) {
+    }
+    else if (password.empty())
+    {
         QMessageBox::warning(this, passwordEnter, "Enter password");
     }
-    //Закомменченный кусок не хочет работать
-    //    else if(!CreateUser(username, password)){
-    //        QMessageBox::warning(this, usernameEnter, "Existing username");
-    //    }
-    else close();
+    else if (!authModel->CreateUser(username, password))
+    {
+        QMessageBox::warning(this, usernameEnter, "Existing username");
+    }
+    else
+        close();
 }
 
-LoginDialog::LoginDialog(QWidget *parent) : QDialog(parent) {
+LoginDialog::LoginDialog(QWidget *parent) : QDialog(parent)
+{
     setWindowTitle("Login");
 
     setFixedSize(300, 200);
@@ -83,23 +94,23 @@ LoginDialog::LoginDialog(QWidget *parent) : QDialog(parent) {
     usernameLine = new QLineEdit(this);
     passwordLine = new QLineEdit(this);
 
-    QLabel *usernameLabel = new QLabel(tr("Username"), this);
-    QLabel *passwordLabel = new QLabel(tr("Password"), this);
+    auto *usernameLabel = new QLabel(tr("Username"), this);
+    auto *passwordLabel = new QLabel(tr("Password"), this);
 
-    QPushButton *acceptButton = new QPushButton(tr("Login"), this);
+    auto *acceptButton = new QPushButton(tr("Login"), this);
     acceptButton->setAutoDefault(false);
-    connect(acceptButton, &QPushButton::clicked, this, &LoginDialog::EnterPushButton);
+    connect(acceptButton, &QPushButton::clicked, this, &LoginDialog::OnPushButtonEnter);
 
-    QPushButton *registrationButton = new QPushButton(tr("Registrate"), this);
+    auto *registrationButton = new QPushButton(tr("Registrate"), this);
     registrationButton->setAutoDefault(false);
     connect(registrationButton, &QPushButton::clicked, this, &LoginDialog::OnPushButtonRegistration);
 
-    QHBoxLayout *buttonsLayout = new QHBoxLayout;
+    auto *buttonsLayout = new QHBoxLayout;
     buttonsLayout->setAlignment(Qt::AlignCenter);
     buttonsLayout->addWidget(acceptButton);
     buttonsLayout->addWidget(registrationButton);
 
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    auto *mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(usernameLabel);
     mainLayout->addWidget(usernameLine);
 
@@ -111,13 +122,15 @@ LoginDialog::LoginDialog(QWidget *parent) : QDialog(parent) {
     setLayout(mainLayout);
 }
 
-void LoginDialog::OnPushButtonRegistration() {
+void LoginDialog::OnPushButtonRegistration()
+{
     auto registration = new AuthDialog(this);
     close();
     registration->show();
 }
 
-void LoginDialog::EnterPushButton() {
+void LoginDialog::OnPushButtonEnter()
+{
     std::string username;
     std::string password;
 
@@ -127,14 +140,21 @@ void LoginDialog::EnterPushButton() {
     username = usernameEnter.toStdString();
     password = passwordEnter.toStdString();
 
-    if (username.empty()) {
+    auto *authModel = new AuthModel;
+
+    if (username.empty())
+    {
         QMessageBox::warning(this, usernameEnter, "Enter username");
-    } else if (password.empty()) {
+    }
+    else if (password.empty())
+    {
         QMessageBox::warning(this, passwordEnter, "Enter password");
     }
-    //    Закомменченный кусок не хочет работать
-    //    else if(!Login(username, password)){
-    //        QMessageBox::warning(this, usernameEnter, "Uncorrect username or password");
-    //    }
-    else close();
+    else if (!authModel->Login(username, password))
+    {
+        QMessageBox::warning(this, usernameEnter, "Uncorrect username or password");
+    }
+    else
+        close();
 }
+} // namespace inklink::auth
