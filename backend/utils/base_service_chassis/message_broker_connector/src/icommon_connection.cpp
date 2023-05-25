@@ -6,9 +6,9 @@ using IClientSession = inklink::client_connector::IClientSession;
 using ConnectType = inklink::client_connector::ConnectType;
 using error_code = boost::system::error_code;
 
-using AcceptFunctor = std::vector<std::function<void(ConnectType, error_code, IClientSession*)>>;
-using ReadFunctor = std::vector<std::function<void(const std::string&, error_code, IClientSession*)>>;
-using WriteFunctor = std::vector<std::function<void(error_code)>>;
+using AcceptFunctor = std::function<void(ConnectType, error_code, IClientSession*)>;
+using ReadFunctor = std::function<void(const std::string&, error_code, IClientSession*)>;
+using WriteFunctor = std::function<void(error_code)>;
 } // namespace
 
 namespace inklink::base_service_chassis
