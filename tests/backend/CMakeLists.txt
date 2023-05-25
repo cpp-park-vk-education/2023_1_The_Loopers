@@ -1,2 +1,3 @@
 add_subdirectory(utils/base_service_chassis)
+add_subdirectory(services/service_registry)
 add_subdirectory(services/simultaneous_access)
