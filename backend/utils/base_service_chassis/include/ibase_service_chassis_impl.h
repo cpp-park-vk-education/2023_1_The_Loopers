@@ -31,7 +31,6 @@ namespace inklink::base_service_chassis
  */
 struct IBaseServiceChassis
 {
-public:
     std::shared_ptr<ILogger> logger;
     std::weak_ptr<server_network::IListener> listener;
     std::unique_ptr<IServiceRegistrator> registrator;

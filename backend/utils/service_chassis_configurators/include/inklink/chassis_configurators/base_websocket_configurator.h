@@ -8,18 +8,22 @@
 #include <boost/asio.hpp>
 #include <boost/system/error_code.hpp>
 
+#include <filesystem>
 #include <functional>
 #include <memory>
 #include <string>
 
 namespace inklink::chassis_configurator
 {
-using namespace base_service_chassis;
 class BaseChassisWebsocketConfigurator
 {
 public:
     using io_context = boost::asio::io_context;
     using error_code = boost::system::error_code;
+
+    using InternalSessionsManager = base_service_chassis::InternalSessionsManager;
+    using IBaseServiceChassis = base_service_chassis::IBaseServiceChassis;
+    using ILogger = base_service_chassis::ILogger;
 
     using BeastWebsocketListener = server_network::BeastWebsocketListener;
     using ISessionsFactory = server_network::ISessionsFactory;
@@ -32,10 +36,10 @@ public:
     ~BaseChassisWebsocketConfigurator() = delete;
 
     // clang-format off
-    [[nodiscard]] static std::unique_ptr<IBaseServiceChassis>
+    [[nodiscard]] static std::unique_ptr<base_service_chassis::IBaseServiceChassis>
     CreateAndInitializeFullChassis(
         const std::string& loggerName, 
-        const std::string& logFilePath, 
+        const std::filesystem::path& logFilePath, 
         // TODO (a.novak) add in factory separate method SetSessionsManager (to be able to create factory without 
         // manager and pass it do not pass manager here)
         io_context& ioContext, 
@@ -50,7 +54,7 @@ public:
     [[nodiscard]] static std::unique_ptr<IBaseServiceChassis>
     CreateAndInitializeChassisWithoutMsgBroker(
         const std::string& loggerName, 
-        const std::string& logFilePath, 
+        const std::filesystem::path& logFilePath, 
         // TODO (a.novak) same as line 40
         io_context& ioContext, 
         std::unique_ptr<ISessionsFactory> factory, // for listener
@@ -62,7 +66,7 @@ public:
     [[nodiscard]] static std::unique_ptr<IBaseServiceChassis>
     CreateAndInitializeChassisWithoutRegistratorAndMsgBroker(
         const std::string& loggerName, 
-        const std::string& logFilePath, 
+        const std::filesystem::path& logFilePath, 
         // TODO (a.novak) same as line 40 (add in factory separate method SetSessionsManager)
         io_context& ioContext, 
         std::unique_ptr<ISessionsFactory> factory, // for listener
@@ -70,21 +74,5 @@ public:
         const Endpoint& endpointSelf
     );
     // clang-format on
-
-private:
-    [[nodiscard]] static std::shared_ptr<ILogger> CreateLogger(const std::string& loggerName,
-                                                               const std::string& logFilePath);
-
-    static void AddListener(const std::unique_ptr<IBaseServiceChassis>& chassis, io_context& ioContext,
-                            std::unique_ptr<ISessionsFactory> factory, const Endpoint& endpointSelf);
-
-    static void AddServiceRegistrator(std::unique_ptr<IBaseServiceChassis>& chassis, ServiceType typeSelf,
-                                      const Endpoint& endpointSelf);
-
-    static void AddMsgBrokerConnection(std::unique_ptr<IBaseServiceChassis>& chassis, ServiceType typeSelf,
-                                       const Endpoint& endpointSelf,
-                                       NotifiedFunctor notifiedCallback, // event from message broker
-                                       ReadFunctor readCallback          // signal from message broker
-    );
 };
 } // namespace inklink::chassis_configurator
