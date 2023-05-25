@@ -1,6 +1,5 @@
 #pragma once
 
-#include "data_container.h"
 #include "inklink_global.h"
 
 #include <data_container.h>
@@ -11,7 +10,7 @@
 
 namespace inklink::base_service_chassis
 {
-class IBaseServiceChassis;
+struct IBaseServiceChassis;
 }
 
 namespace inklink::service_message_broker

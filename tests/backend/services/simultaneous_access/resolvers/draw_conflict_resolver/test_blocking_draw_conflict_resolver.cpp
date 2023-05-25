@@ -1,9 +1,12 @@
 #include "blocking_draw_resolver.h"
 #include "inklink_global.h"
 
+#include <data_container.h>
+
+#include <gtest/gtest.h>
+
 #include <chrono>
 #include <format>
-#include <gtest/gtest.h>
 #include <vector>
 
 // TODO (a.novak) operator << overload for DrawAction
@@ -12,6 +15,8 @@ using namespace inklink;
 using namespace inklink::service_simultaneous_access;
 
 using namespace std::chrono_literals;
+
+using DataContainer = inklink::serializer::DataContainer;
 
 bool PredBlocking(const DrawAction& lhs, const DrawAction& rhs)
 {
@@ -44,207 +49,221 @@ protected:
 TEST_F(BlockingDrawConflictResolverTest, EmptyInput)
 {
     std::vector<DrawAction> expected;
-    auto actual = m_Resolver->Resolve(expected);
+    auto input = expected;
+    m_Resolver->Resolve(input);
 
-    EXPECT_EQ(actual.size(), 0);
+    EXPECT_EQ(input.size(), 0);
 }
 
 TEST_F(BlockingDrawConflictResolverTest, NoSelectionInput)
 {
     std::vector<DrawAction> input{
-            {ResolverActionType::kInsertion, "figure1", endpoint1, std::chrono::system_clock::now(), nullptr},
-            {ResolverActionType::kInsertion, "figure1", endpoint1, std::chrono::system_clock::now() - 5s, nullptr}};
+            {ResolverActionType::kInsertion, "figure1", endpoint1, std::chrono::system_clock::now(), DataContainer()},
+            {ResolverActionType::kInsertion, "figure1", endpoint1, std::chrono::system_clock::now() - 5s,
+             DataContainer()}};
 
     // result should be empty because there is no selection for endpoint1
     std::vector<DrawAction> expected;
-    auto actual = m_Resolver->Resolve(input);
+    m_Resolver->Resolve(input);
 
-    EXPECT_EQ(actual.size(), expected.size());
+    EXPECT_EQ(input.size(), expected.size());
 }
 
 TEST_F(BlockingDrawConflictResolverTest, OneUserGoodOtherNoSelectionDifferentFigures)
 {
     std::vector<DrawAction> input{
-            {ResolverActionType::kSelect, "figure1", endpoint1, std::chrono::system_clock::now() - 5s, nullptr},
-            {ResolverActionType::kInsertion, "figureOther", endpoint2, std::chrono::system_clock::now() - 3s, nullptr},
-            {ResolverActionType::kInsertion, "figure1", endpoint1, std::chrono::system_clock::now(), nullptr}};
+            {ResolverActionType::kSelect, "figure1", endpoint1, std::chrono::system_clock::now() - 5s, DataContainer()},
+            {ResolverActionType::kInsertion, "figureOther", endpoint2, std::chrono::system_clock::now() - 3s,
+             DataContainer()},
+            {ResolverActionType::kInsertion, "figure1", endpoint1, std::chrono::system_clock::now(), DataContainer()}};
 
     std::vector<DrawAction> expected{input[0], input[2]};
-    auto actual = m_Resolver->Resolve(input);
+    m_Resolver->Resolve(input);
 
-    ASSERT_EQ(actual.size(), expected.size());
-    for (size_t i = 0; i < actual.size(); ++i)
+    ASSERT_EQ(input.size(), expected.size());
+    for (size_t i = 0; i < input.size(); ++i)
     {
-        EXPECT_EQ(actual[i], expected[i])
-                << "Actual type " << (int)actual[i].type << " figure " << actual[i].figureId << " endpoint "
-                << actual[i].endpoint.address << " time " << actual[i].time.time_since_epoch().count() << " data ptr "
-                << actual[i].data << "\nExpected type " << (int)expected[i].type << " figure " << expected[i].figureId
-                << " endpoint " << expected[i].endpoint.address << " time "
-                << expected[i].time.time_since_epoch().count() << " data ptr " << expected[i].data;
+        EXPECT_EQ(input[i], expected[i]) << "Actual type " << (int)input[i].type << " figure " << input[i].figureId
+                                         << " endpoint " << input[i].endpoint.address << " time "
+                                         << input[i].time.time_since_epoch().count() << " data ptr "
+                                         << "\nExpected type " << (int)expected[i].type << " figure "
+                                         << expected[i].figureId << " endpoint " << expected[i].endpoint.address
+                                         << " time " << expected[i].time.time_since_epoch().count() << " data ptr ";
     }
 }
 
 TEST_F(BlockingDrawConflictResolverTest, OneUserGoodOtherNoSelectionOneFigure)
 {
     std::vector<DrawAction> input{
-            {ResolverActionType::kSelect, "figure1", endpoint1, std::chrono::system_clock::now() - 5s, nullptr},
-            {ResolverActionType::kInsertion, "figure1", endpoint2, std::chrono::system_clock::now() - 3s, nullptr},
-            {ResolverActionType::kInsertion, "figure1", endpoint1, std::chrono::system_clock::now(), nullptr}};
+            {ResolverActionType::kSelect, "figure1", endpoint1, std::chrono::system_clock::now() - 5s, DataContainer()},
+            {ResolverActionType::kInsertion, "figure1", endpoint2, std::chrono::system_clock::now() - 3s,
+             DataContainer()},
+            {ResolverActionType::kInsertion, "figure1", endpoint1, std::chrono::system_clock::now(), DataContainer()}};
 
     std::vector<DrawAction> expected{input[0], input[2]};
-    auto actual = m_Resolver->Resolve(input);
+    m_Resolver->Resolve(input);
 
-    ASSERT_EQ(actual.size(), expected.size());
-    for (size_t i = 0; i < actual.size(); ++i)
+    ASSERT_EQ(input.size(), expected.size());
+    for (size_t i = 0; i < input.size(); ++i)
     {
-        EXPECT_EQ(actual[i], expected[i])
-                << "Actual type " << (int)actual[i].type << " figure " << actual[i].figureId << " endpoint "
-                << actual[i].endpoint.address << " time " << actual[i].time.time_since_epoch().count() << " data ptr "
-                << actual[i].data << "\nExpected type " << (int)expected[i].type << " figure " << expected[i].figureId
-                << " endpoint " << expected[i].endpoint.address << " time "
-                << expected[i].time.time_since_epoch().count() << " data ptr " << expected[i].data;
+        EXPECT_EQ(input[i], expected[i]) << "Actual type " << (int)input[i].type << " figure " << input[i].figureId
+                                         << " endpoint " << input[i].endpoint.address << " time "
+                                         << input[i].time.time_since_epoch().count() << " data ptr "
+                                         << "\nExpected type " << (int)expected[i].type << " figure "
+                                         << expected[i].figureId << " endpoint " << expected[i].endpoint.address
+                                         << " time " << expected[i].time.time_since_epoch().count() << " data ptr ";
     }
 }
 
 TEST_F(BlockingDrawConflictResolverTest, NoDeselectSoFar)
 {
     std::vector<DrawAction> input = {
-            {ResolverActionType::kSelect, "figure1", endpoint1, std::chrono::system_clock::now() - 10s, nullptr},
-            {ResolverActionType::kInsertion, "figure1", endpoint1, std::chrono::system_clock::now() - 5s, nullptr},
-            {ResolverActionType::kFormat, "figure1", endpoint1, std::chrono::system_clock::now() - 3s, nullptr},
-            {ResolverActionType::kInsertion, "figure1", endpoint1, std::chrono::system_clock::now(), nullptr}};
+            {ResolverActionType::kSelect, "figure1", endpoint1, std::chrono::system_clock::now() - 10s,
+             DataContainer()},
+            {ResolverActionType::kInsertion, "figure1", endpoint1, std::chrono::system_clock::now() - 5s,
+             DataContainer()},
+            {ResolverActionType::kFormat, "figure1", endpoint1, std::chrono::system_clock::now() - 3s, DataContainer()},
+            {ResolverActionType::kInsertion, "figure1", endpoint1, std::chrono::system_clock::now(), DataContainer()}};
 
     std::vector<DrawAction> expected = input;
 
-    std::vector<DrawAction> actual = m_Resolver->Resolve(input);
+    m_Resolver->Resolve(input);
 
-    ASSERT_EQ(actual.size(), expected.size());
-    for (size_t i = 0; i < actual.size(); ++i)
+    ASSERT_EQ(input.size(), expected.size());
+    for (size_t i = 0; i < input.size(); ++i)
     {
-        EXPECT_EQ(actual[i], expected[i])
-                << "Actual type " << (int)actual[i].type << " figure " << actual[i].figureId << " endpoint "
-                << actual[i].endpoint.address << " time " << actual[i].time.time_since_epoch().count() << " data ptr "
-                << actual[i].data << "\nExpected type " << (int)expected[i].type << " figure " << expected[i].figureId
-                << " endpoint " << expected[i].endpoint.address << " time "
-                << expected[i].time.time_since_epoch().count() << " data ptr " << expected[i].data;
+        EXPECT_EQ(input[i], expected[i]) << "Actual type " << (int)input[i].type << " figure " << input[i].figureId
+                                         << " endpoint " << input[i].endpoint.address << " time "
+                                         << input[i].time.time_since_epoch().count() << " data ptr "
+                                         << "\nExpected type " << (int)expected[i].type << " figure "
+                                         << expected[i].figureId << " endpoint " << expected[i].endpoint.address
+                                         << " time " << expected[i].time.time_since_epoch().count() << " data ptr ";
     }
 }
 
 TEST_F(BlockingDrawConflictResolverTest, FullCycle)
 {
     std::vector<DrawAction> input = {
-            {ResolverActionType::kSelect, "figure1", endpoint1, std::chrono::system_clock::now() - 10s, nullptr},
-            {ResolverActionType::kInsertion, "figure1", endpoint1, std::chrono::system_clock::now() - 5s, nullptr},
-            {ResolverActionType::kFormat, "figure1", endpoint1, std::chrono::system_clock::now() - 3s, nullptr},
-            {ResolverActionType::kDeselect, "figure1", endpoint1, std::chrono::system_clock::now(), nullptr}};
+            {ResolverActionType::kSelect, "figure1", endpoint1, std::chrono::system_clock::now() - 10s,
+             DataContainer()},
+            {ResolverActionType::kInsertion, "figure1", endpoint1, std::chrono::system_clock::now() - 5s,
+             DataContainer()},
+            {ResolverActionType::kFormat, "figure1", endpoint1, std::chrono::system_clock::now() - 3s, DataContainer()},
+            {ResolverActionType::kDeselect, "figure1", endpoint1, std::chrono::system_clock::now(), DataContainer()}};
 
     std::vector<DrawAction> expected = input;
 
-    std::vector<DrawAction> actual = m_Resolver->Resolve(input);
+    m_Resolver->Resolve(input);
 
-    ASSERT_EQ(actual.size(), expected.size());
-    for (size_t i = 0; i < actual.size(); ++i)
+    ASSERT_EQ(input.size(), expected.size());
+    for (size_t i = 0; i < input.size(); ++i)
     {
-        EXPECT_EQ(actual[i], expected[i])
-                << "Actual type " << (int)actual[i].type << " figure " << actual[i].figureId << " endpoint "
-                << actual[i].endpoint.address << " time " << actual[i].time.time_since_epoch().count() << " data ptr "
-                << actual[i].data << "\nExpected type " << (int)expected[i].type << " figure " << expected[i].figureId
-                << " endpoint " << expected[i].endpoint.address << " time "
-                << expected[i].time.time_since_epoch().count() << " data ptr " << expected[i].data;
+        EXPECT_EQ(input[i], expected[i]) << "Actual type " << (int)input[i].type << " figure " << input[i].figureId
+                                         << " endpoint " << input[i].endpoint.address << " time "
+                                         << input[i].time.time_since_epoch().count() << " data ptr "
+                                         << "\nExpected type " << (int)expected[i].type << " figure "
+                                         << expected[i].figureId << " endpoint " << expected[i].endpoint.address
+                                         << " time " << expected[i].time.time_since_epoch().count() << " data ptr ";
     }
 }
 
 TEST_F(BlockingDrawConflictResolverTest, MultipleSelections)
 {
     std::vector<DrawAction> input = {
-            {ResolverActionType::kSelect, "figure1", endpoint1, std::chrono::system_clock::now() - 10s, nullptr},
-            {ResolverActionType::kSelect, "figure1", endpoint2, std::chrono::system_clock::now() - 5s, nullptr},
-            {ResolverActionType::kFormat, "figure1", endpoint1, std::chrono::system_clock::now() - 3s, nullptr},
-            {ResolverActionType::kDeselect, "figure1", endpoint1, std::chrono::system_clock::now(), nullptr}};
+            {ResolverActionType::kSelect, "figure1", endpoint1, std::chrono::system_clock::now() - 10s,
+             DataContainer()},
+            {ResolverActionType::kSelect, "figure1", endpoint2, std::chrono::system_clock::now() - 5s, DataContainer()},
+            {ResolverActionType::kFormat, "figure1", endpoint1, std::chrono::system_clock::now() - 3s, DataContainer()},
+            {ResolverActionType::kDeselect, "figure1", endpoint1, std::chrono::system_clock::now(), DataContainer()}};
 
     std::vector<DrawAction> expected = {input[0], input[2], input[3]};
 
-    std::vector<DrawAction> actual = m_Resolver->Resolve(input);
+    m_Resolver->Resolve(input);
 
-    ASSERT_EQ(actual.size(), expected.size());
-    for (size_t i = 0; i < actual.size(); ++i)
+    ASSERT_EQ(input.size(), expected.size());
+    for (size_t i = 0; i < input.size(); ++i)
     {
-        EXPECT_EQ(actual[i], expected[i])
-                << "Actual type " << (int)actual[i].type << " figure " << actual[i].figureId << " endpoint "
-                << actual[i].endpoint.address << " time " << actual[i].time.time_since_epoch().count() << " data ptr "
-                << actual[i].data << "\nExpected type " << (int)expected[i].type << " figure " << expected[i].figureId
-                << " endpoint " << expected[i].endpoint.address << " time "
-                << expected[i].time.time_since_epoch().count() << " data ptr " << expected[i].data;
+        EXPECT_EQ(input[i], expected[i]) << "Actual type " << (int)input[i].type << " figure " << input[i].figureId
+                                         << " endpoint " << input[i].endpoint.address << " time "
+                                         << input[i].time.time_since_epoch().count() << " data ptr "
+                                         << "\nExpected type " << (int)expected[i].type << " figure "
+                                         << expected[i].figureId << " endpoint " << expected[i].endpoint.address
+                                         << " time " << expected[i].time.time_since_epoch().count() << " data ptr ";
     }
 }
 
 TEST_F(BlockingDrawConflictResolverTest, OtherUserTriesSelectWhenBlocked)
 {
     std::vector<DrawAction> input = {
-            {ResolverActionType::kSelect, "figure1", endpoint1, std::chrono::system_clock::now() - 10s, nullptr},
-            {ResolverActionType::kSelect, "figure1", endpoint2, std::chrono::system_clock::now() - 5s, nullptr},
-            {ResolverActionType::kFormat, "figure1", endpoint1, std::chrono::system_clock::now() - 3s, nullptr}};
+            {ResolverActionType::kSelect, "figure1", endpoint1, std::chrono::system_clock::now() - 10s,
+             DataContainer()},
+            {ResolverActionType::kSelect, "figure1", endpoint2, std::chrono::system_clock::now() - 5s, DataContainer()},
+            {ResolverActionType::kFormat, "figure1", endpoint1, std::chrono::system_clock::now() - 3s,
+             DataContainer()}};
 
     std::vector<DrawAction> expected = {input[0], input[2]};
 
-    std::vector<DrawAction> actual = m_Resolver->Resolve(input);
+    m_Resolver->Resolve(input);
 
-    ASSERT_EQ(actual.size(), expected.size());
-    for (size_t i = 0; i < actual.size(); ++i)
+    ASSERT_EQ(input.size(), expected.size());
+    for (size_t i = 0; i < input.size(); ++i)
     {
-        EXPECT_EQ(actual[i], expected[i])
-                << "Actual type " << (int)actual[i].type << " figure " << actual[i].figureId << " endpoint "
-                << actual[i].endpoint.address << " time " << actual[i].time.time_since_epoch().count() << " data ptr "
-                << actual[i].data << "\nExpected type " << (int)expected[i].type << " figure " << expected[i].figureId
-                << " endpoint " << expected[i].endpoint.address << " time "
-                << expected[i].time.time_since_epoch().count() << " data ptr " << expected[i].data;
+        EXPECT_EQ(input[i], expected[i]) << "Actual type " << (int)input[i].type << " figure " << input[i].figureId
+                                         << " endpoint " << input[i].endpoint.address << " time "
+                                         << input[i].time.time_since_epoch().count() << " data ptr "
+                                         << "\nExpected type " << (int)expected[i].type << " figure "
+                                         << expected[i].figureId << " endpoint " << expected[i].endpoint.address
+                                         << " time " << expected[i].time.time_since_epoch().count() << " data ptr ";
     }
 }
 
 TEST_F(BlockingDrawConflictResolverTest, OtherUserSelectsAfterDeselect)
 {
     std::vector<DrawAction> input = {
-            {ResolverActionType::kSelect, "figure1", endpoint1, std::chrono::system_clock::now() - 10s, nullptr},
-            {ResolverActionType::kFormat, "figure1", endpoint1, std::chrono::system_clock::now() - 3s, nullptr},
-            {ResolverActionType::kDeselect, "figure1", endpoint1, std::chrono::system_clock::now() - 1s, nullptr},
-            {ResolverActionType::kSelect, "figure1", endpoint2, std::chrono::system_clock::now(), nullptr}};
+            {ResolverActionType::kSelect, "figure1", endpoint1, std::chrono::system_clock::now() - 10s,
+             DataContainer()},
+            {ResolverActionType::kFormat, "figure1", endpoint1, std::chrono::system_clock::now() - 3s, DataContainer()},
+            {ResolverActionType::kDeselect, "figure1", endpoint1, std::chrono::system_clock::now() - 1s,
+             DataContainer()},
+            {ResolverActionType::kSelect, "figure1", endpoint2, std::chrono::system_clock::now(), DataContainer()}};
 
     std::vector<DrawAction> expected = input;
 
-    std::vector<DrawAction> actual = m_Resolver->Resolve(input);
+    m_Resolver->Resolve(input);
 
-    ASSERT_EQ(actual.size(), expected.size());
-    for (size_t i = 0; i < actual.size(); ++i)
+    ASSERT_EQ(input.size(), expected.size());
+    for (size_t i = 0; i < input.size(); ++i)
     {
-        EXPECT_EQ(actual[i], expected[i])
-                << "Actual type " << (int)actual[i].type << " figure " << actual[i].figureId << " endpoint "
-                << actual[i].endpoint.address << " time " << actual[i].time.time_since_epoch().count() << " data ptr "
-                << actual[i].data << "\nExpected type " << (int)expected[i].type << " figure " << expected[i].figureId
-                << " endpoint " << expected[i].endpoint.address << " time "
-                << expected[i].time.time_since_epoch().count() << " data ptr " << expected[i].data;
+        EXPECT_EQ(input[i], expected[i]) << "Actual type " << (int)input[i].type << " figure " << input[i].figureId
+                                         << " endpoint " << input[i].endpoint.address << " time "
+                                         << input[i].time.time_since_epoch().count() << " data ptr "
+                                         << "\nExpected type " << (int)expected[i].type << " figure "
+                                         << expected[i].figureId << " endpoint " << expected[i].endpoint.address
+                                         << " time " << expected[i].time.time_since_epoch().count() << " data ptr ";
     }
 }
 
 TEST_F(BlockingDrawConflictResolverTest, UsersSelectsDifferentFiguresIsOk)
 {
     std::vector<DrawAction> input = {
-            {ResolverActionType::kSelect, "figure1", endpoint1, std::chrono::system_clock::now() - 10s, nullptr},
-            {ResolverActionType::kSelect, "figure2", endpoint2, std::chrono::system_clock::now() - 5s, nullptr},
-            {ResolverActionType::kFormat, "figure1", endpoint1, std::chrono::system_clock::now() - 3s, nullptr},
-            {ResolverActionType::kFormat, "figure2", endpoint2, std::chrono::system_clock::now(), nullptr}};
+            {ResolverActionType::kSelect, "figure1", endpoint1, std::chrono::system_clock::now() - 10s,
+             DataContainer()},
+            {ResolverActionType::kSelect, "figure2", endpoint2, std::chrono::system_clock::now() - 5s, DataContainer()},
+            {ResolverActionType::kFormat, "figure1", endpoint1, std::chrono::system_clock::now() - 3s, DataContainer()},
+            {ResolverActionType::kFormat, "figure2", endpoint2, std::chrono::system_clock::now(), DataContainer()}};
 
     std::vector<DrawAction> expected = input;
 
-    std::vector<DrawAction> actual = m_Resolver->Resolve(input);
+    m_Resolver->Resolve(input);
 
-    ASSERT_EQ(actual.size(), expected.size());
-    for (size_t i = 0; i < actual.size(); ++i)
+    ASSERT_EQ(input.size(), expected.size());
+    for (size_t i = 0; i < input.size(); ++i)
     {
-        EXPECT_EQ(actual[i], expected[i])
-                << "Actual type " << (int)actual[i].type << " figure " << actual[i].figureId << " endpoint "
-                << actual[i].endpoint.address << " time " << actual[i].time.time_since_epoch().count() << " data ptr "
-                << actual[i].data << "\nExpected type " << (int)expected[i].type << " figure " << expected[i].figureId
-                << " endpoint " << expected[i].endpoint.address << " time "
-                << expected[i].time.time_since_epoch().count() << " data ptr " << expected[i].data;
+        EXPECT_EQ(input[i], expected[i]) << "Actual type " << (int)input[i].type << " figure " << input[i].figureId
+                                         << " endpoint " << input[i].endpoint.address << " time "
+                                         << input[i].time.time_since_epoch().count() << " data ptr "
+                                         << "\nExpected type " << (int)expected[i].type << " figure "
+                                         << expected[i].figureId << " endpoint " << expected[i].endpoint.address
+                                         << " time " << expected[i].time.time_since_epoch().count() << " data ptr ";
     }
 }

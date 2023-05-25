@@ -11,14 +11,16 @@
 
 namespace inklink::base_service_chassis
 {
-class IBaseServiceChassis;
+struct IBaseServiceChassis;
 }
 
 namespace inklink::service_message_broker
 {
 class ISignalsHandler
 {
+public:
     using IBaseServiceChassis = base_service_chassis::IBaseServiceChassis;
+    using DataContainer = serializer::DataContainer;
 
 public:
     explicit ISignalsHandler(IBaseServiceChassis&);

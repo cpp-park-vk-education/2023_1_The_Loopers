@@ -1,13 +1,15 @@
 #include "ievents_handler.h"
 
+#include <data_container.h>
 #include <ibase_service_chassis.h>
 
 #include <json_serializer.h>
 
-namespace inklink::base_service_chassis
+namespace
 {
-class IBaseServiceChassis;
-}
+using DataContainer = inklink::serializer::DataContainer;
+using JsonSerializer = inklink::serializer::JsonSerializer;
+} // namespace
 
 namespace inklink::service_message_broker
 {
@@ -24,8 +26,8 @@ bool IEventsHandler::Handle(const serializer::DataContainer& msgData, const Endp
         newMsg["sender"]["port"] = static_cast<int>(sender.port);
         newMsg["event"] = msgData.AsInt("event");
         newMsg["message_body"] = msgData["message_body"];
-        newMsg["time"] = "now";
-        SendEvent(msgData.AsInt("event"), JsonParser::SerializeAsString(newMsg));
+        newMsg["time"] = std::string("now");
+        SendEvent(msgData.AsInt("event"), JsonSerializer::SerializeAsString(newMsg));
         return true;
     }
     if (msgData.Has("event") && msgData.Has("sender"))
@@ -59,7 +61,7 @@ void IEventsHandler::SendEvent(int eventType, const std::string& msg)
 {
     for (const auto& subscriber : m_subscribers[eventType])
     {
-        auto session = chassis.manager->GetSession(subscriber).lock();
+        auto session = m_serviceChassis.internalSessionsManager->GetSession(subscriber).lock();
         if (session)
         {
             session->Send(msg);

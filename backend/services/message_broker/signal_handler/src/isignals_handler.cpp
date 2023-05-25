@@ -7,6 +7,7 @@
 namespace
 {
 using IBaseServiceChassis = inklink::base_service_chassis::IBaseServiceChassis;
+using JsonSerializer = inklink::serializer::JsonSerializer;
 } // namespace
 
 namespace inklink::service_message_broker
@@ -23,21 +24,21 @@ bool ISignalsHandler::Handle(const DataContainer& msgData, const Endpoint& sende
         {
             return false;
         }
-        const Endpoint enpointTo{.address = msgData["receiver"].AsString("address"),
-                                 .port = static_cast<std::uint16_t>(msgData["receiver"].AsInt("port"))};
+        const Endpoint endpointTo{.address = msgData["receiver"].AsString("address"),
+                                  .port = static_cast<std::uint16_t>(msgData["receiver"].AsInt("port"))};
         DataContainer newMsg{};
         newMsg["sender"]["address"] = sender.address;
         newMsg["sender"]["port"] = static_cast<int>(sender.port);
         newMsg["message_body"] = msgData["message_body"];
-        newMsg["time"] = "now";
-        SendEvent(enpointTo, JsonParser::SerializeAsString(newMsg));
+        newMsg["time"] = std::string("now");
+        Send(endpointTo, JsonSerializer::SerializeAsString(newMsg));
         return true;
     }
 }
 
 void ISignalsHandler::Send(const Endpoint& endpoint, const std::string& msg)
 {
-    auto session = chassis.manager->GetSession(subscriber).lock();
+    auto session = m_serviceChassis.internalSessionsManager->GetSession(endpoint).lock();
     if (session)
     {
         session->Send(msg);

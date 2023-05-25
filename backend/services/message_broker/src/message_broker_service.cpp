@@ -3,9 +3,11 @@
 #include "data_container.h"
 
 #include <data_container.h>
-#include <iexternal_service_chassis.h>
-#include <inklink/chassis_configurators/websocket_configurator.h>
-#include <websocket_sessions_factory.h>
+#include <iauthorizer.h>
+#include <ibase_service_chassis.h>
+#include <inklink/chassis_configurators/base_websocket_configurator.h>
+#include <iservice_session.h>
+#include <websocket_session_factory.h>
 
 #include <json_serializer.h>
 
@@ -26,7 +28,7 @@ using error_code = boost::system::error_code;
 
 using InternalSessionsManager = inklink::base_service_chassis::InternalSessionsManager;
 
-using IAuthorizer = inklink::server_network::IAuthorizer;
+using IAuthorizer = inklink::authorizer::IAuthorizer;
 using IServiceSession = inklink::server_network::IServiceSession;
 
 using DataContainer = inklink::serializer::DataContainer;
@@ -50,12 +52,16 @@ int MessageBrokerService::Run()
     boost::asio::io_context ioContext;
 
     auto manager = std::make_shared<InternalSessionsManager>();
-    auto auhorizer = std::make_shared<IAuthorizer>();
-    auto factory = std::make_unique<WebsocketSessionsFactory>( // I think, it's ok with default template params
-            manager, authorizer,
-            [this](const std::string& str, error_code ec, IServiceSession* iss) { DoOnRead(str, ec, iss); },
-            [this](error_code ec, IServiceSession* iss) { DoOnConnect(ec, iss); },
-            [this](error_code ec, IServiceSession* iss) { DoOnWrite(ec, iss); });
+    auto authorizer = std::make_shared<IAuthorizer>();
+    auto onReadFunctor = [this](const std::string& str, error_code ec, IServiceSession* iss)
+    { DoOnRead(str, ec, iss); };
+    auto onConnectFunctor = [this](error_code ec, IServiceSession* iss) { DoOnConnect(ec, iss); };
+    auto onWriteFunctor = [this](error_code ec, IServiceSession* iss) { DoOnWrite(ec, iss); };
+
+    auto factory = std::make_unique<server_network::WebsocketSessionsFactory<
+            decltype(onReadFunctor), decltype(onConnectFunctor), decltype(onWriteFunctor)>>( // I think, it's ok with
+                                                                                             // default template params
+            manager, authorizer, onReadFunctor, onConnectFunctor, onWriteFunctor);
 
     // TODO (a.novak) intellisense gives errors, but should not. Test with build in future (for now there is
     // dependencies on files from not merged prs)
@@ -65,7 +71,7 @@ int MessageBrokerService::Run()
     const std::string logPath{std::string(kLogPathPrefix) + "_.txt"};
     //      + std::format("{:%Y_%m_%d_%H_%M}", startTime) + ".txt"};
     // clang-format off
-    m_chassis = base_service_chassis::BaseChassisWebsocketConfigurator::CreateAndInitializeChassisWithoutMsgBroker(
+    m_chassis = chassis_configurator::BaseChassisWebsocketConfigurator::CreateAndInitializeChassisWithoutMsgBroker(
             "simultaneous access", logPath, 
             ioContext, std::move(factory), manager, 
             ServiceType::kMessageBroker, {.address = m_address, .port = m_port});
@@ -86,7 +92,7 @@ void MessageBrokerService::DoOnRead(const std::string& msg, error_code ec, IServ
     {
         m_chassis->logger->LogDebug(std::string("Got error while reading from '...'. Error: ") + ec.what());
     }
-    const auto& msgData = JsonSerializer::ParseString(msg);
+    const auto& msgData = JsonSerializer::ParseFromString(msg);
     if (msgData.Has("event"))
     {
         if (!m_eventsHandler->Handle(msgData, session->GetClientEndpoint()))

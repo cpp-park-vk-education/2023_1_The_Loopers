@@ -199,7 +199,7 @@ DataContainer ServiceRegistry::HandleExitQuery(const DataContainer& msgData)
     }
 
     const Endpoint endpoint{.address = msgData["description"]["endpoint"].AsString("address"),
-                            .port = static_cast<std::uint16_t> msgData["description"]["endpoint"].AsInt("port")};
+                            .port = static_cast<std::uint16_t>(msgData["description"]["endpoint"].AsInt("port"))};
     switch (msgData["description"].AsInt("service_type"))
     {
     case 0:

@@ -2,6 +2,6 @@
 
 int main(int argc, char** argv)
 {
-    MessageBrokerService service;
+    inklink::service_message_broker::MessageBrokerService service;
     return service.Run();
 }

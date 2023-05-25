@@ -17,7 +17,7 @@
 
 namespace inklink::base_service_chassis
 {
-class IBaseServiceChassis;
+struct IBaseServiceChassis;
 } // namespace inklink::base_service_chassis
 
 namespace inklink::server_network
