@@ -9,3 +9,5 @@ set(PUBLIC_INCLUDE_DIRECTORIES
         )
 
 target_include_directories(${MENU} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
+
+target_link_libraries(${MENU} PRIVATE ${REQUIRED_LIBS_QUALIFIED})
