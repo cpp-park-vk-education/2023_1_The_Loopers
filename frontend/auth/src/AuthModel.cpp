@@ -1,27 +1,21 @@
 #include "AuthModel.hpp"
 
-#include <openssl/sha.h>
-
 #include <string>
 
 namespace inklink::auth
 {
 bool AuthModel::CreateUser(const std::string& login, std::string& password)
 {
-    if (!login.empty() && !password.empty())
-    {
-        //        std::string sault{};
-        //        sault = dinamicSault(password.size());
-        //
-        //        password += sault;
-        //        password = sha256(password);
+    //        std::string sault{};
+    //        sault = dinamicSault(password.size());
+    //
+    //        password += sault;
+    //        password = sha256(password);
 
-        auto result = ParserToJson(login, password);
-        //        result = ParserToJson(login, password, sault);
-        // осталось отправить на web-socket
-        return true;
-    }
-    return false;
+    auto result = ParserToJson(login, password);
+    //        result = ParserToJson(login, password, sault);
+    // осталось отправить на web-socket
+    return true;
 }
 
 bool AuthModel::Login(const std::string& login, const std::string& password)
@@ -55,27 +49,22 @@ void AuthModel::SetToken(const std::string& token)
     m_token = token;
 }
 
-// std::string AuthModel::Encrypt(const std::string& password)
+// std::string AuthModel::DinamicSault(int passwordLength)
 //{
-//     return m_encrypter.encryptString(password);
+//     std::string result{};
+//
+//     auto saultLength = 20 - passwordLength;
+//
+//     srand(time(NULL));
+//
+//     for (int i = 0; i < saultLength; i++)
+//     {
+//         auto ch = 'a' + rand() % 26;
+//         result.push_back(ch);
+//     }
+//
+//     return result;
 // }
-
-std::string AuthModel::DinamicSault(int passwordLength)
-{
-    std::string result{};
-
-    auto saultLength = 20 - passwordLength;
-
-    srand(time(NULL));
-
-    for (int i = 0; i < saultLength; i++)
-    {
-        auto ch = 'a' + rand() % 26;
-        result.push_back(ch);
-    }
-
-    return result;
-}
 
 // std::string AuthModel::parserToJson(const std::string& login, const std::string& password, const std::string& sault)
 //{
