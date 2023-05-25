@@ -14,11 +14,12 @@
 #include <boost/asio.hpp>
 #include <boost/system/error_code.hpp>
 
-#include <iostream>
 #include <chrono>
 #include <filesystem>
 #include <format>
+#include <iostream>
 #include <thread>
+
 
 namespace
 {
@@ -94,6 +95,7 @@ void MessageBrokerService::DoOnRead(const std::string& msg, error_code ec, IServ
     if (ec)
     {
         m_chassis->logger->LogDebug(std::string("Got error while reading from '...'. Error: ") + ec.what());
+        return;
     }
     const auto& msgData = JsonSerializer::ParseFromString(msg);
     if (msgData.Has("event"))
@@ -120,6 +122,7 @@ void MessageBrokerService::DoOnConnect(error_code ec, IServiceSession*)
     if (ec)
     {
         m_chassis->logger->LogDebug(std::string("Got error from ... when tried to accept. Error: ") + ec.what());
+        return;
     }
 }
 
@@ -128,6 +131,6 @@ void MessageBrokerService::DoOnWrite(error_code ec, IServiceSession*)
     if (ec)
     {
         m_chassis->logger->LogDebug(std::string("Got error from ... while writing. Error: ") + ec.what());
+        return;
     }
-}
 } // namespace inklink::service_message_broker

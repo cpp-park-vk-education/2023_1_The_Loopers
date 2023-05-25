@@ -67,8 +67,10 @@ WebsocketServiceRegistrator::WebsocketServiceRegistrator(std::shared_ptr<ILogger
     try
     {
         this->m_ioContext.run();
-       // m_threadIoContext = std::thread([this]() { this->m_ioContext.run(); });
-    } catch (...) {
+        // m_threadIoContext = std::thread([this]() { this->m_ioContext.run(); });
+    }
+    catch (...)
+    {
         std::cout << "Error occured on run!" << __LINE__ << std::endl;
     }
 }
@@ -145,7 +147,7 @@ void WebsocketServiceRegistrator::GetEndpoints(ServiceType desiredServicesType, 
     // TODO (a.novak) serialize
     session->Send("protocol get endpoints");
 
-    auto waitForMsg = [&GotCallback, this]()
+    auto waitForMsg = [GotCallback, this]()
     {
         while (!m_newMsg)
         {

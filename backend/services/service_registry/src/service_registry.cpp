@@ -95,6 +95,7 @@ void ServiceRegistry::DoOnRead(const std::string& msg, error_code ec, IServiceSe
     if (ec)
     {
         m_chassis->logger->LogWarning("Got error while reading");
+        return;
     }
 
     const auto msgData = JsonSerializer::ParseFromString(msg);
@@ -141,6 +142,7 @@ void ServiceRegistry::DoOnConnect(error_code ec, IServiceSession*)
     if (ec)
     {
         m_chassis->logger->LogDebug(std::string("Got error from ... when tried to accept. Error: ") + ec.what());
+        return;
     }
 }
 
@@ -149,6 +151,7 @@ void ServiceRegistry::DoOnWrite(error_code ec, IServiceSession*)
     if (ec)
     {
         m_chassis->logger->LogDebug(std::string("Got error from ... while writing. Error: ") + ec.what());
+        return;
     }
 }
 

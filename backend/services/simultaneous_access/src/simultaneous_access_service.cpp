@@ -153,6 +153,8 @@ void SimultaneousAccessService::DoOnRead(const std::string& msg, error_code ec, 
     {
         m_chassis->baseServiceChassis->logger->LogDebug(std::string("Got error from ... while reading. Error: ") +
                                                         ec.what());
+
+        return;
     }
 
     auto msgData = JsonSerializer::ParseFromString(msg);
@@ -192,6 +194,7 @@ void SimultaneousAccessService::DoOnConnect(error_code ec, IServiceSession*)
     {
         m_chassis->baseServiceChassis->logger->LogDebug(
                 std::string("Got error from ... when tried to accept. Error: ") + ec.what());
+        return;
     }
 }
 
@@ -201,6 +204,7 @@ void SimultaneousAccessService::DoOnWrite(error_code ec, IServiceSession*)
     {
         m_chassis->baseServiceChassis->logger->LogDebug(std::string("Got error from ... while writing. Error: ") +
                                                         ec.what());
+        return;
     }
 }
 

@@ -66,7 +66,7 @@ constexpr std::chrono::seconds kDelay{1s};
 void AddListener(const std::shared_ptr<IBaseServiceChassis> chassis, io_context& ioContext,
                  std::unique_ptr<ISessionsFactory> factory, const Endpoint& endpointSelf)
 {
-    auto lamOnAccept = [&chassis](error_code ec, IServiceSession*)
+    auto lamOnAccept = [chassis](error_code ec, IServiceSession*)
     {
         if (!ec) [[likely]]
         {
