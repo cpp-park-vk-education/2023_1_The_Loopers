@@ -15,13 +15,15 @@ class IUserExitHandler
     using InternalSessionsManager = base_service_chassis::InternalSessionsManager;
 
 public:
-    explicit IUserExitHandler(std::shared_ptr<InternalSessionsManager> manager) noexcept
-            : m_sessionManger{std::move(manager)}
+    explicit IUserExitHandler(std::shared_ptr<InternalSessionsManager> manager) noexcept : m_sessionManger{manager}
     {
     }
     virtual ~IUserExitHandler() = default;
 
-    virtual void DoOnUserExit(const std::string&) = 0;
+    // TODO stub for now
+    virtual void DoOnUserExit(const std::string&)
+    {
+    }
 
 protected:
     std::shared_ptr<InternalSessionsManager> m_sessionManger;
