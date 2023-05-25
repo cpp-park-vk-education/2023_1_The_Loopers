@@ -16,24 +16,22 @@ namespace inklink::serializer
 DataContainer::DataContainer(const DataContainer& other) : m_data{other.m_data}
 {
     // Recursively copy child DataContainer objects
-    if (IsObjectsContainer())
+    if (!IsObjectsContainer()) [[likely]]
     {
-        for (auto& pair : AsObjectsContainer())
-        {
-            pair.second = std::make_shared<DataContainer>(*pair.second);
-        }
+        return;
+    }
+    for (auto& pair : AsObjectsContainer())
+    {
+        pair.second = std::make_shared<DataContainer>(*pair.second);
     }
 }
 
 DataContainer::DataContainer(DataContainer&& other) noexcept : m_data{std::move(other.m_data)}
 {
     // Recursively move child DataContainer objects
-    if (IsObjectsContainer())
+    if (!IsObjectsContainer()) [[likely]]
     {
-        for (auto& pair : AsObjectsContainer())
-        {
-            pair.second = std::make_shared<DataContainer>(std::move(*pair.second));
-        }
+        return;
     }
 }
 
@@ -60,15 +58,6 @@ DataContainer& DataContainer::operator=(DataContainer&& other) noexcept
     if (this != &other)
     {
         m_data = std::move(other.m_data);
-
-        // Recursively move child DataContainer objects
-        if (IsObjectsContainer())
-        {
-            for (auto& pair : AsObjectsContainer())
-            {
-                pair.second = std::make_shared<DataContainer>(std::move(*pair.second));
-            }
-        }
     }
     return *this;
 }
@@ -302,30 +291,31 @@ const DataContainer& DataContainer::At(const std::string& field) const
 DataContainer::CellTypeEnum DataContainer::GetCellType(const std::string& field) const
 {
     const auto& map = std::get<ObjectsContainer>(m_data);
-    if (map.contains(field)) [[likely]]
+    if (!map.contains(field)) [[unlikely]]
     {
-        const auto& cell = map.at(field)->m_data;
-        if (std::holds_alternative<ObjectsContainer>(cell))
-        {
-            return CellTypeEnum::kObjectsContainer;
-        }
-        if (std::holds_alternative<int>(cell))
-        {
-            return CellTypeEnum::kInt;
-        }
-        if (std::holds_alternative<double>(cell))
-        {
-            return CellTypeEnum::kDouble;
-        }
-        if (std::holds_alternative<std::string>(cell))
-        {
-            return CellTypeEnum::kString;
-        }
-        if (std::holds_alternative<std::vector<DataContainer>>(cell))
-        {
-            return CellTypeEnum::kArray;
-        }
+        throw std::out_of_range(GetOutOfRangeMessage(field));
     }
-    throw std::out_of_range(GetOutOfRangeMessage(field));
+
+    const auto& cell = map.at(field)->m_data;
+    if (std::holds_alternative<ObjectsContainer>(cell))
+    {
+        return CellTypeEnum::kObjectsContainer;
+    }
+    if (std::holds_alternative<int>(cell))
+    {
+        return CellTypeEnum::kInt;
+    }
+    if (std::holds_alternative<double>(cell))
+    {
+        return CellTypeEnum::kDouble;
+    }
+    if (std::holds_alternative<std::string>(cell))
+    {
+        return CellTypeEnum::kString;
+    }
+    if (std::holds_alternative<std::vector<DataContainer>>(cell))
+    {
+        return CellTypeEnum::kArray;
+    }
 }
 } // namespace inklink::serializer

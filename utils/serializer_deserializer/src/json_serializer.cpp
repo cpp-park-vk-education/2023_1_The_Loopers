@@ -85,13 +85,13 @@ namespace inklink::serializer
 {
 std::string JsonSerializer::SerializeAsString(const DataContainer& data)
 {
-    const json jsonData = SerializeDataContainer(data);
+    const auto jsonData = SerializeDataContainer(data);
     return jsonData.dump();
 }
 
 DataContainer JsonSerializer::ParseFromString(const std::string& jsonString)
 {
-    const json jsonData = json::parse(jsonString);
+    const auto jsonData = json::parse(jsonString);
     return DeserializeDataContainer(jsonData);
 }
 } // namespace inklink::serializer
