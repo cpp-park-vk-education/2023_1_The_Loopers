@@ -2,6 +2,7 @@ add_library(${AUTH} STATIC "")
 
 target_sources(${AUTH} PRIVATE
         "src/AuthView.cpp"
+        "src/LoginView.cpp"
         )
 
 set(PUBLIC_INCLUDE_DIRECTORIES

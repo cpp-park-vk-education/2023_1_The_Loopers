@@ -10,20 +10,20 @@
 
 namespace inklink::auth
 {
-class AuthDialog : public QDialog
+class LoginDialog : public QDialog
 {
 public:
-    AuthDialog(QWidget *parent = nullptr);
+    LoginDialog(QWidget *parent = nullptr);
 
-    ~AuthDialog() = default;
+    ~LoginDialog() = default;
 
 private:
-    void OnLoginButtonClicked();
+    void OnRegisterButtonClicked();
 
-    void OnCreateButtonClicked();
+    void OnEnterButtonClicked();
 
 private:
     QLineEdit *usernameLine;
     QLineEdit *passwordLine;
 };
-} // namespace inklink::auth
+}
