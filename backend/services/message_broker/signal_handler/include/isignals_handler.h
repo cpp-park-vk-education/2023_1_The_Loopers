@@ -21,7 +21,7 @@ class ISignalsHandler
     using IBaseServiceChassis = base_service_chassis::IBaseServiceChassis;
 
 public:
-    explicit ISignalsHandler(std::unique_ptr<IBaseServiceChassis>&);
+    explicit ISignalsHandler(IBaseServiceChassis&);
     virtual ~ISignalsHandler() = default;
 
     bool Handle(const DataContainer&, const Endpoint& sender);
@@ -30,6 +30,6 @@ protected:
     virtual void Send(const Endpoint&, const std::string&);
 
 protected:
-    std::unique_ptr<IBaseServiceChassis>& m_serviceChassis;
+    IBaseServiceChassis& m_serviceChassis;
 };
 } // namespace inklink::service_message_broker

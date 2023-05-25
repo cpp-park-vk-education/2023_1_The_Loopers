@@ -21,17 +21,17 @@ class IEventsHandler
     using IBaseServiceChassis = base_service_chassis::IBaseServiceChassis;
 
 public:
-    explicit IEventsHandler(std::unique_ptr<IBaseServiceChassis>&);
+    explicit IEventsHandler(IBaseServiceChassis&);
     virtual ~IEventsHandler() = default;
     virtual bool Handle(const serializer::DataContainer&, const Endpoint& sender);
 
 protected:
-    virtual void RemoveSubscriber(int, const Endpoint&);
-    virtual void AddSubscriber(int, const Endpoint&);
-    virtual void SendEvent(int, const std::string&);
+    virtual void RemoveSubscriber(int eventType, const Endpoint&);
+    virtual void AddSubscriber(int eventType, const Endpoint&);
+    virtual void SendEvent(int eventType, const std::string&);
 
 protected:
-    std::unique_ptr<IBaseServiceChassis>& m_serviceChassis;
+    IBaseServiceChassis& m_serviceChassis;
 
     std::unordered_map<int /*event type*/, std::vector<Endpoint>> m_subscribers;
 };

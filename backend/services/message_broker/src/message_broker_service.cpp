@@ -34,7 +34,7 @@ using JsonSerializer = inklink::serializer::JsonSerializer;
 
 // is it ok to use define for such things? With define you can just write LOG_PATH"file_name.txt"
 // and constexpr string is not possible in most cases. And string_view is not a lot more convenient (as far as I know)
-constexpr const char* kLogPathPrefix = "inklink/message_broker/";
+constexpr const char* kLogPathPrefix = "inklink/message_broker/message_broker";
 
 // #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
 // constexpr const char* kLogPathPrefix = "";
@@ -62,7 +62,7 @@ int MessageBrokerService::Run()
     std::filesystem::create_directories(kLogPathPrefix);
     // TODO (a.novak) add time to file name. For some reason, std format does not work
     //     const auto startTime = std::chrono::system_clock::now();
-    const std::string logPath{std::string(kLogPathPrefix) + "simultaneous_access_.txt"};
+    const std::string logPath{std::string(kLogPathPrefix) + "_.txt"};
     //      + std::format("{:%Y_%m_%d_%H_%M}", startTime) + ".txt"};
     // clang-format off
     m_chassis = base_service_chassis::BaseChassisWebsocketConfigurator::CreateAndInitializeChassisWithoutMsgBroker(
@@ -72,8 +72,8 @@ int MessageBrokerService::Run()
     // clang-format on
     m_chassis->logger->LogInfo("Simultaneous access service is initted");
 
-    m_eventsHandler = std::make_unique<IEventsHandler>(m_chassis);
-    m_signalsHandler = std::make_unique<ISignalsHandler>(m_chassis);
+    m_eventsHandler = std::make_unique<IEventsHandler>(*m_chassis);
+    m_signalsHandler = std::make_unique<ISignalsHandler>(*m_chassis);
 
     // for now only one thread is supported
     ioContext.run();

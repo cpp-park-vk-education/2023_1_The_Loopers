@@ -11,7 +11,7 @@ class IBaseServiceChassis;
 
 namespace inklink::service_message_broker
 {
-IEventsHandler::IEventsHandler(std::unique_ptr<IBaseServiceChassis>& chassis) : m_serviceChassis{chassis}
+IEventsHandler::IEventsHandler(IBaseServiceChassis& chassis) : m_serviceChassis{chassis}
 {
 }
 
@@ -59,7 +59,7 @@ void IEventsHandler::SendEvent(int eventType, const std::string& msg)
 {
     for (const auto& subscriber : m_subscribers[eventType])
     {
-        auto session = chassis->manager->GetSession(subscriber).lock();
+        auto session = chassis.manager->GetSession(subscriber).lock();
         if (session)
         {
             session->Send(msg);

@@ -11,7 +11,7 @@ using IBaseServiceChassis = inklink::base_service_chassis::IBaseServiceChassis;
 
 namespace inklink::service_message_broker
 {
-ISignalsHandler::ISignalsHandler(std::unique_ptr<IBaseServiceChassis>& chassis) : m_serviceChassis{chassis}
+ISignalsHandler::ISignalsHandler(IBaseServiceChassis& chassis) : m_serviceChassis{chassis}
 {
 }
 
@@ -37,7 +37,7 @@ bool ISignalsHandler::Handle(const DataContainer& msgData, const Endpoint& sende
 
 void ISignalsHandler::Send(const Endpoint& endpoint, const std::string& msg)
 {
-    auto session = chassis->manager->GetSession(subscriber).lock();
+    auto session = chassis.manager->GetSession(subscriber).lock();
     if (session)
     {
         session->Send(msg);
