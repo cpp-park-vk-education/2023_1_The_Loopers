@@ -2,6 +2,8 @@ add_library(${BASE_SERVICE_CHASSIS} STATIC "")
 
 target_sources(${BASE_SERVICE_CHASSIS} PRIVATE
     "internal_sessions_manager/src/internal_sessions_manager.cpp"
+    "logger_adapter/src/ilogger.cpp"
+    "logger_adapter/src/spdlog_adapter.cpp"
 )
 
 set(PUBLIC_INCLUDE_DIRECTORIES
