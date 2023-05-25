@@ -26,7 +26,7 @@ template <StringErrorCodeSessionCallbackConcept ReadCallback =
           ErrorCodeAndSessionCallbackConcept AcceptCallback =
                   std::function<void(boost::system::error_code, IServiceSession*)>,
           ErrorCodeCallbackConcept WriteCallback = std::function<void(boost::system::error_code, IServiceSession*)>>
-class WebsocketServiceSession
+class WebsocketServiceSession final
         : public IServiceSession,
           public std::enable_shared_from_this<WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>>
 {
@@ -57,6 +57,7 @@ public:
 
     ~WebsocketServiceSession() final;
 
+    Endpoint GetClientEndpoint() final;
     void RunAsync() final;
 
     void Send(const std::string&) final;
@@ -122,6 +123,13 @@ inline void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>
     // thread-safe by default.
     net::dispatch(m_websocketStream.get_executor(),
                   beast::bind_front_handler(&WebsocketServiceSession::OnRun, this->shared_from_this()));
+}
+
+template <StringErrorCodeSessionCallbackConcept ReadCallback, ErrorCodeAndSessionCallbackConcept AcceptCallback,
+          ErrorCodeCallbackConcept WriteCallback>
+inline Endpoint WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::GetClientEndpoint()
+{
+    return m_endpoint;
 }
 
 template <StringErrorCodeSessionCallbackConcept ReadCallback, ErrorCodeAndSessionCallbackConcept AcceptCallback,

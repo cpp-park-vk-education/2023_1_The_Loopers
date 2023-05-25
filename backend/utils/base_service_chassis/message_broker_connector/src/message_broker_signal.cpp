@@ -13,6 +13,7 @@ namespace
 {
 using IClientSession = inklink::client_connector::IClientSession;
 using error_code = boost::system::error_code;
+using Endpoint = inklink::Endpoint;
 
 using ReadFunctor = std::function<void(const std::string&)>;
 

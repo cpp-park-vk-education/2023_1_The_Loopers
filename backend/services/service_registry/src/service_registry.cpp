@@ -2,8 +2,12 @@
 
 #include "inklink_global.h"
 
+#include <data_container.h>
+#include <iauthorizer.h>
 #include <ibase_service_chassis.h>
+#include <inklink/chassis_configurators/base_websocket_configurator.h>
 #include <iservice_session.h>
+#include <websocket_session_factory.h>
 
 #include <json_serializer.h>
 
@@ -16,8 +20,9 @@ namespace
 using IBaseServiceChassis = inklink::base_service_chassis::IBaseServiceChassis;
 using InternalSessionsManager = inklink::base_service_chassis::InternalSessionsManager;
 using IServiceSession = inklink::server_network::IServiceSession;
-using IAuthorizer = inklink::server_network::IAuthorizer;
-using DataContainer = serializer::DataContainer;
+using IAuthorizer = inklink::authorizer::IAuthorizer;
+using DataContainer = inklink::serializer::DataContainer;
+using JsonSerializer = inklink::serializer::JsonSerializer;
 
 namespace net = boost::asio;
 using tcp = net::ip::tcp;
@@ -41,7 +46,7 @@ DataContainer CreateServiceList(inklink::ServiceType type, const std::vector<ink
     {
         DataContainer service{};
         service["address"] = endpoint.address;
-        service["port"] = endpoint.port;
+        service["port"] = static_cast<int>(endpoint.port);
         serviceListArray.push_back(service);
     }
     return result;
@@ -56,12 +61,16 @@ int ServiceRegistry::Run()
     boost::asio::io_context ioContext{};
 
     auto manager = std::make_shared<InternalSessionsManager>();
-    auto auhorizer = std::make_shared<IAuthorizer>();
-    auto factory = std::make_unique<WebsocketSessionsFactory>( // I think, it's ok with default template params
-            manager, authorizer,
-            [this](const std::string& str, error_code ec, IServiceSession* iss) { DoOnRead(str, ec, iss); },
-            [this](error_code ec, IServiceSession* iss) { DoOnConnect(ec, iss); },
-            [this](error_code ec, IServiceSession* iss) { DoOnWrite(ec, iss); });
+    auto authorizer = std::make_shared<IAuthorizer>();
+    auto onReadFunctor = [this](const std::string& str, error_code ec, IServiceSession* iss)
+    { DoOnRead(str, ec, iss); };
+    auto onConnectFunctor = [this](error_code ec, IServiceSession* iss) { DoOnConnect(ec, iss); };
+    auto onWriteFunctor = [this](error_code ec, IServiceSession* iss) { DoOnWrite(ec, iss); };
+
+    auto factory = std::make_unique<server_network::WebsocketSessionsFactory<
+            decltype(onReadFunctor), decltype(onConnectFunctor), decltype(onWriteFunctor)>>( // I think, it's ok with
+                                                                                             // default template params
+            manager, authorizer, onReadFunctor, onConnectFunctor, onWriteFunctor);
 
     std::filesystem::create_directories(kLogPathPrefix);
     // TODO (a.novak) add time to file name. For some reason, std format does not work
@@ -69,7 +78,7 @@ int ServiceRegistry::Run()
     const std::string logPath{std::string(kLogPathPrefix) + "_.txt"};
     //      + std::format("{:%Y_%m_%d_%H_%M}", startTime) + ".txt"};
     // clang-format off
-    m_chassis = base_service_chassis::BaseChassisWebsocketConfigurator::
+    m_chassis = chassis_configurator::BaseChassisWebsocketConfigurator::
             CreateAndInitializeChassisWithoutRegistratorAndMsgBroker("simultaneous access", logPath, 
                                                                       ioContext, std::move(factory), manager,
                                                                      {.address = m_address, .port = m_port});
@@ -108,13 +117,13 @@ void ServiceRegistry::DoOnRead(const std::string& msg, error_code ec, IServiceSe
             replyMsg = HandleExitQuery(msgData);
             break;
         case RegistryActionType::kGetServicesList:
-            replyMsg = HandleGetSErviceListQuery(msgData);
+            replyMsg = HandleGetServiceListQuery(msgData);
             break;
         default:
             throw InvalidMessageException();
         }
 
-        session->Send(serializer::JsonSerializer::Serialize(replyMsg));
+        session->Send(serializer::JsonSerializer::SerializeAsString(replyMsg));
     }
     catch (const InvalidMessageException&)
     {
@@ -122,8 +131,8 @@ void ServiceRegistry::DoOnRead(const std::string& msg, error_code ec, IServiceSe
 
         DataContainer replyMsg{};
         replyMsg["action_result"] = 0;
-        replyMsg["time"] = "now"; // TODO (a.novak) serialize std::time_point
-        session->Send(serializer::JsonSerializer::Serialize(replyMsg));
+        replyMsg["time"] = std::string("now"); // TODO (a.novak) serialize std::time_point
+        session->Send(serializer::JsonSerializer::SerializeAsString(replyMsg));
     }
 }
 
@@ -135,7 +144,7 @@ void ServiceRegistry::DoOnConnect(error_code ec, IServiceSession*)
     }
 }
 
-void ServiceRegistry::DoOnWrite(error_code, IServiceSession*)
+void ServiceRegistry::DoOnWrite(error_code ec, IServiceSession*)
 {
     if (ec)
     {
@@ -150,7 +159,8 @@ DataContainer ServiceRegistry::HandleRegisterQuery(const DataContainer& msgData)
         throw InvalidMessageException();
     }
 
-    const auto& endpoint = msgData["description"].AsString("endpoint");
+    const Endpoint endpoint = {.address = msgData["description"]["endpoint"].AsString("address"),
+                               .port = static_cast<std::uint16_t>(msgData["description"]["endpoint"].AsInt("port"))};
     switch (msgData["description"].AsInt("service_type"))
     {
     case 0:
@@ -177,7 +187,7 @@ DataContainer ServiceRegistry::HandleRegisterQuery(const DataContainer& msgData)
 
     DataContainer replyMsg{};
     replyMsg["action_result"] = 1;
-    replyMsg["time"] = "now"; // TODO (a.novak) serialize std::time_point
+    replyMsg["time"] = std::string("now"); // TODO (a.novak) serialize std::time_point
     return replyMsg;
 }
 
@@ -188,7 +198,8 @@ DataContainer ServiceRegistry::HandleExitQuery(const DataContainer& msgData)
         throw InvalidMessageException();
     }
 
-    const auto& endpoint = msgData["description"].AsString("endpoint");
+    const Endpoint endpoint{.address = msgData["description"]["endpoint"].AsString("address"),
+                            .port = static_cast<std::uint16_t> msgData["description"]["endpoint"].AsInt("port")};
     switch (msgData["description"].AsInt("service_type"))
     {
     case 0:
@@ -215,14 +226,14 @@ DataContainer ServiceRegistry::HandleExitQuery(const DataContainer& msgData)
 
     DataContainer replyMsg{};
     replyMsg["action_result"] = 1;
-    replyMsg["time"] = "now"; // TODO (a.novak) serialize std::time_point
+    replyMsg["time"] = std::string("now"); // TODO (a.novak) serialize std::time_point
     return replyMsg;
 }
 
 DataContainer ServiceRegistry::HandleGetServiceListQuery(const DataContainer& msgData)
 {
     DataContainer replyMsg{};
-    replyMsg["time"] = "now";
+    replyMsg["time"] = std::string("now");
     auto& services = replyMsg["services"].CreateArray();
 
     switch (msgData["description"].AsInt("service_type"))

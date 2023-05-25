@@ -7,6 +7,8 @@ target_sources(${BASE_SERVICE_CHASSIS} PRIVATE
     "local_service_registry/src/local_service_registry.cpp"
     "message_broker_connector/src/icommon_connection.cpp"
     "message_broker_connector/src/websocket_common_connection.cpp"
+    "message_broker_connector/src/message_broker_event.cpp"
+    "message_broker_connector/src/message_broker_signal.cpp"
     "service_registrator/src/websocket_service_registrator.cpp"
 )
 

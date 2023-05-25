@@ -42,9 +42,9 @@ public:
     WebsocketSessionsFactory& operator=(const WebsocketSessionsFactory&) noexcept = default;
     WebsocketSessionsFactory& operator=(WebsocketSessionsFactory&&) noexcept = default;
 
-    ~WebsocketSessionsFactory() final = default;
+    ~WebsocketSessionsFactory() override = default;
 
-    std::shared_ptr<IServiceSession> GetSession(boost::asio::ip::tcp::socket&&) final;
+    std::shared_ptr<IServiceSession> GetSession(boost::asio::ip::tcp::socket&&) override;
 
 private:
     ReadCallback m_readCallback;
@@ -78,6 +78,6 @@ inline std::shared_ptr<IServiceSession>
 WebsocketSessionsFactory<ReadCallback, AcceptCallback, WriteCallback>::GetSession(boost::asio::ip::tcp::socket&& socket)
 {
     return std::make_shared<WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>>(
-            std::move(socket), m_readCallback, m_acceptCallback, m_writeCallback);
+            m_manager, m_authorizer, std::move(socket), m_readCallback, m_acceptCallback, m_writeCallback);
 }
 } // namespace inklink::server_network

@@ -13,6 +13,7 @@ namespace
 {
 using IClientSession = inklink::client_connector::IClientSession;
 using error_code = boost::system::error_code;
+using Endpoint = inklink::Endpoint;
 
 using NotifiedFunctor = std::function<void(int /*event type*/, const std::string&, const Endpoint& /*from*/)>;
 } // namespace
@@ -77,8 +78,8 @@ void MessageBrokerEvent::DoOnNotified(const std::string& msgBody, error_code ec,
     }
     // TODO (a.novak) parse msgBrokerSignal
     std::string newMsgBody{msgBody};
-    int eventType;
-    m_readCallback(eventType, newMsgBody, m_connectionToMsgBroker->GetEndpointSelf());
+    int eventType{};
+    m_notifiedCallback(eventType, newMsgBody, m_connectionToMsgBroker->GetEndpointSelf());
 }
 
 } // namespace inklink::base_service_chassis

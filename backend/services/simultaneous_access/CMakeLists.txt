@@ -4,6 +4,9 @@ target_sources(${SIMULTANEOUS_ACCESS_SERVICE}
 PRIVATE
     "src/main.cpp"
     "src/simultaneous_access_service.cpp"
+    "resolvers_factory/src/blocking_resolvers_factory.cpp"
+    "resolvers/draw_conflict_resolver/src/blocking_draw_resolver.cpp"
+    "resolvers/text_conflict_resolver/src/stub_text_resolver.cpp"
 )
 
 set(PRIVATE_INCLUDE_DIRECTORIES

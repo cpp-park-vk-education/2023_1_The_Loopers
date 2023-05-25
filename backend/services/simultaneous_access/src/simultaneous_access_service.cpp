@@ -112,13 +112,17 @@ int SimultaneousAccessService::Run()
     m_chassis = std::make_unique<external_service_chassis::IExternalServiceChassis>();
 
     auto manager = std::make_shared<InternalSessionsManager>();
-    auto auhorizer = std::make_shared<IAuthorizer>();
-    auto factory = std::make_unique<server_network::WebsocketSessionsFactory<>>( // I think, it's ok with default
-                                                                                 // template params
-            manager, authorizer,
-            [this](const std::string& str, error_code ec, IServiceSession* iss) { DoOnRead(str, ec, iss); },
-            [this](error_code ec, IServiceSession* iss) { DoOnConnect(ec, iss); },
-            [this](error_code ec, IServiceSession* iss) { DoOnWrite(ec, iss); });
+    auto authorizer = std::make_shared<IAuthorizer>();
+
+    auto onReadFunctor = [this](const std::string& str, error_code ec, IServiceSession* iss)
+    { DoOnRead(str, ec, iss); };
+    auto onConnectFunctor = [this](error_code ec, IServiceSession* iss) { DoOnConnect(ec, iss); };
+    auto onWriteFunctor = [this](error_code ec, IServiceSession* iss) { DoOnWrite(ec, iss); };
+
+    auto factory = std::make_unique<server_network::WebsocketSessionsFactory<
+            decltype(onReadFunctor), decltype(onConnectFunctor), decltype(onWriteFunctor)>>( // I think, it's ok with
+                                                                                             // default template params
+            manager, authorizer, onReadFunctor, onConnectFunctor, onWriteFunctor);
 
     // TODO (a.novak) intellisense gives errors, but should not. Test with build in future (for now there is
     // dependencies on files from not merged prs)
@@ -256,7 +260,10 @@ void SimultaneousAccessService::HandleUserExit(const DataContainer& msgData)
         sendMessage["draw_actions"] = sendDrawData;
         sendMessage["text_actions"] = sendTextData;
 
-        m_chassis->baseServiceChassis->signalBroker->Send(JsonSerializer::SerializeAsString(sendMessage));
+        const Endpoint sendTo{.address = msgData["receiver"].AsString("address"),
+                              .port = static_cast<std::uint16_t>(msgData["receiver"].AsInt("port"))};
+
+        m_chassis->baseServiceChassis->signalBroker->Send(JsonSerializer::SerializeAsString(sendMessage), sendTo);
         m_drawResolvers.erase(docId);
     }
 }
