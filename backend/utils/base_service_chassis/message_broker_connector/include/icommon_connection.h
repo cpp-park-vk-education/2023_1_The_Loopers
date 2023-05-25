@@ -28,9 +28,9 @@ public:
     using ConnectType = client_connector::ConnectType;
     using error_code = boost::system::error_code;
 
-    using AcceptFunctor = std::vector<std::function<void(ConnectType, error_code, IClientSession*)>>;
-    using ReadFunctor = std::vector<std::function<void(const std::string&, error_code, IClientSession*)>>;
-    using WriteFunctor = std::vector<std::function<void(error_code)>>;
+    using AcceptFunctor = std::function<void(ConnectType, error_code, IClientSession*)>;
+    using ReadFunctor = std::function<void(const std::string&, error_code, IClientSession*)>;
+    using WriteFunctor = std::function<void(error_code)>;
 
 public:
     explicit ICommonConnection(std::shared_ptr<ILogger> logger);
@@ -54,9 +54,9 @@ protected:
     Endpoint m_endpointOther;
     bool m_connected{false};
 
-    AcceptFunctor m_acceptCallbacks;
-    ReadFunctor m_readCallbacks;
-    WriteFunctor m_writeCallbacks;
+    std::vector<AcceptFunctor> m_acceptCallbacks;
+    std::vector<ReadFunctor> m_readCallbacks;
+    std::vector<WriteFunctor> m_writeCallbacks;
 
     std::shared_ptr<ILogger> m_logger;
 };
