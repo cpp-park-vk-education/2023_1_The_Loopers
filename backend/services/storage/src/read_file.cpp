@@ -6,7 +6,7 @@
 
 namespace inklink_file_holder
 {
-ReadFileResult ReadFile::GetFile(const std::filesystem::path& filePath) const noexcept
+ReadFileResult FileReader::GetFile(const std::filesystem::path& filePath) const noexcept
 {
     std::ifstream fileRead(filePath);
     std::stringstream stringFile;

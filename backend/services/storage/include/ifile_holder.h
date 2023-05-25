@@ -19,8 +19,8 @@ public:
     virtual ~IFileHolder() = default;
 
 protected:
-    SaveChanges m_changesSavior;
-    ReadFile m_fileReader;
+    FileChangesSaver m_changesSaver;
+    FileReader m_fileReader;
 };
 }  // namespace inklink_file_holder
 

@@ -11,13 +11,7 @@ class FileHolder final: public IFileHolder
 public:
     [[nodiscard]] bool Save(const std::filesystem::path& filePath, const std::string& fileChanges) const override;
 
-    [[nodiscard]] ReadFileResult Get(const std::string& filePath) const override;
-
-    virtual ~FileHolder() = default;
-
-protected:
-    SaveChanges m_changesSavior;
-    ReadFile m_fileReader;
+    [[nodiscard]] ReadFileResult Get(const std::filesystem::path& filePath) const override;
 };
 } // namespace inklink_file_holder
 

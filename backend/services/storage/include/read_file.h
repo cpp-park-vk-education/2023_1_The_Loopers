@@ -8,7 +8,7 @@
 
 namespace inklink_file_holder
 {
-class ReadFile final
+class FileReader final
 {
 using ReadFileResult = std::tuple<std::string, bool>;
 

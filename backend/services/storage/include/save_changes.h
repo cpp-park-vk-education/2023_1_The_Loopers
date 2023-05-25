@@ -7,7 +7,7 @@
 
 namespace inklink_file_holder
 {
-class SaveChanges final
+class FileChangesSaver final
 {
 public:
     bool SaveFile(const std::filesystem::path& filePath, const std::string& changes) const noexcept;
