@@ -18,9 +18,9 @@ public:
     ~AuthDialog() = default;
 
 private:
-    void OnPushButtonLogin();
+    void OnLoginButtonClicked();
 
-    void OnPushButtonCreate();
+    void OnCreateButtonClicked();
 
 private:
     QLineEdit *usernameLine;
@@ -35,9 +35,9 @@ public:
     ~LoginDialog() = default;
 
 private:
-    void OnPushButtonRegistration();
+    void OnRegisterButtonClicked();
 
-    void OnPushButtonEnter();
+    void OnEnterButtonClicked();
 
 private:
     QLineEdit *usernameLine;

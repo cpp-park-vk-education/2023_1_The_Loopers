@@ -24,17 +24,17 @@ AuthDialog::AuthDialog(QWidget *parent) : QDialog(parent)
     auto *usernameLabel = new QLabel(tr("Username"), this);
     auto *passwordLabel = new QLabel(tr("Password"), this);
 
-    auto *acceptButton = new QPushButton(tr("Registrate"), this);
-    acceptButton->setAutoDefault(false);
-    connect(acceptButton, &QPushButton::clicked, this, &AuthDialog::OnPushButtonCreate);
+    auto *createButton = new QPushButton(tr("Register"), this);
+    createButton->setAutoDefault(false);
+    connect(createButton, &QPushButton::clicked, this, &AuthDialog::OnCreateButtonClicked);
 
     auto *loginButton = new QPushButton(tr("Log in"), this);
     loginButton->setAutoDefault(false);
-    connect(loginButton, &QPushButton::clicked, this, &AuthDialog::OnPushButtonLogin);
+    connect(loginButton, &QPushButton::clicked, this, &AuthDialog::OnLoginButtonClicked);
 
     auto *buttonsLayout = new QHBoxLayout;
     buttonsLayout->setAlignment(Qt::AlignCenter);
-    buttonsLayout->addWidget(acceptButton);
+    buttonsLayout->addWidget(createButton);
     buttonsLayout->addWidget(loginButton);
 
     auto *mainLayout = new QVBoxLayout(this);
@@ -49,14 +49,14 @@ AuthDialog::AuthDialog(QWidget *parent) : QDialog(parent)
     setLayout(mainLayout);
 }
 
-void AuthDialog::OnPushButtonLogin()
+void AuthDialog::OnLoginButtonClicked()
 {
     auto login = new LoginDialog(this);
     close();
     login->show();
 }
 
-void AuthDialog::OnPushButtonCreate()
+void AuthDialog::OnCreateButtonClicked()
 {
     std::string username;
     std::string password;
@@ -97,17 +97,17 @@ LoginDialog::LoginDialog(QWidget *parent) : QDialog(parent)
     auto *usernameLabel = new QLabel(tr("Username"), this);
     auto *passwordLabel = new QLabel(tr("Password"), this);
 
-    auto *acceptButton = new QPushButton(tr("Login"), this);
-    acceptButton->setAutoDefault(false);
-    connect(acceptButton, &QPushButton::clicked, this, &LoginDialog::OnPushButtonEnter);
+    auto *enterButton = new QPushButton(tr("Login"), this);
+    enterButton->setAutoDefault(false);
+    connect(enterButton, &QPushButton::clicked, this, &LoginDialog::OnEnterButtonClicked);
 
-    auto *registrationButton = new QPushButton(tr("Registrate"), this);
+    auto *registrationButton = new QPushButton(tr("Register"), this);
     registrationButton->setAutoDefault(false);
-    connect(registrationButton, &QPushButton::clicked, this, &LoginDialog::OnPushButtonRegistration);
+    connect(registrationButton, &QPushButton::clicked, this, &LoginDialog::OnRegisterButtonClicked);
 
     auto *buttonsLayout = new QHBoxLayout;
     buttonsLayout->setAlignment(Qt::AlignCenter);
-    buttonsLayout->addWidget(acceptButton);
+    buttonsLayout->addWidget(enterButton);
     buttonsLayout->addWidget(registrationButton);
 
     auto *mainLayout = new QVBoxLayout(this);
@@ -122,14 +122,14 @@ LoginDialog::LoginDialog(QWidget *parent) : QDialog(parent)
     setLayout(mainLayout);
 }
 
-void LoginDialog::OnPushButtonRegistration()
+void LoginDialog::OnRegisterButtonClicked()
 {
     auto registration = new AuthDialog(this);
     close();
     registration->show();
 }
 
-void LoginDialog::OnPushButtonEnter()
+void LoginDialog::OnEnterButtonClicked()
 {
     std::string username;
     std::string password;
