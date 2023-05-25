@@ -2,9 +2,11 @@
 
 #include "inklink_global.h"
 
+#include <beast_websocket_listener.h>
 #include <ibase_service_chassis.h>
 #include <isessions_factory.h>
 #include <spdlog_adapter.h>
+#include <websocket_common_connection.h>
 #include <websocket_service_registrator.h>
 
 #include <boost/asio.hpp>
@@ -25,15 +27,23 @@ using error_code = boost::system::error_code;
 
 using IBaseServiceChassis = inklink::base_service_chassis::IBaseServiceChassis;
 using ILogger = inklink::base_service_chassis::ILogger;
+using LocalServiceRegistry = inklink::base_service_chassis::LocalServiceRegistry;
+using WebsocketServiceRegistrator = inklink::base_service_chassis::WebsocketServiceRegistrator;
+using WebsocketCommonConnection = inklink::base_service_chassis::WebsocketCommonConnection;
+using MessageBrokerSignal = inklink::base_service_chassis::MessageBrokerSignal;
+using MessageBrokerEvent = inklink::base_service_chassis::MessageBrokerEvent;
+namespace server_network = inklink::server_network;
+
 using ServiceType = inklink::ServiceType;
 using Endpoint = inklink::Endpoint;
 
-using BeastWebsocketListener = inklink::server_network::BeastWebsocketListener;
 using ISessionsFactory = inklink::server_network::ISessionsFactory;
 using IServiceSession = inklink::server_network::IServiceSession;
 
 using NotifiedFunctor = std::function<void(int /*event type*/, const std::string&, const inklink::Endpoint& /*from*/)>;
 using ReadFunctor = std::function<void(const std::string&)>;
+
+namespace ip = boost::asio::ip;
 
 using namespace std::chrono_literals;
 
@@ -54,15 +64,19 @@ constexpr std::chrono::seconds kDelay{1s};
 void AddListener(const std::unique_ptr<IBaseServiceChassis>& chassis, io_context& ioContext,
                  std::unique_ptr<ISessionsFactory> factory, const Endpoint& endpointSelf)
 {
-    auto listener = std::make_shared<BeastWebsocketListener>(
-            ioContext, {endpointSelf.address, endpointSelf.port}, std::move(factory),
-            [&chassis](error_code ec, IServiceSession*)
-            {
-                if (!ec) [[likely]]
-                {
-                    chassis->logger->LogInfo("Accepted new connection to ''");
-                }
-            });
+    auto lamOnAccept = [&chassis](error_code ec, IServiceSession*)
+    {
+        if (!ec) [[likely]]
+        {
+            chassis->logger->LogInfo("Accepted new connection to ''");
+        }
+    };
+
+    auto localAddress = ip::address::from_string(endpointSelf.address);
+    auto localEndpoint = ip::tcp::endpoint{localAddress, static_cast<unsigned short>(endpointSelf.port)};
+
+    auto listener = std::make_shared<server_network::BeastWebsocketListener<decltype(lamOnAccept)>>(
+            ioContext, localEndpoint, std::move(factory), lamOnAccept);
     listener->AsyncRun();
     chassis->listener = listener;
 }
@@ -107,8 +121,8 @@ void AddMsgBrokerConnection(std::unique_ptr<IBaseServiceChassis>& chassis, Servi
     // in future may be multiple services
     commonConnection->Init(typeSelf, endpointSelf, msgBrokerServices[0]);
 
-    chassis->signalBroker = std::make_unique<MessageBrokerSignal>(commonConnection, readCallback);
-    chassis->eventBroker = std::make_unique<MessageBrokerEvent>(commonConnection, notifiedCallback);
+    chassis->signalBroker = std::make_unique<MessageBrokerSignal>(commonConnection, readCallback, chassis->logger);
+    chassis->eventBroker = std::make_unique<MessageBrokerEvent>(commonConnection, notifiedCallback, chassis->logger);
 }
 
 } // namespace

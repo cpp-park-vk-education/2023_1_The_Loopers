@@ -2,9 +2,11 @@
 
 #include "idraw_conflict_resolver.h"
 #include "inklink_global.h"
+#include "iresolvers_factory.h"
 #include "itext_conflict_resolver.h"
 
 #include <data_container.h>
+#include <iexternal_service_chassis.h>
 #include <internal_sessions_manager.h>
 
 #include <boost/system/error_code.hpp>
@@ -23,7 +25,7 @@ class IDBAdapter;
 
 namespace inklink::external_service_chassis
 {
-class IExternalServiceChassis;
+struct IExternalServiceChassis;
 }
 
 namespace inklink::server_network
@@ -67,7 +69,7 @@ private:
     void HandleText(const DataContainer&, IServiceSession*);
 
     DataContainer ContainerFromVectorOfDrawActions(const std::vector<DrawAction>&);
-    DataContainer ContainerFromVectorOTextActions(const std::vector<TextAction>&);
+    DataContainer ContainerFromVectorOfTextActions(const std::vector<TextAction>&);
 
 private:
     std::unordered_map<std::string /*document id*/, std::map<time_point, DrawAction>> m_drawNotApplied;

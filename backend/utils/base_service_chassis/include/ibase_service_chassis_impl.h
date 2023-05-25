@@ -11,9 +11,9 @@ namespace inklink::base_service_chassis
 {
 class ILogger;
 class IServiceRegistrator;
-class IMessageBrokerSignal;
-class IMessageBrokerEvent;
-class ILocalServiceRegistry;
+class MessageBrokerSignal;
+class MessageBrokerEvent;
+class LocalServiceRegistry;
 class InternalSessionsManager;
 } // namespace inklink::base_service_chassis
 
@@ -34,9 +34,9 @@ struct IBaseServiceChassis
     std::shared_ptr<ILogger> logger;
     std::weak_ptr<server_network::IListener> listener;
     std::unique_ptr<IServiceRegistrator> registrator;
-    std::unique_ptr<IMessageBrokerSignal> signalBroker;
-    std::unique_ptr<IMessageBrokerEvent> eventBroker;
-    std::unique_ptr<ILocalServiceRegistry> localServiceRegistry;
+    std::unique_ptr<MessageBrokerSignal> signalBroker;
+    std::unique_ptr<MessageBrokerEvent> eventBroker;
+    std::unique_ptr<LocalServiceRegistry> localServiceRegistry;
     std::shared_ptr<InternalSessionsManager> internalSessionsManager;
 };
 } // namespace inklink::base_service_chassis

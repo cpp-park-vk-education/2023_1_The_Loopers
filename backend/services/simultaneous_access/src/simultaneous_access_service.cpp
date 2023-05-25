@@ -1,16 +1,16 @@
 #include "simultaneous_access_service.h"
 
 #include "blocking_resolvers_factory.h"
-#include "data_wrapper.h"
 #include "idraw_conflict_resolver.h"
 #include "inklink_global.h"
-#include "json_data.h"
+#include "itext_conflict_resolver.h"
 
 #include <data_container.h>
+#include <iauthorizer.h>
 #include <idb_adapter.h>
 #include <iexternal_service_chassis.h>
-#include <inklink/chassis_configurators/websocket_configurator.h>
-#include <websocket_sessions_factory.h>
+#include <inklink/chassis_configurators/base_websocket_configurator.h>
+#include <websocket_session_factory.h>
 
 #include <json_serializer.h>
 
@@ -34,7 +34,7 @@ using error_code = boost::system::error_code;
 
 using InternalSessionsManager = inklink::base_service_chassis::InternalSessionsManager;
 
-using IAuthorizer = inklink::server_network::IAuthorizer;
+using IAuthorizer = inklink::authorizer::IAuthorizer;
 using IServiceSession = inklink::server_network::IServiceSession;
 
 using DataContainer = inklink::serializer::DataContainer;
@@ -113,7 +113,8 @@ int SimultaneousAccessService::Run()
 
     auto manager = std::make_shared<InternalSessionsManager>();
     auto auhorizer = std::make_shared<IAuthorizer>();
-    auto factory = std::make_unique<WebsocketSessionsFactory>( // I think, it's ok with default template params
+    auto factory = std::make_unique<server_network::WebsocketSessionsFactory<>>( // I think, it's ok with default
+                                                                                 // template params
             manager, authorizer,
             [this](const std::string& str, error_code ec, IServiceSession* iss) { DoOnRead(str, ec, iss); },
             [this](error_code ec, IServiceSession* iss) { DoOnConnect(ec, iss); },
@@ -127,7 +128,7 @@ int SimultaneousAccessService::Run()
     const std::string logPath{std::string(kLogPathPrefix) + "simultaneous_access_.txt"};
     //      + std::format("{:%Y_%m_%d_%H_%M}", startTime) + ".txt"};
     // clang-format off
-    m_chassis->baseServiceChassis = base_service_chassis::BaseChassisWebsocketConfigurator::CreateAndInitializeFullChassis(
+    m_chassis->baseServiceChassis = chassis_configurator::BaseChassisWebsocketConfigurator::CreateAndInitializeFullChassis(
             "simultaneous access", logPath, 
             ioContext, std::move(factory), manager, 
             ServiceType::kSimultaneousAccess, {.address = m_address, .port = m_port},
@@ -150,7 +151,7 @@ void SimultaneousAccessService::DoOnRead(const std::string& msg, error_code ec, 
                                                         ec.what());
     }
 
-    auto msgData = JsonSerializer::ParseString(msg);
+    auto msgData = JsonSerializer::ParseFromString(msg);
     try
     {
         if (!msgData.Has("document_id") || !msgData.Has("action") || msgData.Has("time") || msgData.Has("figure_id"))
@@ -221,8 +222,8 @@ void SimultaneousAccessService::HandleNewUser(const DataContainer& msgData, ISer
 
     if (!m_drawResolvers.contains(docId))
     {
-        m_drawResolvers[docId] = std::shared_ptr(m_factory->GetDrawConflictResolver());
-        m_textResolvers[docId] = std::shared_ptr(m_factory->GetTextConflictResolver());
+        m_drawResolvers[docId] = std::shared_ptr<IDrawConflictResolver>(m_factory->GetDrawConflictResolver());
+        m_textResolvers[docId] = std::shared_ptr<ITextConflictResolver>(m_factory->GetTextConflictResolver());
     }
 
     const auto drawActionsHistory = m_drawResolvers[docId]->GetHistory();
@@ -273,14 +274,15 @@ void SimultaneousAccessService::HandleDraw(const DataContainer& msgData, IServic
 
     if (!m_drawResolvers.contains(docId))
     {
-        m_drawResolvers.push_back(std::shared_ptr(m_factory->GetDrawConflictResolver()));
+        m_drawResolvers[docId] = std::shared_ptr<IDrawConflictResolver>(m_factory->GetDrawConflictResolver());
     }
 
-    const auto resolvedActions = m_drawResolvers[docId]->Resolve({action});
+    std::vector<DrawAction> actions{action};
+    m_drawResolvers[docId]->Resolve(actions);
 
-    const auto sessions = m_chassis->baseServiceChassis->manager->GetSessionsByDocument(docId);
+    const auto sessions = m_chassis->baseServiceChassis->internalSessionsManager->GetSessionsByDocument(docId);
 
-    auto sendData{ContainerFromVectorOfDrawActions(resolvedActions)};
+    auto sendData{ContainerFromVectorOfDrawActions(actions)};
 
     for (const auto& session : sessions)
     {
@@ -307,14 +309,15 @@ void SimultaneousAccessService::HandleText(const DataContainer& msgData, IServic
 
     if (!m_textResolvers.contains(docId))
     {
-        m_textResolvers.push_back(std::shared_ptr(m_factory->GetTextConflictResolver()));
+        m_textResolvers[docId] = std::shared_ptr<ITextConflictResolver>(m_factory->GetTextConflictResolver());
     }
 
-    const auto resolvedActions = m_textResolvers[docId]->Resolve({action});
+    std::vector<TextAction> actions{action};
+    m_textResolvers[docId]->Resolve(actions);
 
-    const auto sessions = m_chassis->baseServiceChassis->manager->GetSessionsByDocument(docId);
+    const auto sessions = m_chassis->baseServiceChassis->internalSessionsManager->GetSessionsByDocument(docId);
 
-    auto sendData{ContainerFromVectorOfTextActions(resolvedActions)};
+    auto sendData{ContainerFromVectorOfTextActions(actions)};
 
     for (const auto& session : sessions)
     {
@@ -337,7 +340,7 @@ DataContainer SimultaneousAccessService::ContainerFromVectorOfDrawActions(const 
     return container;
 }
 
-DataContainer SimultaneousAccessService::ContainerFromVectorOTextActions(const std::vector<TextAction>& actions)
+DataContainer SimultaneousAccessService::ContainerFromVectorOfTextActions(const std::vector<TextAction>& actions)
 {
     DataContainer container{};
     auto& dataArray = container.CreateArray();

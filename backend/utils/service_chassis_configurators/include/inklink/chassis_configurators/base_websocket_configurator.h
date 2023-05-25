@@ -13,6 +13,7 @@
 #include <memory>
 #include <string>
 
+
 namespace inklink::chassis_configurator
 {
 class BaseChassisWebsocketConfigurator
@@ -25,7 +26,6 @@ public:
     using IBaseServiceChassis = base_service_chassis::IBaseServiceChassis;
     using ILogger = base_service_chassis::ILogger;
 
-    using BeastWebsocketListener = server_network::BeastWebsocketListener;
     using ISessionsFactory = server_network::ISessionsFactory;
     using IServiceSession = server_network::IServiceSession;
 
