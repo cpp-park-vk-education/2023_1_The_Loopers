@@ -5,6 +5,8 @@ target_sources(${BASE_SERVICE_CHASSIS} PRIVATE
     "logger_adapter/src/ilogger.cpp"
     "logger_adapter/src/spdlog_adapter.cpp"
     "local_service_registry/src/local_service_registry.cpp"
+    "message_broker_connector/src/icommon_connection.cpp"
+    "message_broker_connector/src/websocket_common_connection.cpp"
 )
 
 set(PUBLIC_INCLUDE_DIRECTORIES
