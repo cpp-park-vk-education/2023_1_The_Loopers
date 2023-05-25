@@ -13,7 +13,7 @@ namespace inklink::auth
 class LoginDialog : public QDialog
 {
 public:
-    LoginDialog(QWidget *parent = nullptr);
+    LoginDialog(QWidget* parent = nullptr);
 
     ~LoginDialog() = default;
 
@@ -23,7 +23,7 @@ private:
     void OnEnterButtonClicked();
 
 private:
-    QLineEdit *usernameLine;
-    QLineEdit *passwordLine;
+    QLineEdit* usernameLine;
+    QLineEdit* passwordLine;
 };
-}
+} // namespace inklink::auth

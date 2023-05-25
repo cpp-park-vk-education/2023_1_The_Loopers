@@ -62,8 +62,8 @@ void AuthDialog::OnCreateButtonClicked()
     std::string username;
     std::string password;
 
-    QString usernameEnter = usernameLine->text();
-    QString passwordEnter = passwordLine->text();
+    const QString usernameEnter = usernameLine->text();
+    const QString passwordEnter = passwordLine->text();
 
     username = usernameEnter.toStdString();
     password = passwordEnter.toStdString();
@@ -78,11 +78,13 @@ void AuthDialog::OnCreateButtonClicked()
     {
         QMessageBox::warning(this, passwordEnter, "Enter password");
     }
-    else if (!authModel->CreateUser(username, password))
+    else if (!authModel->createUser(username, password))
     {
         QMessageBox::warning(this, usernameEnter, "Existing username");
     }
     else
+    {
         close();
+    }
 }
 } // namespace inklink::auth
