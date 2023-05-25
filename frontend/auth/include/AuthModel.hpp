@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Encrypter.hpp"
-
 #include <memory>
 #include <string>
 
@@ -19,11 +17,9 @@ public:
 protected:
     void setLogin(const std::string& login);
     void setToken(const std::string& token);
-    std::string encrypt(const std::string& password);
 
 private:
     std::string m_login;
     std::string m_token;
-    std::unique_ptr<Encrypter> m_encrypter;
 };
 } // namespace inklink::auth
