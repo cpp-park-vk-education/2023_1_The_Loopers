@@ -2,19 +2,22 @@
 
 #include <filesystem>
 
-
-constexpr std::string kDbConnectionString;
-
-namespace inklink : storage
+namespace inklink::storage
 {
-void Run(int port)
+int Run(int port)
 {
     try
     {
         m_dbController->Connect(kDbConnectionString);
+        SetChassis(std::shared_ptr<IExternalServiceChassis>());
+        SetDbController(std::shared_ptr<IStorageDbController>(), port);
+        SetFileHolder(std::shared_ptr<IFileHolder>());
+
+        return 0;
     }
     catch (const std::exception&)
     {
+        return -1;
     }
 }
 
@@ -42,7 +45,7 @@ bool Storage::Update(const std::string& fileName, const std::string& login, cons
 {
     try
     {
-        if (m_dbController->GetFilePath(fileName, login) == "")
+        if (m_dbController->GetFilePath(fileName, login).string().empty())
         {
             Create(fileName, login);
         }
@@ -55,8 +58,8 @@ bool Storage::Update(const std::string& fileName, const std::string& login, cons
 }
 
 
-std::string Storage::GetGraphArcsForOneVertex(const std::string & rootFileName, const std::string & vertexFileName,
-                                            const std::string & login) const
+std::string Storage::GetGraphArcsForOneVertex(const std::string& rootFileName, const std::string& vertexFileName,
+                                              const std::string& login) const
 {
     try
     {
@@ -88,9 +91,13 @@ void Storage::SetChassis(std::shared_ptr<IExternalServiceChassis> serviceChassis
     m_serviceChassis = serviceChassis;
 }
 
-void Storage::SetDbController(std::shared_ptr<IStorageDbController> dbController)
+void Storage::SetDbController(std::shared_ptr<IStorageDbController> dbController, int port)
 {
     m_dbController = dbController;
+
+    std::string connectionString{"host=localhost port =" + port +
+                                 " dbname=inklink_storage_db user=postges password=alex"};
+    m_dbController->Run(connectionString);
 }
 
 void Storage::SetFileHolder(std::shared_ptr<IFileHolder> fileHolder)

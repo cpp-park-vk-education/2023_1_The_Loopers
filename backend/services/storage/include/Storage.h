@@ -4,7 +4,7 @@
 #include "istorage.h"
 
 
-namespace inklink : storage
+namespace inklink::storage
 {
 class Storage final : public IStorage
 {
@@ -13,7 +13,8 @@ public:
     using IStorageDbController = db_controller::IStorageDbController;
     using IExternalServiceChassis = external_service_chassis:IExternalServiceChassis;
 
-    void Run(int port) override;
+public:
+    int Run(int port) override;
     [[nodiscard]] std::string GetFile(const std::string& fileName, const std::string& login) const override;
     [[nodiscard]] bool Update(const std::string& fileName, const std::string& login, const std::string& fileChanges) const override;
 

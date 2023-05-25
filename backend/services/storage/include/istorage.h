@@ -9,7 +9,7 @@
 #include <string>
 
 
-namespace inklink:storage
+namespace inklink::storage
 {
 class IStorage
 {
@@ -19,7 +19,8 @@ public:
     using IStorageDbController = db_controller::IStorageDbController;
     using IExternalServiceChassis = external_service_chassis:IExternalServiceChassis;
 
-    virtual void Run(int port);
+public:
+    virtual int Run(int port);
     virtual bool DoOnRead(error_code errocCode, const std::string& request, IServiceSession* serviceSession)
     virtual [[nodiscard]] std::string GetFile(std::string& fileName, std::string& login) const = 0;
     virtual [[nodiscard]] bool Update(std::string& fileName, std::string& login, std::string& fileChanges) const = 0;
@@ -41,6 +42,7 @@ public:
 protected:
     virtual [[nodiscard]] bool Create(const std::string& fileName, const std::string& login) const = 0;
 
+protected:
     std::shared_ptr<IFileHolder> m_fileWorker;
     std::shared_ptr<IStorageDbController> m_dbController;
     std::shared_ptr<IExternalServiceChassis> m_serviceChassis;
