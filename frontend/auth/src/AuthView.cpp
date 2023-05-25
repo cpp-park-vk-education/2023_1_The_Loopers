@@ -13,7 +13,7 @@
 
 namespace inklink::auth
 {
-AuthDialog::AuthDialog(QWidget *parent) : QDialog(parent)
+AuthDialog::AuthDialog(QWidget* parent) : QDialog(parent)
 {
     setWindowTitle("Registration");
 
@@ -22,23 +22,23 @@ AuthDialog::AuthDialog(QWidget *parent) : QDialog(parent)
     usernameLine = new QLineEdit(this);
     passwordLine = new QLineEdit(this);
 
-    auto *usernameLabel = new QLabel(tr("Username"), this);
-    auto *passwordLabel = new QLabel(tr("Password"), this);
+    auto* usernameLabel = new QLabel(tr("Username"), this);
+    auto* passwordLabel = new QLabel(tr("Password"), this);
 
-    auto *createButton = new QPushButton(tr("Register"), this);
+    auto* createButton = new QPushButton(tr("Register"), this);
     createButton->setAutoDefault(false);
     connect(createButton, &QPushButton::clicked, this, &AuthDialog::OnCreateButtonClicked);
 
-    auto *loginButton = new QPushButton(tr("Log in"), this);
+    auto* loginButton = new QPushButton(tr("Log in"), this);
     loginButton->setAutoDefault(false);
     connect(loginButton, &QPushButton::clicked, this, &AuthDialog::OnLoginButtonClicked);
 
-    auto *buttonsLayout = new QHBoxLayout;
+    auto* buttonsLayout = new QHBoxLayout;
     buttonsLayout->setAlignment(Qt::AlignCenter);
     buttonsLayout->addWidget(createButton);
     buttonsLayout->addWidget(loginButton);
 
-    auto *mainLayout = new QVBoxLayout(this);
+    auto* mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(usernameLabel);
     mainLayout->addWidget(usernameLine);
 
@@ -52,7 +52,7 @@ AuthDialog::AuthDialog(QWidget *parent) : QDialog(parent)
 
 void AuthDialog::OnLoginButtonClicked()
 {
-    auto *login = new LoginDialog(this);
+    auto* login = new LoginDialog(this);
     close();
     login->show();
 }
@@ -68,7 +68,7 @@ void AuthDialog::OnCreateButtonClicked()
     username = usernameEnter.toStdString();
     password = passwordEnter.toStdString();
 
-    auto *authModel = new AuthModel;
+    auto* authModel = new AuthModel;
 
     if (username.empty())
     {
