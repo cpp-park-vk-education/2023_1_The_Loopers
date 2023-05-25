@@ -210,7 +210,7 @@ inline void
 ManualWebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallback>::OnConnect(error_code ec)
 {
     m_timer.cancel();
-    m_connectCallback(ConnectType::kConnect, ec);
+    m_connectCallback(ConnectType::kConnect, ec, this);
     if (ec)
     {
         return;
@@ -242,7 +242,7 @@ template <ConnectTypeErrorCodeCallbackConcept ConnectCallback, StringErrorCodeCa
 inline void
 ManualWebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallback>::OnHandshake(error_code ec)
 {
-    m_connectCallback(ConnectType::kHandshake, ec);
+    m_connectCallback(ConnectType::kHandshake, ec, this);
     if (ec)
     {
         return;
@@ -297,7 +297,7 @@ inline void
 ManualWebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallback>::OnRead(error_code ec,
                                                                                                   std::size_t)
 {
-    m_readCallback(boost::beast::buffers_to_string(m_readBuffer.data()), ec);
+    m_readCallback(boost::beast::buffers_to_string(m_readBuffer.data()), ec, this);
     if (ec)
     {
         return;
