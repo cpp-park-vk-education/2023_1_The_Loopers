@@ -14,6 +14,7 @@
 #include <boost/asio.hpp>
 #include <boost/system/error_code.hpp>
 
+#include <iostream>
 #include <chrono>
 #include <filesystem>
 #include <format>
@@ -77,6 +78,8 @@ int MessageBrokerService::Run()
             ServiceType::kMessageBroker, {.address = m_address, .port = m_port});
     // clang-format on
     m_chassis->logger->LogInfo("Message broker service is initted");
+
+    std::cout << "Message broker configured" << __LINE__ << std::endl;
 
     m_eventsHandler = std::make_unique<IEventsHandler>(*m_chassis);
     m_signalsHandler = std::make_unique<ISignalsHandler>(*m_chassis);

@@ -63,7 +63,7 @@ constexpr std::chrono::seconds kDelay{1s};
     return logger;
 }
 
-void AddListener(const std::unique_ptr<IBaseServiceChassis>& chassis, io_context& ioContext,
+void AddListener(const std::shared_ptr<IBaseServiceChassis> chassis, io_context& ioContext,
                  std::unique_ptr<ISessionsFactory> factory, const Endpoint& endpointSelf)
 {
     auto lamOnAccept = [&chassis](error_code ec, IServiceSession*)
@@ -83,7 +83,7 @@ void AddListener(const std::unique_ptr<IBaseServiceChassis>& chassis, io_context
     chassis->listener = listener;
 }
 
-void AddServiceRegistrator(std::unique_ptr<IBaseServiceChassis>& chassis, ServiceType typeSelf,
+void AddServiceRegistrator(std::shared_ptr<IBaseServiceChassis> chassis, ServiceType typeSelf,
                            const Endpoint& endpointSelf)
 {
     chassis->registrator = std::make_unique<WebsocketServiceRegistrator>(chassis->logger);
@@ -95,7 +95,7 @@ void AddServiceRegistrator(std::unique_ptr<IBaseServiceChassis>& chassis, Servic
     }
 }
 
-void AddMsgBrokerConnection(std::unique_ptr<IBaseServiceChassis>& chassis, ServiceType typeSelf,
+void AddMsgBrokerConnection(std::shared_ptr<IBaseServiceChassis> chassis, ServiceType typeSelf,
                             const Endpoint& endpointSelf,
                             NotifiedFunctor notifiedCallback, // event from message broker
                             ReadFunctor readCallback          // signal from message broker
@@ -133,7 +133,7 @@ void AddMsgBrokerConnection(std::unique_ptr<IBaseServiceChassis>& chassis, Servi
 namespace inklink::chassis_configurator
 {
 // clang-format off
-std::unique_ptr<base_service_chassis::IBaseServiceChassis>
+std::shared_ptr<base_service_chassis::IBaseServiceChassis>
 BaseChassisWebsocketConfigurator::CreateAndInitializeFullChassis(
     const std::string& loggerName, 
     const std::filesystem::path& logFilePath, 
@@ -161,7 +161,7 @@ BaseChassisWebsocketConfigurator::CreateAndInitializeFullChassis(
 }
 
 // clang-format off
-std::unique_ptr<IBaseServiceChassis>
+std::shared_ptr<IBaseServiceChassis>
 BaseChassisWebsocketConfigurator::CreateAndInitializeChassisWithoutMsgBroker(
     const std::string& loggerName, 
     const std::filesystem::path& logFilePath, 
@@ -186,7 +186,7 @@ BaseChassisWebsocketConfigurator::CreateAndInitializeChassisWithoutMsgBroker(
 }
 
 // clang-format off
-std::unique_ptr<IBaseServiceChassis>
+std::shared_ptr<IBaseServiceChassis>
 BaseChassisWebsocketConfigurator::CreateAndInitializeChassisWithoutRegistratorAndMsgBroker(
     const std::string& loggerName, 
     const std::filesystem::path& logFilePath, 
@@ -198,7 +198,7 @@ BaseChassisWebsocketConfigurator::CreateAndInitializeChassisWithoutRegistratorAn
 )
 // clang-format on
 {
-    auto chassis = std::make_unique<IBaseServiceChassis>();
+    auto chassis = std::make_shared<IBaseServiceChassis>();
 
     // first configure logger
     chassis->logger = CreateLogger(loggerName, logFilePath);

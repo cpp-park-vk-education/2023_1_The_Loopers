@@ -63,6 +63,6 @@ private:
     std::string m_address{"127.0.0.1"};
     std::uint16_t m_port{3998};
 
-    std::unique_ptr<IBaseServiceChassis> m_chassis;
+    std::shared_ptr<IBaseServiceChassis> m_chassis;
 };
 } // namespace inklink::service_registry

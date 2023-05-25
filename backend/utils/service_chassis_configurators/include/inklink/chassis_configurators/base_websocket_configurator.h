@@ -13,7 +13,6 @@
 #include <memory>
 #include <string>
 
-
 namespace inklink::chassis_configurator
 {
 class BaseChassisWebsocketConfigurator
@@ -36,7 +35,7 @@ public:
     ~BaseChassisWebsocketConfigurator() = delete;
 
     // clang-format off
-    [[nodiscard]] static std::unique_ptr<base_service_chassis::IBaseServiceChassis>
+    [[nodiscard]] static std::shared_ptr<base_service_chassis::IBaseServiceChassis>
     CreateAndInitializeFullChassis(
         const std::string& loggerName, 
         const std::filesystem::path& logFilePath, 
@@ -51,7 +50,7 @@ public:
         ReadFunctor readCallback // signal from message broker
     );
 
-    [[nodiscard]] static std::unique_ptr<IBaseServiceChassis>
+    [[nodiscard]] static std::shared_ptr<IBaseServiceChassis>
     CreateAndInitializeChassisWithoutMsgBroker(
         const std::string& loggerName, 
         const std::filesystem::path& logFilePath, 
@@ -63,7 +62,7 @@ public:
         const Endpoint& endpointSelf // to register in registry
     );
 
-    [[nodiscard]] static std::unique_ptr<IBaseServiceChassis>
+    [[nodiscard]] static std::shared_ptr<IBaseServiceChassis>
     CreateAndInitializeChassisWithoutRegistratorAndMsgBroker(
         const std::string& loggerName, 
         const std::filesystem::path& logFilePath, 

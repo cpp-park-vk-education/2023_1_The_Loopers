@@ -83,7 +83,7 @@ private:
     std::string m_address{"127.0.0.1"};
     std::uint16_t m_port{3997};
 
-    std::unique_ptr<IExternalServiceChassis> m_chassis;
+    std::shared_ptr<IExternalServiceChassis> m_chassis;
     std::unique_ptr<IResolversFactory> m_factory;
 };
 } // namespace inklink::service_simultaneous_access

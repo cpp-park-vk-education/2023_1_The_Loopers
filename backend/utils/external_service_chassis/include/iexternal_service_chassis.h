@@ -17,7 +17,7 @@ struct IExternalServiceChassis
 public:
     virtual ~IExternalServiceChassis() = default;
 
-    std::unique_ptr<IBaseServiceChassis> baseServiceChassis;
+    std::shared_ptr<IBaseServiceChassis> baseServiceChassis;
     // std::unique_ptr<IUserExitHandler> userExitHandler;
 };
 } // namespace inklink::external_service_chassis

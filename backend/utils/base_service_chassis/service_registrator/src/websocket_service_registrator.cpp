@@ -52,7 +52,7 @@ WebsocketServiceRegistrator::WebsocketServiceRegistrator(std::shared_ptr<ILogger
 
     auto onReadFunctor = [this](const std::string& msg, error_code ec, IClientSession*) { this->DoOnRead(msg, ec); };
 
-    std::cout << "Unable to register in registry on startup!" << __LINE__ << std::endl;
+    std::cout << "Before create session!" << __LINE__ << std::endl;
 
     auto session = std::make_shared<
             client_connector::WebsocketClientSession<decltype(onAcceptFunctor), decltype(onReadFunctor)>>(
@@ -60,10 +60,17 @@ WebsocketServiceRegistrator::WebsocketServiceRegistrator(std::shared_ptr<ILogger
     session->RunAsync(m_serviceRegistryAddress, m_serviceRegistryPort);
     m_connectionToRegistry = session;
 
+    std::cout << "Session created!" << __LINE__ << std::endl;
+
     m_ioContextExecutor =
             boost::asio::require(m_ioContext.get_executor(), boost::asio::execution::outstanding_work.tracked);
-
-    m_threadIoContext = std::thread([this]() { this->m_ioContext.run(); });
+    try
+    {
+        this->m_ioContext.run();
+       // m_threadIoContext = std::thread([this]() { this->m_ioContext.run(); });
+    } catch (...) {
+        std::cout << "Error occured on run!" << __LINE__ << std::endl;
+    }
 }
 
 WebsocketServiceRegistrator::~WebsocketServiceRegistrator()
@@ -176,6 +183,8 @@ std::shared_ptr<IClientSession> WebsocketServiceRegistrator::InitSending(const s
 
     m_newMsg = false;
     m_msg.clear();
+
+    return session;
 }
 
 void WebsocketServiceRegistrator::DoOnRead(const std::string& msg, error_code ec)
