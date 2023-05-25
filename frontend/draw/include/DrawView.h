@@ -1,28 +1,25 @@
 #pragma once
 
-#include <QGraphicsItem>
-#include <QMouseEvent>
 #include <QWidget>
+#include <QKeyEvent>
 
 namespace inklink::draw
 {
 class DrawView : public QWidget
 {
 public:
-    DrawView(QWidget *parent = nullptr){};
+    DrawView(QWidget* parent = nullptr);
 
 protected:
-    void mousePressEvent(QMouseEvent *event) override;
-    void mouseMoveEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
-    void paintEvent(QPaintEvent *event) override;
+    void mousePressEvent(QMouseEvent* event) override;
+    void mouseMoveEvent(QMouseEvent* event) override;
+    void mouseReleaseEvent(QMouseEvent* event) override;
+    void paintEvent(QPaintEvent* event) override;
 
 private:
-    bool drawing;
-    QGraphicsItem* currentObject;
-    QList<QGraphicsItem*> objects;
-    QGraphicsItem *selectedObject;
-    QPointF lastPoint;
-    QPointF lastOffset;
+    QList<QPolygonF> m_polygons;
+    QPolygonF m_currentLine;
+    QPolygonF* m_selectedPolygon = nullptr;
+    QPointF m_offset;
 };
 } // namespace inklink::draw
