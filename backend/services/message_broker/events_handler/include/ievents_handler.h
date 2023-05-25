@@ -1,6 +1,9 @@
 #pragma once
 
+#include "data_container.h"
 #include "inklink_global.h"
+
+#include <data_container.h>
 
 #include <memory>
 #include <unordered_map>
@@ -18,17 +21,18 @@ class IEventsHandler
     using IBaseServiceChassis = base_service_chassis::IBaseServiceChassis;
 
 public:
-    IEventsHandler(std::shared_ptr<IBaseServiceChassis>);
-
+    explicit IEventsHandler(IBaseServiceChassis&);
     virtual ~IEventsHandler() = default;
-
-    virtual void RemoveSubscriber(int, const Endpoint&) = 0;
-    virtual void AddSubscriber(int, const Endpoint&) = 0;
-    virtual void SendEvent(int, const std::string&) = 0;
+    virtual bool Handle(const serializer::DataContainer&, const Endpoint& sender);
 
 protected:
-    std::shared_ptr<IBaseServiceChassis> m_serviceChassis;
+    virtual void RemoveSubscriber(int eventType, const Endpoint&);
+    virtual void AddSubscriber(int eventType, const Endpoint&);
+    virtual void SendEvent(int eventType, const std::string&);
 
-    std::unordered_map<int, std::vector<Endpoint>> m_subscribers;
+protected:
+    IBaseServiceChassis& m_serviceChassis;
+
+    std::unordered_map<int /*event type*/, std::vector<Endpoint>> m_subscribers;
 };
 } // namespace inklink::service_message_broker

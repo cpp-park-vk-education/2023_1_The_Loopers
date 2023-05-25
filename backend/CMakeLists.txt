@@ -12,3 +12,4 @@ add_subdirectory(utils/service_chassis_configurators)
 
 add_subdirectory(services/simultaneous_access)
 add_subdirectory(services/service_registry)
+add_subdirectory(services/message_broker)
