@@ -19,16 +19,13 @@ public:
 
     [[nodiscard]] std::shared_ptr<pqxx::connection> GetConnection();
 
-    template <typename... Arguments>
-    void Insert(const std::string& request, const Arguments&... arguments) const override;
+    void Insert(const std::string& request, const std::string&... arguments) const override;
 
-    template <typename... Arguments>
-    void Update(const std::string& request, const Arguments&... arguments) const override;
+    void Update(const std::string& request, const std::string&... arguments) const override;
 
     void Delete(const std::string& request) const override;
 
-    template <typename... Arguments>
-    [[nodiscard]] DbTable Select(const std::string& request, const Arguments&... arguments) const override;
+    [[nodiscard]] DbTable Select(const std::string& request, const std::string&... arguments) const override;
 private:
     std::shared_ptr<pqxx::connection> m_connection;
 };

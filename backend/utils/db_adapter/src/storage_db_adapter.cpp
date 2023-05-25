@@ -13,22 +13,20 @@ std::shared_ptr<pqxx::connection> StorageDbAdapter::GetConnection()
     return m_connection;
 }
 
-template <typename... Arguments>
-void StorageDbAdapter::Insert(const std::string& request, const Arguments&... arguments) const
+void StorageDbAdapter::Insert(const std::string& request, const std::string&... arguments) const
 {
     pqxx::work inserter(*m_connection);
-    inserter.exec_prepared(request, arguments);
+    inserter.exec_prepared(request, arguments...);
 
     inserter.commit();
 }
 
-template <typename... Arguments>
-StorageDbAdapter::DbTable StorageDbAdapter::Select(const std::string& request, const Arguments&... arguments) const
+StorageDbAdapter::DbTable StorageDbAdapter::Select(const std::string& request, const std::string&... arguments) const
 {
     pqxx::work selector(*m_connection);
     DbTable result{};
 
-    pqxx::result response = selector.exec_prepared(request, arguments);
+    pqxx::result response = selector.exec_prepared(request, arguments...);
 
     for (const auto& row: response)
     {
@@ -45,11 +43,10 @@ StorageDbAdapter::DbTable StorageDbAdapter::Select(const std::string& request, c
     return result;
 }
 
-template <typename... Arguments>
-void StorageDbAdapter::Update(const std::string& request, const Arguments&... arguments) const
+void StorageDbAdapter::Update(const std::string& request, const std::string&... arguments) const
 {
     pqxx::work updator(*m_connection);
-    updator.exec_prepared(request, arguments);
+    updator.exec_prepared(request, arguments...);
 
     updator.commit();
 }
