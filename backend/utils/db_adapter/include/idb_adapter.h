@@ -17,23 +17,15 @@ public:
 
     virtual void Connect(const std::string& connectionString) = 0;
 
-    virtual void Insert(const std::string& request, const std::string& argument1, const std::string& argument2,
-                        const std::string& argument3, const std::string& argument4) const = 0;
+    template<typename... Arguments>
+    virtual void Insert(const std::string& request, const Arguments&... arguments) const = 0;
 
-    virtual void Insert(const std::string& request, const std::string& argument1, const std::string& argument2,
-                        const std::string& argument3) const = 0;
-
-    virtual void Update(const std::string& request, const std::string& argument1,
-                        const std::string& argument2) const = 0;
+    template <typename... Arguments>
+    virtual void Update(const std::string& request, const Arguments&... arguments) const = 0;
 
     virtual void Delete(const std::string& request) const = 0;
 
-    [[nodiscard]] virtual DbTable Select(const std::string& request, const std::string& argument) const = 0;
-
-    [[nodiscard]] virtual DbTable Select(const std::string& request, const std::string& argument1,
-                                         const std::string& argument2) const = 0;
-
-    [[nodiscard]] virtual DbTable Select(const std::string& request, const std::string& argument1,
-                                         const std::string& argument2, const std::string& argument3) const = 0;
+    template <typename... Arguments>
+    [[nodiscard]] virtual DbTable Select(const std::string& request, const Arguments&... arguments) const = 0;
 };
 } // namespace inklink::db_adapter
