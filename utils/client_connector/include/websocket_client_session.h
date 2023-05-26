@@ -122,7 +122,7 @@ namespace beast = boost::beast;
  *              return;
  *      }
  *
- *      void DoOnRead(ConnectType, error_code ec, IClientSession*) {
+ *      void DoOnRead(const std::string&, error_code ec, IClientSession*) {
  *              // your logic
  *              return;
  *      }
