@@ -1,25 +1,22 @@
 #pragma once
 
-#include "istorage_db_controller.h"
-#include "itoken_generator.h"
-
-#include <string>
+#include "iauth_handler.h"
 
 namespace inklink::auth_handler
 {
-class IAuthHandler
+class AuthHandler
 {
 public:
     using IAuthDbController = inklink::db_controller::IAuthDbController;
     using ITokenGenerator = inklink::token_generator::ITokenGenerator;
 
 public:
-    virtual void SetDbController(const IAuthDbController& dbController) = 0;
-    virtual void SetTokenGenerator(const ITokenGenerator& tokenGenerator) = 0;
+    void SetDbController(const IAuthDbController& dbController) override;
+    void SetTokenGenerator(const ITokenGenerator& tokenGenerator) override;
     virtual bool Handle(const std::string& login, const std::string& password) const = 0;
 
-protected: 
+protected:
     IAuthDbController m_dbController;
     ITokenGenerator m_tokenGenerator;
 };
-}
+} // namespace inklink::auth_handler
