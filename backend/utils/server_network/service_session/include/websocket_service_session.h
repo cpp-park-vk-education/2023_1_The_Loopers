@@ -13,8 +13,10 @@
 #include <concepts>
 #include <deque>
 #include <functional>
+#include <iostream>
 #include <memory>
 #include <string>
+
 
 namespace inklink::server_network
 {
@@ -103,6 +105,7 @@ WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::WebsocketS
           m_acceptCallback{acceptCallback},
           m_writeCallback{writeCallback}
 {
+        std::cout << "Websocket session ctor " << __LINE__ << std::endl;
 }
 // clang-format on
 
@@ -111,6 +114,7 @@ template <StringErrorCodeSessionCallbackConcept ReadCallback, ErrorCodeAndSessio
 inline WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::~WebsocketServiceSession()
 {
     m_manager->RemoveSession(this);
+    std::cout << "Websocket session dector " << __LINE__ << std::endl;
 }
 
 template <StringErrorCodeSessionCallbackConcept ReadCallback, ErrorCodeAndSessionCallbackConcept AcceptCallback,
@@ -123,12 +127,14 @@ inline void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>
     // thread-safe by default.
     net::dispatch(m_websocketStream.get_executor(),
                   beast::bind_front_handler(&WebsocketServiceSession::OnRun, this->shared_from_this()));
+    std::cout << "Websocket session start running " << __LINE__ << std::endl;
 }
 
 template <StringErrorCodeSessionCallbackConcept ReadCallback, ErrorCodeAndSessionCallbackConcept AcceptCallback,
           ErrorCodeCallbackConcept WriteCallback>
 inline Endpoint WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::GetClientEndpoint()
 {
+    std::cout << "Websocket session GetClientEndpoint " << __LINE__ << std::endl;
     return m_endpoint;
 }
 
@@ -146,6 +152,7 @@ inline void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>
     // Accept the websocket handshake
     m_websocketStream.async_accept(
             beast::bind_front_handler(&WebsocketServiceSession::OnAccept, this->shared_from_this()));
+    std::cout << "Websocket session OnRun " << __LINE__ << std::endl;
 }
 
 template <StringErrorCodeSessionCallbackConcept ReadCallback, ErrorCodeAndSessionCallbackConcept AcceptCallback,
@@ -155,6 +162,8 @@ inline void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>
     auto ss = std::make_shared<std::string const>(message);
     // Always add to queue
     m_sendQueue.push_back(ss);
+
+    std::cout << "Websocket session Send " << __LINE__ << std::endl;
 
     // Are we already writing?
     if (m_sendQueue.size() > 1)
@@ -174,6 +183,8 @@ inline void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>
 {
     m_acceptCallback(ec, this);
 
+    std::cout << "Websocket session acceptr callback " << __LINE__ << std::endl;
+
     if (ec)
     {
         // destructor is called automatically (see file doxygen comment)
@@ -191,6 +202,7 @@ template <StringErrorCodeSessionCallbackConcept ReadCallback, ErrorCodeAndSessio
           ErrorCodeCallbackConcept WriteCallback>
 inline void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::DoRead()
 {
+    std::cout << "Websocket session DoRead " << __LINE__ << std::endl;
     // Read a message into our buffer
     m_websocketStream.async_read(m_readBuffer,
                                  beast::bind_front_handler(&WebsocketServiceSession::OnRead, this->shared_from_this()));
@@ -203,6 +215,7 @@ inline void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>
 {
     m_readCallback(beast::buffers_to_string(m_readBuffer.data()), ec, this);
 
+    std::cout << "Websocket session OnRead " << __LINE__ << std::endl;
     // TODO (a.novak) some errors should be ok and session should not be destructed, but in my
     // practice connection should be closed not only after websocket::error::closed (at least in
     // version 1.72)
@@ -226,6 +239,8 @@ inline void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>
 {
     // remove send string from queue
     m_sendQueue.pop_front();
+
+    std::cout << "Websocket session OnWrite " << __LINE__ << std::endl;
 
     m_writeCallback(ec, this);
     if (ec)

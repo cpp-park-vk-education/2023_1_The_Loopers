@@ -1,8 +1,12 @@
 #include "websocket_service_registrator.h"
 
 #include "ilogger.h"
+#include "inklink_global.h"
 
+#include <data_container.h>
 #include <websocket_client_session.h>
+
+#include <json_serializer.h>
 
 #include <boost/system/error_code.hpp>
 
@@ -18,7 +22,9 @@ using namespace std::chrono_literals;
 using IClientSession = inklink::client_connector::IClientSession;
 using error_code = boost::system::error_code;
 using ConnectType = inklink::client_connector::ConnectType;
-;
+
+using JsonSerializer = inklink::serializer::JsonSerializer;
+using DataContainer = inklink::serializer::DataContainer;
 } // namespace
 
 namespace inklink::base_service_chassis
@@ -85,23 +91,32 @@ bool WebsocketServiceRegistrator::Register(ServiceType type, const Endpoint& end
 {
     auto session = InitSending("Session with service registry expired before registration!", true);
 
-    // TODO (a.novak) serialize
-    session->Send("protocol register message");
+    DataContainer registerMsg{};
+    registerMsg["action_type"] = 0; // kRegister
+    registerMsg["description"]["service_type"] = static_cast<int>(type);
+    registerMsg["description"]["endpoint"]["address"] = endpoint.address;
+    registerMsg["description"]["endpoint"]["port"] = static_cast<int>(endpoint.port);
+    session->Send(JsonSerializer::SerializeAsString(registerMsg));
 
     while (!m_newMsg)
     {
         std::this_thread::sleep_for(100ms);
     }
 
-    // TODO (a.novak) parse m_msg
-    return true;
+    auto response = JsonSerializer::ParseFromString(m_msg);
+    return response.AsInt("action_result") == 1;
 }
 
 void WebsocketServiceRegistrator::Deregister(ServiceType type, const Endpoint& endpoint)
 {
     auto session = InitSending("Session with service registry expired before registration!", true);
-    // TODO (a.novak) serialize
-    session->Send("protocol deregister message");
+
+    DataContainer deregisterMsg{};
+    deregisterMsg["action_type"] = 1; // kExit
+    deregisterMsg["description"]["service_type"] = static_cast<int>(type);
+    deregisterMsg["description"]["endpoint"]["address"] = endpoint.address;
+    deregisterMsg["description"]["endpoint"]["port"] = static_cast<int>(endpoint.port);
+    session->Send(JsonSerializer::SerializeAsString(deregisterMsg));
 
     while (!m_newMsg)
     {
@@ -111,7 +126,8 @@ void WebsocketServiceRegistrator::Deregister(ServiceType type, const Endpoint& e
     if (m_errCode) [[unlikely]]
     {
     }
-    // TODO (a.novak) parse m_msg
+    auto response = JsonSerializer::ParseFromString(m_msg);
+    return response.AsInt("action_result") == 1;
 }
 
 [[nodiscard]] std::vector<Endpoint> WebsocketServiceRegistrator::GetEndpoints(ServiceType desiredServicesType)
@@ -123,8 +139,10 @@ void WebsocketServiceRegistrator::Deregister(ServiceType type, const Endpoint& e
         throw std::runtime_error("Session with service registry expired.");
     }
 
-    // TODO (a.novak) serialize
-    session->Send("protocol get endpoints");
+    DataContainer getEndpointsMsg{};
+    getEndpointsMsg["action_type"] = 2; // kGetEndpoints
+    getEndpointsMsg["description"]["service_type"] = static_cast<int>(desiredServicesType);
+    session->Send(JsonSerializer::SerializeAsString(getEndpointsMsg));
 
     while (!m_newMsg)
     {
@@ -134,7 +152,18 @@ void WebsocketServiceRegistrator::Deregister(ServiceType type, const Endpoint& e
     if (m_errCode) [[unlikely]]
     {
     }
-    // TODO (a.novak) parse m_msg
+
+    std::vector<Endpoint> result;
+    auto gotEndpoints = JsonSerializer::ParseFromString(m_msg);
+    for (const auto& serviceList : gotEndpoints.AsArray("services"))
+    {
+        for (const auto& service : serviceList.AsArray("service_list"))
+        {
+            result.push_back(Endpoint{.address = service.AsString("address"),
+                                      .port = static_cast<std::uint16_t>(service.AsInt("port"))});
+        }
+    }
+    return result;
 }
 void WebsocketServiceRegistrator::GetEndpoints(ServiceType desiredServicesType, GotEndpointsCallback GotCallback)
 {
@@ -144,8 +173,11 @@ void WebsocketServiceRegistrator::GetEndpoints(ServiceType desiredServicesType, 
     {
         throw std::runtime_error("Session with service registry expired.");
     }
-    // TODO (a.novak) serialize
-    session->Send("protocol get endpoints");
+
+    DataContainer getEndpointsMsg{};
+    getEndpointsMsg["action_type"] = 2; // kGetEndpoints
+    getEndpointsMsg["description"]["service_type"] = static_cast<int>(desiredServicesType);
+    session->Send(JsonSerializer::SerializeAsString(getEndpointsMsg));
 
     auto waitForMsg = [GotCallback, this]()
     {
@@ -157,9 +189,18 @@ void WebsocketServiceRegistrator::GetEndpoints(ServiceType desiredServicesType, 
         if (m_errCode) [[unlikely]]
         {
         }
-        // TODO (a.novak) parse m_msg
-        // GotCallback(std::move(result));
-        GotCallback({});
+
+        std::vector<Endpoint> result;
+        auto gotEndpoints = JsonSerializer::ParseFromString(m_msg);
+        for (const auto& serviceList : gotEndpoints.AsArray("services"))
+        {
+            for (const auto& service : serviceList.AsArray("service_list"))
+            {
+                result.push_back(Endpoint{.address = service.AsString("address"),
+                                          .port = static_cast<std::uint16_t>(service.AsInt("port"))});
+            }
+        }
+        GotCallback(std::move(result));
     };
 
     std::thread gotThread{waitForMsg};

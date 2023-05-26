@@ -10,7 +10,9 @@
 
 #include <concepts>
 #include <functional>
+#include <iostream>
 #include <memory>
+
 
 namespace inklink::server_network
 {
@@ -40,7 +42,10 @@ public:
             AcceptCallback acceptCallback = [](error_code, IServiceSession*) {});
     // clang-format on
 
-    ~BeastWebsocketListener() final = default;
+    ~BeastWebsocketListener() final
+    {
+        std::cout << "Listener destructor " << __LINE__ << std::endl;
+    }
 
     void AsyncRun() final;
 
@@ -66,12 +71,13 @@ inline BeastWebsocketListener<AcceptCallback>::BeastWebsocketListener(boost::asi
                                                                       AcceptCallback acceptCallback)
         : IListener{std::move(factory)}, m_ioContext{ioContext}, m_acceptor{ioContext}, m_acceptCallback{acceptCallback}
 {
-    error_code errorCode;
+    error_code errorCode{};
 
     // Open the acceptor
     if (m_acceptor.open(endpoint.protocol(), errorCode); errorCode)
     {
         TerminateOnFail(errorCode, "open ");
+        std::cout << "Error occured while oppening acceptor " << errorCode.what() << __LINE__ << std::endl;
         return;
     }
 
@@ -80,6 +86,7 @@ inline BeastWebsocketListener<AcceptCallback>::BeastWebsocketListener(boost::asi
     if (errorCode)
     {
         TerminateOnFail(errorCode, "set_option ");
+        std::cout << "Error occured while allowing address reuse " << errorCode.what() << __LINE__ << std::endl;
         return;
     }
 
@@ -87,7 +94,9 @@ inline BeastWebsocketListener<AcceptCallback>::BeastWebsocketListener(boost::asi
     if (m_acceptor.bind(endpoint, errorCode); errorCode)
     {
         TerminateOnFail(errorCode, "bind ");
-        return;
+        std::cout << "Error occured while Binding to the server address " << errorCode.what() << __LINE__ <<
+                 std::endl;
+                return;
     }
 
     // Start listening for connections
@@ -95,6 +104,7 @@ inline BeastWebsocketListener<AcceptCallback>::BeastWebsocketListener(boost::asi
     if (errorCode)
     {
         TerminateOnFail(errorCode, "listen ");
+        std::cout << "Error occured while starting listening " << errorCode.what() << __LINE__ << std::endl;
         return;
     }
 }
@@ -103,6 +113,7 @@ inline BeastWebsocketListener<AcceptCallback>::BeastWebsocketListener(boost::asi
 template <AcceptCallbackConcept AcceptCallback>
 inline void BeastWebsocketListener<AcceptCallback>::AsyncRun()
 {
+    std::cout << "Starting accepting " << __LINE__ << std::endl;
     if (m_acceptor.is_open())
     {
         DoAccept();
@@ -122,10 +133,12 @@ inline void BeastWebsocketListener<AcceptCallback>::OnAccept(error_code ec, tcp:
 {
     if (ec)
     {
+        std::cout << "accepted with error " << ec.what() << __LINE__ << std::endl;
         m_acceptCallback(ec, nullptr);
     }
     else
     {
+        std::cout << "accepted successfully " << ec.what() << __LINE__ << std::endl;
         // Create the session and run it
         auto session = m_factory->GetSession(std::move(socket));
         m_acceptCallback(ec, session.get());

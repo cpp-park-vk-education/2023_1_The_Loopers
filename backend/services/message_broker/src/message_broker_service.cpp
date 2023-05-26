@@ -20,7 +20,6 @@
 #include <iostream>
 #include <thread>
 
-
 namespace
 {
 namespace net = boost::asio;

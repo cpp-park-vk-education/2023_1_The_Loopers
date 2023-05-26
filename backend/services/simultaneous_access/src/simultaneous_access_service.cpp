@@ -21,9 +21,11 @@
 #include <chrono>
 #include <filesystem>
 #include <format>
+#include <iostream>
 #include <memory>
 #include <string_view>
 #include <thread>
+
 
 namespace
 {
@@ -141,6 +143,7 @@ int SimultaneousAccessService::Run()
             [this](const std::string& msgBody) { DoOnSignal(msgBody); });
     // clang-format on
     m_chassis->baseServiceChassis->logger->LogInfo("Simultaneous access service is initted");
+    std::cout << "Simultaneous access is initted" << __LINE__ << std::endl;
 
     // for now only one thread is supported
     ioContext.run();
@@ -149,6 +152,7 @@ int SimultaneousAccessService::Run()
 
 void SimultaneousAccessService::DoOnRead(const std::string& msg, error_code ec, IServiceSession* sessionFrom)
 {
+    std::cout << "Read" << msg << __LINE__ << std::endl;
     if (ec)
     {
         m_chassis->baseServiceChassis->logger->LogDebug(std::string("Got error from ... while reading. Error: ") +
@@ -188,10 +192,12 @@ void SimultaneousAccessService::DoOnRead(const std::string& msg, error_code ec, 
     }
 }
 
-void SimultaneousAccessService::DoOnConnect(error_code ec, IServiceSession*)
+void SimultaneousAccessService::DoOnConnect(error_code ec, IServiceSession* session)
 {
+    std::cout << "Connected" << session->GetClientEndpoint().address << __LINE__ << std::endl;
     if (ec)
     {
+        std::cout << "Error occured" << ec.what() << __LINE__ << std::endl;
         m_chassis->baseServiceChassis->logger->LogDebug(
                 std::string("Got error from ... when tried to accept. Error: ") + ec.what());
         return;

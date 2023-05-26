@@ -106,6 +106,8 @@ void AddMsgBrokerConnection(std::shared_ptr<IBaseServiceChassis> chassis, Servic
     int attempt{0};
     while (msgBrokerServices.empty() && attempt <= kMaxAttempts)
     {
+        chassis->logger->LogDebug(std::string("Got empty list of msgBrokerServices. Attempt number") +
+                                  std::to_string(attempt));
         std::this_thread::sleep_for(kDelay);
         msgBrokerServices = chassis->registrator->GetEndpoints(ServiceType::kMessageBroker);
         ++attempt;

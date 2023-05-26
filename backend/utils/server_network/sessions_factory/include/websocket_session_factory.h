@@ -6,8 +6,10 @@
 
 #include <concepts>
 #include <functional>
+#include <iostream>
 #include <memory>
 #include <string>
+
 
 namespace inklink::server_network
 {
@@ -77,6 +79,7 @@ template <StringErrorCodeSessionCallbackConcept ReadCallback, ErrorCodeAndSessio
 inline std::shared_ptr<IServiceSession>
 WebsocketSessionsFactory<ReadCallback, AcceptCallback, WriteCallback>::GetSession(boost::asio::ip::tcp::socket&& socket)
 {
+    std::cout << "Factory creating new session " << __LINE__ << std::endl;
     return std::make_shared<WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>>(
             m_manager, m_authorizer, std::move(socket), m_readCallback, m_acceptCallback, m_writeCallback);
 }
