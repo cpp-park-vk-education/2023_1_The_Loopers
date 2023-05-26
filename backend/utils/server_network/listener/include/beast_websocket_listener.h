@@ -13,7 +13,6 @@
 #include <iostream>
 #include <memory>
 
-
 namespace inklink::server_network
 {
 class IServiceSession;
@@ -94,9 +93,8 @@ inline BeastWebsocketListener<AcceptCallback>::BeastWebsocketListener(boost::asi
     if (m_acceptor.bind(endpoint, errorCode); errorCode)
     {
         TerminateOnFail(errorCode, "bind ");
-        std::cout << "Error occured while Binding to the server address " << errorCode.what() << __LINE__ <<
-                 std::endl;
-                return;
+        std::cout << "Error occured while Binding to the server address " << errorCode.what() << __LINE__ << std::endl;
+        return;
     }
 
     // Start listening for connections
@@ -123,6 +121,7 @@ inline void BeastWebsocketListener<AcceptCallback>::AsyncRun()
 template <AcceptCallbackConcept AcceptCallback>
 inline void BeastWebsocketListener<AcceptCallback>::DoAccept()
 {
+    std::cout << "DoAccept " << __LINE__ << std::endl;
     m_acceptor.async_accept(boost::asio::make_strand(m_ioContext),
                             boost::beast::bind_front_handler(&BeastWebsocketListener<AcceptCallback>::OnAccept,
                                                              this->shared_from_this()));

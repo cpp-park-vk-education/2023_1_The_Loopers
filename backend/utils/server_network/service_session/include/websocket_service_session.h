@@ -17,7 +17,6 @@
 #include <memory>
 #include <string>
 
-
 namespace inklink::server_network
 {
 namespace net = boost::asio;
@@ -171,6 +170,8 @@ inline void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>
         return;
     }
 
+    std::cout << "Websocket session Send " << *m_sendQueue.front() << __LINE__ << std::endl;
+
     // We are not currently writing, so send this immediately
     m_websocketStream.async_write(
             net::buffer(*m_sendQueue.front()),
@@ -215,7 +216,7 @@ inline void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>
 {
     m_readCallback(beast::buffers_to_string(m_readBuffer.data()), ec, this);
 
-    std::cout << "Websocket session OnRead " << __LINE__ << std::endl;
+    std::cout << "Websocket session OnRead " << beast::buffers_to_string(m_readBuffer.data()) << __LINE__ << std::endl;
     // TODO (a.novak) some errors should be ok and session should not be destructed, but in my
     // practice connection should be closed not only after websocket::error::closed (at least in
     // version 1.72)
@@ -251,6 +252,7 @@ inline void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>
     // Send the next message if any
     if (!m_sendQueue.empty())
     {
+        std::cout << "Websocket session Send " << *m_sendQueue.front() << __LINE__ << std::endl;
         m_websocketStream.async_write(
                 net::buffer(*m_sendQueue.front()),
                 beast::bind_front_handler(&WebsocketServiceSession::OnWrite, this->shared_from_this()));

@@ -127,7 +127,7 @@ void WebsocketServiceRegistrator::Deregister(ServiceType type, const Endpoint& e
     {
     }
     auto response = JsonSerializer::ParseFromString(m_msg);
-    return response.AsInt("action_result") == 1;
+    return;
 }
 
 [[nodiscard]] std::vector<Endpoint> WebsocketServiceRegistrator::GetEndpoints(ServiceType desiredServicesType)

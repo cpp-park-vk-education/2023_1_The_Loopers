@@ -182,6 +182,7 @@ BaseChassisWebsocketConfigurator::CreateAndInitializeChassisWithoutMsgBroker(
     // register at service registry
     AddServiceRegistrator(chassis, typeSelf, endpointSelf);
 
+    // TODO errro
     std::cout << "AddServiceRegistrator" << __LINE__ << std::endl;
 
     return chassis;

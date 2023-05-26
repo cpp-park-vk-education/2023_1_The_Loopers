@@ -26,7 +26,6 @@
 #include <string_view>
 #include <thread>
 
-
 namespace
 {
 namespace net = boost::asio;
@@ -126,8 +125,6 @@ int SimultaneousAccessService::Run()
                                                                                              // default template params
             manager, authorizer, onReadFunctor, onConnectFunctor, onWriteFunctor);
 
-    // TODO (a.novak) intellisense gives errors, but should not. Test with build in future (for now there is
-    // dependencies on files from not merged prs)
     std::filesystem::create_directories(std::filesystem::path(kLogPathPrefix));
     // TODO (a.novak) add time to file name. For some reason, std format does not work
     //     const auto startTime = std::chrono::system_clock::now();

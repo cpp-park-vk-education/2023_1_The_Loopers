@@ -10,6 +10,7 @@
 #include <atomic>
 #include <deque>
 #include <functional>
+#include <iostream>
 #include <memory>
 #include <string>
 
@@ -271,6 +272,8 @@ WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallba
         return;
     }
 
+    std::cout << "Websocket session Send " << *m_sendQueue.front() << __LINE__ << std::endl;
+
     // We are not currently writing, so send this immediately
     m_websocketStream.async_write(
             net::buffer(*m_sendQueue.front()),
@@ -398,6 +401,7 @@ inline void WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback,
     // Send the next message if any
     if (!m_sendQueue.empty())
     {
+        std::cout << "Websocket session Send " << *m_sendQueue.front() << __LINE__ << std::endl;
         m_websocketStream.async_write(
                 net::buffer(*m_sendQueue.front()),
                 beast::bind_front_handler(&WebsocketClientSession::OnWrite, this->shared_from_this()));
@@ -414,6 +418,7 @@ inline void WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback,
                                                                                                         std::size_t)
 {
     m_readCallback(beast::buffers_to_string(m_readBuffer.data()), ec, this);
+    std::cout << "Websocket session read " << beast::buffers_to_string(m_readBuffer.data()) << __LINE__ << std::endl;
     if (ec)
     {
         return;
