@@ -32,7 +32,7 @@ public:
 
     virtual void SetFileDeleted(const std::string& fileName, const std::string& login) const = 0;
 
-private:
+protected:
     DbAdapterBase& m_adapter;
 };
 } // namespace inklink::db_controller

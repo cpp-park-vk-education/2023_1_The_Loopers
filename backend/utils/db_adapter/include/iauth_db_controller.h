@@ -2,7 +2,6 @@
 
 #include "idb_adapter.h"
 
-#include <filesystem>
 #include <string>
 
 namespace inklink::db_controller
@@ -17,7 +16,8 @@ public:
     virtual void InsertUser(const std::string& login, const std::string& password) = 0;
 
     virtual std::string GetPassword(const std::string& login) = 0;
-private:
+
+protected:
     DbAdapterBase& m_adapter;
 };
 } // namespace inklink::db_controller
