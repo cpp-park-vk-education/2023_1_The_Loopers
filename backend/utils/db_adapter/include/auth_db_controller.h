@@ -4,6 +4,7 @@
 
 #include <string>
 
+
 namespace inklink::db_controller
 {
 class AuthDbController : public IAuthDbController
@@ -13,7 +14,7 @@ public:
     using DbTable = std::vector<DbRow>;
     
 public:
-    void SetAdapter(DbAdapterBase& adapter) override;
+    void SetAdapter(const DbAdapterBase& adapter) override;
 
     void Run(const std::string& connectionString) override;
 

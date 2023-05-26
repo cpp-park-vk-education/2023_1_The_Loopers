@@ -9,7 +9,7 @@ namespace inklink::db_controller
 class IAuthDbController
 {
 public:
-    virtual void SetAdapter(DbAdapterBase& adapter) = 0;
+    virtual void SetAdapter(const DbAdapterBase& adapter) = 0;
 
     virtual void Run(const std::string& connectionString) = 0;
 
