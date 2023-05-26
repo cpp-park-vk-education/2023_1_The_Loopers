@@ -72,8 +72,8 @@ WebsocketServiceRegistrator::WebsocketServiceRegistrator(std::shared_ptr<ILogger
             boost::asio::require(m_ioContext.get_executor(), boost::asio::execution::outstanding_work.tracked);
     try
     {
-        this->m_ioContext.run();
-        // m_threadIoContext = std::thread([this]() { this->m_ioContext.run(); });
+        // this->m_ioContext.run();
+        m_threadIoContext = std::thread([this]() { this->m_ioContext.run(); });
     }
     catch (...)
     {
