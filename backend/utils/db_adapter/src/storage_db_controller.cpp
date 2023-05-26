@@ -16,34 +16,34 @@ void StorageDbController::Run(const std::string& connectionString)
     std::shared_ptr<pqxx::connection> settings = m_adapter.GetConnection();
 
     settings->prepare("GetFilePath",
-                     "SELECT filePath FROM Files "
-                     "WHERE fileName = $1 AND login = $2 AND Deleted_at IS NULL");
+                     "SELECT path FROM Files "
+                     "WHERE name = $1 AND login = $2 AND deleted_at IS NULL");
 
     settings->prepare("GetGraphArcs",
-                     "SELECT Name FROM Files "
-                     "WHERE Id IN "
-                     "(SELECT Graph.Id_Second FROM Graph JOIN Files "
-                     "ON Graph.Id_First = Files.Id "
-                     "WHERE Files.Name = $1 AND Graph.Id_Session = "
-                     "(SELECT Id FROM Sessions "
-                     "WHERE RootId = (SELECT Id FROM Files WHERE Login = $2 AND Name = $3))) AND Deleted_at IS NULL");
+                     "SELECT name FROM Files "
+                     "WHERE id IN "
+                     "(SELECT Graph.id_second FROM Graph JOIN Files "
+                     "ON Graph.id_first = Files.id "
+                     "WHERE Files.name = $1 AND Graph.id_session = "
+                     "(SELECT id FROM Sessions "
+                     "WHERE root_id = (SELECT id FROM Files WHERE login = $2 AND name = $3))) AND deleted_at IS NULL");
 
-    settings->prepare("GetAllFilesForUser", "SELECT Names FROM Files WHERE Login = $1 AND Deleted_at IS NULL");
+    settings->prepare("GetAllFilesForUser", "SELECT name FROM Files WHERE login = $1 AND deleted_at IS NULL");
 
-    settings->prepare("InsertFile", "INSERT INTO Files(Name, Login, Path) VALUES ($1, $2, $3)");
+    settings->prepare("InsertFile", "INSERT INTO Files(name, login, path) VALUES ($1, $2, $3)");
 
     settings->prepare("InsertNewSession",
-                     "INSERT INTO Sessions VALUES ((SELECT Id FROM Files WHERE Login = $1 AND Name = $2))");
+                     "INSERT INTO Sessions VALUES ((SELECT id FROM Files WHERE login = $1 AND name = $2))");
 
     settings->prepare("InsertGraphArc",
                      "INSERT INTO Graph VALUES "
-                     "((SELECT Id FROM Files WHERE Login = $1 AND Name = $2), "
-                     "(SELECT Id FROM Files WHERE Login = $1 AND Name = $3), "
-                     "(SELECT Id FROM Sessions WHERE RootId = "
-                     "(SELECT Id FROM Files WHERE Login = $1 AND Name = $4)))");
+                     "((SELECT id FROM Files WHERE login = $1 AND name = $2), "
+                     "(SELECT id FROM Files WHERE login = $1 AND name = $3), "
+                     "(SELECT id FROM Sessions WHERE root_id = "
+                     "(SELECT id FROM Files WHERE login = $1 AND name = $4)))");
 
     settings->prepare("SetFileDeleted",
-                     "UPDATE Files SET Deleted_at = CURRENT_TIMESTAMP WHERE Login = $1 AND Name = $2");
+                     "UPDATE Files SET deleted_at = CURRENT_TIMESTAMP WHERE login = $1 AND name = $2");
 }
 
 std::filesystem::path StorageDbController::GetFilePath(const std::string& fileName, const std::string& login) const
