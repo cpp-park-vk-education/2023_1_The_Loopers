@@ -1,23 +1,52 @@
 #include "storage.h"
 
+#include <boost/asio/io_context.hpp>
+
 #include <filesystem>
+
+namespace
+{
+constexpr std::filesystem::path kLogPath = "inklink/storage/storage_.txt";
+}
 
 namespace inklink::storage
 {
-int Run(int port)
+int Storage::Run(int port)
 {
     try
     {
-        m_dbController->Connect(kDbConnectionString);
+        boost::asio::io_context ioContext;
+
+
         SetChassis(std::shared_ptr<IExternalServiceChassis>());
         SetDbController(std::shared_ptr<IStorageDbController>(), port);
         SetFileHolder(std::shared_ptr<IFileHolder>());
 
+        //m_serviceChassis->baseServiceChassis =
+        m_serviceChassis->baseServiceChassis->logger->LogInfo("Storage service is initted");
+
+        ioContext.run();
         return 0;
     }
     catch (const std::exception&)
     {
         return -1;
+    }
+}
+
+bool Storage::DoOnRead(error_code errocCode, const std::string& msg, IServiceSession* serviceSession)
+{
+    if (ec)
+    {
+        m_serviceChassis->logger->LogDebug(std::string("Got error while reading from '...'. Error: ") + ec.what());
+    }
+
+    auto msgData = JsonSerializer::ParseString(msg);
+    try
+    {
+    }
+    catch (const std::exception&)
+    {
     }
 }
 

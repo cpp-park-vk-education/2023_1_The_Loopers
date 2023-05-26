@@ -21,7 +21,8 @@ public:
 
 public:
     virtual int Run(int port);
-    virtual bool DoOnRead(error_code errocCode, const std::string& request, IServiceSession* serviceSession)
+    virtual bool DoOnRead(error_code errocCode, const std::string& request, IServiceSession* serviceSession);
+
     virtual [[nodiscard]] std::string GetFile(std::string& fileName, std::string& login) const = 0;
     virtual [[nodiscard]] bool Update(std::string& fileName, std::string& login, std::string& fileChanges) const = 0;
 

@@ -15,6 +15,8 @@ public:
 
 public:
     int Run(int port) override;
+    bool DoOnRead(error_code errocCode, const std::string& request, IServiceSession* serviceSession) override;
+
     [[nodiscard]] std::string GetFile(const std::string& fileName, const std::string& login) const override;
     [[nodiscard]] bool Update(const std::string& fileName, const std::string& login, const std::string& fileChanges) const override;
 
