@@ -13,9 +13,9 @@ public:
 
     virtual void Run(const std::string& connectionString) = 0;
 
-    virtual void InsertUser(const std::string& login, const std::string& password) = 0;
+    virtual bool InsertUser(const std::string& login, const std::string& password) const = 0;
 
-    virtual std::string GetPassword(const std::string& login) = 0;
+    virtual [[nodiscard]] std::string GetPassword(const std::string& login) const = 0;
 
 protected:
     DbAdapterBase& m_adapter;

@@ -2,20 +2,23 @@
 
 #include "iauth_db_controller.h"
 
-
 #include <string>
 
 namespace inklink::db_controller
 {
-class IAuthDbController
+class AuthDbController : public IAuthDbController
 {
+public:
+    using DbRow = std::vector<std::string>;
+    using DbTable = std::vector<DbRow>;
+    
 public:
     void SetAdapter(DbAdapterBase& adapter) override;
 
     void Run(const std::string& connectionString) override;
 
-    void InsertUser(const std::string& login, const std::string& password) override;
+    bool InsertUser(const std::string& login, const std::string& password) const override;
 
-    std::string GetPassword(const std::string& login) override;
+    [[nodiscard]] std::string GetPassword(const std::string& login) const override;
 };
 } // namespace inklink::db_controller
