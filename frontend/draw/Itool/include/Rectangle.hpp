@@ -23,8 +23,8 @@ protected:
     void mouseMoveEvent(QMouseEvent* event) override;
 
 private:
-    std::vector<QVariant> items; // Коллекция элементов (прямоугольников)
-    QPoint startPoint;           // Начальная точка
-    QPoint endPoint;             // Конечная точка
+    std::vector<QVariant> m_items; // Коллекция элементов (прямоугольников)
+    QPoint m_startPoint;           // Начальная точка
+    QPoint m_endPoint;             // Конечная точка
 };
 } // namespace inklink::draw
