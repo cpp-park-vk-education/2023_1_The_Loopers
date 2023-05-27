@@ -11,12 +11,12 @@ class DrawModel
 {
 public:
     void deserialize(std::string);
+    std::string SerializeToSend(int actionID, int actionType, int figureID);
 
 protected:
     void addObject(size_t, size_t, std::vector<Point>&);
     void addObject(size_t, Point&, size_t, size_t);
     void addObject(size_t, std::string&, Point&, size_t);
-    std::string serialize();
 
 private:
     std::vector<ObjectWithAttributes*> m_objects;
