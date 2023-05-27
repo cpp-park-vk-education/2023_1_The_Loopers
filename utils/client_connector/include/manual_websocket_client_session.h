@@ -102,13 +102,27 @@ inline ManualWebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback
         ReadCallback readCallback, 
         WriteCallback writeCallback, 
         CloseCallback closeCallback)
-        : m_socket{ioc, {boost::asio::ip::address::from_string(address), port}},
+        : m_socket{ioc},
           m_timer{ioc}, 
           m_connectCallback{connectCallback}, 
           m_readCallback{readCallback},
           m_writeCallback{writeCallback}, 
           m_closeCallback{closeCallback}
 {
+    m_socket.open(boost::asio::ip::tcp::v4());
+
+    boost::system::error_code ec;
+    const auto selfAddress{boost::asio::ip::address::from_string(address, ec)};
+    if (ec)
+    {
+        std::cout << "Error while constructing address " << ec.what() << __LINE__ << std::endl;
+    }
+    const boost::asio::ip::tcp::endpoint selfEndpoint{selfAddress, port};
+    m_socket.bind(selfEndpoint, ec);
+    if (ec)
+    {
+        std::cout<<"Error while binding "<<ec.what()<<__LINE__<<std::endl;
+    }
 }
 // clang-format on
 
@@ -118,7 +132,7 @@ inline ManualWebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback
                                     CloseCallback>::~ManualWebsocketClientSession()
 {
     m_close = true;
-    if (m_websocketStream->is_open())
+    if (m_websocketStream && m_websocketStream->is_open())
     {
         while (m_writing.load())
         {
