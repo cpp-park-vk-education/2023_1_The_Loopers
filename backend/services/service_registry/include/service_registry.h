@@ -57,10 +57,7 @@ private:
     [[nodiscard]] DataContainer HandleGetServiceListQuery(const DataContainer&);
 
 private:
-    std::unordered_map<ServiceType, std::vector<Endpoint>> m_servicesAsServer;
-    std::unordered_map<Endpoint, Endpoint> m_asClientFromServer;
-    std::unordered_map<Endpoint, Endpoint> m_asServerFromClient;
-    std::unordered_map<ServiceType, std::vector<Endpoint>> m_servicesAsClient;
+    std::unordered_map<ServiceType, std::vector<Endpoint>> m_services;
 
     // TODO (a.novak) from config file
     std::string m_address{"127.0.0.1"};

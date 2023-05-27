@@ -117,15 +117,15 @@ bool WebsocketServiceRegistrator::Register(ServiceType type, const Endpoint& end
     return response.AsInt("action_result") == 1;
 }
 
-void WebsocketServiceRegistrator::Deregister(ServiceType type, const Endpoint& endpointAsServer)
+void WebsocketServiceRegistrator::Deregister(ServiceType type, const Endpoint& endpoint)
 {
     auto session = InitSending("Session with service registry expired before registration!", true);
 
     DataContainer deregisterMsg{};
     deregisterMsg["action_type"] = 1; // kExit
     deregisterMsg["description"]["service_type"] = static_cast<int>(type);
-    deregisterMsg["description"]["endpoint_as_server"]["address"] = endpointAsServer.address;
-    deregisterMsg["description"]["endpoint_as_server"]["port"] = static_cast<int>(endpointAsServer.port);
+    deregisterMsg["description"]["endpoint"]["address"] = endpoint.address;
+    deregisterMsg["description"]["endpoint"]["port"] = static_cast<int>(endpoint.port);
     session->Send(JsonSerializer::SerializeAsString(deregisterMsg));
 
     while (!m_newMsg)
