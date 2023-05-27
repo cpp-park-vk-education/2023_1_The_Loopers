@@ -29,7 +29,6 @@ using error_code = boost::system::error_code;
 using IBaseServiceChassis = inklink::base_service_chassis::IBaseServiceChassis;
 using ILogger = inklink::base_service_chassis::ILogger;
 using LocalServiceRegistry = inklink::base_service_chassis::LocalServiceRegistry;
-using IServiceRegistrator = inklink::base_service_chassis::IServiceRegistrator;
 using WebsocketServiceRegistrator = inklink::base_service_chassis::WebsocketServiceRegistrator;
 using WebsocketCommonConnection = inklink::base_service_chassis::WebsocketCommonConnection;
 using MessageBrokerSignal = inklink::base_service_chassis::MessageBrokerSignal;
@@ -65,7 +64,7 @@ constexpr std::chrono::seconds kDelay{1s};
 }
 
 void AddListener(const std::shared_ptr<IBaseServiceChassis> chassis, io_context& ioContext,
-                 std::unique_ptr<ISessionsFactory> factory, const Endpoint& endpointSelfAsServer)
+                 std::unique_ptr<ISessionsFactory> factory, const Endpoint& endpointSelf)
 {
     auto lamOnAccept = [chassis](error_code ec, IServiceSession*)
     {
@@ -75,8 +74,8 @@ void AddListener(const std::shared_ptr<IBaseServiceChassis> chassis, io_context&
         }
     };
 
-    auto localAddress = ip::address::from_string(endpointSelfAsServer.address);
-    auto localEndpoint = ip::tcp::endpoint{localAddress, static_cast<unsigned short>(endpointSelfAsServer.port)};
+    auto localAddress = ip::address::from_string(endpointSelf.address);
+    auto localEndpoint = ip::tcp::endpoint{localAddress, static_cast<unsigned short>(endpointSelf.port)};
 
     auto listener = std::make_shared<server_network::BeastWebsocketListener<decltype(lamOnAccept)>>(
             ioContext, localEndpoint, std::move(factory), lamOnAccept);
@@ -85,10 +84,10 @@ void AddListener(const std::shared_ptr<IBaseServiceChassis> chassis, io_context&
 }
 
 void AddServiceRegistrator(std::shared_ptr<IBaseServiceChassis> chassis, ServiceType typeSelf,
-                           const Endpoint& endpointSelfAsServer, const Endpoint& endpointSelfAsClient)
+                           const Endpoint& endpointSelf)
 {
     chassis->registrator = std::make_unique<WebsocketServiceRegistrator>(chassis->logger);
-    if (!chassis->registrator->Register(typeSelf, endpointSelfAsServer, endpointSelfAsClient))
+    if (!chassis->registrator->Register(typeSelf, endpointSelf))
     {
         std::cout << "Unable to register in registry on startup!" << __LINE__ << std::endl;
         chassis->logger->LogCritical("Unable to register in registry on startup! Stopping.");
@@ -97,13 +96,12 @@ void AddServiceRegistrator(std::shared_ptr<IBaseServiceChassis> chassis, Service
 }
 
 void AddMsgBrokerConnection(std::shared_ptr<IBaseServiceChassis> chassis, ServiceType typeSelf,
-                            const Endpoint& endpointSelfAsClient,
+                            const Endpoint& endpointSelf,
                             NotifiedFunctor notifiedCallback, // event from message broker
                             ReadFunctor readCallback          // signal from message broker
 )
 {
-    auto msgBrokerServices =
-            chassis->registrator->GetEndpoints(ServiceType::kMessageBroker, IServiceRegistrator::ServiceRole::kServer);
+    auto msgBrokerServices = chassis->registrator->GetEndpoints(ServiceType::kMessageBroker);
 
     int attempt{0};
     while (msgBrokerServices.empty() && attempt <= kMaxAttempts)
@@ -111,8 +109,7 @@ void AddMsgBrokerConnection(std::shared_ptr<IBaseServiceChassis> chassis, Servic
         chassis->logger->LogDebug(std::string("Got empty list of msgBrokerServices. Attempt number") +
                                   std::to_string(attempt));
         std::this_thread::sleep_for(kDelay);
-        msgBrokerServices = chassis->registrator->GetEndpoints(ServiceType::kMessageBroker,
-                                                               IServiceRegistrator::ServiceRole::kServer);
+        msgBrokerServices = chassis->registrator->GetEndpoints(ServiceType::kMessageBroker);
         ++attempt;
     }
     if (msgBrokerServices.empty()) [[unlikely]]
@@ -127,7 +124,7 @@ void AddMsgBrokerConnection(std::shared_ptr<IBaseServiceChassis> chassis, Servic
 
     auto commonConnection = std::make_shared<WebsocketCommonConnection>(chassis->logger);
     // in future may be multiple services
-    commonConnection->Init(typeSelf, endpointSelfAsClient, msgBrokerServices[0]);
+    commonConnection->Init(typeSelf, endpointSelf, msgBrokerServices[0]);
 
     chassis->signalBroker = std::make_unique<MessageBrokerSignal>(commonConnection, readCallback, chassis->logger);
     chassis->eventBroker = std::make_unique<MessageBrokerEvent>(commonConnection, notifiedCallback, chassis->logger);
@@ -148,19 +145,17 @@ BaseChassisWebsocketConfigurator::CreateAndInitializeFullChassis(
     std::unique_ptr<ISessionsFactory> factory, // for listener
     std::shared_ptr<InternalSessionsManager> manager, // specified in factory: needed in constructor
     ServiceType typeSelf, 
-    const Endpoint& endpointSelfAsServer,
-    const Endpoint& endpointSelfAsClient, // to register in registry
+    const Endpoint& endpointSelf, // to register in registry
     NotifiedFunctor notifiedCallback, // event from message broker
     ReadFunctor readCallback // signal from message broker
 )
 // clang-format on
 {
-    auto chassis =
-            CreateAndInitializeChassisWithoutMsgBroker(loggerName, logFilePath, ioContext, std::move(factory), manager,
-                                                       typeSelf, endpointSelfAsServer, endpointSelfAsClient);
+    auto chassis = CreateAndInitializeChassisWithoutMsgBroker(loggerName, logFilePath, ioContext, std::move(factory),
+                                                              manager, typeSelf, endpointSelf);
 
     // add connection to msg broker
-    AddMsgBrokerConnection(chassis, typeSelf, endpointSelfAsClient, notifiedCallback, readCallback);
+    AddMsgBrokerConnection(chassis, typeSelf, endpointSelf, notifiedCallback, readCallback);
 
     std::cout << "AddMsgBrokerConnection" << __LINE__ << std::endl;
 
@@ -177,18 +172,17 @@ BaseChassisWebsocketConfigurator::CreateAndInitializeChassisWithoutMsgBroker(
     std::unique_ptr<ISessionsFactory> factory, // for listener
     std::shared_ptr<InternalSessionsManager> manager, // specified in factory: needed in constructor
     ServiceType typeSelf, 
-    const Endpoint& endpointSelfAsServer,
-    const Endpoint& endpointSelfAsClient // to register in registry
+    const Endpoint& endpointSelf // to register in registry
 )
 // clang-format on
 {
     auto chassis = CreateAndInitializeChassisWithoutRegistratorAndMsgBroker(loggerName, logFilePath, ioContext,
-                                                                            std::move(factory), manager,
-                                                                            endpointSelfAsServer, endpointSelfAsClient);
+                                                                            std::move(factory), manager, endpointSelf);
 
     // register at service registry
-    AddServiceRegistrator(chassis, typeSelf, endpointSelfAsServer, endpointSelfAsClient);
+    AddServiceRegistrator(chassis, typeSelf, endpointSelf);
 
+    // TODO errro
     std::cout << "AddServiceRegistrator" << __LINE__ << std::endl;
 
     return chassis;
@@ -203,7 +197,7 @@ BaseChassisWebsocketConfigurator::CreateAndInitializeChassisWithoutRegistratorAn
     io_context& ioContext, 
     std::unique_ptr<ISessionsFactory> factory, // for listener
     std::shared_ptr<InternalSessionsManager> manager, // specified in factory: needed in constructor
-    const Endpoint& endpointSelfAsServer
+    const Endpoint& endpointSelf
 )
 // clang-format on
 {
@@ -219,7 +213,7 @@ BaseChassisWebsocketConfigurator::CreateAndInitializeChassisWithoutRegistratorAn
     std::cout << "Manager set" << __LINE__ << std::endl;
 
     // start listening network
-    AddListener(chassis, ioContext, std::move(factory), endpointSelfAsServer);
+    AddListener(chassis, ioContext, std::move(factory), endpointSelf);
 
     std::cout << "Listener added" << __LINE__ << std::endl;
 
