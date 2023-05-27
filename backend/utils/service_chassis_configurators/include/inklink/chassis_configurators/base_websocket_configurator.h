@@ -45,7 +45,8 @@ public:
         std::unique_ptr<ISessionsFactory> factory, // for listener
         std::shared_ptr<InternalSessionsManager> manager, // specified in factory: needed in constructor
         ServiceType typeSelf, 
-        const Endpoint& endpointSelf, // to register in registry
+        const Endpoint& endpointSelfAsServer,
+        const Endpoint& endpointSelfAsClient, // to register in registry
         NotifiedFunctor notifiedCallback, // event from message broker
         ReadFunctor readCallback // signal from message broker
     );
@@ -59,7 +60,8 @@ public:
         std::unique_ptr<ISessionsFactory> factory, // for listener
         std::shared_ptr<InternalSessionsManager> manager, // specified in factory: needed in constructor
         ServiceType typeSelf, 
-        const Endpoint& endpointSelf // to register in registry
+        const Endpoint& endpointSelfAsServer,
+        const Endpoint& endpointSelfAsClient // to register in registry
     );
 
     [[nodiscard]] static std::shared_ptr<IBaseServiceChassis>
@@ -70,7 +72,7 @@ public:
         io_context& ioContext, 
         std::unique_ptr<ISessionsFactory> factory, // for listener
         std::shared_ptr<InternalSessionsManager> manager, // specified in factory: needed in constructor
-        const Endpoint& endpointSelf
+        const Endpoint& endpointSelfAsServer
     );
     // clang-format on
 };
