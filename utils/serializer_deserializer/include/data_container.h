@@ -39,6 +39,7 @@ public:
 
     template <AllowedSimpleType T>
     DataContainer& operator=(T value);
+    DataContainer& operator=(const char* value);
     template <AllowedVectorType T>
     DataContainer& operator=(T vector);
     DataContainer& operator=(std::vector<DataContainer> vector);
@@ -146,6 +147,12 @@ template <AllowedSimpleType T>
 inline DataContainer& DataContainer::operator=(T value)
 {
     m_data = std::move(value);
+    return *this;
+}
+
+inline DataContainer& DataContainer::operator=(const char* value);
+{
+    m_data = std::string(value);
     return *this;
 }
 
