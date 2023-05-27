@@ -91,12 +91,7 @@ void MessageBrokerSignal::DoOnRead(const std::string& msgBrokerSignal, error_cod
     {
         std::stringstream ss{};
         // TODO (a.novak) <<session.GetEndpoint() when will add overload
-        ss << "Error occurred while reading from msgBroker."
-#ifdef BOOST_OS_WINDOWS
-           << ec.what();
-#else
-                ;
-#endif
+        ss << "Error occurred while reading from msgBroker." << ec.message();
         m_logger->LogDebug(ss.str());
         return;
     }

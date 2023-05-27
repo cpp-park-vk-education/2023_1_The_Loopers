@@ -131,12 +131,7 @@ inline ManualWebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback
     m_socket.bind(selfEndpoint, ec);
     if (ec)
     {
-        std::cout << "Error while binding "
-#ifdef BOOST_OS_WINDOWS
-                  << ec.what() << __LINE__ << std::endl;
-#else
-                  << __LINE__ << std::endl;
-#endif
+        std::cout << "Error while binding " << ec.message() << __LINE__ << std::endl;
     }
     std::cout << "ManualWebsocketClientSession Successfully binded " << __LINE__ << std::endl;
 }
@@ -268,12 +263,7 @@ ManualWebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, Close
     m_connectCallback(ConnectType::kConnect, ec, this);
     if (ec)
     {
-        std::cout << "ManualWebsocketClientSession connected with error "
-#ifdef BOOST_OS_WINDOWS
-                  << ec.what() << __LINE__ << std::endl;
-#else
-                  << __LINE__ << std::endl;
-#endif
+        std::cout << "ManualWebsocketClientSession connected with error " << ec.message() << __LINE__ << std::endl;
         return;
     }
 
@@ -308,12 +298,7 @@ ManualWebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, Close
     m_connectCallback(ConnectType::kHandshake, ec, this);
     if (ec)
     {
-        std::cout << "ManualWebsocketClientSession handshake with error "
-#ifdef BOOST_OS_WINDOWS
-                  << ec.what() << __LINE__ << std::endl;
-#else
-                  << __LINE__ << std::endl;
-#endif
+        std::cout << "ManualWebsocketClientSession handshake with error " << ec.message() << __LINE__ << std::endl;
         return;
     }
 
