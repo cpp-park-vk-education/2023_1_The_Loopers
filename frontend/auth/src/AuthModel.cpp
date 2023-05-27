@@ -2,31 +2,25 @@
 
 #include <string>
 
+namespace
+{
+using DataContainer = inklink::serializer::DataContainer;
+}
+
 namespace inklink::auth
 {
-bool AuthModel::CreateUser(const std::string& login, std::string& password)
+bool AuthModel::CreateUser(std::string& login, std::string& password)
 {
-    //        std::string sault{};
-    //        sault = dinamicSault(password.size());
-    //
-    //        password += sault;
-    //        password = sha256(password);
-
-    auto result = ParserToJson(login, password);
-    //        result = ParserToJson(login, password, sault);
-    // осталось отправить на web-socket
     return true;
 }
 
-bool AuthModel::Login(const std::string& login, const std::string& password)
+bool AuthModel::Login(std::string& login, std::string& password)
 {
-    // отправляю логин и пароль на веб-сокет
-    // получаю true/false и пускаю/не пускаю пользователя
+    return true;
 }
 
 void AuthModel::Exit()
 {
-    //???
 }
 
 const std::string AuthModel::GetLogin() const
@@ -49,34 +43,17 @@ void AuthModel::SetToken(const std::string& token)
     m_token = token;
 }
 
-// std::string AuthModel::DinamicSault(int passwordLength)
-//{
-//     std::string result{};
-//
-//     auto saultLength = 20 - passwordLength;
-//
-//     srand(time(NULL));
-//
-//     for (int i = 0; i < saultLength; i++)
-//     {
-//         auto ch = 'a' + rand() % 26;
-//         result.push_back(ch);
-//     }
-//
-//     return result;
-// }
+//std::string ParseToSend(std::string& login, std::string& password){
+//    DataContainer sendContainer{};
+//    sendContainer["login"] = login;
+//    sendContainer["password"] = password;
+//    JsonSerializer::SerializeAsString(sendContainer);
+//}
 
-// std::string AuthModel::parserToJson(const std::string& login, const std::string& password, const std::string& sault)
-//{
-//     std::string result{};
-//     result = "{\n" + "\"login\": " + login + ",\n" + "\"password\": " + password + ",\n" + "\"sault\": " + sault +
-//              "\n" + "}";
-//        return result;
-// }
-
-std::string AuthModel::ParserToJson(const std::string& login, const std::string& password)
-{
-    std::string result = "{\n\"login\": " + login + ",\n\"password\": " + password + "\n" + "}";
-    return result;
-}
+//void ParseToGet(std::string& webSocketData) {
+//    DataContainer getContainer{};
+//    getContainer = JsonSerializer::ParseFromString(webSocketData);
+//
+//    return;
+//}
 } // namespace inklink::auth

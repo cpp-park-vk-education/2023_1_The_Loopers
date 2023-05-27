@@ -4,6 +4,10 @@ target_sources(${AUTH} PRIVATE
         "src/AuthModel.cpp"
         )
 
+target_include_libs(${AUTH}
+        "${SERIALIZER}"
+        }
+
 set(PUBLIC_INCLUDE_DIRECTORIES
         "include"
         )
