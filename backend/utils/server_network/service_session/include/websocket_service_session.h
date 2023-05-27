@@ -10,11 +10,13 @@
 #include <boost/system/error_code.hpp>
 
 #include <algorithm>
+#include <atomic>
 #include <concepts>
 #include <deque>
 #include <functional>
 #include <iostream>
 #include <memory>
+#include <mutex>
 #include <string>
 
 namespace inklink::server_network
@@ -73,8 +75,11 @@ private:
 
     Endpoint m_endpoint;
 
+    std::atomic_bool m_fullyInitialized{false};
+
     websocket::stream<tcp::socket> m_websocketStream;
     boost::beast::multi_buffer m_readBuffer;
+    std::mutex m_sendMutex;
     std::deque<std::shared_ptr<std::string const>> m_sendQueue;
 
     ReadCallback m_readCallback;
@@ -158,14 +163,15 @@ template <StringErrorCodeSessionCallbackConcept ReadCallback, ErrorCodeAndSessio
           ErrorCodeCallbackConcept WriteCallback>
 inline void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::Send(const std::string& message)
 {
+    std::lock_guard<std::mutex> lock{m_sendMutex};
     auto ss = std::make_shared<std::string const>(message);
     // Always add to queue
     m_sendQueue.push_back(ss);
 
     std::cout << "Websocket session Send " << __LINE__ << std::endl;
 
-    // Are we already writing?
-    if (m_sendQueue.size() > 1)
+    // Is connection fully initialized? Are we already writing?
+    if (!m_fullyInitialized.load() || m_sendQueue.size() > 1)
     {
         return;
     }
@@ -184,7 +190,7 @@ inline void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>
 {
     m_acceptCallback(ec, this);
 
-    std::cout << "Websocket session acceptr callback " << __LINE__ << std::endl;
+    std::cout << "Websocket session acceptor callback " << __LINE__ << std::endl;
 
     if (ec)
     {
@@ -192,8 +198,20 @@ inline void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>
         return;
     }
 
-    // set binary format because don't know wich format will be used
+    // set binary format because don't know which format will be used
     m_websocketStream.binary(true);
+
+    m_fullyInitialized = true;
+    std::lock_guard<std::mutex> lock{m_sendMutex};
+    if (!m_sendQueue.empty()) // somebody tried to send before accepted => now is time to send
+    {
+        std::cout << "Websocket session Send " << *m_sendQueue.front() << __LINE__ << std::endl;
+
+        // We are not currently writing, so send this immediately
+        m_websocketStream.async_write(
+                net::buffer(*m_sendQueue.front()),
+                beast::bind_front_handler(&WebsocketServiceSession::OnWrite, this->shared_from_this()));
+    }
 
     // Read a message
     DoRead();
@@ -238,6 +256,7 @@ template <StringErrorCodeSessionCallbackConcept ReadCallback, ErrorCodeAndSessio
 inline void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>::OnWrite(boost::system::error_code ec,
                                                                                           std::size_t)
 {
+    std::lock_guard<std::mutex> lock{m_sendMutex};
     // remove send string from queue
     m_sendQueue.pop_front();
 

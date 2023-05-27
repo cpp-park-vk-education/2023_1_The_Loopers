@@ -98,8 +98,15 @@ bool WebsocketServiceRegistrator::Register(ServiceType type, const Endpoint& end
     registerMsg["description"]["endpoint"]["port"] = static_cast<int>(endpoint.port);
     session->Send(JsonSerializer::SerializeAsString(registerMsg));
 
+    int counter{0};
     while (!m_newMsg)
     {
+        ++counter;
+        if (counter > 100)
+        {
+            std::cout << "10s more in a loop" << std::endl;
+            counter = 0;
+        }
         std::this_thread::sleep_for(100ms);
     }
 

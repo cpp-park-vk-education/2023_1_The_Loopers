@@ -12,6 +12,7 @@
 #include <functional>
 #include <iostream>
 #include <memory>
+#include <mutex>
 #include <string>
 
 namespace inklink::client_connector
@@ -68,6 +69,7 @@ private:
     boost::asio::ip::tcp::socket m_socket;
     boost::asio::deadline_timer m_timer;
 
+    std::atomic_bool m_fullyInitted{false};
     std::atomic_bool m_close{false};
     std::atomic_bool m_writing{false};
 
@@ -75,6 +77,7 @@ private:
     boost::beast::websocket::stream<boost::beast::tcp_stream>* m_websocketStream; // because operator= deleted
 
     boost::beast::flat_buffer m_readBuffer;
+    std::mutex m_sendMutex;
     std::deque<std::shared_ptr<std::string const>> m_sendQueue;
 
     ConnectCallback m_connectCallback;
@@ -161,16 +164,17 @@ template <ConnectTypeErrorCodeCallbackConcept ConnectCallback, StringErrorCodeCa
 inline void ManualWebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallback>::Send(
         const std::string& msgBody)
 {
+    std::lock_guard<std::mutex> lock{m_sendMutex};
     auto ss = std::make_shared<std::string const>(msgBody);
     // Always add to queue
     m_sendQueue.push_back(ss);
-    m_writing = true;
 
-    // Are we already writing?
-    if (m_sendQueue.size() > 1)
+    // Are connection fully initted? Are we already writing?
+    if (!m_fullyInitted.load() || m_sendQueue.size() > 1)
     {
         return;
     }
+    m_writing = true;
 
     std::cout << "Websocket session Send " << *m_sendQueue.front() << __LINE__ << std::endl;
 
@@ -251,8 +255,21 @@ ManualWebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, Close
         return;
     }
 
-    // set binary format because don't know wich format will be used
+    // set binary format because don't know which format will be used
     m_websocketStream->binary(true);
+
+    m_fullyInitted = true;
+    std::lock_guard<std::mutex> lock{m_sendMutex};
+    if (!m_sendQueue.empty())
+    {
+        std::cout << "Websocket session Send " << *m_sendQueue.front() << __LINE__ << std::endl;
+
+        m_writing = true;
+        // We are not currently writing, so send this immediately
+        m_websocketStream->async_write(
+                boost::asio::buffer(*m_sendQueue.front()),
+                boost::beast::bind_front_handler(&ManualWebsocketClientSession::OnWrite, this->shared_from_this()));
+    }
 
     DoRead();
 }
@@ -270,6 +287,7 @@ ManualWebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, Close
         return;
     }
 
+    std::lock_guard<std::mutex> lock{m_sendMutex};
     // Remove the string from the queue
     m_sendQueue.pop_front();
 
