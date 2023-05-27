@@ -3,6 +3,12 @@
 #include <QPainter>
 #include <QWidget>
 
+namespace{
+constexpr QColor kBackgroundColor(30,30,30);
+constexpr QColor kDotsColor(218, 218, 218);
+constexpr int kPointSize = 70;
+}
+
 namespace inklink::draw
 {
 DrawView::DrawView(QWidget* parent) : QWidget(parent)
@@ -69,15 +75,14 @@ void DrawView::paintEvent(QPaintEvent* event)
 
     QPainter painter(this);
 
-    painter.fillRect(rect(), QColor(30, 30, 30)); // Background | should be variable
+    painter.fillRect(rect(), kBackgroundColor); // Background color | should be variable
 
-    painter.setPen(QPen(QColor(218, 218, 218), 3, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    painter.setPen(QPen(kDotsColor, 3, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     painter.setRenderHint(QPainter::Antialiasing);
 
-    int pointSize = 70;
-    for (int x = 0; x < width(); x += pointSize)
+    for (int x = kPointSize /2; x < width(); x += kPointSize)
     {
-        for (int y = 0; y < height(); y += pointSize)
+        for (int y = kPointSize /2; y < height(); y += kPointSize)
         {
             painter.drawPoint(x, y);
         }
