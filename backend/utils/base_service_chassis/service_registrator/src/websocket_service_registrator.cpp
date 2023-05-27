@@ -77,7 +77,7 @@ WebsocketServiceRegistrator::WebsocketServiceRegistrator(std::shared_ptr<ILogger
     }
     catch (...)
     {
-        std::cout << "Error accured on run!" << __LINE__ << std::endl;
+        std::cout << "Error occured on run!" << __LINE__ << std::endl;
     }
 }
 
@@ -87,18 +87,15 @@ WebsocketServiceRegistrator::~WebsocketServiceRegistrator()
     m_threadIoContext.join();
 }
 
-bool WebsocketServiceRegistrator::Register(ServiceType type, const Endpoint& endpointAsServer,
-                                           const Endpoint& endpointAsClient)
+bool WebsocketServiceRegistrator::Register(ServiceType type, const Endpoint& endpoint)
 {
     auto session = InitSending("Session with service registry expired before registration!", true);
 
     DataContainer registerMsg{};
     registerMsg["action_type"] = 0; // kRegister
     registerMsg["description"]["service_type"] = static_cast<int>(type);
-    registerMsg["description"]["endpoint_as_server"]["address"] = endpointAsServer.address;
-    registerMsg["description"]["endpoint_as_server"]["port"] = static_cast<int>(endpointAsServer.port);
-    registerMsg["description"]["endpoint_as_client"]["address"] = endpointAsClient.address;
-    registerMsg["description"]["endpoint_as_client"]["port"] = static_cast<int>(endpointAsClient.port);
+    registerMsg["description"]["endpoint"]["address"] = endpoint.address;
+    registerMsg["description"]["endpoint"]["port"] = static_cast<int>(endpoint.port);
     session->Send(JsonSerializer::SerializeAsString(registerMsg));
 
     int counter{0};
@@ -140,8 +137,7 @@ void WebsocketServiceRegistrator::Deregister(ServiceType type, const Endpoint& e
     return;
 }
 
-[[nodiscard]] std::vector<Endpoint> WebsocketServiceRegistrator::GetEndpoints(ServiceType desiredServicesType,
-                                                                              ServiceRole desiredRole)
+[[nodiscard]] std::vector<Endpoint> WebsocketServiceRegistrator::GetEndpoints(ServiceType desiredServicesType)
 {
     auto session = InitSending("Session with service registry expired. Can not get new endpoints.");
 
@@ -153,15 +149,6 @@ void WebsocketServiceRegistrator::Deregister(ServiceType type, const Endpoint& e
     DataContainer getEndpointsMsg{};
     getEndpointsMsg["action_type"] = 2; // kGetEndpoints
     getEndpointsMsg["description"]["service_type"] = static_cast<int>(desiredServicesType);
-    switch (desiredRole)
-    {
-    case ServiceRole::kServer:
-        getEndpointsMsg["description"]["role"] = std::string("server");
-        break;
-    case ServiceRole::kClient:
-        getEndpointsMsg["description"]["role"] = std::string("client");
-        break;
-    }
     session->Send(JsonSerializer::SerializeAsString(getEndpointsMsg));
 
     while (!m_newMsg)
@@ -185,8 +172,7 @@ void WebsocketServiceRegistrator::Deregister(ServiceType type, const Endpoint& e
     }
     return result;
 }
-void WebsocketServiceRegistrator::GetEndpoints(ServiceType desiredServicesType, ServiceRole desiredRole,
-                                               GotEndpointsCallback GotCallback)
+void WebsocketServiceRegistrator::GetEndpoints(ServiceType desiredServicesType, GotEndpointsCallback GotCallback)
 {
     auto session = InitSending("Session with service registry expired. Can not get new endpoints.");
 
@@ -198,15 +184,6 @@ void WebsocketServiceRegistrator::GetEndpoints(ServiceType desiredServicesType, 
     DataContainer getEndpointsMsg{};
     getEndpointsMsg["action_type"] = 2; // kGetEndpoints
     getEndpointsMsg["description"]["service_type"] = static_cast<int>(desiredServicesType);
-    switch (desiredRole)
-    {
-    case ServiceRole::kServer:
-        getEndpointsMsg["description"]["role"] = std::string("server");
-        break;
-    case ServiceRole::kClient:
-        getEndpointsMsg["description"]["role"] = std::string("client");
-        break;
-    }
     session->Send(JsonSerializer::SerializeAsString(getEndpointsMsg));
 
     auto waitForMsg = [GotCallback, this]()

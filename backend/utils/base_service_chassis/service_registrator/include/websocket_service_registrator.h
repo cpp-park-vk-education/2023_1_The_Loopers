@@ -24,12 +24,11 @@ public:
     ~WebsocketServiceRegistrator() override;
 
     // can discard
-    bool Register(ServiceType, const Endpoint& endpointAsServer, const Endpoint& endpointAsClient) override;
+    bool Register(ServiceType, const Endpoint&) override;
     void Deregister(ServiceType, const Endpoint&) override;
 
-    [[nodiscard]] std::vector<Endpoint> GetEndpoints(ServiceType desiredServicesType, ServiceRole desiredRole) override;
-    void GetEndpoints(ServiceType desiredServicesType, ServiceRole desiredRole,
-                      GotEndpointsCallback GotCallback) override;
+    [[nodiscard]] std::vector<Endpoint> GetEndpoints(ServiceType desiredServicesType) override;
+    void GetEndpoints(ServiceType desiredServicesType, GotEndpointsCallback GotCallback) override;
 
 private:
     [[nodiscard]] std::shared_ptr<IClientSession> InitSending(const std::string& errorMsg, bool critical = false);

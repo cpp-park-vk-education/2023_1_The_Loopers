@@ -17,35 +17,28 @@ namespace inklink::base_service_chassis
 {
 class IServiceRegistrator
 {
-public:
+private:
     using IClientSession = client_connector::IClientSession;
-
-    enum class ServiceRole
-    {
-        kServer,
-        kClient
-    };
 
 public:
     virtual ~IServiceRegistrator() = default;
 
     // can discard
-    virtual bool Register(ServiceType, const Endpoint& endpointAsServer, const Endpoint& endpointAsClient) = 0;
-    virtual void Deregister(ServiceType, const Endpoint& endpointAsServer) = 0;
+    virtual bool Register(ServiceType, const Endpoint&) = 0;
+    virtual void Deregister(ServiceType, const Endpoint&) = 0;
 
     /**
      * @brief Get the Endpoints synchronously
      *
      * @return std::vector<Endpoint>
      */
-    [[nodiscard]] virtual std::vector<Endpoint> GetEndpoints(ServiceType desiredServicesType,
-                                                             ServiceRole desiredRole) = 0;
+    [[nodiscard]] virtual std::vector<Endpoint> GetEndpoints(ServiceType desiredServicesType) = 0;
     /**
      * @brief Get the Endpoints object asynchronously (will be passed to callback)
      *
      * @warning Callback may be called in different thread!
      */
-    virtual void GetEndpoints(ServiceType desiredServicesType, ServiceRole desiredRole,
+    virtual void GetEndpoints(ServiceType desiredServicesType,
                               std::function<void(std::vector<Endpoint>&&)> GotCallback) = 0;
 
 protected:
