@@ -280,9 +280,9 @@ ManualWebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, Close
             boost::beast::role_type::server)); // will be running from server always
 
     // Set a decorator to change the User-Agent of the handshake
-    m_websocketStream->set_option(boost::beast::websocket::stream_base::decorator(
-            [this](boost::beast::websocket::request_type& req)
-            { req.set(boost::beast::http::field::user_agent, kClientName); }));
+    // m_websocketStream->set_option(boost::beast::websocket::stream_base::decorator(
+    //         [this](boost::beast::websocket::request_type& req)
+    //         { req.set(boost::beast::http::field::user_agent, kClientName); }));
 
     // Perform the websocket handshake
     m_websocketStream->async_handshake(

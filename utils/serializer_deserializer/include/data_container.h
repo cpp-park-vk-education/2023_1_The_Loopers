@@ -150,7 +150,7 @@ inline DataContainer& DataContainer::operator=(T value)
     return *this;
 }
 
-inline DataContainer& DataContainer::operator=(const char* value);
+inline DataContainer& DataContainer::operator=(const char* value)
 {
     m_data = std::string(value);
     return *this;

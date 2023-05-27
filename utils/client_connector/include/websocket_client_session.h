@@ -357,9 +357,10 @@ inline void WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback,
     m_websocketStream.set_option(boost::beast::websocket::stream_base::timeout::suggested(beast::role_type::client));
 
     // Set a decorator to change the User-Agent of the handshake
-    m_websocketStream.set_option(boost::beast::websocket::stream_base::decorator(
-            [](boost::beast::websocket::request_type& req)
-            { req.set(beast::http::field::user_agent, std::string(BOOST_BEAST_VERSION_STRING) + " inklink-client"); }));
+    // m_websocketStream.set_option(boost::beast::websocket::stream_base::decorator(
+    //         [](boost::beast::websocket::request_type& req)
+    //         { req.set(beast::http::field::user_agent, std::string(BOOST_BEAST_VERSION_STRING) + " inklink-client");
+    //         }));
 
     // Update the m_host string. This will provide the value of the
     // Host HTTP header during the WebSocket handshake.

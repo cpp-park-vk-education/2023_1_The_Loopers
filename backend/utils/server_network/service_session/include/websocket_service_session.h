@@ -150,9 +150,9 @@ inline void WebsocketServiceSession<ReadCallback, AcceptCallback, WriteCallback>
     m_websocketStream.set_option(stream_base::timeout::suggested(beast::role_type::server));
 
     // Set a decorator to change the Server of the handshake
-    const std::string_view kServerName{"inklink-simultaneous-access-service"};
-    m_websocketStream.set_option(stream_base::decorator([kServerName](websocket::response_type& res)
-                                                        { res.set(beast::http::field::server, kServerName); }));
+    // const std::string_view kServerName{"inklink-simultaneous-access-service"};
+    // m_websocketStream.set_option(stream_base::decorator([kServerName](websocket::response_type& res)
+    //                                                     { res.set(beast::http::field::server, kServerName); }));
     // Accept the websocket handshake
     m_websocketStream.async_accept(
             beast::bind_front_handler(&WebsocketServiceSession::OnAccept, this->shared_from_this()));
