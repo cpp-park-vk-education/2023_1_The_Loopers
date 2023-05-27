@@ -74,7 +74,7 @@ private:
     std::atomic_bool m_writing{false};
 
     std::string m_host;
-    boost::beast::websocket::stream<boost::beast::tcp_stream>* m_websocketStream; // because operator= deleted
+    boost::beast::websocket::stream<boost::beast::tcp_stream>* m_websocketStream{nullptr}; // because operator= deleted
 
     boost::beast::flat_buffer m_readBuffer;
     std::mutex m_sendMutex;
@@ -108,23 +108,25 @@ inline ManualWebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback
           m_readCallback{readCallback},
           m_writeCallback{writeCallback}, 
           m_closeCallback{closeCallback}
+// clang-format on
 {
     m_socket.open(boost::asio::ip::tcp::v4());
 
+    const boost::asio::socket_base::reuse_address reuseAddressOption{true};
+    m_socket.set_option(reuseAddressOption);
+    boost::asio::socket_base::keep_alive keepAliveOption(true);
+    m_socket.set_option(keepAliveOption);
+
     boost::system::error_code ec;
     const auto selfAddress{boost::asio::ip::address::from_string(address, ec)};
-    if (ec)
-    {
-        std::cout << "Error while constructing address " << ec.what() << __LINE__ << std::endl;
-    }
     const boost::asio::ip::tcp::endpoint selfEndpoint{selfAddress, port};
     m_socket.bind(selfEndpoint, ec);
     if (ec)
     {
-        std::cout<<"Error while binding "<<ec.what()<<__LINE__<<std::endl;
+        std::cout << "Error while binding " << ec.what() << __LINE__ << std::endl;
     }
+    std::cout << "ManualWebsocketClientSession Successfully binded " << __LINE__ << std::endl;
 }
-// clang-format on
 
 template <ConnectTypeErrorCodeCallbackConcept ConnectCallback, StringErrorCodeCallbackConcept ReadCallback,
           ErrorCodeCallbackConcept WriteCallback, ErrorCodeCallbackConcept CloseCallback>
@@ -156,21 +158,33 @@ inline void ManualWebsocketClientSession<ConnectCallback, ReadCallback, WriteCal
 
     // socket must be connected manually: asio::connect reset local endpoint bind
     boost::asio::ip::tcp::endpoint serverEndpoint(boost::asio::ip::address::from_string(host), port);
-    m_socket.async_connect(serverEndpoint, [this](error_code errCode) { this->OnConnect(errCode); });
 
-    // in case of no connection with internet etc.
-    m_timer.expires_from_now(boost::posix_time::seconds(30));
-    // Set up the timer's expiration handler
-    m_timer.async_wait(
-            [this](const error_code& errCode)
-            {
-                if (errCode != boost::asio::error::operation_aborted)
-                {
-                    // Timeout occurred, cancel the socket's asynchronous operations
-                    m_socket.cancel();
-                    // now on connect will be called
-                }
-            });
+    std::cout << "host " << host << " port " << port << std::endl;
+    std::cout << "host " << serverEndpoint.address().to_string() << " port " << serverEndpoint.port() << std::endl;
+
+    // for some reason async connect returns ec: operation on something that is not socket is not allowed
+    // m_socket.async_connect(serverEndpoint, [this](const error_code& errCode) { this->OnConnect(errCode); });
+
+    error_code ec;
+    m_socket.connect(serverEndpoint, ec);
+    OnConnect(ec);
+
+    //// in case of no connection with internet etc.
+    // m_timer.expires_from_now(boost::posix_time::seconds(30));
+    //// Set up the timer's expiration handler
+    // m_timer.async_wait(
+    //         [this](const error_code& errCode)
+    //         {
+    //             if (errCode != boost::asio::error::operation_aborted)
+    //             {
+    //                 // Timeout occurred, cancel the socket's asynchronous operations
+    //                 m_socket.cancel();
+    //                std::cout << "ManualWebsocketClientSession Timer ended " << __LINE__ << std::endl;
+    //              // now on connect will be called
+    //          }
+    //      });
+
+    std::cout << "ManualWebsocketClientSession RunAsync " << __LINE__ << std::endl;
 }
 
 template <ConnectTypeErrorCodeCallbackConcept ConnectCallback, StringErrorCodeCallbackConcept ReadCallback,
@@ -190,7 +204,7 @@ inline void ManualWebsocketClientSession<ConnectCallback, ReadCallback, WriteCal
     }
     m_writing = true;
 
-    std::cout << "Websocket session Send " << *m_sendQueue.front() << __LINE__ << std::endl;
+    std::cout << "Manual websocket session Send " << *m_sendQueue.front() << __LINE__ << std::endl;
 
     // We are not currently writing, so send this immediately
     m_websocketStream->async_write(
@@ -202,6 +216,7 @@ template <ConnectTypeErrorCodeCallbackConcept ConnectCallback, StringErrorCodeCa
           ErrorCodeCallbackConcept WriteCallback, ErrorCodeCallbackConcept CloseCallback>
 inline void ManualWebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallback>::Close()
 {
+    std::cout << "ManualWebsocketClientSession close called " << __LINE__ << std::endl;
     m_close = true;
 
     if (!m_writing.load())
@@ -231,11 +246,20 @@ inline void
 ManualWebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallback>::OnConnect(error_code ec)
 {
     m_timer.cancel();
+
+    if (!m_socket.is_open())
+    {
+        std::cout << "Socket is not open!!!!!!!!!!!" << std::endl;
+    }
+
     m_connectCallback(ConnectType::kConnect, ec, this);
     if (ec)
     {
+        std::cout << "ManualWebsocketClientSession connected with error " << ec.what() << __LINE__ << std::endl;
         return;
     }
+
+    std::cout << "ManualWebsocketClientSession successfully Connected " << __LINE__ << std::endl;
 
     m_websocketStream = new boost::beast::websocket::stream<boost::beast::tcp_stream>(std::move(m_socket));
 
@@ -244,8 +268,8 @@ ManualWebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, Close
     boost::beast::get_lowest_layer(*m_websocketStream).expires_never();
 
     // Set suggested timeout settings for the websocket
-    m_websocketStream->set_option(
-            boost::beast::websocket::stream_base::timeout::suggested(boost::beast::role_type::client));
+    m_websocketStream->set_option(boost::beast::websocket::stream_base::timeout::suggested(
+            boost::beast::role_type::server)); // will be running from server always
 
     // Set a decorator to change the User-Agent of the handshake
     m_websocketStream->set_option(boost::beast::websocket::stream_base::decorator(
@@ -266,8 +290,11 @@ ManualWebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, Close
     m_connectCallback(ConnectType::kHandshake, ec, this);
     if (ec)
     {
+        std::cout << "ManualWebsocketClientSession handshake with error " << ec.what() << __LINE__ << std::endl;
         return;
     }
+
+    std::cout << "ManualWebsocketClientSession successfull handshake " << __LINE__ << std::endl;
 
     // set binary format because don't know which format will be used
     m_websocketStream->binary(true);
@@ -276,7 +303,7 @@ ManualWebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, Close
     std::lock_guard<std::mutex> lock{m_sendMutex};
     if (!m_sendQueue.empty())
     {
-        std::cout << "Websocket session Send " << *m_sendQueue.front() << __LINE__ << std::endl;
+        std::cout << "Manual websocket session Send " << *m_sendQueue.front() << __LINE__ << std::endl;
 
         m_writing = true;
         // We are not currently writing, so send this immediately
@@ -316,7 +343,7 @@ ManualWebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, Close
     // Send the next message if any
     if (!m_sendQueue.empty())
     {
-        std::cout << "Websocket session Send " << *m_sendQueue.front() << __LINE__ << std::endl;
+        std::cout << "Manual websocket session Send " << *m_sendQueue.front() << __LINE__ << std::endl;
         m_websocketStream->async_write(
                 boost::asio::buffer(*m_sendQueue.front()),
                 boost::beast::bind_front_handler(&ManualWebsocketClientSession::OnWrite, this->shared_from_this()));
@@ -335,7 +362,7 @@ ManualWebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, Close
 {
     m_readCallback(boost::beast::buffers_to_string(m_readBuffer.data()), ec, this);
 
-    std::cout << "Websocket session read " << boost::beast::buffers_to_string(m_readBuffer.data()) << __LINE__
+    std::cout << "Manual websocket session read " << boost::beast::buffers_to_string(m_readBuffer.data()) << __LINE__
               << std::endl;
 
     if (ec)
