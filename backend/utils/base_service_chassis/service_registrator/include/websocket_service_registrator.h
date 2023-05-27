@@ -25,7 +25,7 @@ public:
 
     // can discard
     bool Register(ServiceType, const Endpoint& endpointAsServer, const Endpoint& endpointAsClient) override;
-    void Deregister(ServiceType, const Endpoint&) override;
+    void Deregister(ServiceType, const Endpoint& endpointAsServer) override;
 
     [[nodiscard]] std::vector<Endpoint> GetEndpoints(ServiceType desiredServicesType, ServiceRole desiredRole) override;
     void GetEndpoints(ServiceType desiredServicesType, ServiceRole desiredRole,

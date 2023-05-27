@@ -162,31 +162,44 @@ DataContainer ServiceRegistry::HandleRegisterQuery(const DataContainer& msgData)
         throw InvalidMessageException();
     }
 
-    const Endpoint endpoint = {.address = msgData["description"]["endpoint"].AsString("address"),
-                               .port = static_cast<std::uint16_t>(msgData["description"]["endpoint"].AsInt("port"))};
+    const Endpoint endpointAsServer = {
+            .address = msgData["description"]["endpoint_as_server"].AsString("address"),
+            .port = static_cast<std::uint16_t>(msgData["description"]["endpoint_as_server"].AsInt("port"))};
+    const Endpoint endpointAsClient = {
+            .address = msgData["description"]["endpoint_as_client"].AsString("address"),
+            .port = static_cast<std::uint16_t>(msgData["description"]["endpoint_as_client"].AsInt("port"))};
     switch (msgData["description"].AsInt("service_type"))
     {
     case 0:
-        m_services[ServiceType::kServiceRegistry].push_back(endpoint);
+        m_servicesAsServer[ServiceType::kServiceRegistry].push_back(endpointAsServer);
+        m_servicesAsClient[ServiceType::kServiceRegistry].push_back(endpointAsClient);
         break;
     case 1:
-        m_services[ServiceType::kMessageBroker].push_back(endpoint);
+        m_servicesAsServer[ServiceType::kMessageBroker].push_back(endpointAsServer);
+        m_servicesAsClient[ServiceType::kMessageBroker].push_back(endpointAsClient);
         break;
     case 2:
-        m_services[ServiceType::kApiGateway].push_back(endpoint);
+        m_servicesAsServer[ServiceType::kApiGateway].push_back(endpointAsServer);
+        m_servicesAsClient[ServiceType::kApiGateway].push_back(endpointAsClient);
         break;
     case 3:
-        m_services[ServiceType::kAuth].push_back(endpoint);
+        m_servicesAsServer[ServiceType::kAuth].push_back(endpointAsServer);
+        m_servicesAsClient[ServiceType::kAuth].push_back(endpointAsClient);
         break;
     case 4:
-        m_services[ServiceType::kFileStorage].push_back(endpoint);
+        m_servicesAsServer[ServiceType::kFileStorage].push_back(endpointAsServer);
+        m_servicesAsClient[ServiceType::kFileStorage].push_back(endpointAsClient);
         break;
     case 5:
-        m_services[ServiceType::kSimultaneousAccess].push_back(endpoint);
+        m_servicesAsServer[ServiceType::kSimultaneousAccess].push_back(endpointAsServer);
+        m_servicesAsClient[ServiceType::kSimultaneousAccess].push_back(endpointAsClient);
         break;
     default:
         throw InvalidMessageException();
     }
+
+    m_asClientFromServer[endpointAsServer] = endpointAsClient;
+    m_asServerFromClient[endpointAsClient] = endpointAsServer;
 
     DataContainer replyMsg{};
     replyMsg["action_result"] = 1;
@@ -201,31 +214,43 @@ DataContainer ServiceRegistry::HandleExitQuery(const DataContainer& msgData)
         throw InvalidMessageException();
     }
 
-    const Endpoint endpoint{.address = msgData["description"]["endpoint"].AsString("address"),
-                            .port = static_cast<std::uint16_t>(msgData["description"]["endpoint"].AsInt("port"))};
+    const Endpoint endpointAsServer{
+            .address = msgData["description"]["endpoint_as_server"].AsString("address"),
+            .port = static_cast<std::uint16_t>(msgData["description"]["endpoint_as_server"].AsInt("port"))};
+    const Endpoint endpointAsClient = m_asClientFromServer[endpointAsServer];
+
     switch (msgData["description"].AsInt("service_type"))
     {
     case 0:
-        std::erase(m_services[ServiceType::kServiceRegistry], endpoint);
+        std::erase(m_servicesAsServer[ServiceType::kServiceRegistry], endpointAsServer);
+        std::erase(m_servicesAsClient[ServiceType::kServiceRegistry], endpointAsClient);
         break;
     case 1:
-        std::erase(m_services[ServiceType::kMessageBroker], endpoint);
+        std::erase(m_servicesAsServer[ServiceType::kMessageBroker], endpointAsServer);
+        std::erase(m_servicesAsClient[ServiceType::kMessageBroker], endpointAsClient);
         break;
     case 2:
-        std::erase(m_services[ServiceType::kApiGateway], endpoint);
+        std::erase(m_servicesAsServer[ServiceType::kApiGateway], endpointAsServer);
+        std::erase(m_servicesAsClient[ServiceType::kApiGateway], endpointAsClient);
         break;
     case 3:
-        std::erase(m_services[ServiceType::kAuth], endpoint);
+        std::erase(m_servicesAsServer[ServiceType::kAuth], endpointAsServer);
+        std::erase(m_servicesAsClient[ServiceType::kAuth], endpointAsClient);
         break;
     case 4:
-        std::erase(m_services[ServiceType::kFileStorage], endpoint);
+        std::erase(m_servicesAsServer[ServiceType::kFileStorage], endpointAsServer);
+        std::erase(m_servicesAsClient[ServiceType::kFileStorage], endpointAsClient);
         break;
     case 5:
-        std::erase(m_services[ServiceType::kSimultaneousAccess], endpoint);
+        std::erase(m_servicesAsServer[ServiceType::kSimultaneousAccess], endpointAsServer);
+        std::erase(m_servicesAsClient[ServiceType::kSimultaneousAccess], endpointAsClient);
         break;
     default:
         throw InvalidMessageException();
     }
+
+    m_asClientFromServer.erase(endpointAsServer);
+    m_asServerFromClient.erase(endpointAsClient);
 
     DataContainer replyMsg{};
     replyMsg["action_result"] = 1;
@@ -235,39 +260,66 @@ DataContainer ServiceRegistry::HandleExitQuery(const DataContainer& msgData)
 
 DataContainer ServiceRegistry::HandleGetServiceListQuery(const DataContainer& msgData)
 {
+    if (!msgData["description"].Has("role")) [[unlikely]]
+    {
+        throw InvalidMessageException();
+    }
+
     DataContainer replyMsg{};
     replyMsg["time"] = std::string("now");
     auto& services = replyMsg["services"].CreateArray();
 
+    auto* buffServices = &m_servicesAsClient;
+    if (msgData["description"].AsString("role") == "server")
+    {
+        buffServices = &m_servicesAsServer;
+    }
+    else if (msgData["description"].AsString("role") == "client")
+    {
+        buffServices = &m_servicesAsClient;
+    }
+    else
+    {
+        throw InvalidMessageException();
+    }
+
+    auto& servicesToChooseFrom = *buffServices;
+
     switch (msgData["description"].AsInt("service_type"))
     {
     case 0:
-        services.push_back(CreateServiceList(ServiceType::kServiceRegistry, m_services[ServiceType::kServiceRegistry]));
+        services.push_back(
+                CreateServiceList(ServiceType::kServiceRegistry, servicesToChooseFrom[ServiceType::kServiceRegistry]));
         break;
     case 1:
-        services.push_back(CreateServiceList(ServiceType::kMessageBroker, m_services[ServiceType::kMessageBroker]));
+        services.push_back(
+                CreateServiceList(ServiceType::kMessageBroker, servicesToChooseFrom[ServiceType::kMessageBroker]));
         break;
     case 2:
-        services.push_back(CreateServiceList(ServiceType::kApiGateway, m_services[ServiceType::kApiGateway]));
+        services.push_back(CreateServiceList(ServiceType::kApiGateway, servicesToChooseFrom[ServiceType::kApiGateway]));
         break;
     case 3:
-        services.push_back(CreateServiceList(ServiceType::kAuth, m_services[ServiceType::kAuth]));
+        services.push_back(CreateServiceList(ServiceType::kAuth, servicesToChooseFrom[ServiceType::kAuth]));
         break;
     case 4:
-        services.push_back(CreateServiceList(ServiceType::kFileStorage, m_services[ServiceType::kFileStorage]));
+        services.push_back(
+                CreateServiceList(ServiceType::kFileStorage, servicesToChooseFrom[ServiceType::kFileStorage]));
         break;
     case 5:
-        services.push_back(
-                CreateServiceList(ServiceType::kSimultaneousAccess, m_services[ServiceType::kSimultaneousAccess]));
+        services.push_back(CreateServiceList(ServiceType::kSimultaneousAccess,
+                                             servicesToChooseFrom[ServiceType::kSimultaneousAccess]));
         break;
     case 100:
-        services.push_back(CreateServiceList(ServiceType::kServiceRegistry, m_services[ServiceType::kServiceRegistry]));
-        services.push_back(CreateServiceList(ServiceType::kMessageBroker, m_services[ServiceType::kMessageBroker]));
-        services.push_back(CreateServiceList(ServiceType::kApiGateway, m_services[ServiceType::kApiGateway]));
-        services.push_back(CreateServiceList(ServiceType::kAuth, m_services[ServiceType::kAuth]));
-        services.push_back(CreateServiceList(ServiceType::kFileStorage, m_services[ServiceType::kFileStorage]));
         services.push_back(
-                CreateServiceList(ServiceType::kSimultaneousAccess, m_services[ServiceType::kSimultaneousAccess]));
+                CreateServiceList(ServiceType::kServiceRegistry, servicesToChooseFrom[ServiceType::kServiceRegistry]));
+        services.push_back(
+                CreateServiceList(ServiceType::kMessageBroker, servicesToChooseFrom[ServiceType::kMessageBroker]));
+        services.push_back(CreateServiceList(ServiceType::kApiGateway, servicesToChooseFrom[ServiceType::kApiGateway]));
+        services.push_back(CreateServiceList(ServiceType::kAuth, servicesToChooseFrom[ServiceType::kAuth]));
+        services.push_back(
+                CreateServiceList(ServiceType::kFileStorage, servicesToChooseFrom[ServiceType::kFileStorage]));
+        services.push_back(CreateServiceList(ServiceType::kSimultaneousAccess,
+                                             servicesToChooseFrom[ServiceType::kSimultaneousAccess]));
         break;
     default:
         throw InvalidMessageException();
