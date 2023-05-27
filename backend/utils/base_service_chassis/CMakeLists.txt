@@ -2,6 +2,7 @@ add_library(${BASE_SERVICE_CHASSIS} STATIC "")
 
 target_sources(${BASE_SERVICE_CHASSIS} PRIVATE
     "src/trash.cpp"
+    "service_registrator/src/websocket_service_registrator.cpp"
 )
 
 set(PUBLIC_INCLUDE_DIRECTORIES
@@ -11,7 +12,7 @@ set(PUBLIC_INCLUDE_DIRECTORIES
     "local_service_registry/include"
     "logger_adapter/include"
     "message_broker_connector/include"
-    "service_registator/include"
+    "service_registrator/include"
 )
 
 target_include_directories(${BASE_SERVICE_CHASSIS} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
