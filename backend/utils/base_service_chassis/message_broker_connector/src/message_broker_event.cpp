@@ -85,7 +85,12 @@ void MessageBrokerEvent::DoOnNotified(const std::string& msgBody, error_code ec,
     {
         std::stringstream ss{};
         // TODO (a.novak) <<session.GetEndpoint() when will add overload
-        ss << "Error occurred while reading from msgBroker." << ec.what();
+        ss << "Error occurred while reading from msgBroker."
+#ifdef BOOST_OS_WINDOWS
+           << ec.what();
+#else
+                ;
+#endif
         m_logger->LogDebug(ss.str());
         return;
     }
@@ -94,7 +99,7 @@ void MessageBrokerEvent::DoOnNotified(const std::string& msgBody, error_code ec,
     if (!eventMsg.Has("message_body") || !eventMsg.Has("event") || !eventMsg.Has("sender") ||
         !eventMsg["sender"].Has("address") || !eventMsg["sender"].Has("port"))
     {
-        m_logger->LogWarning(std::string("Got msg with invalid format.")+ msgBody);
+        m_logger->LogWarning(std::string("Got msg with invalid format.") + msgBody);
         return;
     }
     const std::string newMsgBody = eventMsg.AsString("message_body");

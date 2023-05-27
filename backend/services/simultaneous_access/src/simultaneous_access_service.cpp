@@ -152,9 +152,13 @@ void SimultaneousAccessService::DoOnRead(const std::string& msg, error_code ec, 
     std::cout << "Read" << msg << __LINE__ << std::endl;
     if (ec)
     {
-        m_chassis->baseServiceChassis->logger->LogDebug(std::string("Got error from ... while reading. Error: ") +
-                                                        ec.what());
+        m_chassis->baseServiceChassis->logger->LogDebug(std::string("Got error from ... while reading. Error: ")
+#ifdef BOOST_OS_WINDOWS
 
+                                                        + ec.what());
+#else
+        );
+#endif
         return;
     }
 
@@ -194,9 +198,19 @@ void SimultaneousAccessService::DoOnConnect(error_code ec, IServiceSession* sess
     std::cout << "Connected" << session->GetClientEndpoint().address << __LINE__ << std::endl;
     if (ec)
     {
-        std::cout << "Error occured" << ec.what() << __LINE__ << std::endl;
-        m_chassis->baseServiceChassis->logger->LogDebug(
-                std::string("Got error from ... when tried to accept. Error: ") + ec.what());
+        std::cout << "Error occured"
+#ifdef BOOST_OS_WINDOWS
+                  << ec.what() << __LINE__ << std::endl;
+#else
+                  << __LINE__ << std::endl;
+#endif
+        m_chassis->baseServiceChassis->logger->LogDebug(std::string("Got error from ... when tried to accept. Error: ")
+#ifdef BOOST_OS_WINDOWS
+                                                        + ec.what()
+#else
+
+#endif
+        );
         return;
     }
 }
@@ -205,8 +219,12 @@ void SimultaneousAccessService::DoOnWrite(error_code ec, IServiceSession*)
 {
     if (ec)
     {
-        m_chassis->baseServiceChassis->logger->LogDebug(std::string("Got error from ... while writing. Error: ") +
-                                                        ec.what());
+        m_chassis->baseServiceChassis->logger->LogDebug(std::string("Got error from ... while writing. Error: ")
+#ifdef BOOST_OS_WINDOWS
+                                                        + ec.what());
+#else
+        );
+#endif
         return;
     }
 }

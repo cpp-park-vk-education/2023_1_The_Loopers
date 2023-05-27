@@ -76,7 +76,12 @@ inline BeastWebsocketListener<AcceptCallback>::BeastWebsocketListener(boost::asi
     if (m_acceptor.open(endpoint.protocol(), errorCode); errorCode)
     {
         TerminateOnFail(errorCode, "open ");
-        std::cout << "Error occured while oppening acceptor " << errorCode.what() << __LINE__ << std::endl;
+        std::cout << "Error ocurred while opening acceptor "
+#ifdef BOOST_OS_WINDOWS
+                  << errorCode.what() << __LINE__ << std::endl;
+#else
+                  << __LINE__ << std::endl;
+#endif
         return;
     }
 
@@ -85,7 +90,12 @@ inline BeastWebsocketListener<AcceptCallback>::BeastWebsocketListener(boost::asi
     if (errorCode)
     {
         TerminateOnFail(errorCode, "set_option ");
-        std::cout << "Error occured while allowing address reuse " << errorCode.what() << __LINE__ << std::endl;
+        std::cout << "Error occured while allowing address reuse "
+#ifdef BOOST_OS_WINDOWS
+                  << errorCode.what() << __LINE__ << std::endl;
+#else
+                  << __LINE__ << std::endl;
+#endif
         return;
     }
 
@@ -93,7 +103,12 @@ inline BeastWebsocketListener<AcceptCallback>::BeastWebsocketListener(boost::asi
     if (m_acceptor.bind(endpoint, errorCode); errorCode)
     {
         TerminateOnFail(errorCode, "bind ");
-        std::cout << "Error occured while Binding to the server address " << errorCode.what() << __LINE__ << std::endl;
+        std::cout << "Error occured while Binding to the server address "
+#ifdef BOOST_OS_WINDOWS
+                  << errorCode.what() << __LINE__ << std::endl;
+#else
+                  << __LINE__ << std::endl;
+#endif
         return;
     }
 
@@ -102,7 +117,12 @@ inline BeastWebsocketListener<AcceptCallback>::BeastWebsocketListener(boost::asi
     if (errorCode)
     {
         TerminateOnFail(errorCode, "listen ");
-        std::cout << "Error occured while starting listening " << errorCode.what() << __LINE__ << std::endl;
+        std::cout << "Error occured while starting listening "
+#ifdef BOOST_OS_WINDOWS
+                  << errorCode.what() << __LINE__ << std::endl;
+#else
+                  << __LINE__ << std::endl;
+#endif
         return;
     }
 }
@@ -132,12 +152,22 @@ inline void BeastWebsocketListener<AcceptCallback>::OnAccept(error_code ec, tcp:
 {
     if (ec)
     {
-        std::cout << "accepted with error " << ec.what() << __LINE__ << std::endl;
+        std::cout << "accepted with error "
+#ifdef BOOST_OS_WINDOWS
+                  << ec.what() << __LINE__ << std::endl;
+#else
+                  << __LINE__ << std::endl;
+#endif
         m_acceptCallback(ec, nullptr);
     }
     else
     {
-        std::cout << "accepted successfully " << ec.what() << __LINE__ << std::endl;
+        std::cout << "accepted successfully "
+#ifdef BOOST_OS_WINDOWS
+                  << ec.what() << __LINE__ << std::endl;
+#else
+                  << __LINE__ << std::endl;
+#endif
         // Create the session and run it
         auto session = m_factory->GetSession(std::move(socket));
         m_acceptCallback(ec, session.get());

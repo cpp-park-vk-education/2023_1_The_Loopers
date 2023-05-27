@@ -91,7 +91,12 @@ void MessageBrokerSignal::DoOnRead(const std::string& msgBrokerSignal, error_cod
     {
         std::stringstream ss{};
         // TODO (a.novak) <<session.GetEndpoint() when will add overload
-        ss << "Error occurred while reading from msgBroker." << ec.what();
+        ss << "Error occurred while reading from msgBroker."
+#ifdef BOOST_OS_WINDOWS
+           << ec.what();
+#else
+                ;
+#endif
         m_logger->LogDebug(ss.str());
         return;
     }
@@ -99,7 +104,7 @@ void MessageBrokerSignal::DoOnRead(const std::string& msgBrokerSignal, error_cod
     DataContainer eventMsg{JsonSerializer::ParseFromString(msgBrokerSignal)};
     if (!eventMsg.Has("message_body") || !eventMsg.Has("sender"))
     {
-        m_logger->LogWarning(std::string("Got msg with invalid format.")+ msgBrokerSignal);
+        m_logger->LogWarning(std::string("Got msg with invalid format.") + msgBrokerSignal);
         return;
     }
     m_readCallback(eventMsg.AsString("message_body"));

@@ -141,7 +141,13 @@ void ServiceRegistry::DoOnConnect(error_code ec, IServiceSession*)
 {
     if (ec)
     {
-        m_chassis->logger->LogDebug(std::string("Got error from ... when tried to accept. Error: ") + ec.what());
+        m_chassis->logger->LogDebug(std::string("Got error from ... when tried to accept. Error: ")
+#ifdef BOOST_OS_WINDOWS
+                                    + ec.what()
+#else
+
+#endif
+        );
         return;
     }
 }
@@ -150,7 +156,13 @@ void ServiceRegistry::DoOnWrite(error_code ec, IServiceSession*)
 {
     if (ec)
     {
-        m_chassis->logger->LogDebug(std::string("Got error from ... while writing. Error: ") + ec.what());
+        m_chassis->logger->LogDebug(std::string("Got error from ... while writing. Error: ")
+#ifdef BOOST_OS_WINDOWS
+                                    + ec.what()
+#else
+
+#endif
+        );
         return;
     }
 }

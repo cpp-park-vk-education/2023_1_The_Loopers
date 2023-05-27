@@ -37,7 +37,13 @@ WebsocketServiceRegistrator::WebsocketServiceRegistrator(std::shared_ptr<ILogger
     {
         if (ec)
         {
-            m_logger->LogCritical("Error occurred when tried to connect to service registry! " + ec.what());
+            m_logger->LogCritical("Error occurred when tried to connect to service registry! "
+#ifdef BOOST_OS_WINDOWS
+                                  + ec.what()
+#else
+
+#endif
+            );
             throw ec; // app will crash because it will be thrown in thread without catch:
                       // ideally should catch it and rethrow in main thread, but, if I understand correctly, for this
                       // one need threads/ event manager like qt one and I will not do it
