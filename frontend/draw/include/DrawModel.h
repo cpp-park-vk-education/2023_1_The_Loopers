@@ -20,5 +20,6 @@ protected:
 
 private:
     std::vector<ObjectWithAttributes*> m_objects;
+    std::string m_filename;
 };
 } // namespace inklink::draw
