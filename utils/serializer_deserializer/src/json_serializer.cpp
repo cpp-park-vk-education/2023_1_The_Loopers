@@ -64,9 +64,10 @@ DataContainer DeserializeDataContainer(const json& jsonData)
     }
     else if (jsonData.is_array())
     {
+        auto& dataArray = data.CreateArray();
         for (const auto& element : jsonData)
         {
-            data.AsArray().push_back(DeserializeDataContainer(element));
+            dataArray.push_back(DeserializeDataContainer(element));
         }
     }
     else if (jsonData.is_object())
