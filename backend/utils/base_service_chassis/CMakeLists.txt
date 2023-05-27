@@ -2,6 +2,8 @@ add_library(${BASE_SERVICE_CHASSIS} STATIC "")
 
 target_sources(${BASE_SERVICE_CHASSIS} PRIVATE
     "src/trash.cpp"
+    "message_broker_connector/src/icommon_connection.cpp"
+    "message_broker_connector/src/websocket_common_connection.cpp"
 )
 
 set(PUBLIC_INCLUDE_DIRECTORIES
