@@ -1,24 +1,30 @@
 #pragma once
 
 #include <QApplication>
-#include <QWidget>
-#include <QPainter>
 #include <QMouseEvent>
+#include <QPainter>
+#include <QVariant>
+#include <QWidget>
+
 #include <vector>
 
-class EllipseDrawingWidget : public QWidget {
+namespace inklink::draw
+{
+class EllipseDrawingWidget : public QWidget
+{
 public:
-    EllipseDrawingWidget(QWidget *parent = nullptr);
+    EllipseDrawingWidget(QWidget* parent = nullptr);
 
 protected:
-    void paintEvent(QPaintEvent *event) override;
+    void paintEvent(QPaintEvent* event) override;
 
-    void mousePressEvent(QMouseEvent *event) override;
+    void mousePressEvent(QMouseEvent* event) override;
 
-    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent* event) override;
 
 private:
-    std::vector<QRect> ellipses; // Коллекция эллипсов
-    QPoint startPoint; // Начальная точка
-    QPoint endPoint; // Конечная точка
+    std::vector<QVariant> m_items; // Коллекция элементов (эллипсов)
+    QPoint m_startPoint;           // Начальная точка
+    QPoint m_endPoint;             // Конечная точка
 };
+} // namespace inklink::draw
