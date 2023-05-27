@@ -258,7 +258,12 @@ DataContainer& DataContainer::operator[](const std::string& field) noexcept
 {
     try
     {
-        return *std::get<ObjectsContainer>(m_data)[field];
+        auto& ptrToValue = std::get<ObjectsContainer>(m_data)[field];
+        if (!ptrToValue)
+        {
+            ptrToValue = std::make_shared<DataContainer>();
+        }
+        return *ptrToValue;
     }
     catch (const std::bad_variant_access&)
     {
