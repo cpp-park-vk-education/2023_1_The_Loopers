@@ -1,6 +1,7 @@
 #pragma once
 
 #include "iclient_session.h"
+#include "inklink_global.h"
 #include "websocket_fwd.h"
 
 #include <boost/asio.hpp>
@@ -167,6 +168,11 @@ public:
     void Send(const std::string&) final;
     void Close() final;
 
+    Endpoint GetSelfEndpoint() override
+    {
+        return m_selfEndpoint;
+    }
+
 private:
     using error_code = boost::system::error_code;
 
@@ -197,6 +203,8 @@ private:
     ReadCallback m_readCallback;
     WriteCallback m_writeCallback;
     CloseCallback m_closeCallback;
+
+    Endpoint m_selfEndpoint;
 };
 } // namespace inklink::client_connector
 
@@ -373,6 +381,14 @@ WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallba
     {
         return;
     }
+
+    const auto selfEndpoint = m_websocketStream.next_layer().local_endpoint(ec);
+    if (ec)
+    {
+        return;
+    }
+    m_selfEndpoint.address = selfEndpoint.address().to_string();
+    m_selfEndpoint.port = static_cast<std::uint16_t>(selfEndpoint.port());
 
     // set to binary (because we don't know in which format will be sending)
     m_websocketStream.binary(true);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "iclient_session.h"
+#include "inklink_global.h"
 #include "websocket_fwd.h"
 
 #include <boost/asio.hpp>
@@ -53,6 +54,11 @@ public:
     void Send(const std::string&) override;
     void Close() override;
 
+    Endpoint GetSelfEndpoint() override
+    {
+        return m_selfEndpoint;
+    }
+
 private:
     using error_code = boost::system::error_code;
 
@@ -86,6 +92,7 @@ private:
     CloseCallback m_closeCallback;
 
     const std::string kClientName{"inklink_manual_client"};
+    Endpoint m_selfEndpoint;
 };
 } // namespace inklink::client_connector
 
@@ -107,7 +114,8 @@ inline ManualWebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback
           m_connectCallback{connectCallback}, 
           m_readCallback{readCallback},
           m_writeCallback{writeCallback}, 
-          m_closeCallback{closeCallback}
+          m_closeCallback{closeCallback},
+          m_selfEndpoint{.address = address, .port = port}
 // clang-format on
 {
     m_socket.open(boost::asio::ip::tcp::v4());
