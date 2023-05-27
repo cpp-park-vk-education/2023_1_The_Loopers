@@ -2,7 +2,10 @@
 
 #include "ilogger.h"
 
+#include <data_container.h>
 #include <iclient_session.h>
+
+#include <json_serializer.h>
 
 #include <boost/system/error_code.hpp>
 
@@ -16,6 +19,9 @@ using error_code = boost::system::error_code;
 using Endpoint = inklink::Endpoint;
 
 using NotifiedFunctor = std::function<void(int /*event type*/, const std::string&, const Endpoint& /*from*/)>;
+
+using DataContainer = inklink::serializer::DataContainer;
+using JsonSerializer = inklink::serializer::JsonSerializer;
 } // namespace
 
 namespace inklink::base_service_chassis
@@ -44,8 +50,11 @@ void MessageBrokerEvent::Publish(int event, const std::string& msgBody, ServiceT
         return;
     }
 
-    // TODO (a.novak) wrap str and endpoint into message broker protocol
-    std::string serializedMsg = std::to_string(event) + msgBody + std::to_string(static_cast<int>(subscribersType));
+    DataContainer eventMsg{};
+    eventMsg["event"] = event;
+    eventMsg["message_body"] = msgBody;
+    eventMsg["time"] = std::string("now");
+    const std::string serializedMsg = JsonSerializer::SerializeAsString(eventMsg);
     session->Send(serializedMsg);
 }
 
@@ -61,8 +70,12 @@ void MessageBrokerEvent::Subscribe(int event)
         return;
     }
 
-    // TODO (a.novak) wrap str and endpoint into message broker protocol
-    std::string serializedMsg = std::to_string(event);
+    DataContainer eventMsg{};
+    eventMsg["event"] = event;
+    eventMsg["sender"]["address"] = session->GetSelfEndpoint().address;
+    eventMsg["sender"]["port"] = static_cast<int>(session->GetSelfEndpoint().port);
+    eventMsg["time"] = std::string("now");
+    const std::string serializedMsg = JsonSerializer::SerializeAsString(eventMsg);
     session->Send(serializedMsg);
 }
 
@@ -76,10 +89,19 @@ void MessageBrokerEvent::DoOnNotified(const std::string& msgBody, error_code ec,
         m_logger->LogDebug(ss.str());
         return;
     }
-    // TODO (a.novak) parse msgBrokerSignal
-    std::string newMsgBody{msgBody};
-    int eventType{};
-    m_notifiedCallback(eventType, newMsgBody, m_connectionToMsgBroker->GetEndpointSelf());
+
+    DataContainer eventMsg{JsonSerializer::ParseFromString(msgBody)};
+    if (!eventMsg.Has("message_body") || !eventMsg.Has("event") || !eventMsg.Has("sender") ||
+        !eventMsg["sender"].Has("address") || !eventMsg["sender"].Has("port"))
+    {
+        m_logger->LogWarning(std::string("Got msg with invalid format.")+ msgBody);
+        return;
+    }
+    const std::string newMsgBody = eventMsg.AsString("message_body");
+    const int eventType = eventMsg.AsInt("event");
+    const Endpoint sender{.address = eventMsg["sender"].AsString("address"),
+                          .port = static_cast<std::uint16_t>(eventMsg["sender"].AsInt("port"))};
+    m_notifiedCallback(eventType, newMsgBody, sender);
 }
 
 } // namespace inklink::base_service_chassis

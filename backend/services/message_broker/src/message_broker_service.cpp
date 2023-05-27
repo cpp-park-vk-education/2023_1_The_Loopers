@@ -1,7 +1,5 @@
 #include "message_broker_service.h"
 
-#include "data_container.h"
-
 #include <data_container.h>
 #include <iauthorizer.h>
 #include <ibase_service_chassis.h>

@@ -382,7 +382,7 @@ WebsocketClientSession<ConnectCallback, ReadCallback, WriteCallback, CloseCallba
         return;
     }
 
-    const auto selfEndpoint = m_websocketStream.next_layer().local_endpoint(ec);
+    const auto selfEndpoint = beast::get_lowest_layer(m_websocketStream).socket().local_endpoint(ec);
     if (ec)
     {
         return;
