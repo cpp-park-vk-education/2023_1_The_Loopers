@@ -1,34 +1,28 @@
 #pragma once
 
-#include "GraphModel.h"
-#include "IEdge.h"
-
 #include <string>
 #include <vector>
 
 namespace inklink::graph
 {
-
-struct Position{
-    std::size_t xPosition;
-    std::size_t yPosition;
-};
-
+// class declaration
 class IVertex
 {
 public:
-    void calculateForces();
-    bool advancePosition();
-    std::string getName();
+    struct Position
+    {
+        double xPosition;
+        double yPosition;
+    };
 
-    Position getCurrentPosition();
-    Position getNewPosition();
-    void setCurrentPosition(Position);
-    void setNewPosition(Position);
+    ~IVertex();
+
+    [[nodiscard]] virtual const std::string& getName() const = 0;
+    [[nodiscard]] virtual Position GetCurrentPosition() const = 0;
+    virtual void SetCurrentPosition(Position) = 0;
 
 private:
     std::string m_name;
     Position m_currentPosition;
-//    Position m_newPosition;
 };
 } // namespace inklink::graph
