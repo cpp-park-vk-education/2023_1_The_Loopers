@@ -27,6 +27,7 @@ public:
 
     std::string Serialize(int actionId, int actionType, int figureId);
     void Send(std::string& message);
+    void SetFilename(std::string& filename);
 
 protected:
     void addObject(size_t, size_t, std::vector<Point>&);
@@ -41,7 +42,7 @@ private:
     std::weak_ptr<IClientSession> m_storageSession;
     std::weak_ptr<IClientSession> m_accessSession;
     std::vector<ObjectWithAttributes*> m_objects;
-    std::string m_filename;
+    std::string m_filename = "new_file";
 
     void Deserialize(const std::string& message);
 };

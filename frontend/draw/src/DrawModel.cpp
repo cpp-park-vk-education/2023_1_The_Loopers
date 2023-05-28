@@ -80,6 +80,11 @@ void DrawModel::Send(std::string& message)
     AccessSession->Send(message);
 }
 
+void DrawModel::SetFilename(std::string& filename)
+{
+    m_filename = filename;
+}
+
 void DrawModel::Deserialize(const std::string& message)
 {
     DataContainer gotData = JsonSerializer::ParseFromString(message);
