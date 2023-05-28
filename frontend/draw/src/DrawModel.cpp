@@ -1,4 +1,5 @@
 #include "DrawModel.h"
+
 #include "DrawView.h"
 #include "IObject.h"
 #include "data_container.h"
@@ -14,6 +15,7 @@
 #include <string>
 #include <thread>
 
+
 namespace
 {
 constexpr int simultaneousAccess = 3997;
@@ -22,6 +24,9 @@ constexpr int fileStorage = 3995;
 using namespace std::chrono_literals;
 using namespace inklink::client_connector;
 using error_code = boost::system::error_code;
+
+using DataContainer = inklink::serializer::DataContainer;
+using JsonSerializer = inklink::serializer::JsonSerializer;
 
 enum actionInfoTypes
 {
@@ -43,7 +48,7 @@ DrawModel::DrawModel()
 {
     {
         auto lambdaOnAccept = [this](ConnectType, error_code ec, IClientSession*) { ; };
-        auto lambdaOnRead = [this](const std::string& str, error_code ec, IClientSession*) { this->ParseToGet(str); };
+        auto lambdaOnRead = [this](const std::string& str, error_code ec, IClientSession*) { this->Deserialize(str); };
         auto accessSession = std::make_shared<WebsocketClientSession<decltype(lambdaOnAccept), decltype(lambdaOnRead)>>(
                 m_ioContext, lambdaOnAccept, lambdaOnRead);
         auto storageSession =
@@ -78,11 +83,11 @@ std::string DrawModel::Serialize(int actionType, int figureId, int type)
     }
     if (type == kPolygon)
     {
-        auto currentPolygon = m_objects[figureId];
-        actionInfo["number_of_angles"] = currentPolygon.m_arrayOfVertexCoordinates.size();
+        auto currentPolygon = dynamic_cast<Polygon*> (m_objects[figureId]);
+        actionInfo["number_of_angles"] = currentPolygon->m_arrayOfVertexCoordinates.size();
         auto& anglesArray = actionInfo["angles_coordinates"].CreateArray();
         DataContainer vertex;
-        for (auto values : currentPolygon.m_arrayOfVertexCoordinates)
+        for (auto values : currentPolygon->m_arrayOfVertexCoordinates)
         {
             vertex["x"] = values.xPosition;
             vertex["y"] = values.yPosition;
@@ -91,11 +96,11 @@ std::string DrawModel::Serialize(int actionType, int figureId, int type)
     }
     if (type == kEllipse)
     {
-        auto currentEllipse = m_objects[figureId];
-        actionInfo["center"]["x"] = currentEllipse.m_center.xPosition;
-        actionInfo["center"]["y"] = currentEllipse.m_center.yPosition;
-        actionInfo["x_radius"] = currentEllipse.xRadius;
-        actionInfo["y_radius"] = currentEllipse.yRadius;
+        auto currentEllipse = dynamic_cast<Ellipse*>(m_objects[figureId]);
+        actionInfo["center"]["x"] = currentEllipse->m_center.xPosition;
+        actionInfo["center"]["y"] = currentEllipse->m_center.yPosition;
+        actionInfo["x_radius"] = currentEllipse->xRadius;
+        actionInfo["y_radius"] = currentEllipse->yRadius;
     }
     // currently working not properly, i think
 

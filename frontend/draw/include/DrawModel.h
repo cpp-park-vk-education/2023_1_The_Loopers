@@ -9,17 +9,17 @@
 #include <thread>
 #include <vector>
 
-namespace client_network
+namespace inklink::client_network
 {
 class IClientSession;
-} // namespace client_network
+} // namespace inklink::client_network
 
 namespace inklink::draw
 {
 class DrawView;
+} // namespace inklink::draw
 
 using namespace boost::asio;
-} // namespace inklink::draw
 
 namespace inklink::draw
 {
@@ -40,16 +40,16 @@ public:
     //     void addObject(size_t, std::string&, Point&, size_t);
 
 private:
+    void Deserialize(const std::string& message);
+    [[nodiscard]] int GenerateRandomNumber();
+
     DrawView* m_view = nullptr;
     io_context m_ioContext;
     any_io_executor m_ioContextExecutor;
     std::thread m_threadIoContext;
     std::weak_ptr<client_network::IClientSession> m_storageSession;
     std::weak_ptr<client_network::IClientSession> m_accessSession;
-    std::vector<ObjectWithAttributes> m_objects;
+    std::vector<ObjectWithAttributes*> m_objects;
     std::string m_filename = "new_file";
-
-    void Deserialize(const std::string& message);
-    [[nodiscard]] int GenerateRandomNumber();
 };
 } // namespace inklink::draw
