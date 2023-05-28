@@ -1,6 +1,7 @@
 #include "Vertex.h"
 
 #include <math.h>
+#include <cmath>
 
 namespace
 {
