@@ -7,8 +7,3 @@ find_package(Qt6 REQUIRED COMPONENTS ${REQUIRED_LIBS})
 
 qt_standard_project_setup()
 
-target_link_libraries(${GRAPH} PRIVATE ${REQUIRED_LIBS_QUALIFIED})
-target_link_libraries(${MENU} PRIVATE ${REQUIRED_LIBS_QUALIFIED})
-target_link_libraries(${DRAW} PRIVATE ${REQUIRED_LIBS_QUALIFIED})
-target_link_libraries(${AUTH} PRIVATE ${REQUIRED_LIBS_QUALIFIED})
-target_link_libraries(${GENERAL} PRIVATE ${REQUIRED_LIBS_QUALIFIED})

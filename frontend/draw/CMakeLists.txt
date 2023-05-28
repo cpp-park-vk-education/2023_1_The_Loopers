@@ -2,12 +2,22 @@ add_library(${DRAW} STATIC "")
 
 target_sources(${DRAW} PRIVATE
         "src/temp.cpp"
+        "src/DrawModel.cpp"
         )
 
 set(PUBLIC_INCLUDE_DIRECTORIES
         "include"
-        "itool/include"
+        "Itool/include"
         "tool_box/include"
         )
 
 target_include_directories(${DRAW} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
+
+set(PRIVATE_LINK_LIBRARIES
+        "${REQUIRED_LIBS_QUALIFIED}"
+        "${SERIALIZER}"
+        "${CLIENT_NETWORK}"
+        "${NETWORK_ADAPTER}"
+        )
+
+target_link_libraries(${DRAW} PRIVATE ${PRIVATE_LINK_LIBRARIES})
