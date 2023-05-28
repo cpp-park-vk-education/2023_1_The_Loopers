@@ -1,4 +1,5 @@
 #include "DrawModel.h"
+
 #include "DrawView.h"
 #include "data_container.h"
 #include "json_serializer.h"
@@ -58,20 +59,21 @@ std::string DrawModel::Serialize(int actionId, int actionType, int figureId)
     return JsonSerializer::SerializeAsString(sendContainer);
 }
 
-void DrawModel::Send(std::string& message) {
+DrawModel::~DrawModel()
+{
+    m_ioContext.stop();
+    m_threadIoContext.join();
+}
+
+void DrawModel::Send(std::string& message)
+{
     std::shared_ptr<IClientSession> AccessSession = m_accessSession.lock();
     if (!AccessSession) [[unlikely]]
     {
-        auto lambdaOnAccept = [this](ConnectType, error_code ec, IClientSession*) {
-            ;
-        };
-        auto lambdaOnRead = [this](const std::string& str, error_code ec, IClientSession*) {
-            this->ParseToGet(str);
-        };
-        AccessSession = std::make_shared<WebsocketClientSession<
-                decltype(lambdaOnAccept),
-                decltype(lambdaOnRead)>>
-                (m_ioContext, lambdaOnAccept, lambdaOnRead);
+        auto lambdaOnAccept = [this](ConnectType, error_code ec, IClientSession*) { ; };
+        auto lambdaOnRead = [this](const std::string& str, error_code ec, IClientSession*) { this->Deserialize(str); };
+        AccessSession = std::make_shared<WebsocketClientSession<decltype(lambdaOnAccept), decltype(lambdaOnRead)>>(
+                m_ioContext, lambdaOnAccept, lambdaOnRead);
         AccessSession->RunAsync("127.0.0.1", simultaneousAccess);
         m_accessSession = AccessSession;
     }

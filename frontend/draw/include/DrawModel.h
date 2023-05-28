@@ -23,6 +23,8 @@ class DrawModel
 public:
     DrawModel();
 
+    ~DrawModel();
+
     std::string Serialize(int actionId, int actionType, int figureId);
     void Send(std::string& message);
 
