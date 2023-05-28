@@ -29,7 +29,6 @@ using DataContainer = inklink::serializer::DataContainer;
 using JsonSerializer = inklink::serializer::JsonSerializer;
 
 using IClientSession = inklink::client_connector::IClientSession;
-using WebsocketClientSession = inklink::client_connector::WebsocketClientSession;
 
 enum actionInfoTypes
 {
@@ -52,10 +51,11 @@ DrawModel::DrawModel()
     {
         auto lambdaOnAccept = [this](ConnectType, error_code ec, IClientSession*) { ; };
         auto lambdaOnRead = [this](const std::string& str, error_code ec, IClientSession*) { this->Deserialize(str); };
-        auto accessSession = std::make_shared<WebsocketClientSession<decltype(lambdaOnAccept), decltype(lambdaOnRead)>>(
+        auto accessSession = std::make_shared<
+                inklink::client_connector::WebsocketClientSession<decltype(lambdaOnAccept), decltype(lambdaOnRead)>>(
                 m_ioContext, lambdaOnAccept, lambdaOnRead);
-        auto storageSession =
-                std::make_shared<WebsocketClientSession<decltype(lambdaOnAccept), decltype(lambdaOnRead)>>(
+        auto storageSession = std::make_shared<
+                inklink::client_connector::WebsocketClientSession<decltype(lambdaOnAccept), decltype(lambdaOnRead)>>(
                         m_ioContext, lambdaOnAccept, lambdaOnRead);
         accessSession->RunAsync("127.0.0.1", simultaneousAccess);
         storageSession->RunAsync("127.0.0.1", fileStorage);
