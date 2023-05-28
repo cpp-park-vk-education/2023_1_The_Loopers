@@ -1,6 +1,7 @@
 #include "DrawModel.h"
 
 #include "DrawView.h"
+#include "IObject.h"
 #include "data_container.h"
 #include "json_serializer.h"
 #include "websocket_client_session.h" // Sasha Novak says it should be in <> scopes, but i don't really know
@@ -72,28 +73,32 @@ std::string DrawModel::Serialize(int actionType, int figureId, int type)
     auto actionInfo = action["action_description"]["info"];
 
     // in this block we specify filling of container according to type of actionInfo
-    if (type == kSelection){
+    if (type == kSelection)
+    {
         actionInfo["figure_id"] = figureId;
     }
     if (type == kPolygon)
     {
-        actionInfo["number_of_angles"];
+        auto currentPolygon = m_objects[figureId];
+        actionInfo["number_of_angles"] = currentPolygon.m_arrayOfVertexCoordinates.size();
         auto& anglesArray = actionInfo["angles_coordinates"].CreateArray();
         DataContainer vertex;
-        for (auto& values : vectorOfCoordinates){
-            vertex["x"] = values.x;
-            vertex["y"] = values.y;
+        for (auto values : currentPolygon.m_arrayOfVertexCoordinates)
+        {
+            vertex["x"] = values.xPosition;
+            vertex["y"] = values.yPosition;
             anglesArray.push_back(vertex);
         }
     }
     if (type == kEllipse)
     {
-        actionInfo["center"]["x"];
-        actionInfo["center"]["y"];
-        actionInfo["x_radius"];
-        actionInfo["y_radius"];
+        auto currentEllipse = m_objects[figureId];
+        actionInfo["center"]["x"] = currentEllipse.m_center.xPosition;
+        actionInfo["center"]["y"] = currentEllipse.m_center.yPosition;
+        actionInfo["x_radius"] = currentEllipse.xRadius;
+        actionInfo["y_radius"] = currentEllipse.yRadius;
     }
-// text infos
+    // currently working not properly, i think
 
     sendContainer["time"] = "now"; // for now time is not working
     sendContainer["figure_id"] = figureId;

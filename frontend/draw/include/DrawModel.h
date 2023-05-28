@@ -41,7 +41,7 @@ private:
     std::thread m_threadIoContext;
     std::weak_ptr<IClientSession> m_storageSession;
     std::weak_ptr<IClientSession> m_accessSession;
-//    std::vector<ObjectWithAttributes*> m_objects;
+    std::vector<ObjectWithAttributes*> m_objects;
     std::string m_filename = "new_file";
 
     void Deserialize(const std::string& message);
