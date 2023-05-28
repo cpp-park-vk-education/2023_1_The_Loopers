@@ -281,7 +281,7 @@ void SimultaneousAccessService::HandleDraw(const DataContainer& msgData, IServic
     DrawAction action{};
     action.type = GetActionType(msgData["action"].AsInt("action_type"));
     action.time = std::chrono::system_clock::now();
-    action.figureId = msgData.AsInt("figure_id");
+    action.figureId = msgData.AsString("figure_id");
     action.endpoint = session->GetClientEndpoint();
     action.data = msgData;
 
@@ -314,7 +314,7 @@ void SimultaneousAccessService::HandleText(const DataContainer& msgData, IServic
     TextAction action{};
     action.type = GetActionType(msgData["action"].AsInt("action_type"));
     action.time = std::chrono::system_clock::now();
-    action.figureId = msgData.AsInt("figure_id");
+    action.figureId = msgData.AsString("figure_id");
     action.endpoint = session->GetClientEndpoint();
     action.posStart = msgData["action"]["action_description"].AsInt("start_position");
     action.posEnd = msgData["action"]["action_description"].AsInt("end_position");
