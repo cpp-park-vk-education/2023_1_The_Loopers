@@ -24,6 +24,7 @@ public:
     DrawModel();
 
     std::string Serialize(int actionId, int actionType, int figureId);
+    void Send(std::string& message);
 
 protected:
     void addObject(size_t, size_t, std::vector<Point>&);

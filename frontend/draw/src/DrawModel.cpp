@@ -15,6 +15,9 @@
 
 namespace
 {
+constexpr int simultaneousAccess = 3997;
+constexpr int fileStorage = 3995;
+
 using namespace std::chrono_literals;
 using namespace inklink::client_connector;
 using error_code = boost::system::error_code;
@@ -53,6 +56,26 @@ std::string DrawModel::Serialize(int actionId, int actionType, int figureId)
     sendContainer["time"] = "now";
     sendContainer["figure_id"] = figureId;
     return JsonSerializer::SerializeAsString(sendContainer);
+}
+
+void DrawModel::Send(std::string& message) {
+    std::shared_ptr<IClientSession> AccessSession = m_accessSession.lock();
+    if (!AccessSession) [[unlikely]]
+    {
+        auto lambdaOnAccept = [this](ConnectType, error_code ec, IClientSession*) {
+            ;
+        };
+        auto lambdaOnRead = [this](const std::string& str, error_code ec, IClientSession*) {
+            this->ParseToGet(str);
+        };
+        AccessSession = std::make_shared<WebsocketClientSession<
+                decltype(lambdaOnAccept),
+                decltype(lambdaOnRead)>>
+                (m_ioContext, lambdaOnAccept, lambdaOnRead);
+        AccessSession->RunAsync("127.0.0.1", 3997);
+        m_accessSession = AccessSession;
+    }
+    AccessSession->Send(message);
 }
 
 void DrawModel::Deserialize(const std::string& message)
