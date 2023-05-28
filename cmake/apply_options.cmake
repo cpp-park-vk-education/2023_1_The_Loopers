@@ -75,7 +75,7 @@ else()
 
     if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC") 
         set(WARNINGS_FLAGS
-            "-Wall"
+            # "-Wall"
         )
     else()
         set(WARNINGS_FLAGS
