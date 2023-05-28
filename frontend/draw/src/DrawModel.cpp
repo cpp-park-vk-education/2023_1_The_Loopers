@@ -35,8 +35,8 @@ DrawModel::DrawModel()
         auto storageSession =
                 std::make_shared<WebsocketClientSession<decltype(lambdaOnAccept), decltype(lambdaOnRead)>>(
                         m_ioContext, lambdaOnAccept, lambdaOnRead);
-        accessSession->RunAsync("127.0.0.1", 3997);  // 3997 simultaneous access
-        storageSession->RunAsync("127.0.0.1", 3995); // 3995 file storage
+        accessSession->RunAsync("127.0.0.1", simultaneousAccess);
+        storageSession->RunAsync("127.0.0.1", fileStorage);
         m_accessSession = std::move(accessSession);
         m_storageSession = std::move(storageSession);
 
@@ -72,7 +72,7 @@ void DrawModel::Send(std::string& message) {
                 decltype(lambdaOnAccept),
                 decltype(lambdaOnRead)>>
                 (m_ioContext, lambdaOnAccept, lambdaOnRead);
-        AccessSession->RunAsync("127.0.0.1", 3997);
+        AccessSession->RunAsync("127.0.0.1", simultaneousAccess);
         m_accessSession = AccessSession;
     }
     AccessSession->Send(message);
