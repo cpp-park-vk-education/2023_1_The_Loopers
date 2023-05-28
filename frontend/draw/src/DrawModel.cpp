@@ -1,5 +1,4 @@
 #include "DrawModel.h"
-
 #include "DrawView.h"
 #include "IObject.h"
 #include "data_container.h"
