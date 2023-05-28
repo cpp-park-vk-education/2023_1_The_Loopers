@@ -1,4 +1,4 @@
-#include "polygon_rectangle.h"
+#include "PolygonRectangle.hpp"
 
 namespace inklink::draw
 {
