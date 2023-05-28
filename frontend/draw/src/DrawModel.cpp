@@ -28,6 +28,8 @@ using error_code = boost::system::error_code;
 using DataContainer = inklink::serializer::DataContainer;
 using JsonSerializer = inklink::serializer::JsonSerializer;
 
+using IClientSession = inklink::client_network::IClientSession;
+
 enum actionInfoTypes
 {
     kAuth,
