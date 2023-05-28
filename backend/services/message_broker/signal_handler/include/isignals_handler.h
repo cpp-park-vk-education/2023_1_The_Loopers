@@ -1,7 +1,9 @@
 #pragma once
 
-#include "ibase_service_chassis.h"
 #include "inklink_global.h"
+
+#include <data_container.h>
+#include <ibase_service_chassis.h>
 
 #include <memory>
 #include <unordered_map>
@@ -9,22 +11,27 @@
 
 namespace inklink::base_service_chassis
 {
-class IBaseServiceChassis;
+struct IBaseServiceChassis;
 }
 
 namespace inklink::service_message_broker
 {
 class ISignalsHandler
 {
+public:
     using IBaseServiceChassis = base_service_chassis::IBaseServiceChassis;
+    using DataContainer = serializer::DataContainer;
 
 public:
-    ISignalsHandler(std::shared_ptr<IBaseServiceChassis>);
+    explicit ISignalsHandler(IBaseServiceChassis&);
     virtual ~ISignalsHandler() = default;
 
-    virtual void Send(Endpoint, const std::string&) = 0;
+    bool Handle(const DataContainer&, const Endpoint& sender);
 
 protected:
-    std::shared_ptr<IBaseServiceChassis> m_serviceChassis;
+    virtual void Send(const Endpoint&, const std::string&);
+
+protected:
+    IBaseServiceChassis& m_serviceChassis;
 };
 } // namespace inklink::service_message_broker

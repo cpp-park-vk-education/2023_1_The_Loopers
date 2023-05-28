@@ -75,7 +75,7 @@ else()
 
     if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC") 
         set(WARNINGS_FLAGS
-            # "-Wall"
+            # # "-W2"
         )
     else()
         set(WARNINGS_FLAGS
@@ -85,7 +85,11 @@ else()
             "-Wpedantic"
             "-Wno-error=return-type"
             "-Wno-error=unused-parameter"
+            # "-Wno-error=nested-anon-types"
         )
+        if (WIN32)
+            list(APPEND ${WARNINGS_FLAGS} "-Wno-error=nested-anon-types") # boost/winapi/file_management.hpp
+        endif()
         if(NOT ENABLE_CLANG_TIDY)
             list(APPEND ${WARNINGS_FLAGS} "-Wabi=${CMAKE_CXX_STANDARD}")
         endif()

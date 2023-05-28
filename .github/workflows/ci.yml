@@ -29,6 +29,9 @@ jobs:
     - name: Install pqxx for postgresql
       run:  sudo apt-get install libpqxx-dev
 
+    - name: Install nlohmann-json3
+      run:  sudo apt-get install nlohmann-json3-dev
+
     - name: Install Qt
       uses: jurplel/install-qt-action@v3
       with:
@@ -94,6 +97,9 @@ jobs:
 
     - name: Install pqxx for postgresql
       run:  sudo apt-get install libpqxx-dev
+      
+    - name: Install nlohmann-json3
+      run:  sudo apt-get install nlohmann-json3-dev
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v3
