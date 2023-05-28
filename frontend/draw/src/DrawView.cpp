@@ -6,7 +6,8 @@
 namespace{
 constexpr QColor kBackgroundColor(30,30,30);
 constexpr QColor kDotsColor(218, 218, 218);
-constexpr int kPointSize = 70;
+constexpr int kGapBetweenDots = 70;
+constexpr int kDotsWidth = 3;
 }
 
 namespace inklink::draw
@@ -15,6 +16,10 @@ DrawView::DrawView(QWidget* parent) : QWidget(parent)
 {
     resize(1280, 720);
     setAutoFillBackground(true);
+}
+
+void DrawView::NotifyGotResultFromNetwork(auto result){
+    emit GotResultFromNetwork(result);
 }
 
 void DrawView::mousePressEvent(QMouseEvent* event)
@@ -77,12 +82,12 @@ void DrawView::paintEvent(QPaintEvent* event)
 
     painter.fillRect(rect(), kBackgroundColor); // Background color | should be variable
 
-    painter.setPen(QPen(kDotsColor, 3, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    painter.setPen(QPen(kDotsColor, kDotsWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     painter.setRenderHint(QPainter::Antialiasing);
 
-    for (int x = kPointSize /2; x < width(); x += kPointSize)
+    for (int x = kGapBetweenDots /2; x < width(); x += kGapBetweenDots)
     {
-        for (int y = kPointSize /2; y < height(); y += kPointSize)
+        for (int y = kGapBetweenDots /2; y < height(); y += kGapBetweenDots)
         {
             painter.drawPoint(x, y);
         }
