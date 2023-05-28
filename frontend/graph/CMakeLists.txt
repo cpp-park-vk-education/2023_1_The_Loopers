@@ -1,7 +1,9 @@
 add_library(${GRAPH} STATIC "")
 
 target_sources(${GRAPH} PRIVATE
-#        "src/temp.cpp"
+#        "src/GraphView.cpp"
+        "src/VertexView.cpp"
+        "src/EdgeView.cpp"
         "src/Edge.cpp"
         "src/GraphModel.cpp"
         "src/Vertex.cpp"
