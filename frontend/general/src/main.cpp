@@ -1,4 +1,5 @@
-#include "GraphView.h"
+//#include "GraphView.h"
+#include "DrawView.h"
 
 #include <QApplication>
 #include <QMainWindow>
@@ -6,7 +7,7 @@
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
-    auto *widget = new inklink::graph::GraphView;
+    auto *widget = new inklink::draw::DrawView;
 
     QMainWindow mainWindow;
     mainWindow.setCentralWidget(widget);
