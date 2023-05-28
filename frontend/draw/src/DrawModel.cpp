@@ -2,9 +2,10 @@
 
 #include "DrawView.h"
 #include "IObject.h"
-#include "data_container.h"
-#include "json_serializer.h"
-#include "websocket_client_session.h" // Sasha Novak says it should be in <> scopes, but i don't really know
+
+#include <data_container.h>
+#include <json_serializer.h>
+#include <websocket_client_session.h> // Sasha Novak says it should be in <> scopes, but i don't really know
 
 #include <boost/asio.hpp>
 #include <boost/system/error_code.hpp>

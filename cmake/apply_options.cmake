@@ -92,6 +92,7 @@ else()
             "-w44456" 
             "-w44457" 
             "-w44458"
+            "/bigobj"
         )
     else()
         set(WARNINGS_FLAGS
