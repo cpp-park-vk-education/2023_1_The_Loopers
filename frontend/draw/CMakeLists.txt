@@ -2,6 +2,7 @@ add_library(${DRAW} STATIC "")
 
 target_sources(${DRAW} PRIVATE
         "src/Line.cpp"
+        "src/PolygonLine.cpp"
         )
 
 set(PUBLIC_INCLUDE_DIRECTORIES
