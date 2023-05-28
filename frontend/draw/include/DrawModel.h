@@ -40,6 +40,9 @@ public:
     //     void addObject(size_t, std::string&, Point&, size_t);
 
 private:
+    using IClientSession = client_network::IClientSession;
+
+private:
     void Deserialize(const std::string& message);
     [[nodiscard]] int GenerateRandomNumber();
 
@@ -47,8 +50,8 @@ private:
     io_context m_ioContext;
     any_io_executor m_ioContextExecutor;
     std::thread m_threadIoContext;
-    std::weak_ptr<client_network::IClientSession> m_storageSession;
-    std::weak_ptr<client_network::IClientSession> m_accessSession;
+    std::weak_ptr<IClientSession> m_storageSession;
+    std::weak_ptr<IClientSession> m_accessSession;
     std::vector<ObjectWithAttributes*> m_objects;
     std::string m_filename = "new_file";
 };

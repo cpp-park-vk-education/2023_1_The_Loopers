@@ -99,8 +99,8 @@ std::string DrawModel::Serialize(int actionType, int figureId, int type)
         auto currentEllipse = dynamic_cast<Ellipse*>(m_objects[figureId]);
         actionInfo["center"]["x"] = currentEllipse->m_center.xPosition;
         actionInfo["center"]["y"] = currentEllipse->m_center.yPosition;
-        actionInfo["x_radius"] = currentEllipse->xRadius;
-        actionInfo["y_radius"] = currentEllipse->yRadius;
+        actionInfo["x_radius"] = currentEllipse->m_xRadius;
+        actionInfo["y_radius"] = currentEllipse->m_yRadius;
     }
     // currently working not properly, i think
 
