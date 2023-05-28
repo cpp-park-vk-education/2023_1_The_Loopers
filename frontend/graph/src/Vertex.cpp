@@ -51,12 +51,12 @@ void Vertex::UpdateVertices(std::vector<Vertex>& vertices, double deltaTime, dou
 
     for (const auto& vertex : vertices)
     {
-        auto velocity = GetCurrentVelocity();
+        auto velocity = vertex.GetCurrentVelocity();
         velocity.xVelocity *= k_damping;
         velocity.yVelocity *= k_damping;
         SetCurrentVelocity(velocity);
 
-        auto position = GetCurrentPosition();
+        auto position = vertex.GetCurrentPosition();
         position.xPosition += position.xPosition * deltaTime;
         position.yPosition += position.yPosition * deltaTime;
         SetCurrentPosition(position);

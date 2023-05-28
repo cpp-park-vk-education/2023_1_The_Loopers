@@ -56,8 +56,8 @@ DrawModel::DrawModel()
                         m_ioContext, lambdaOnAccept, lambdaOnRead);
         accessSession->RunAsync("127.0.0.1", simultaneousAccess);
         storageSession->RunAsync("127.0.0.1", fileStorage);
-        m_accessSession = std::move(accessSession);
-        m_storageSession = std::move(storageSession);
+        m_accessSession = accessSession;
+        m_storageSession = storageSession;
 
         m_ioContextExecutor =
                 boost::asio::require(m_ioContext.get_executor(), boost::asio::execution::outstanding_work.tracked);
