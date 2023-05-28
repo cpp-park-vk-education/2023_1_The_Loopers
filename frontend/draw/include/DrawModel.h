@@ -25,7 +25,7 @@ public:
 
     ~DrawModel();
 
-    std::string Serialize(int actionId, int actionType, int figureId);
+    std::string Serialize(int actionType, int figureId, int type);
     void Send(std::string& message);
     void SetFilename(std::string& filename);
 
@@ -41,10 +41,10 @@ private:
     std::thread m_threadIoContext;
     std::weak_ptr<IClientSession> m_storageSession;
     std::weak_ptr<IClientSession> m_accessSession;
-
 //    std::vector<ObjectWithAttributes*> m_objects;
     std::string m_filename = "new_file";
 
     void Deserialize(const std::string& message);
+    [[nodiscard]] int GenerateRandomNumber();
 };
 } // namespace inklink::draw

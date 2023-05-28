@@ -22,6 +22,19 @@ constexpr int fileStorage = 3995;
 using namespace std::chrono_literals;
 using namespace inklink::client_connector;
 using error_code = boost::system::error_code;
+
+enum actionInfoTypes
+{
+    kAuth,
+    kSelection,
+    kPolygon,
+    kEllipse,
+    kPixmap,
+    kTextBlock,
+    kTextInsert,
+    kTextDelete,
+    kTextFormat
+};
 } // namespace
 
 namespace inklink::draw
@@ -48,13 +61,41 @@ DrawModel::DrawModel()
     }
 }
 
-std::string DrawModel::Serialize(int actionId, int actionType, int figureId)
+std::string DrawModel::Serialize(int actionType, int figureId, int type)
 {
     DataContainer sendContainer{};
     sendContainer["document_id"] = m_filename;
-    sendContainer["action"]["action_id"] = actionId;
-    sendContainer["action"]["action_type"] = actionType;
-    sendContainer["time"] = "now";
+    auto action = sendContainer["action"];
+    action["action_id"] = GenerateRandomNumber();
+    action["action_type"] = actionType;
+    action["action_description"]["type"] = type;
+    auto actionInfo = action["action_description"]["info"];
+
+    // in this block we specify filling of container according to type of actionInfo
+    if (type == kSelection){
+        actionInfo["figure_id"] = figureId;
+    }
+    if (type == kPolygon)
+    {
+        actionInfo["number_of_angles"];
+        auto& anglesArray = actionInfo["angles_coordinates"].CreateArray();
+        DataContainer vertex;
+        for (auto& values : vectorOfCoordinates){
+            vertex["x"] = values.x;
+            vertex["y"] = values.y;
+            anglesArray.push_back(vertex);
+        }
+    }
+    if (type == kEllipse)
+    {
+        actionInfo["center"]["x"];
+        actionInfo["center"]["y"];
+        actionInfo["x_radius"];
+        actionInfo["y_radius"];
+    }
+// text infos
+
+    sendContainer["time"] = "now"; // for now time is not working
     sendContainer["figure_id"] = figureId;
     return JsonSerializer::SerializeAsString(sendContainer);
 }
