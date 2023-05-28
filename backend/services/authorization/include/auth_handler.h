@@ -1,6 +1,8 @@
 #pragma once
 
 #include "iauth_handler.h"
+#include "auth_error.h"
+
 
 namespace inklink::auth_handler
 {
@@ -11,12 +13,19 @@ public:
     using ITokenGenerator = inklink::token_generator::ITokenGenerator;
 
 public:
-    void SetDbController(const IAuthDbController& dbController) override;
-    void SetTokenGenerator(const ITokenGenerator& tokenGenerator) override;
+    AuthError GetLastError() const;
+    void SetLastError(const std::string& errorMsg);
+
+    void SetDbController(const IAuthDbController& dbController);
+    void SetTokenGenerator(const ITokenGenerator& tokenGenerator);
+
     virtual bool Handle(const std::string& login, const std::string& password) const = 0;
 
 protected:
     IAuthDbController m_dbController;
-    ITokenGenerator m_tokenGenerator;
+    ITokenGenerator m_tokenGenerator; 
+
+private:
+    AuthError m_lastError;
 };
 } // namespace inklink::auth_handler
