@@ -3,7 +3,12 @@ add_library(${AUTH} STATIC "")
 target_sources(${AUTH} PRIVATE
         "src/AuthView.cpp"
         "src/LoginView.cpp"
+        "src/AuthModel.cpp"
         )
+
+target_include_libs(${AUTH}
+        "${SERIALIZER}"
+        }
 
 set(PUBLIC_INCLUDE_DIRECTORIES
         "include"

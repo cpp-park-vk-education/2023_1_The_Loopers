@@ -1,5 +1,7 @@
 #pragma once
 
+#include "data_container.h"
+
 #include <memory>
 #include <string>
 
@@ -7,16 +9,21 @@ namespace inklink::auth
 {
 class AuthModel
 {
+    using DataContainer = inklink::serializer::DataContainer;
+
 public:
-    bool createUser(const std::string& login, const std::string& password);
-    bool login(const std::string& login, const std::string& password);
-    void exit();
-    const std::string getLogin() const;
-    const std::string getToken() const;
+    bool CreateUser(std::string& login, std::string& password);
+    bool Login(std::string& login, std::string& password);
+    void Exit();
+    const std::string GetLogin() const;
+    const std::string GetToken() const;
 
 protected:
-    void setLogin(const std::string& login);
-    void setToken(const std::string& token);
+    void SetLogin(const std::string& login);
+    void SetToken(const std::string& token);
+    //    static std::string DinamicSault(int passwordLength);
+    std::string ParseToSend(std::string& login, std::string& password);
+    void ParseToGet(std::string& webSocketData);
 
 private:
     std::string m_login;
