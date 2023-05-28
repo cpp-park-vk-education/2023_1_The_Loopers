@@ -9,10 +9,10 @@
 #include <thread>
 #include <vector>
 
-namespace inklink::client_network
+namespace inklink::client_connector
 {
 class IClientSession;
-} // namespace inklink::client_network
+} // namespace inklink::client_connector
 
 namespace inklink::draw
 {
@@ -40,7 +40,7 @@ public:
     //     void addObject(size_t, std::string&, Point&, size_t);
 
 private:
-    using IClientSession = client_network::IClientSession;
+    using IClientSession = client_connector::IClientSession;
 
 private:
     void Deserialize(const std::string& message);

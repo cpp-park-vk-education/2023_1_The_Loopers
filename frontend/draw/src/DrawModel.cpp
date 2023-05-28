@@ -28,7 +28,8 @@ using error_code = boost::system::error_code;
 using DataContainer = inklink::serializer::DataContainer;
 using JsonSerializer = inklink::serializer::JsonSerializer;
 
-using IClientSession = inklink::client_network::IClientSession;
+using IClientSession = inklink::client_connector::IClientSession;
+using WebsocketClientSession = inklink::client_connector::WebsocketClientSession;
 
 enum actionInfoTypes
 {
@@ -86,7 +87,7 @@ std::string DrawModel::Serialize(int actionType, int figureId, int type)
     if (type == kPolygon)
     {
         auto currentPolygon = dynamic_cast<Polygon*> (m_objects[figureId]);
-        actionInfo["number_of_angles"] = currentPolygon->m_arrayOfVertexCoordinates.size();
+        actionInfo["number_of_angles"] = static_cast<int>(currentPolygon->m_arrayOfVertexCoordinates.size());
         auto& anglesArray = actionInfo["angles_coordinates"].CreateArray();
         DataContainer vertex;
         for (auto values : currentPolygon->m_arrayOfVertexCoordinates)
@@ -140,7 +141,7 @@ void DrawModel::SetFilename(std::string& filename)
 void DrawModel::Deserialize(const std::string& message)
 {
     DataContainer gotData = JsonSerializer::ParseFromString(message);
-    m_view->NotifyGotResultFromNetwork(true);
+//    m_view->NotifyGotResultFromNetwork(true);
     return;
 }
 } // namespace inklink::draw
