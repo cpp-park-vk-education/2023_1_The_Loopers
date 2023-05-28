@@ -4,9 +4,47 @@
 #include "json_serializer.h"
 #include "websocket_client_session.h" // Sasha Novak says it should be in <> scopes, but i don't really know
 
+#include <boost/asio.hpp>
+#include <boost/system/error_code.hpp>
+
+#include <chrono>
+#include <memory>
+#include <mutex>
+#include <string>
+#include <thread>
+
+namespace
+{
+using namespace std::chrono_literals;
+using namespace inklink::client_connector;
+using error_code = boost::system::error_code;
+} // namespace
+
 namespace inklink::draw
 {
-std::string DrawModel::SerializeToSend(int actionId, int actionType, int figureId)
+DrawModel::DrawModel()
+{
+    {
+        auto lambdaOnAccept = [this](ConnectType, error_code ec, IClientSession*) { ; };
+        auto lambdaOnRead = [this](const std::string& str, error_code ec, IClientSession*) { this->ParseToGet(str); };
+        auto accessSession = std::make_shared<WebsocketClientSession<decltype(lambdaOnAccept), decltype(lambdaOnRead)>>(
+                m_ioContext, lambdaOnAccept, lambdaOnRead);
+        auto storageSession =
+                std::make_shared<WebsocketClientSession<decltype(lambdaOnAccept), decltype(lambdaOnRead)>>(
+                        m_ioContext, lambdaOnAccept, lambdaOnRead);
+        accessSession->RunAsync("127.0.0.1", 3997);  // 3997 simultaneous access
+        storageSession->RunAsync("127.0.0.1", 3995); // 3995 file storage
+        m_accessSession = std::move(accessSession);
+        m_storageSession = std::move(storageSession);
+
+        m_ioContextExecutor =
+                boost::asio::require(m_ioContext.get_executor(), boost::asio::execution::outstanding_work.tracked);
+
+        m_threadIoContext = std::thread([this]() { this->m_ioContext.run(); });
+    }
+}
+
+std::string DrawModel::Serialize(int actionId, int actionType, int figureId)
 {
     DataContainer sendContainer{};
     sendContainer["document_id"] = m_filename;
@@ -17,7 +55,8 @@ std::string DrawModel::SerializeToSend(int actionId, int actionType, int figureI
     return JsonSerializer::SerializeAsString(sendContainer);
 }
 
-void DrawModel::ParseToGet(const std::string& message) {
+void DrawModel::Deserialize(const std::string& message)
+{
     DataContainer gotData = JsonSerializer::ParseFromString(message);
     m_view->NotifyGotResultFromNetwork(true);
     return;

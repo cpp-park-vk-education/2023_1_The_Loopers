@@ -2,19 +2,28 @@
 
 #include "IObject.h"
 
+#include <boost/asio.hpp>
+#include <boost/system/error_code.hpp>
+
 #include <string>
+#include <thread>
 #include <vector>
 
-namespace {
+namespace
+{
 class DrawView;
-}
+
+using namespace boost::asio;
+} // namespace
 
 namespace inklink::draw
 {
 class DrawModel
 {
 public:
-    std::string SerializeToSend(int actionID, int actionType, int figureID);
+    DrawModel();
+
+    std::string Serialize(int actionId, int actionType, int figureId);
 
 protected:
     void addObject(size_t, size_t, std::vector<Point>&);
@@ -23,9 +32,14 @@ protected:
 
 private:
     DrawView* m_view;
+    io_context m_ioContext;
+    any_io_executor m_ioContextExecutor;
+    std::thread m_threadIoContext;
+    std::weak_ptr<IClientSession> m_storageSession;
+    std::weak_ptr<IClientSession> m_accessSession;
     std::vector<ObjectWithAttributes*> m_objects;
     std::string m_filename;
 
-    void ParseToGet(const std::string& message);
+    void Deserialize(const std::string& message);
 };
 } // namespace inklink::draw
