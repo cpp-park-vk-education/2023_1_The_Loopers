@@ -75,7 +75,23 @@ else()
 
     if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC") 
         set(WARNINGS_FLAGS
-            # # "-W2"
+            # "-W2"
+
+            # all below are for qt
+            "-Zc:rvalueCast"
+            "-Zc:inline"
+            "-Zc:strictStrings" 
+            "-Zc:throwingNew" 
+            "-permissive-" 
+            "-Zc:__cplusplus" 
+            "-Zc:externConstexpr" 
+            "-utf-8" 
+            "-w34100" 
+            "-w34189" 
+            "-w44996" 
+            "-w44456" 
+            "-w44457" 
+            "-w44458"
         )
     else()
         set(WARNINGS_FLAGS

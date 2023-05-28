@@ -78,7 +78,7 @@ void LoginDialog::OnEnterButtonClicked()
     {
         QMessageBox::warning(this, passwordEnter, "Enter password");
     }
-    else if (!authModel->login(username, password))
+    else if (!authModel->Login(username, password))
     {
         QMessageBox::warning(this, usernameEnter, "Uncorrect username or password");
     }

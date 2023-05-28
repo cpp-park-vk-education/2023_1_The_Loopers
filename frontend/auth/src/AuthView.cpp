@@ -78,7 +78,7 @@ void AuthDialog::OnCreateButtonClicked()
     {
         QMessageBox::warning(this, passwordEnter, "Enter password");
     }
-    else if (!authModel->createUser(username, password))
+    else if (!authModel->CreateUser(username, password))
     {
         QMessageBox::warning(this, usernameEnter, "Existing username");
     }
