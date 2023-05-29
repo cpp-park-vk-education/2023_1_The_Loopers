@@ -9,11 +9,13 @@ namespace inklink::db_adapter
 {
 class StorageDbAdapter final : DbAdapterBase<StorageDbAdapter, pqxx::connection>
 {
+    friend class DbAdapterBase;
+
 public:
     using DbRow = std::vector<std::string>;
     using DbTable = std::vector<DbRow>;
 
-public:
+private:
     void Connect(const std::string& connectionString);
 
     [[nodiscard]] std::shared_ptr<pqxx::connection> GetConnection();

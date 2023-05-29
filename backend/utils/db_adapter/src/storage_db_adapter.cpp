@@ -1,11 +1,13 @@
 #include "storage_db_adapter.h"
 
+#include <utility>
 
 namespace inklink::db_adapter
 {
 void StorageDbAdapter::Connect(const std::string& connectionString)
 {
-    m_connection = pqxx::connection(connectionString);
+    pqxx::connection temp(connectionString);
+    m_connection = std::move(temp);
 }
 
 std::shared_ptr<pqxx::connection> StorageDbAdapter::GetConnection()
