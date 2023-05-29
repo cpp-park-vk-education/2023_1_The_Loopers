@@ -10,16 +10,7 @@ using JsonSerializer = inklink::serializer::JsonSerializer;
 namespace inklink::draw
 {
 
-std::string TextBox::serialize()
-{
-    return "";
-}
-
-void TextBox::parse(const DataContainer &)
-{
-}
-
-void TextBox::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void ObjectWithAttributes::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
     if (m_selected) // do nothing
     {
@@ -38,7 +29,31 @@ void TextBox::mousePressEvent(QGraphicsSceneMouseEvent *event)
     emit Changed(JsonSerializer::SerializeAsString(action).c_str());
 }
 
-void TextBox::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+std::string TextBox::serialize()
+{
+    return "";
+}
+
+void TextBox::parse(const DataContainer& msgData)
+{
+    if (!isMsgValid(msgData))
+        return;
+
+    if (msgData.AsInt("action_type") == 1) // select
+    {
+        setSelected(true);
+        return;
+    }
+
+    if (msgData.AsInt("action_type") == 2) // deselect
+    {
+        setSelected(false);
+        m_selected = false;
+        return;
+    }
+}
+
+void TextBox::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
     if (!isSelected()) // did not get approve from server, but user released
     {
@@ -60,15 +75,11 @@ std::string Polygon::serialize()
     return "";
 }
 
-void Polygon::parse(const DataContainer &)
+void Polygon::parse(const DataContainer&)
 {
 }
 
-void Polygon::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-}
-
-void Polygon::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void Polygon::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
 }
 
@@ -77,15 +88,11 @@ std::string Ellipse::serialize()
     return "";
 }
 
-void Ellipse::parse(const DataContainer &)
+void Ellipse::parse(const DataContainer&)
 {
 }
 
-void Ellipse::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-}
-
-void Ellipse::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void Ellipse::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
 }
 
