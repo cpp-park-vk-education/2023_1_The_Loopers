@@ -14,31 +14,49 @@ class MenuView : public QWidget
 public:
     MenuView(QWidget* parent = nullptr) : QWidget(parent)
     {
+        InitUi();
+    }
+
+signals:
+    void WhiteboardClicked(bool);
+    void GraphClicked(bool);
+    void AuthClicked(bool);
+    void LinkClicked(bool);
+    void NewClicked(bool);
+    void QuitClicked(bool);
+
+private:
+    void InitUi()
+    {
         setGeometry(0, 0, 262, 600);
         setWindowTitle("Widget");
 
         QVBoxLayout* verticalLayout = new QVBoxLayout(this);
 
-        QPushButton* pushButton_3 = createButton("Graph", this);
-        verticalLayout->addWidget(pushButton_3);
+        QPushButton* pushButton = createButton("Graph", this);
+        verticalLayout->addWidget(pushButton);
+        connect(pushButton, &QPushButton::clicked, this, &MenuView::GraphClicked);
 
-        QPushButton* pushButton_2 = createButton("Whiteboard", this);
-        verticalLayout->addWidget(pushButton_2);
+        pushButton = createButton("Whiteboard", this);
+        verticalLayout->addWidget(pushButton);
+        connect(pushButton, &QPushButton::clicked, this, &MenuView::WhiteboardClicked);
 
         QListView* listView = new QListView(this);
         verticalLayout->addWidget(listView);
 
-        QPushButton* pushButton_4 = createButton("Link", this);
-        verticalLayout->addWidget(pushButton_4);
-
-        QPushButton* pushButton = createButton("Create new", this);
+        pushButton = createButton("Link", this);
         verticalLayout->addWidget(pushButton);
+        connect(pushButton, &QPushButton::clicked, this, &MenuView::LinkClicked);
 
-        QPushButton* pushButton_5 = createButton("Quit", this);
-        verticalLayout->addWidget(pushButton_5);
+        pushButton = createButton("Create new", this);
+        verticalLayout->addWidget(pushButton);
+        connect(pushButton, &QPushButton::clicked, this, &MenuView::NewClicked);
+
+        pushButton = createButton("Quit", this);
+        verticalLayout->addWidget(pushButton);
+        connect(pushButton, &QPushButton::clicked, this, &MenuView::QuitClicked);
     }
 
-private:
     QPushButton* createButton(const QString& text, QWidget* parent)
     {
         QPushButton* button = new QPushButton(text, parent);

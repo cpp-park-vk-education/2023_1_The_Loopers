@@ -96,6 +96,7 @@ public:
     void parse(const DataContainer &) override;
 
 private:
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
     void
     mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override; // signal changed: pass all changes for this "session"
 
@@ -113,6 +114,7 @@ public:
     void parse(const DataContainer &) override;
 
 private:
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
     void
     mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override; // signal changed: pass all changes for this "session"
 
@@ -129,6 +131,7 @@ public:
     void parse(const DataContainer &) override;
 
 private:
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
     void
     mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override; // signal changed: pass all changes for this "session"
 

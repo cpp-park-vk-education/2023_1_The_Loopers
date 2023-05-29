@@ -10,7 +10,7 @@ using JsonSerializer = inklink::serializer::JsonSerializer;
 namespace inklink::draw
 {
 
-void ObjectWithAttributes::mousePressEvent(QGraphicsSceneMouseEvent* event)
+void ObjectWithAttributes::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if (m_selected) // do nothing
     {
@@ -34,7 +34,7 @@ std::string TextBox::serialize()
     return "";
 }
 
-void TextBox::parse(const DataContainer& msgData)
+void TextBox::parse(const DataContainer &msgData)
 {
     if (!isMsgValid(msgData))
         return;
@@ -53,7 +53,9 @@ void TextBox::parse(const DataContainer& msgData)
     }
 }
 
-void TextBox::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
+void TextBox::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr);
+
+void TextBox::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     if (!isSelected()) // did not get approve from server, but user released
     {
@@ -76,11 +78,13 @@ std::string Polygon::serialize()
     return "";
 }
 
-void Polygon::parse(const DataContainer&)
+void Polygon::parse(const DataContainer &)
 {
 }
 
-void Polygon::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
+void Polygon::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr);
+
+void Polygon::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
 }
 
@@ -89,11 +93,13 @@ std::string Ellipse::serialize()
     return "";
 }
 
-void Ellipse::parse(const DataContainer&)
+void Ellipse::parse(const DataContainer &)
 {
 }
 
-void Ellipse::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
+void Ellipse::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr);
+
+void Ellipse::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
 }
 
