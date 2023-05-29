@@ -14,8 +14,8 @@ class VertexView : public QGraphicsItem
 public:
     VertexView(GraphView* graphView);
 
-    void AddEdge(EdgeView *edge);
-    QList<EdgeView *> GetEdges() const;
+    void AddEdge(EdgeView* edge);
+    QList<EdgeView*> GetEdges() const;
 
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
     QRectF boundingRect() const override;
@@ -27,7 +27,7 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
 
 private:
-    QList<EdgeView *> m_edgeList;
+    QList<EdgeView*> m_edgeList;
     QPointF m_newPosition;
     GraphView* m_graph;
 };

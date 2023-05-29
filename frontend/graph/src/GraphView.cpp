@@ -1,26 +1,27 @@
 #include "GraphView.h"
+
 #include "VertexView.h"
 
 #include <QGraphicsView>
 
 namespace inklink::graph
 {
-GraphView::GraphView(QWidget* parent) : QGraphicsView(parent)
+GraphView::GraphView(QWidget* parent)
+        : QGraphicsView(new QGraphicsScene(this), parent) // так сцена будет доступна через scene и т.п.
 {
-    QGraphicsScene* scene = new QGraphicsScene(this);
-    scene->setSceneRect(-640, -460, 1280, 920);
-    setScene(scene);
+    scene()->setSceneRect(-640, -460, 1280, 920);
+
     setFrameShape(QFrame::NoFrame);
     setRenderHint(QPainter::Antialiasing);
     setTransformationAnchor(AnchorUnderMouse);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    //only example for now
-    //TODO (zakharov) add method to add vertexes and edges from model
+    // only example for now
+    // TODO (zakharov) add method to add vertexes and edges from model
     auto* vert = new VertexView(this);
-    scene->addItem(vert);
-    vert->setPos(-10,-10);
+    scene()->addItem(vert);
+    vert->setPos(-10, -10);
 }
 
 void GraphView::wheelEvent(QWheelEvent* event)

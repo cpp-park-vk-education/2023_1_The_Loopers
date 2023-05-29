@@ -39,8 +39,8 @@ public:
     //     void addObject(size_t, Point&, size_t, size_t);
     //     void addObject(size_t, std::string&, Point&, size_t);
 
-signal: 
-    void NewObject(IObject*); // QObject->setParent(DrawView);
+signals: 
+    // void NewObject(IObject*); // QObject->setParent(DrawView);
     // or in model when constructing IObject(DrawView);
 
     void GotNewMsg(const char* msg);
