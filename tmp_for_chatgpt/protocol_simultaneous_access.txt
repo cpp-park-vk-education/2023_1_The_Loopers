@@ -1,0 +1,111 @@
+Body ::= SEQUENCE {
+ document_id     Integer,
+ action          Action,
+ time            timestamp,
+ figure_id       int OPTIONAL
+}
+
+Action ::= SEQUENCE {
+ action_id           int,
+ action_type         ActionType,
+ action_description  ActionInfo OPTIONAL,
+ action_attributes   ActionAttrs OPTIONAL
+}
+
+ActionType ::= integer {
+ auth              0,
+ select_figure     1,
+ deselect_figure   2,
+ draw_polygon      3,
+ draw_ellipse      4,
+ delete_figure     5,
+ format_figure	   6,
+ insert_pixmap     7,
+ insert_text_block 8,
+ write_text        9,
+ delete_text       10,
+ format_text       11,
+ create_link       12,
+ delete_link       13,
+ end_own_session   14
+}
+
+ActionInfo ::= CHOICE {
+ auth_info         AuthInfo
+ polygon_info      PolygonInfo,
+ text_insert_info  TextInsertInfo,
+ text_delete_info  TextDeleteInfo
+...
+}
+
+AuthInfo ::= SEQUENCE {
+ algorithm        string OPTIONAL,
+ token            int
+}
+
+SelectionInfo {
+ figure_id        int
+}
+
+Point ::= SEQUENCE {
+ x                int,
+ y                int
+}
+
+PolygonInfo ::= SEQUENCE {
+ number of angles      int,
+ angles coordinates    array<Point>
+}
+
+EllipseInfo ::= SEQUENCE {
+ center                Point,
+ x_radius              int,
+ y_radius              int
+}
+
+PixmapInfo ::= SEQUENCE {
+ top_left_corner      Point,
+ bottom_right_corner  Point
+}
+
+TextBlockInfo ::= SEQUENCE {
+ top_left_corner      Point,
+ width                int
+}
+
+TextInsertInfo ::= SEQUENCE {
+ position             int
+}
+
+
+TextDeleteInfo ::= SEQUENCE {
+ start_position       int,
+ end_position         int
+}
+
+ActionAttrs ::= CHOICE {
+ figure_attribute  FigureAttributes,
+ text_attribute    TextAttributes
+}
+
+FigureAttributes ::= SEQUENCE {
+ LineWidth      int,
+ LineColor      Color,
+ Fill           bool DEFAULT false,
+ FillColor      Color
+}
+
+Color ::= SEQUENCE {
+ red           int,
+ green         int,
+ blue          int
+}
+
+TextAttributes ::= SEQUENCE {
+ Color         Color,
+ width         int,
+ bold          bool DEFAULT false,
+ italic        bool DEFAULT false,
+...
+}
+

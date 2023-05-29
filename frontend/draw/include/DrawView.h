@@ -3,7 +3,6 @@
 #include <QKeyEvent>
 #include <QWidget>
 
-
 namespace inklink::draw
 {
 class DrawView : public QWidget
@@ -13,10 +12,10 @@ class DrawView : public QWidget
 public:
     DrawView(QWidget* parent = nullptr);
 
-    void NotifyGotResultFromNetwork(auto result);
+    void NotifyGotResultFromNetwork(bool result);
 
 signals:
-    void GotResultFromNetwork(auto result);
+    void GotResultFromNetwork(bool result);
 
 protected:
     void mousePressEvent(QMouseEvent* event) override;
@@ -25,7 +24,7 @@ protected:
     void paintEvent(QPaintEvent* event) override;
 
 private:
-    void DoOnGotResultFromNetwork(auto result)
+    void DoOnGotResultFromNetwork(bool result)
     {
     }
 

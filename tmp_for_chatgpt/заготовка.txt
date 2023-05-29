@@ -1,0 +1,91 @@
+file json_serializer.h:
+
+class JsonSerializer
+{
+public:
+    static std::string SerializeAsString(const DataContainer&);
+    static DataContainer ParseFromString(const std::string&);
+};
+
+file data_container.h
+
+class DataContainer
+{
+public:
+    using ObjectsContainer = std::unordered_map<std::string, std::shared_ptr<DataContainer>>;
+
+public:
+    DataContainer() = default;
+    ~DataContainer() = default;
+
+    DataContainer(const DataContainer&);
+    DataContainer(DataContainer&&) noexcept;
+
+    DataContainer& operator=(const DataContainer&);
+    DataContainer& operator=(DataContainer&&) noexcept;
+
+    DataContainer& operator=(int);
+    DataContainer& operator=(double);
+    DataContainer& operator=(std::string);
+    DataContainer& operator=(std::vector<DataContainer>);
+    DataContainer& CreateArray();
+
+    // /*implicit*/ DataContainer(nlohmann::json&&);
+
+    // std::string SerializeAsString() const;
+    // void ParseString(const std::string&);
+
+    // for self
+    std::string& AsString();
+    const std::string& AsString() const;
+    bool IsString() const;
+
+    int& AsInt();
+    const int& AsInt() const;
+    bool IsInt() const;
+
+    double& AsDouble();
+    const double& AsDouble() const;
+    bool IsDouble() const;
+
+    std::vector<DataContainer>& AsArray();
+    const std::vector<DataContainer>& AsArray() const;
+    bool IsArray() const;
+
+    ObjectsContainer& AsObjectsContainer();
+    const ObjectsContainer& AsObjectsContainer() const;
+    bool IsObjectsContainer() const;
+
+    // for childs (if current is ObjectsContainer)
+    std::string& AsString(const std::string&);
+    const std::string& AsString(const std::string&) const;
+    bool IsString(const std::string&) const;
+
+    int& AsInt(const std::string&);
+    const int& AsInt(const std::string&) const;
+    bool IsInt(const std::string&) const;
+
+    double& AsDouble(const std::string&);
+    const double& AsDouble(const std::string&) const;
+    bool IsDouble(const std::string&) const;
+
+    std::vector<DataContainer>& AsArray(const std::string&);
+    const std::vector<DataContainer>& AsArray(const std::string&) const;
+    bool IsArray(const std::string&) const;
+
+    ObjectsContainer& AsObjectsContainer(const std::string&);
+    const ObjectsContainer& AsObjectsContainer(const std::string&) const;
+    bool IsObjectsContainer(const std::string&) const;
+
+    bool Has(const std::string&) const;
+
+    void Clear();
+
+    /**
+     * @brief Accesses or creates IData given field name
+     */
+    DataContainer& operator[](const std::string&) noexcept;
+    const DataContainer& operator[](const std::string&) const noexcept;
+    DataContainer& At(const std::string&);
+    const DataContainer& At(const std::string&) const;
+};

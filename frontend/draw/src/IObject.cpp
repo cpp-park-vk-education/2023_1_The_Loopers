@@ -16,7 +16,7 @@ void ObjectWithAttributes::mousePressEvent(QGraphicsSceneMouseEvent* event)
     {
         return;
     }
-    QGraphicsItem::mousePressEvent(event);
+    QGraphicsObject::mousePressEvent(event);
 
     setSelected(false);
     m_selected = true;
@@ -61,7 +61,7 @@ void TextBox::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
     if (!isSelected()) // did not get approve from server, but user released
     {
-        QGraphicsItem::mouseReleaseEvent(event);
+        QGraphicsObject::mouseReleaseEvent(event);
         return;
     }
 
@@ -71,7 +71,7 @@ void TextBox::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
     action["action_id"] = m_dis(m_gen);
     action["action_type"] = 2; // deselect
 
-    QGraphicsItem::mouseReleaseEvent(event);
+    QGraphicsObject::mouseReleaseEvent(event);
     m_selected = false;
 }
 
@@ -117,7 +117,7 @@ std::string Ellipse::serialize()
     return "";
 }
 
-void Ellipse::parse(const DataContainer& )
+void Ellipse::parse(const DataContainer&)
 {
 }
 

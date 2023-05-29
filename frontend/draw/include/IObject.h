@@ -2,7 +2,7 @@
 
 #include <data_container.h>
 
-#include <QGraphicsItem>
+#include <QGraphicsObject>
 
 #include <chrono>
 #include <limits>
@@ -19,7 +19,7 @@ struct Point
     int yPosition;
 };
 
-class ObjectWithAttributes : public QGraphicsItem
+class ObjectWithAttributes : public QGraphicsObject // same as QGraphicsItem, QObject
 {
     Q_OBJECT
 
@@ -30,7 +30,7 @@ signals:
     void Changed(const char *);
 
 public:
-    ObjectWithAttributes() : QGraphicsItem{}, m_gen{std::chrono::system_clock::now().time_since_epoch().count()}
+    ObjectWithAttributes() : QGraphicsObject{}, m_gen{std::chrono::system_clock::now().time_since_epoch().count()}
     {
         setFlags(flags() | QGraphicsItem::ItemIsSelectable);
         GenerateID();
