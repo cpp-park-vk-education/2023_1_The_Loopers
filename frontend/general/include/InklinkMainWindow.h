@@ -26,7 +26,7 @@ public:
         m_menu = new inklink::menu::MenuView;
         m_menu->setMaximumSize(200, 2000);
         m_drawView = new inklink::draw::DrawView;
-        left_label->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        m_menu->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
         layout->addWidget(m_menu);
         layout->addWidget(m_drawView);
