@@ -2,11 +2,9 @@
 
 namespace inklink::auth_handler
 {
-std::string Encrypter::Encrypt(const std::string& password) const
+Encrypter::HashAndSalt Encrypter::Encrypt(const std::string& password) const
 {
     std::string salt = DinamicSault(password.size());
-
-    password += salt;
 
     unsigned char hash[SHA256_DIGEST_LENGTH];
     SHA256_CTX sha256;
@@ -15,8 +13,20 @@ std::string Encrypter::Encrypt(const std::string& password) const
 
     SHA256_Final(hash, &sha256);
 
-    return hash
+    return {hash, salt};
 }
+unsigned char* Encrypter::EncryptWithSalt(const std::string& password, const std::string& salt) const
+{
+    unsigned char hash[SHA256_DIGEST_LENGTH];
+    SHA256_CTX sha256;
+    SHA256_Init(&sha256);
+    SHA256_Update(&sha256, (password + salt).c_str(), password.size() + salt.size());
+
+    SHA256_Final(hash, &sha256);
+
+    return hash;
+}
+
 
 std::string Encrypter::DinamicSault(int passwordLenght)
 {

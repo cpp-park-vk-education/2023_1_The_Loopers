@@ -1,7 +1,7 @@
 #pragma once
 
 #include "auth_error.h"
-
+#include "encrypter.h"
 
 namespace inklink::auth_handler
 {
@@ -23,6 +23,7 @@ public:
 protected:
     IAuthDbController m_dbController;
     ITokenGenerator m_tokenGenerator; 
+    Encrypter m_encrypter;
 
 private:
     AuthError m_lastError;
