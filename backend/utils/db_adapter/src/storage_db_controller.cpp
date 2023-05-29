@@ -14,7 +14,7 @@ void StorageDbController::Run(const std::string& connectionString)
 {
     m_adapter.Connect(connectionString);
 
-    std::unique_ptr<pqxx::connection> settings = m_adapter.GetConnection();
+    std::shared_ptr<pqxx::connection> settings = m_adapter.GetConnection();
 
     settings->prepare("GetFilePath",
                      "SELECT path FROM Files "

@@ -5,10 +5,10 @@ namespace inklink::db_adapter
 {
 void StorageDbAdapter::Connect(const std::string& connectionString)
 {
-    m_connection = std::make_unique<pqxx::connection>(connectionString);
+    m_connection = std::make_shared<pqxx::connection>(connectionString);
 }
 
-std::unique_ptr<pqxx::connection> StorageDbAdapter::GetConnection()
+std::shared_ptr<pqxx::connection> StorageDbAdapter::GetConnection()
 {
     return m_connection;
 }

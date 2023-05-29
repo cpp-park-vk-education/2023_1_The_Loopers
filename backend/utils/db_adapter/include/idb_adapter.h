@@ -32,6 +32,6 @@ public:
     void Delete(const std::string& request) const;
 
 protected:
-    std::unique_ptr<Connection> m_connection;
+    std::shared_ptr<Connection> m_connection;
 };
 } // namespace inklink::db_adapter
