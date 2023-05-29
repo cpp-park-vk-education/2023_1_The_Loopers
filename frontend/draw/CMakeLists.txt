@@ -6,6 +6,8 @@ target_sources(${DRAW} PRIVATE
         "src/temp.cpp"
         "src/DrawView.cpp"
         "src/DrawModel.cpp"
+        "src/DrawSceneModel.cpp"
+        "src/DrawUsingQGraphicsView.cpp"
         "src/IObject.cpp"
         )
 

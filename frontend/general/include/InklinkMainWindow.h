@@ -1,6 +1,7 @@
 #pragma once
 
-#include "DrawView.h"
+// #include "DrawView.h"
+#include "DrawUsingQGraphicsView.h"
 #include "MenuView.h"
 
 #include <QMainWindow>
@@ -39,6 +40,6 @@ public:
 
 private:
     inklink::menu::MenuView* m_menu;
-    inklink::draw::DrawView* m_drawView;
+    inklink::draw::DrawingView* m_drawView;
 };
 } // namespace inklink::general
