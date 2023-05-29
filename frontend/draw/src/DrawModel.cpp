@@ -4,8 +4,9 @@
 #include "IObject.h"
 
 #include <data_container.h>
-#include <json_serializer.h>
 #include <websocket_client_session.h> // Sasha Novak says it should be in <> scopes, but i don't really know
+
+#include <json_serializer.h>
 
 #include <boost/asio.hpp>
 #include <boost/system/error_code.hpp>
@@ -15,7 +16,6 @@
 #include <mutex>
 #include <string>
 #include <thread>
-
 
 namespace
 {
@@ -47,27 +47,26 @@ enum actionInfoTypes
 
 namespace inklink::draw
 {
-DrawModel::DrawModel()
+DrawModel::DrawModel(QObject* parent)
+        : QObject{parent}, m_gen{std::chrono::system_clock::now().time_since_epoch().count()}
 {
-    {
-        auto lambdaOnAccept = [this](ConnectType, error_code ec, IClientSession*) { ; };
-        auto lambdaOnRead = [this](const std::string& str, error_code ec, IClientSession*) { this->Deserialize(str); };
-        auto accessSession = std::make_shared<
-                inklink::client_connector::WebsocketClientSession<decltype(lambdaOnAccept), decltype(lambdaOnRead)>>(
-                m_ioContext, lambdaOnAccept, lambdaOnRead);
-        auto storageSession = std::make_shared<
-                inklink::client_connector::WebsocketClientSession<decltype(lambdaOnAccept), decltype(lambdaOnRead)>>(
-                        m_ioContext, lambdaOnAccept, lambdaOnRead);
-        accessSession->RunAsync("127.0.0.1", simultaneousAccess);
-        storageSession->RunAsync("127.0.0.1", fileStorage);
-        m_accessSession = accessSession;
-        m_storageSession = storageSession;
+    auto lambdaOnAccept = [this](ConnectType, error_code ec, IClientSession*) { ; };
+    auto lambdaOnRead = [this](const std::string& str, error_code ec, IClientSession*) { this->Deserialize(str); };
+    auto accessSession = std::make_shared<
+            inklink::client_connector::WebsocketClientSession<decltype(lambdaOnAccept), decltype(lambdaOnRead)>>(
+            m_ioContext, lambdaOnAccept, lambdaOnRead);
+    auto storageSession = std::make_shared<
+            inklink::client_connector::WebsocketClientSession<decltype(lambdaOnAccept), decltype(lambdaOnRead)>>(
+            m_ioContext, lambdaOnAccept, lambdaOnRead);
+    accessSession->RunAsync("127.0.0.1", simultaneousAccess);
+    storageSession->RunAsync("127.0.0.1", fileStorage);
+    m_accessSession = accessSession;
+    m_storageSession = storageSession;
 
-        m_ioContextExecutor =
-                boost::asio::require(m_ioContext.get_executor(), boost::asio::execution::outstanding_work.tracked);
+    m_ioContextExecutor =
+            boost::asio::require(m_ioContext.get_executor(), boost::asio::execution::outstanding_work.tracked);
 
-        m_threadIoContext = std::thread([this]() { this->m_ioContext.run(); });
-    }
+    m_threadIoContext = std::thread([this]() { this->m_ioContext.run(); });
 }
 
 std::string DrawModel::Serialize(int actionType, int figureId, int type)
@@ -87,7 +86,7 @@ std::string DrawModel::Serialize(int actionType, int figureId, int type)
     }
     if (type == kPolygon)
     {
-        auto currentPolygon = dynamic_cast<Polygon*> (m_objects[figureId]);
+        auto currentPolygon = dynamic_cast<Polygon*>(m_objects[figureId]);
         actionInfo["number_of_angles"] = static_cast<int>(currentPolygon->m_arrayOfVertexCoordinates.size());
         auto& anglesArray = actionInfo["angles_coordinates"].CreateArray();
         DataContainer vertex;
@@ -142,7 +141,12 @@ void DrawModel::SetFilename(std::string& filename)
 void DrawModel::Deserialize(const std::string& message)
 {
     DataContainer gotData = JsonSerializer::ParseFromString(message);
-//    m_view->NotifyGotResultFromNetwork(true);
+    //    m_view->NotifyGotResultFromNetwork(true);
     return;
+}
+
+int DrawModel::GenerateRandomNumber()
+{
+    return m_dis(m_gen);
 }
 } // namespace inklink::draw

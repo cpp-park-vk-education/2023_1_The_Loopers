@@ -61,7 +61,7 @@ private:
 
 private:
     void Deserialize(const std::string& message);
-    // [[nodiscard]] int GenerateRandomNumber();
+    [[nodiscard]] int GenerateRandomNumber();
 
     DrawingView* m_view = nullptr;
     io_context m_ioContext;
