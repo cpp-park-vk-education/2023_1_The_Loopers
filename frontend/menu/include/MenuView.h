@@ -11,6 +11,8 @@ namespace inklink::menu
 {
 class MenuView : public QWidget
 {
+    Q_OBJECT
+
 public:
     MenuView(QWidget* parent = nullptr) : QWidget(parent)
     {

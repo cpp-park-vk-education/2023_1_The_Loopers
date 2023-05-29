@@ -53,7 +53,9 @@ void TextBox::parse(const DataContainer &msgData)
     }
 }
 
-void TextBox::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr);
+void TextBox::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+}
 
 void TextBox::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
@@ -82,7 +84,9 @@ void Polygon::parse(const DataContainer &)
 {
 }
 
-void Polygon::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr);
+void Polygon::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+}
 
 void Polygon::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
@@ -97,7 +101,9 @@ void Ellipse::parse(const DataContainer &)
 {
 }
 
-void Ellipse::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr);
+void Ellipse::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+}
 
 void Ellipse::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {

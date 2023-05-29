@@ -21,8 +21,13 @@ struct Point
 
 class ObjectWithAttributes : public QGraphicsItem
 {
+    Q_OBJECT
+
 public:
     using DataContainer = serializer::DataContainer;
+
+signals:
+    void Changed(const char *);
 
 public:
     ObjectWithAttributes() : QGraphicsItem{}, m_gen{std::chrono::system_clock::now().time_since_epoch().count()}
@@ -40,15 +45,12 @@ public:
         return m_ID;
     }
 
-    virtual std::string serialize() = 0; // now should be protected
+    virtual std::string serialize() = 0; // now should be // protected
     // parse should be called from "main thread", not where DoOnRead were in model was called (therefore, send a signal
     // in model to itself and do everything there)
     virtual void parse(const DataContainer &) = 0;
 
-signals:
-    void Changed(const char *);
-
-protected:
+    // protected:
     // did not send it yet: because still in progress
     // All changes will be improved on server, because blocking
     std::unordered_map<std::string /*action id*/, DataContainer /*changes*/> m_notSent;
@@ -71,7 +73,7 @@ protected:
     std::string m_ID{""};
     bool m_selected{false};
 
-private:
+    // private:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override; // signal changed: selected then wait until answer
 
     virtual void GenerateID()
@@ -95,12 +97,12 @@ public:
     std::string serialize() override;
     void parse(const DataContainer &) override;
 
-private:
+    // private:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
     void
     mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override; // signal changed: pass all changes for this "session"
 
-private:
+                                                                 // private:
     std::string m_objectType;
     std::string m_textContent;
     Point m_topLeftCorner;
@@ -113,12 +115,12 @@ public:
     std::string serialize() override;
     void parse(const DataContainer &) override;
 
-private:
+    // private:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
     void
     mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override; // signal changed: pass all changes for this "session"
 
-private:
+                                                                 // private:
     std::string m_objectType;
     int m_numberOfVertex;
     std::vector<Point> m_arrayOfVertexCoordinates;
@@ -130,12 +132,12 @@ public:
     std::string serialize() override;
     void parse(const DataContainer &) override;
 
-private:
+    // private:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
     void
     mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override; // signal changed: pass all changes for this "session"
 
-private:
+                                                                 // private:
     std::string m_objectType;
     Point m_center;
     int m_xRadius;

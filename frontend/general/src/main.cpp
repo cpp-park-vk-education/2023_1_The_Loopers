@@ -1,9 +1,7 @@
 // #include "GraphView.h"
-#include "DrawView.h"
-#include "MenuView.h"
+#include "InklinkMainWindow.h"
 
 #include <QApplication>
-#include <QMainWindow>
 
 int main(int argc, char *argv[])
 {
@@ -27,18 +25,7 @@ int main(int argc, char *argv[])
     darkPalette.setColor(QPalette::Disabled, QPalette::ButtonText, QColor(127, 127, 127));
     app.setPalette(darkPalette);
 
-    QWidget *central_widget = new QWidget;
-    QHBoxLayout *lay = new QHBoxLayout(central_widget);
-    central_widget->setLayout(lay);
-    QMainWindow mainWindow;
-    auto left_label = new inklink::menu::MenuView;
-    left_label->setMaximumSize(200,2000);
-    auto right_label = new inklink::draw::DrawView;
-    left_label->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    lay->addWidget(left_label);
-    lay->addWidget(right_label);
-    mainWindow.setCentralWidget(central_widget);
-    mainWindow.setWindowTitle("InkLink");
+    inklink::general::InklinkMainWindow mainWindow{};
     mainWindow.show();
     return QApplication::exec();
 }
