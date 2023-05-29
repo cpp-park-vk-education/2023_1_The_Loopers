@@ -24,8 +24,9 @@ public:
     using DataContainer = serializer::DataContainer;
 
 public:
-    ObjectWithAttributes() : QGraphicsItem()
+    ObjectWithAttributes() : QGraphicsItem{}, m_gen{std::chrono::system_clock::now().time_since_epoch().count()}
     {
+        setFlags(flags() | QGraphicsItem::ItemIsSelectable);
         GenerateID();
     }
 
@@ -38,7 +39,7 @@ public:
         return m_ID;
     }
 
-    virtual std::string serialize() = 0;
+    virtual std::string serialize() = 0; // now should be protected
     virtual void parse(const DataContainer &) = 0;
 
 signals:
@@ -49,7 +50,11 @@ protected:
     // All changes will be improved on server, because blocking
     std::unordered_map<std::string /*action id*/, DataContainer /*changes*/> m_notSent;
 
+    std::mt19937_64 m_gen;
+    std::uniform_int_distribution<int> m_dis(std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
+
     std::string m_ID{""};
+    bool m_selected{false};
 
 private:
     virtual void GenerateID()
@@ -58,13 +63,10 @@ private:
         {
             return;
         }
-        static unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-        static std::mt19937_64 gen{seed};
-
         std::stringstream ss;
         for (size_t i = 0; i < 2; ++i)
         {
-            ss << gen();
+            ss << m_gen();
         }
         m_ID = ss.str();
         m_ID = ID;
