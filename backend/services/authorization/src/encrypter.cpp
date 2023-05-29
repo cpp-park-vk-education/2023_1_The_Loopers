@@ -13,9 +13,15 @@ Encrypter::HashAndSalt Encrypter::Encrypt(const std::string& password) const
 
     SHA256_Final(hash, &sha256);
 
-    return {hash, salt};
+    std::string stringHash{};
+    for (int i = 0; i < SHA256_DIGEST_LENGTH; ++i)
+    {
+        stringHash += hash[i];
+    }
+
+    return {stringHash, salt};
 }
-unsigned char* Encrypter::EncryptWithSalt(const std::string& password, const std::string& salt) const
+std::string Encrypter::EncryptWithSalt(const std::string& password, const std::string& salt) const
 {
     unsigned char hash[SHA256_DIGEST_LENGTH];
     SHA256_CTX sha256;
@@ -24,7 +30,13 @@ unsigned char* Encrypter::EncryptWithSalt(const std::string& password, const std
 
     SHA256_Final(hash, &sha256);
 
-    return hash;
+    std::string stringHash{};
+    for (int i = 0; i < SHA256_DIGEST_LENGTH; ++i)
+    {
+        stringHash += hash[i];
+    }
+
+    return stringHash;
 }
 
 

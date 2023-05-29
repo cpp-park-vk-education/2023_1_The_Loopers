@@ -9,10 +9,10 @@ namespace inklink::auth_handler
 class Encrypter
 {
 public:
-    using HashAndSalt = std::pair<unsigned char*, std::string>;
+    using HashAndSalt = std::pair<std::string, std::string>;
 public:
     [[nodiscard]] HashAndSalt Encrypt(const std::string& password) const;
-    [[nodiscard]] unsigned char* EncryptWithSalt(const std::string& password, const std::string& salt) const;
+    [[nodiscard]] std::string EncryptWithSalt(const std::string& password, const std::string& salt) const;
 
 private:
     std::string DinamicSault(int passwordLenght);

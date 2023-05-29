@@ -1,23 +1,31 @@
 #include "log_in_handler.h"
 
-#include
-
 namespace inklink::auth_handler
 {
 bool LogInHandler::Handle(const std::string& login, const std::string& password) const {
-    std::string passwordInDb = m_dbController.GetPassword(login);
-    unsigned char* hashedPassword = m_encrypter.Encrypt(password);
-    if (passwordInDb.size() != SHA256_DIGEST_LENGTH)
+    std::string saltAndPassword = m_dbController.GetPassword(login);
+    std::string passwordInDb{};
+    std::string saltInDb{};
+
+    int i = 0;
+    while (saltAndPassword[i] != " ")
     {
-        return false;
+        saltInDb += saltAndPassword[i];
+        ++i;
     }
-    for (int i = 0; i < SHA256_DIGEST_LENGTH; ++i)
+
+    while (i < saltAndPassword.size())
     {
-        if (passwordInDb[i] != hashedPassword[i])
-        {
-            return false;
-        }
+        passwordInDb += saltAndPassword[i];
+        ++i;
     }
-    return true;
+    std::string hashedPassword = m_encrypter.EncryptWithSalt(password, saltInDb);
+
+    if (hashedPassword == passwordInDb)
+    {
+        return true;
+    }
+
+    return false;
 }
 } // namespace inklink::auth_handler
