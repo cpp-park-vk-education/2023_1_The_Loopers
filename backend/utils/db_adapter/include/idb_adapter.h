@@ -8,7 +8,7 @@
 
 namespace inklink::db_adapter
 {
-template <typename Implementation>
+template <typename Implementation, typename Connection>
 class DbAdapterBase
 {
 public:
@@ -28,5 +28,8 @@ public:
     [[nodiscard]] DbTable Select(const std::string& request, const Arguments&... arguments) const;
 
     void Delete(const std::string& request) const;
+
+protected:
+    Connection m_connection;
 };
 } // namespace inklink::db_adapter

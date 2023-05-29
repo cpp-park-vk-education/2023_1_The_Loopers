@@ -6,25 +6,26 @@
 
 namespace inklink::db_adapter
 {
-class StorageDbAdapter final : public DbAdapterBase
+class StorageDbAdapter final : DbAdapterBase<StorageDbAdapter, pqxx::connection>
 {
 public:
     using DbRow = std::vector<std::string>;
     using DbTable = std::vector<DbRow>;
 
 public:
-    void Connect(const std::string& connectionString) override;
+    void Connect(const std::string& connectionString);
 
     [[nodiscard]] std::shared_ptr<pqxx::connection> GetConnection();
 
-    void Insert(const std::string& request, const std::string&... arguments) const override;
+    template <typename... Arguments>
+    void Insert(const std::string& request, const Arguments&... arguments) const;
 
-    void Update(const std::string& request, const std::string&... arguments) const override;
+    template <typename... Arguments>
+    void Update(const std::string& request, const Arguments&... arguments) const;
 
-    void Delete(const std::string& request) const override;
+    template <typename... Arguments>
+    [[nodiscard]] DbTable Select(const std::string& request, const Arguments&... arguments) const;
 
-    [[nodiscard]] DbTable Select(const std::string& request, const std::string&... arguments) const override;
-private:
-    std::shared_ptr<pqxx::connection> m_connection;
+    void Delete(const std::string& request) const;
 };
 } // namespace inklink::db_adapter
