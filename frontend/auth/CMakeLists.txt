@@ -22,7 +22,8 @@ qt_wrap_cpp(SOURCES
         ${HEADER_FILES}
         )
 
-qt_add_executable(${AUTH}
+qt_add_library(${AUTH}
+        STATIC
         "${SOURCES}"
         )
 
