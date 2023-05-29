@@ -2,8 +2,6 @@
 
 #include "idb_adapter.h"
 
-#include <pqxx/pqxx> 
-
 #include <memory>
 
 namespace inklink::db_adapter

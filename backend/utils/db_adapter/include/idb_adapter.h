@@ -1,11 +1,14 @@
 #pragma once
 
+#include <pqxx/pqxx> 
+
 #include <string>
 #include <vector>
 
 
 namespace inklink::db_adapter
 {
+template <typename Implementation>
 class DbAdapterBase
 {
 public:
@@ -13,16 +16,17 @@ public:
     using DbTable = std::vector<DbRow>;
 
 public:
-    virtual ~DbAdapterBase() = default;
+    void Connect(const std::string& connectionString);
 
-    virtual void Connect(const std::string& connectionString) = 0;
+    template <typename... Arguments>
+    void Insert(const std::string& request, const Arguments&... arguments) const;
 
-    virtual void Insert(const std::string& request, const std::string&... arguments) const = 0;
+    template <typename... Arguments>
+    void Update(const std::string& request, const Arguments&... arguments) const;
 
-    virtual void Update(const std::string& request, const std::string&... arguments) const = 0;
+    template <typename... Arguments>
+    [[nodiscard]] DbTable Select(const std::string& request, const Arguments&... arguments) const;
 
-    virtual void Delete(const std::string& request) const = 0;
-
-    [[nodiscard]] virtual DbTable Select(const std::string& request, const std::string&... arguments) const = 0;
+    void Delete(const std::string& request) const;
 };
 } // namespace inklink::db_adapter
