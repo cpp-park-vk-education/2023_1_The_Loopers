@@ -1,8 +1,8 @@
-add_library(${AUTH} STATIC "")
+#add_library(${AUTH} STATIC "")
 
-set_target_properties(${AUTH} PROPERTIES AUTOMOC TRUE)
+#set_target_properties(${AUTH} PROPERTIES AUTOMOC TRUE)
 
-target_sources(${AUTH} PRIVATE
+set(SOURCE
         "src/AuthView.cpp"
         "src/LoginView.cpp"
         "src/AuthModel.cpp"
@@ -14,6 +14,16 @@ target_sources(${AUTH} PRIVATE
 
 set(PUBLIC_INCLUDE_DIRECTORIES
         "include"
+        )
+
+file(GLOB HEADER_FILES include/*.h)
+
+qt_wrap_cpp(SOURCES
+        ${HEADER_FILES}
+        )
+
+qt_add_executable(${AUTH}
+        "${SOURCES}"
         )
 
 target_include_directories(${AUTH} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
