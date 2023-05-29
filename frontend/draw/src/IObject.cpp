@@ -63,6 +63,7 @@ void TextBox::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 
     // serialize all history (and emit one by one)
 
+    DataContainer action{};
     action["action_id"] = m_dis(m_gen);
     action["action_type"] = 2; // deselect
 

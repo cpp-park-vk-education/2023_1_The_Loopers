@@ -5,6 +5,7 @@
 #include <QGraphicsItem>
 
 #include <chrono>
+#include <limits>
 #include <random>
 #include <string>
 #include <unordered_map>
@@ -65,7 +66,7 @@ protected:
     }
 
     std::mt19937_64 m_gen;
-    std::uniform_int_distribution<int> m_dis(std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
+    std::uniform_int_distribution<int> m_dis{std::numeric_limits<int>::min(), std::numeric_limits<int>::max()};
 
     std::string m_ID{""};
     bool m_selected{false};
@@ -85,7 +86,6 @@ private:
             ss << m_gen();
         }
         m_ID = ss.str();
-        m_ID = ID;
     }
 };
 
