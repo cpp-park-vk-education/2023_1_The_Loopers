@@ -26,6 +26,7 @@ protected:
             startPoint = mapToScene(event->pos());
             endPoint = startPoint;
         }
+        QGraphicsView::mousePressEvent(event);
     }
 
     void mouseReleaseEvent(QMouseEvent* event) override
@@ -38,6 +39,7 @@ protected:
             scene->addItem(line);
             drawing = false;
         }
+        QGraphicsView::mousePressEvent(event);
     }
 
     void mouseMoveEvent(QMouseEvent* event) override
@@ -50,6 +52,7 @@ protected:
             tempLine->setPen(QPen(Qt::red));
             scene->addItem(tempLine);
         }
+        QGraphicsView::mousePressEvent(event);
     }
 
 private:
