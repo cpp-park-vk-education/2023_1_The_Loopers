@@ -1,12 +1,15 @@
 #pragma once
 
-#include <QWidget>
 #include <QKeyEvent>
+#include <QWidget>
+
 
 namespace inklink::draw
 {
 class DrawView : public QWidget
 {
+    Q_OBJECT
+
 public:
     DrawView(QWidget* parent = nullptr);
 
@@ -22,7 +25,9 @@ protected:
     void paintEvent(QPaintEvent* event) override;
 
 private:
-    void DoOnGotResultFromNetwork(auto result) {}
+    void DoOnGotResultFromNetwork(auto result)
+    {
+    }
 
 private:
     QList<QPolygonF> m_polygons;

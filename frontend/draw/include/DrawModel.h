@@ -2,12 +2,15 @@
 
 #include "IObject.h"
 
+#include <QObject>
+
 #include <boost/asio.hpp>
 #include <boost/system/error_code.hpp>
 
 #include <string>
 #include <thread>
 #include <vector>
+
 
 namespace inklink::client_connector
 {
@@ -23,8 +26,10 @@ using namespace boost::asio;
 
 namespace inklink::draw
 {
-class DrawModel
+class DrawModel : public QObject
 {
+    Q_OBJECT
+
 public:
     DrawModel();
 
@@ -39,7 +44,7 @@ public:
     //     void addObject(size_t, Point&, size_t, size_t);
     //     void addObject(size_t, std::string&, Point&, size_t);
 
-signals: 
+signals:
     // void NewObject(IObject*); // QObject->setParent(DrawView);
     // or in model when constructing IObject(DrawView);
 
@@ -48,7 +53,7 @@ signals:
     // so that it will be called in "main" thread
 
     //
-    // Q_DECLARE_META_TYPE(DataContainer); 
+    // Q_DECLARE_META_TYPE(DataContainer);
     // qRegisterMetaType(DataContainer); // if you want to use DataContainer in signals/slots
     //
 

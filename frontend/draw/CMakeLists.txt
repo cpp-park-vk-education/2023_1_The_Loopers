@@ -1,8 +1,6 @@
-add_library(${DRAW} STATIC "")
+# add_library(${DRAW} STATIC "")
 
-set_target_properties(${DRAW} PROPERTIES AUTOMOC TRUE)
-
-target_sources(${DRAW} PRIVATE
+set(SOURCES
         "src/temp.cpp"
         "src/DrawView.cpp"
         "src/DrawModel.cpp"
@@ -16,6 +14,17 @@ set(PUBLIC_INCLUDE_DIRECTORIES
         "Itool/include"
         "tool_box/include"
         )
+
+file(GLOB HEADER_FILES include/*.h)
+
+qt_wrap_cpp(SOURCES 
+        ${HEADER_FILES}
+)
+
+qt_add_library(${DRAW}
+        STATIC
+    "${SOURCES}"
+)
 
 target_include_directories(${DRAW} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
 
