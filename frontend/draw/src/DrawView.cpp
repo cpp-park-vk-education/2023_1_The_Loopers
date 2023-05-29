@@ -3,12 +3,13 @@
 #include <QPainter>
 #include <QWidget>
 
-namespace{
-constexpr QColor kBackgroundColor(30,30,30);
+namespace
+{
+constexpr QColor kBackgroundColor(30, 30, 30);
 constexpr QColor kDotsColor(218, 218, 218);
 constexpr int kGapBetweenDots = 70;
 constexpr int kDotsWidth = 3;
-}
+} // namespace
 
 namespace inklink::draw
 {
@@ -18,7 +19,8 @@ DrawView::DrawView(QWidget* parent) : QWidget(parent)
     setAutoFillBackground(true);
 }
 
-void DrawView::NotifyGotResultFromNetwork(auto result){
+void DrawView::NotifyGotResultFromNetwork(bool result)
+{
     emit GotResultFromNetwork(result);
 }
 
@@ -85,9 +87,9 @@ void DrawView::paintEvent(QPaintEvent* event)
     painter.setPen(QPen(kDotsColor, kDotsWidth, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     painter.setRenderHint(QPainter::Antialiasing);
 
-    for (int x = kGapBetweenDots /2; x < width(); x += kGapBetweenDots)
+    for (int x = kGapBetweenDots / 2; x < width(); x += kGapBetweenDots)
     {
-        for (int y = kGapBetweenDots /2; y < height(); y += kGapBetweenDots)
+        for (int y = kGapBetweenDots / 2; y < height(); y += kGapBetweenDots)
         {
             painter.drawPoint(x, y);
         }
