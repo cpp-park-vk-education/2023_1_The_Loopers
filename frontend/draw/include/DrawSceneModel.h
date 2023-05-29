@@ -7,6 +7,8 @@
 #include <boost/asio.hpp>
 #include <boost/system/error_code.hpp>
 
+#include <limits>
+#include <random>
 #include <string>
 #include <thread>
 #include <vector>
@@ -62,6 +64,9 @@ private:
 private:
     void Deserialize(const std::string& message);
     [[nodiscard]] int GenerateRandomNumber();
+
+    std::mt19937_64 m_gen;
+    std::uniform_int_distribution<int> m_dis{std::numeric_limits<int>::min(), std::numeric_limits<int>::max()};
 
     DrawingView* m_view = nullptr;
     io_context m_ioContext;

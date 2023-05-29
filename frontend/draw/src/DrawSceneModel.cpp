@@ -47,7 +47,8 @@ enum actionInfoTypes
 
 namespace inklink::draw
 {
-DrawSceneModel::DrawSceneModel(QObject* parent) : QGraphicsScene(parent)
+DrawSceneModel::DrawSceneModel(QObject* parent)
+        : QGraphicsScene(parent), m_gen{std::chrono::system_clock::now().time_since_epoch().count()}
 {
     {
         auto lambdaOnAccept = [this](ConnectType, error_code ec, IClientSession*) { ; };
@@ -144,5 +145,10 @@ void DrawSceneModel::Deserialize(const std::string& message)
     DataContainer gotData = JsonSerializer::ParseFromString(message);
     //    m_view->NotifyGotResultFromNetwork(true);
     return;
+}
+
+int DrawSceneModel::GenerateRandomNumber()
+{
+    return m_dis(m_gen);
 }
 } // namespace inklink::draw
