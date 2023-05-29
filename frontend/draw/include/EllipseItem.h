@@ -1,7 +1,7 @@
 #include <QGraphicsObject>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
-#include <QMouseEvent>
+#include <QGraphicsSceneMouseEvent>
 
 class EllipseItem : public QGraphicsObject
 {

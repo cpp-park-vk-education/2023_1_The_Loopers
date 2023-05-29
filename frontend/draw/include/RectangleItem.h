@@ -1,7 +1,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
-#include <QGraphicsItem>
+#include <QGraphicsObject>
 
 class RectangleItem : public QGraphicsObject
 {
