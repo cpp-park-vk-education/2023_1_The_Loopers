@@ -2,7 +2,7 @@
 
 #set_target_properties(${AUTH} PROPERTIES AUTOMOC TRUE)
 
-set(SOURCE
+set(SOURCES
         "src/AuthView.cpp"
         "src/LoginView.cpp"
         "src/AuthModel.cpp"
