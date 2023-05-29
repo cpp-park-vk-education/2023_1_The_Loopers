@@ -3,11 +3,11 @@
 
 namespace inklink::auth_handler
 {
-void SetLastError(const std::string& errorMsg)
+void AuthHandler::SetLastError(const std::string& errorMsg)
 {
     m_lastError.error = errorMsg;
 }
-AuthError GetLastError() const
+AuthError AuthHandler::GetLastError() const
 {
     return m_lastError;
 }
