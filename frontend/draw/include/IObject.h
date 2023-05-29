@@ -1,5 +1,7 @@
 #pragma once
 
+#include <data_container.h>
+
 #include <string>
 #include <vector>
 
@@ -14,25 +16,33 @@ struct Point
 class ObjectWithAttributes
 {
 public:
+    using DataContainer = serializer::DataContainer;
+
+public:
     virtual ~ObjectWithAttributes() = default;
 
-    virtual int getID() = 0;
-    virtual void setID(int ID) = 0;
+    virtual int getID()
+    {
+        return m_ID;
+    }
+    virtual void setID(int ID)
+    {
+        m_ID = ID;
+    }
     virtual std::string serialize() = 0;
+    virtual void parse(const DataContainer&) = 0;
 
-//private:
+    // private:
     int m_ID;
 };
 
 class TextBox : public ObjectWithAttributes
 {
 public:
-    int getID() override;
-    void setID(int ID) override;
     std::string serialize() override;
+    void parse(const DataContainer&) override;
 
-//private:
-    int m_ID;
+    // private:
     std::string m_objectType;
     std::string m_textContent;
     Point m_topLeftCorner;
@@ -42,12 +52,10 @@ public:
 class Polygon : public ObjectWithAttributes
 {
 public:
-    int getID() override;
-    void setID(int ID) override;
     std::string serialize() override;
+    void parse(const DataContainer&) override;
 
-//private:
-    int m_ID;
+    // private:
     std::string m_objectType;
     int m_numberOfVertex;
     std::vector<Point> m_arrayOfVertexCoordinates;
@@ -56,12 +64,10 @@ public:
 class Ellipse : public ObjectWithAttributes
 {
 public:
-    int getID() override;
-    void setID(int ID) override;
     std::string serialize() override;
+    void parse(const DataContainer&) override;
 
-//private:
-    int m_ID;
+    // private:
     std::string m_objectType;
     Point m_center;
     int m_xRadius;
