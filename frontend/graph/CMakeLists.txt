@@ -1,5 +1,7 @@
 add_library(${GRAPH} STATIC "")
 
+set_target_properties(${GRAPH} PROPERTIES AUTOMOC TRUE)
+
 target_sources(${GRAPH} PRIVATE
         "src/GraphView.cpp"
         "src/VertexView.cpp"

@@ -1,5 +1,7 @@
 add_executable(${GENERAL} "")
 
+set_target_properties(${GENERAL} PROPERTIES AUTOMOC TRUE)
+
 target_sources(${GENERAL} PRIVATE
         "src/main.cpp"
         )

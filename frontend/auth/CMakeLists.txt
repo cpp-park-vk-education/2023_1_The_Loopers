@@ -1,5 +1,7 @@
 add_library(${AUTH} STATIC "")
 
+set_target_properties(${AUTH} PROPERTIES AUTOMOC TRUE)
+
 target_sources(${AUTH} PRIVATE
         "src/AuthView.cpp"
         "src/LoginView.cpp"

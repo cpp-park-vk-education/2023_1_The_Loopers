@@ -1,5 +1,7 @@
 add_library(${DRAW} STATIC "")
 
+set_target_properties(${DRAW} PROPERTIES AUTOMOC TRUE)
+
 target_sources(${DRAW} PRIVATE
         "src/temp.cpp"
         "src/DrawView.cpp"

@@ -1,12 +1,27 @@
-add_library(${MENU} STATIC "")
+# add_library(${MENU} STATIC "")
 
-target_sources(${MENU} PRIVATE
+set(SOURCES
         "src/temp.cpp"
-        )
+) 
+
+# target_sources(${MENU} PRIVATE
+#         "${SOURCES}"
+#         )
 
 set(PUBLIC_INCLUDE_DIRECTORIES
         "include"
         )
+
+qt_wrap_cpp(SOURCES 
+        include/MenuView.h
+        include/MenuModel.h
+)
+
+qt_add_library(${MENU}
+        STATIC
+    "${SOURCES}"
+)
+
 
 target_include_directories(${MENU} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
 
