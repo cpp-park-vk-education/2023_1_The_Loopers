@@ -4,6 +4,7 @@
 
 #include <memory>
 
+
 namespace inklink::db_adapter
 {
 class StorageDbAdapter final : DbAdapterBase<StorageDbAdapter, pqxx::connection>

@@ -2,6 +2,7 @@
 
 #include <pqxx/pqxx> 
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -17,6 +18,7 @@ public:
 
 public:
     void Connect(const std::string& connectionString);
+    [[nodiscard]] std::shared_ptr<Connection> GetConnection();
 
     template <typename... Arguments>
     void Insert(const std::string& request, const Arguments&... arguments) const;
