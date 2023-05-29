@@ -3,14 +3,14 @@
 #include <QGraphicsView>
 #include <QWheelEvent>
 
-// TODO: (zakharov) add function to add vertex and edge to the view, make something with Q_OBJECT macros
+// TODO: (zakharov) add function to add vertex and edge to the view, make something with // Q_OBJECT macros
 namespace inklink::graph
 {
 class VertexView;
 
 class GraphView : public QGraphicsView
 {
-    //    Q_OBJECT
+    //    // Q_OBJECT
 public:
     GraphView(QWidget* parent = nullptr);
 

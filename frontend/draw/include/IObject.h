@@ -21,7 +21,7 @@ struct Point
 
 class ObjectWithAttributes : public QGraphicsItem
 {
-    Q_OBJECT
+    // Q_OBJECT
 
 public:
     using DataContainer = serializer::DataContainer;

@@ -9,7 +9,7 @@ namespace inklink::general
 {
 class InklinkMainWindow : public QMainWindow
 {
-    Q_OBJECT
+    // Q_OBJECT
 
 public:
     InklinkMainWindow(QWidget* parent = nullptr) : QMainWindow{parent}
