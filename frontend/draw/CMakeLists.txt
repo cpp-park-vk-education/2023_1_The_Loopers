@@ -4,6 +4,7 @@ target_sources(${DRAW} PRIVATE
         "src/temp.cpp"
         "src/DrawView.cpp"
         "src/DrawModel.cpp"
+        "src/IObject.cpp"
         )
 
 set(PUBLIC_INCLUDE_DIRECTORIES

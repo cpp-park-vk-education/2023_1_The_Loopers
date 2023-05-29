@@ -2,7 +2,12 @@
 
 #include <data_container.h>
 
+#include <QGraphicsItem>
+
+#include <chrono>
+#include <random>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 namespace inklink::draw
@@ -13,27 +18,56 @@ struct Point
     int yPosition;
 };
 
-class ObjectWithAttributes
+class ObjectWithAttributes : public QGraphicsItem
 {
 public:
     using DataContainer = serializer::DataContainer;
 
 public:
+    ObjectWithAttributes() : QGraphicsItem()
+    {
+        GenerateID();
+    }
+
+    // everything else deleted for now
+
     virtual ~ObjectWithAttributes() = default;
 
-    virtual int getID()
+    virtual std::string getID()
     {
         return m_ID;
     }
-    virtual void setID(int ID)
-    {
-        m_ID = ID;
-    }
+
     virtual std::string serialize() = 0;
     virtual void parse(const DataContainer&) = 0;
+    virtual void gotAnswer(const DataContainer&) = 0;
 
-    // private:
-    int m_ID;
+signals:
+    void Changed(const char*);
+
+protected:
+    std::unordered_map<std::string /*action id*/, DataContainer /*changes*/> m_notImplied;
+
+    std::string m_ID{""};
+
+private:
+    virtual void GenerateID()
+    {
+        if (m_ID.empty())
+        {
+            return;
+        }
+        static unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+        static std::mt19937_64 gen{seed};
+
+        std::stringstream ss;
+        for (size_t i = 0; i < 2; ++i)
+        {
+            ss << gen();
+        }
+        m_ID = ss.str();
+        m_ID = ID;
+    }
 };
 
 class TextBox : public ObjectWithAttributes
@@ -42,7 +76,7 @@ public:
     std::string serialize() override;
     void parse(const DataContainer&) override;
 
-    // private:
+private:
     std::string m_objectType;
     std::string m_textContent;
     Point m_topLeftCorner;
@@ -55,7 +89,7 @@ public:
     std::string serialize() override;
     void parse(const DataContainer&) override;
 
-    // private:
+private:
     std::string m_objectType;
     int m_numberOfVertex;
     std::vector<Point> m_arrayOfVertexCoordinates;
