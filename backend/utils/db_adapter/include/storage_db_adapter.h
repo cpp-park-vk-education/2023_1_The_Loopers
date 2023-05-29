@@ -18,7 +18,7 @@ public:
 private:
     void Connect(const std::string& connectionString);
 
-    [[nodiscard]] std::shared_ptr<pqxx::connection> GetConnection();
+    [[nodiscard]] std::unique_ptr<pqxx::connection> GetConnection();
 
     template <typename... Arguments>
     void Insert(const std::string& request, const Arguments&... arguments) const;

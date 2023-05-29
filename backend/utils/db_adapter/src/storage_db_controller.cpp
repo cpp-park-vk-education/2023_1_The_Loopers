@@ -2,6 +2,7 @@
 
 #include <memory>
 
+
 namespace inklink::db_controller
 {
 void StorageDbController::SetAdapter(DbAdapterBase& adapter)
@@ -13,7 +14,7 @@ void StorageDbController::Run(const std::string& connectionString)
 {
     m_adapter.Connect(connectionString);
 
-    std::shared_ptr<pqxx::connection> settings = m_adapter.GetConnection();
+    std::unique_ptr<pqxx::connection> settings = m_adapter.GetConnection();
 
     settings->prepare("GetFilePath",
                      "SELECT path FROM Files "
