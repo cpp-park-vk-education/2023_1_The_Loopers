@@ -13,9 +13,10 @@
 namespace inklink::draw
 {
 
-DrawingView::DrawingView(QWidget* parent)
-        : m_scene{new DrawSceneModel(this)}, QGraphicsView(m_scene, parent), drawing(false)
+DrawingView::DrawingView(QWidget* parent) : QGraphicsView(parent), drawing(false)
 {
+    m_scene = new DrawSceneModel(this);
+    setScene(m_scene);
 }
 
 void DrawingView::mousePressEvent(QMouseEvent* event)

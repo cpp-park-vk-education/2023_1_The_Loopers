@@ -1,13 +1,9 @@
-file json_serializer.h:
+template <typename T>
+concept AllowedSimpleType = std::same_as<T, int> || std::same_as<T, std::string> || std::same_as<T, double>;
 
-class JsonSerializer
-{
-public:
-    static std::string SerializeAsString(const DataContainer&);
-    static DataContainer ParseFromString(const std::string&);
-};
-
-file data_container.h
+template <typename T>
+concept AllowedVectorType = std::same_as<T, std::vector<int>> || std::same_as<T, std::vector<std::string>> ||
+                            std::same_as<T, std::vector<double>>;
 
 class DataContainer
 {
@@ -15,77 +11,66 @@ public:
     using ObjectsContainer = std::unordered_map<std::string, std::shared_ptr<DataContainer>>;
 
 public:
-    DataContainer() = default;
-    ~DataContainer() = default;
+DataContainer() = default;
+~DataContainer() = default;
 
-    DataContainer(const DataContainer&);
-    DataContainer(DataContainer&&) noexcept;
+template <AllowedSimpleType T>
+/*implicit*/ DataContainer(T value);
+template <AllowedVectorType T>
+/*implicit*/ DataContainer(T vector);
+/*implicit*/ DataContainer(std::vector<DataContainer> vector);
 
-    DataContainer& operator=(const DataContainer&);
-    DataContainer& operator=(DataContainer&&) noexcept;
+DataContainer( DataContainer&);
+DataContainer(DataContainer&&) noexcept;
 
-    DataContainer& operator=(int);
-    DataContainer& operator=(double);
-    DataContainer& operator=(std::string);
-    DataContainer& operator=(std::vector<DataContainer>);
-    DataContainer& CreateArray();
+DataContainer& operator=( DataContainer&);
+DataContainer& operator=(DataContainer&&) noexcept;
 
-    // /*implicit*/ DataContainer(nlohmann::json&&);
+template <AllowedSimpleType T>
+DataContainer& operator=(T value);
+DataContainer& operator=(const char* value);
+template <AllowedVectorType T>
+DataContainer& operator=(T vector);
+DataContainer& operator=(std::vector<DataContainer> vector);
+std::vector<DataContainer>& CreateArray();
 
-    // std::string SerializeAsString() const;
-    // void ParseString(const std::string&);
+std::string& AsString();
+bool IsString() ;
 
-    // for self
-    std::string& AsString();
-    const std::string& AsString() const;
-    bool IsString() const;
+int& AsInt();
+bool IsInt() ;
 
-    int& AsInt();
-    const int& AsInt() const;
-    bool IsInt() const;
+double& AsDouble();
+bool IsDouble() ;
 
-    double& AsDouble();
-    const double& AsDouble() const;
-    bool IsDouble() const;
+std::vector<DataContainer>& AsArray();
+bool IsArray() ;
 
-    std::vector<DataContainer>& AsArray();
-    const std::vector<DataContainer>& AsArray() const;
-    bool IsArray() const;
+ObjectsContainer& AsObjectsContainer();
+bool IsObjectsContainer() ;
 
-    ObjectsContainer& AsObjectsContainer();
-    const ObjectsContainer& AsObjectsContainer() const;
-    bool IsObjectsContainer() const;
+// for childs (if current is ObjectsContainer)
+std::string& AsString( std::string&);
+bool IsString(std::string) ;
 
-    // for childs (if current is ObjectsContainer)
-    std::string& AsString(const std::string&);
-    const std::string& AsString(const std::string&) const;
-    bool IsString(const std::string&) const;
+int& AsInt(std::string key);
+bool IsInt(std::string key);
 
-    int& AsInt(const std::string&);
-    const int& AsInt(const std::string&) const;
-    bool IsInt(const std::string&) const;
+double& AsDouble(std::string key);
+bool IsDouble(std::string key);
 
-    double& AsDouble(const std::string&);
-    const double& AsDouble(const std::string&) const;
-    bool IsDouble(const std::string&) const;
+std::vector<DataContainer>& AsArray(std::string key);
+bool IsArray(std::string key);
 
-    std::vector<DataContainer>& AsArray(const std::string&);
-    const std::vector<DataContainer>& AsArray(const std::string&) const;
-    bool IsArray(const std::string&) const;
+ObjectsContainer& AsObjectsContainer(std::string key);
+bool IsObjectsContainer(std::string key);
 
-    ObjectsContainer& AsObjectsContainer(const std::string&);
-    const ObjectsContainer& AsObjectsContainer(const std::string&) const;
-    bool IsObjectsContainer(const std::string&) const;
+bool Has(std::string key);
 
-    bool Has(const std::string&) const;
+void Clear();
 
-    void Clear();
-
-    /**
-     * @brief Accesses or creates IData given field name
-     */
-    DataContainer& operator[](const std::string&) noexcept;
-    const DataContainer& operator[](const std::string&) const noexcept;
-    DataContainer& At(const std::string&);
-    const DataContainer& At(const std::string&) const;
+DataContainer& operator[](std::string key);
+DataContainer& operator[](std::string key);
+DataContainer& At(std::string key);
+DataContainer& At(std::string key);
 };
