@@ -39,6 +39,19 @@ public:
     //     void addObject(size_t, Point&, size_t, size_t);
     //     void addObject(size_t, std::string&, Point&, size_t);
 
+signal: 
+    void NewObject(IObject*); // QObject->setParent(DrawView);
+    // or in model when constructing IObject(DrawView);
+
+    void GotNewMsg(const char* msg);
+    // DoOnRead(const std::string& msg) { emit GotNewMsg(msg.c_str()); }
+    // so that it will be called in "main" thread
+
+    //
+    // Q_DECLARE_META_TYPE(DataContainer); 
+    // qRegisterMetaType(DataContainer); // if you want to use DataContainer in signals/slots
+    //
+
 private:
     using IClientSession = client_connector::IClientSession;
 
