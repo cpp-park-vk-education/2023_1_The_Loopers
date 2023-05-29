@@ -39,14 +39,15 @@ public:
     }
 
     virtual std::string serialize() = 0;
-    virtual void parse(const DataContainer&) = 0;
-    virtual void gotAnswer(const DataContainer&) = 0;
+    virtual void parse(const DataContainer &) = 0;
 
 signals:
-    void Changed(const char*);
+    void Changed(const char *);
 
 protected:
-    std::unordered_map<std::string /*action id*/, DataContainer /*changes*/> m_notImplied;
+    // did not send it yet: because still in progress
+    // All changes will be improved on server, because blocking
+    std::unordered_map<std::string /*action id*/, DataContainer /*changes*/> m_notSent;
 
     std::string m_ID{""};
 
@@ -74,7 +75,12 @@ class TextBox : public ObjectWithAttributes
 {
 public:
     std::string serialize() override;
-    void parse(const DataContainer&) override;
+    void parse(const DataContainer &) override;
+
+private:
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override; // signal changed: selected then wait until answer
+    void
+    mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override; // signal changed: pass all changes for this "session"
 
 private:
     std::string m_objectType;
@@ -87,7 +93,12 @@ class Polygon : public ObjectWithAttributes
 {
 public:
     std::string serialize() override;
-    void parse(const DataContainer&) override;
+    void parse(const DataContainer &) override;
+
+private:
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override; // signal changed: selected then wait until answer
+    void
+    mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override; // signal changed: pass all changes for this "session"
 
 private:
     std::string m_objectType;
@@ -99,9 +110,14 @@ class Ellipse : public ObjectWithAttributes
 {
 public:
     std::string serialize() override;
-    void parse(const DataContainer&) override;
+    void parse(const DataContainer &) override;
 
-    // private:
+private:
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override; // signal changed: selected then wait until answer
+    void
+    mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override; // signal changed: pass all changes for this "session"
+
+private:
     std::string m_objectType;
     Point m_center;
     int m_xRadius;
