@@ -48,7 +48,7 @@ enum actionInfoTypes
 namespace inklink::draw
 {
 DrawSceneModel::DrawSceneModel(QObject* parent)
-        : QGraphicsScene(parent), m_gen{std::chrono::system_clock::now().time_since_epoch().count()}
+        : QGraphicsScene(parent), m_gen{static_cast<unsigned long>(std::chrono::system_clock::now().time_since_epoch().count())}
 {
     {
         auto lambdaOnAccept = [this](ConnectType, error_code ec, IClientSession*) { ; };
