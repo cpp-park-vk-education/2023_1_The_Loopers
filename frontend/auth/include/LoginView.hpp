@@ -23,15 +23,15 @@ public:
     LoginDialog(QWidget* parent = nullptr);
     ~LoginDialog() = default;
 
-    void NotifyGotResultFromNetwork(bool result);
+    void NotifyGotResultFromNetwork(int result);
 
 private:
     void OnRegisterButtonClicked();
     void OnEnterButtonClicked();
-    void DoOnGotResultFromNetwork(bool result);
+    void DoOnGotResultFromNetwork(int result);
 
 signals:
-    void GotResultFromNetwork(bool result);
+    void GotResultFromNetwork(int result);
 
 private:
     QLineEdit* m_usernameLine;

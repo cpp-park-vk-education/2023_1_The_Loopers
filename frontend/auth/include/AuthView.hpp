@@ -23,15 +23,15 @@ public:
     AuthDialog(QWidget* parent = nullptr);
     ~AuthDialog() = default;
 
-    void NotifyGotResultFromNetwork(bool result);
+    void NotifyGotResultFromNetwork(int result);
 
 private:
     void OnLoginButtonClicked();
     void OnCreateButtonClicked();
-    void DoOnGotResultFromNetwork(bool result);
+    void DoOnGotResultFromNetwork(int result);
 
 signals:
-    void GotResultFromNetwork(bool result);
+    void GotResultFromNetwork(int result);
 
 private:
     QLineEdit* m_usernameLine;
