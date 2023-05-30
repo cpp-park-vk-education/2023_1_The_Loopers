@@ -1,7 +1,7 @@
 add_library(${DB_ADAPTER} STATIC "")
 
 target_sources(${DB_ADAPTER} PRIVATE
-    "src/trash.cpp"
+    "src/storage_db_controller.cpp"
 )
 
 set(PUBLIC_INCLUDE_DIRECTORIES

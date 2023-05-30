@@ -1,6 +1,10 @@
 #pragma once
 
+<<<<<<< HEAD
 #include <pqxx/pqxx>
+=======
+#include <pqxx/pqxx> 
+>>>>>>> 364648ff5405f479f4f2bb4f172023f566ac02b0
 
 #include <memory>
 #include <string>
@@ -26,6 +30,10 @@ public:
         static_cast<Implementation*>(this)->GetConnection();
     }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 364648ff5405f479f4f2bb4f172023f566ac02b0
     template <typename... Arguments>
     void Insert(const std::string& request, const Arguments&... arguments) const
     {
