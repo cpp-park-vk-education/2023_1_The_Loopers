@@ -3,7 +3,11 @@ add_executable(${AUTHORIZATION_SERVICE} "")
 target_sources(${AUTHORIZATION_SERVICE}
 PRIVATE
     #"src/main.cpp"
-    "src/*.cpp"
+    "src/auth_handler.cpp"
+	"src/auth_handler_factory.cpp"
+	"src/create_handler.cpp"
+	"src/encrypter.cpp"
+	"src/log_in_handler.cpp"
 )
 
 set(PRIVATE_INCLUDE_DIRECTORIES
