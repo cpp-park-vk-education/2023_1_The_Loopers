@@ -3,8 +3,9 @@
 #include "AuthView.h"
 #include "LoginView.h"
 
-#include <json_serializer.h>
+#include <websocket_client_session.h>
 
+#include <json_serializer.h>
 
 namespace
 {

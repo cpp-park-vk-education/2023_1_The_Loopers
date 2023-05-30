@@ -1,7 +1,6 @@
 #pragma once
 
 #include <data_container.h>
-#include <websocket_client_session.h>
 
 #include <boost/asio.hpp>
 #include <boost/system/error_code.hpp>
@@ -12,6 +11,11 @@
 #include <thread>
 
 // forward declaration
+namespace inklink::client_connector
+{
+class IClientSession;
+}
+
 namespace inklink::auth
 {
 class AuthDialog;
