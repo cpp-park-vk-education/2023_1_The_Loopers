@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IEdge.h"
+#include "IGraphModel.h"
 #include "IVertex.h"
 
 #include <string>
@@ -8,17 +8,29 @@
 
 namespace inklink::graph
 {
-class GraphModel
+// forward declaration
+class Edge;
+class Vertex;
+class IEdge;
+class IVertex;
+
+// class declaration
+class GraphModel : public IGraphModel
 {
 public:
-    void addVertexesToModel(std::vector<std::string> vertexes);
-    std::vector<IVertex*> getUniqueVertexes();
-    std::vector<IEdge*> getEdges();
+    void FillGraphByEdges(std::string& rawData) override;
+    [[nodiscard]] std::vector<IVertex> GetUniqueVertexes() const override;
+    [[nodiscard]] std::vector<IEdge> GetEdges() const override;
 
 private:
-    void setPositionToVertexes(Position position);
+    std::vector<IVertex> m_uniqueVertexes; // first vertex in container used as center vertex
+    std::vector<IEdge> m_edges;
 
-    std::vector<IVertex*> m_uniqueVertexes;
-    std::vector<IEdge*> m_edges;
+private:
+    [[nodiscard]] std::vector<IVertex> MakeUniqueVertexes() override; // parse edges and find unique vertexes
+    void FillUniqueVertexes(std::vector<IVertex>) override;
+    void FillEdges(const std::vector<NamingsEdge> namings) override;
+    [[nodiscard]] IVertex::Position GeneratePosition(); // generates random position for vertex
+    void SetRandomPositions();
 };
 } // namespace inklink::graph
