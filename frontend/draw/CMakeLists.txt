@@ -1,7 +1,8 @@
 add_library(${DRAW} STATIC "")
 
 target_sources(${DRAW} PRIVATE
-        "src/temp.cpp"
+        "src/Rectangle.cpp"
+        "src/PolygonRectangle.cpp"
         )
 
 set(PUBLIC_INCLUDE_DIRECTORIES
