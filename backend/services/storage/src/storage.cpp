@@ -71,10 +71,10 @@ bool Storage::DoOnRead(error_code errocCode, const std::string& msg, IServiceSes
     if (errocCode)
     {
         m_serviceChassis->baseServiceChassis->logger->LogDebug(
-                std::string("Got error while reading from '...'. Error: ") + errocCode.what());
+                std::string("Got error while reading from '...'. Error: ") + errocCode.message());
     }
 
-    auto msgData = JsonSerializer::ParseString(msg);
+    auto msgData = JsonSerializer::ParseFromString(msg);
     try
     {
     }
@@ -127,10 +127,13 @@ bool Storage::Update(const std::string rootFileName, const std::string& fileName
     {
         if (m_dbController->GetFilePath(fileName, login).string().empty())
         {
-            Create(fileName, login, rootFileName);
+            if (!Create(fileName, login, rootFileName))
+            {
+                return false;
+            }
         }
 
-        m_fileWorker->Save(m_dbController->GetFilePath(fileName, login), fileChanges);
+        return m_fileWorker->Save(m_dbController->GetFilePath(fileName, login), fileChanges);
     }
     catch (const std::exception& ec)
     {
@@ -158,11 +161,11 @@ std::string Storage::GetGraphArcsForOneVertex(const std::string& rootFileName, c
     }
 }
 
-void Storage::SaveGraphArc(const std::string& rootFileName, const std::string& fromFileName, const std::string& toFileName) const
+void Storage::SaveGraphArc(const std::string& login, const std::string& rootFileName, const std::string& fromFileName, const std::string& toFileName) const
 {
     try
     {
-        m_dbController->InsertGraphArc(rootFileName, fromFileName, toFileName);
+        m_dbController->InsertGraphArc(login, rootFileName, fromFileName, toFileName);
     }
     catch (const std::exception& ec)
     {
@@ -193,7 +196,7 @@ void Storage::SetDbController(std::shared_ptr<IStorageDbController> dbController
 {
     m_dbController = dbController;
 
-    std::string connectionString{"host=localhost port =" + port +
+    std::string connectionString{"host=localhost port =" + std::to_string(port) +
                                  " dbname=inklink_storage_db user=postges password=alex"};
     m_dbController->Run(connectionString);
 }

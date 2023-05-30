@@ -47,12 +47,13 @@ public:
                                                                const std::string& vertexFileName,
                                                                const std::string& login) const = 0;
 
-    virtual void SaveGraphArc(const std::string& rootFileName, const std::string& fromFileName, const std::string& toFileName) const = 0;
+    virtual void SaveGraphArc(const std::string& login, const std::string& rootFileName,
+                              const std::string& fromFileName, const std::string& toFileName) const = 0;
     
     virtual void DeleteFile(const std::string& fileName, const std::string& login) const = 0;
 
 protected:
-    [[nodiscard]] virtual bool Create(const std::string& fileName, const std::string& login,
+    virtual bool Create(const std::string& fileName, const std::string& login,
                                       const std::string& rootFileName) const = 0;
 
 protected:

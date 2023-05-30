@@ -31,12 +31,13 @@ public:
     [[nodiscard]] std::string GetAllFilesNames(const std::string& login) const override;
     [[nodiscard]] std::string GetGraphArcsForOneVertex(const std::string& rootFileName, const std::string& vertexFileName,
                                                        const std::string& login) const override;
-    void SaveGraphArc(const std::string& rootFileName, const std::string& fromFileName, const std::string& toFileName) const override;
+    void SaveGraphArc(const std::string& login, const std::string& rootFileName, const std::string& fromFileName,
+                      const std::string& toFileName) const override;
 
     void DeleteFile(const std::string& fileName, const std::string& login) const override;
 
 private:
-    [[nodiscard]] bool Create(const std::string& fileName, const std::string& login,
+    bool Create(const std::string& fileName, const std::string& login,
                               const std::string& rootFileName) const override;
 };
 } // namespace inklink:storage
