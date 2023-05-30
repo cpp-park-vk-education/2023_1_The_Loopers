@@ -18,18 +18,40 @@ int Storage::Run(int port)
         boost::asio::io_context ioContext;
 
 
-        SetChassis(std::shared_ptr<IExternalServiceChassis>());
-        SetDbController(std::shared_ptr<IStorageDbController>(), port);
+        SetChassis(std::make_unique<IExternalServiceChassis>());
+        SetDbController(std::make_shared<IStorageDbController>(), port);
         SetFileHolder(std::shared_ptr<IFileHolder>());
 
-        //m_serviceChassis->baseServiceChassis =
+
+        auto manager = std::make_shared<InternalSessionsManager>();
+        auto authorizer = std::make_shared<IAuthorizer>();
+
+         auto onReadFunctor = [this](const std::string& str, error_code ec, IServiceSession* iss)
+        { DoOnRead(str, ec, iss); };
+        auto onConnectFunctor = [this](error_code ec, IServiceSession* iss) { DoOnConnect(ec, iss); };
+        auto onWriteFunctor = [this](error_code ec, IServiceSession* iss) { DoOnWrite(ec, iss); };
+
+        auto factory = std::make_unique<server_network::WebsocketSessionsFactory<
+                decltype(onReadFunctor), decltype(onConnectFunctor), decltype(onWriteFunctor)>>(
+                manager, authorizer, onReadFunctor, onConnectFunctor, onWriteFunctor);
+
+        m_serviceChassis->baseServiceChassis =
+                chassis_configurator::BaseChassisWebsocketConfigurator::CreateAndInitializeFullChassis(
+                        "storage", kLogPath, ioContext, std::move(factory), manager, ServiceType::kFileStorage,
+                        {.address = m_address, .port = m_port},
+                        [this](int eventType, const std::string& msgBody, Endpoint from)
+                        { DoOnNotified(eventType, msgBody, from); },
+                        [this](const std::string& msgBody) { DoOnSignal(msgBody); });
+
         m_serviceChassis->baseServiceChassis->logger->LogInfo("Storage service is initted");
+        std::cout << "Storage is initted" << __LINE__ << std::endl;
 
         ioContext.run();
         return 0;
     }
-    catch (const std::exception&)
+    catch (const std::exception& ec)
     {
+        m_serviceChassis->baseServiceChassis->logger->LogDebug(std::string("Got error in initialazing. Error: " + ec.message());
         return -1;
     }
 }

@@ -46,7 +46,7 @@ protected:
 protected:
     std::shared_ptr<IFileHolder> m_fileWorker;
     std::shared_ptr<IStorageDbController> m_dbController;
-    std::shared_ptr<IExternalServiceChassis> m_serviceChassis;
+    std::unique_ptr<IExternalServiceChassis> m_serviceChassis;
 };
 } // namespace inklink:storage
 
