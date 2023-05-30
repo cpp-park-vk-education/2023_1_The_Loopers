@@ -1,3 +1,7 @@
+#pragma onceonce
+
+#include "DataContainer.h"
+
 #include <QGraphicsObject>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -54,6 +58,21 @@ public:
     {
         if (event->button() == Qt::LeftButton)
             m_selected = false;
+
+        DataContainer ellipseInfo;
+
+        QPointF center = mapToParent(event->pos());
+        DataContainer centerContainer;
+        centerContainer["x"] = center.x();
+        centerContainer["y"] = center.y();
+        ellipseInfo["center"] = centerContainer;
+
+        int xRadius = m_size / 2;
+        int yRadius = m_size / 2;
+        ellipseInfo["x_radius"] = xRadius;
+        ellipseInfo["y_radius"] = yRadius;
+
+//        std::cout << ellipseInfo << std::endl;
     }
 
 private:

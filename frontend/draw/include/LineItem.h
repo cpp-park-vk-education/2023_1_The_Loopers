@@ -1,5 +1,7 @@
 #pragma once
 
+#include "DataContainer.h"
+
 #include <QGraphicsObject>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
