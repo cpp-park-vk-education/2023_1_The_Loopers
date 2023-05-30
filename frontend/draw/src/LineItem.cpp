@@ -1,5 +1,7 @@
 #include "LineItem.h"
 
+namespace inklink::draw
+{
 LineItem::LineItem(QGraphicsItem *parent) : ObjectWithAttributes(parent), m_selected(false), m_selectedPoint(-1)
 {
     setFlag(ItemIsSelectable);
@@ -131,3 +133,4 @@ void LineItem::drawPoints(QPainter *painter) const
     painter->drawEllipse(startRect);
     painter->drawEllipse(endRect);
 }
+} // namespace inklink::draw

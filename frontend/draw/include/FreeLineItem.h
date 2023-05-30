@@ -10,6 +10,8 @@
 #include <QStyleOptionGraphicsItem>
 #include <QVector>
 
+namespace inklink::draw
+{
 class FreeLineItem : public ObjectWithAttributes
 {
 public:
@@ -26,3 +28,4 @@ private:
     QVector<QPointF> m_points;
     bool m_selected;
 };
+} // namespace inklink::draw

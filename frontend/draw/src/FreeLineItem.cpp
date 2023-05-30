@@ -1,5 +1,7 @@
 #include "FreeLineItem.h"
 
+namespace inklink::draw
+{
 FreeLineItem::FreeLineItem(QGraphicsItem *parent) : ObjectWithAttributes(parent), m_selected(false)
 {
     setFlag(ItemIsSelectable);
@@ -82,3 +84,4 @@ void FreeLineItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     if (event->button() == Qt::LeftButton)
         m_selected = false;
 }
+} // namespace inklink::draw

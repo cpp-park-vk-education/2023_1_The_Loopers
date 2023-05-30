@@ -1,5 +1,7 @@
 #include "EllipseItem.h"
 
+namespace inklink::draw
+{
 EllipseItem::EllipseItem(QGraphicsItem *parent = nullptr) : ObjectWithAttributes(parent), m_size(100), m_selected(false)
 {
     setFlag(ItemIsSelectable);
@@ -61,3 +63,4 @@ void EllipseItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     ellipseInfo["x_radius"] = xRadius;
     ellipseInfo["y_radius"] = yRadius;
 }
+} // namespace inklink::draw

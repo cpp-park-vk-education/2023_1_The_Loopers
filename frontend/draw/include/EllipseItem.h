@@ -9,6 +9,8 @@
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
+namespace inklink::draw
+{
 class EllipseItem : public ObjectWithAttributes
 {
 public:
@@ -26,3 +28,4 @@ private:
     int m_size;
     bool m_selected;
 };
+} // namespace inklink::draw

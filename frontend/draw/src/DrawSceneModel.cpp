@@ -1,12 +1,14 @@
 #include "DrawSceneModel.h"
 
 #include "DrawView.h"
-#include "IObject.h"
+#include "all_items"
 
 #include <data_container.h>
 #include <websocket_client_session.h> // Sasha Novak says it should be in <> scopes, but i don't really know
 
 #include <json_serializer.h>
+
+#include <QGraphicsSceneMouseEvent>
 
 #include <boost/asio.hpp>
 #include <boost/system/error_code.hpp>
@@ -70,6 +72,11 @@ DrawSceneModel::DrawSceneModel(QObject* parent)
 
         m_threadIoContext = std::thread([this]() { this->m_ioContext.run(); });
     }
+}
+
+void DrawSceneModel::SetMode(DrawSceneModel::Mode mode)
+{
+    m_currMode = mode;
 }
 
 std::string DrawSceneModel::Serialize(int actionType, int figureId, int type)
@@ -140,6 +147,26 @@ void DrawSceneModel::Send(std::string& message)
 void DrawSceneModel::SetFilename(std::string& filename)
 {
     m_filename = filename;
+}
+
+void DrawSceneModel::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
+{
+    if (event->button() == Qt::LeftButton)
+    {
+        // Create a new QGraphicsItem
+        CustomGraphicsItem* newItem = createNewItem();
+
+        // Add the new item to the scene
+        addItem(newItem);
+
+        // Simulate a mouse press event on the newly created item
+        QGraphicsSceneMouseEvent pressEvent(QEvent::GraphicsSceneMousePress);
+        pressEvent.setScenePos(event->scenePos());
+        pressEvent.setButton(Qt::LeftButton);
+        newItem->mousePressEvent(&pressEvent);
+    }
+
+    QGraphicsScene::mouseDoubleClickEvent(event);
 }
 
 void DrawSceneModel::Deserialize(const std::string& message)

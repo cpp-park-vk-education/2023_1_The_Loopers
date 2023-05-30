@@ -1,5 +1,7 @@
 #include "RectangleItem.h"
 
+namespace inklink::draw
+{
 RectangleItem::RectangleItem(QGraphicsItem* parent) : ObjectWithAttributes(parent), m_rect(QRectF(0, 0, 100, 100))
 {
     setFlag(ItemIsSelectable);
@@ -117,3 +119,4 @@ DataContainer RectangleItem::createPointData(const QPointF& point)
     pointData["yPosition"] = point.y();
     return pointData;
 }
+} // namespace inklink::draw

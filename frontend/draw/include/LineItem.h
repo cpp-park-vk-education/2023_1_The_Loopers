@@ -9,6 +9,8 @@
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
+namespace inklink::draw
+{
 class LineItem : public ObjectWithAttributes
 {
 public:
@@ -34,3 +36,4 @@ private:
     int m_selectedPoint;
     const qreal m_pointSize = 8.0;
 };
+} // namespace inklink::draw

@@ -9,6 +9,8 @@
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
+namespace inklink::draw
+{
 class RectangleItem : public ObjectWithAttributes
 {
 public:
@@ -34,3 +36,4 @@ private:
     QPointF m_lastPos;
     bool m_isResizing = false;
 };
+} // namespace inklink::draw
