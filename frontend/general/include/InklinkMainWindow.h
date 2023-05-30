@@ -34,8 +34,6 @@ public:
         m_toolBox = new inklink::draw::ToolBox;
 
         m_menu->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-        m_drawView->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-        m_toolBox->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
         layout->addWidget(m_menu);
         layout->addWidget(m_drawView);
