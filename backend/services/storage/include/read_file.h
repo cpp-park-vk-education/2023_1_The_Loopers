@@ -5,8 +5,7 @@
 #include <string>
 #include <tuple>
 
-
-namespace inklink_file_holder
+namespace inklink::file_holder
 {
 class FileReader final
 {

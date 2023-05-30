@@ -4,8 +4,7 @@
 #include <filesystem>
 #include <string>
 
-
-namespace inklink_file_holder
+namespace inklink::file_holder
 {
 class FileChangesSaver final
 {

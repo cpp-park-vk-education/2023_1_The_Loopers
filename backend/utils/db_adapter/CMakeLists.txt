@@ -4,10 +4,6 @@ target_sources(${DB_ADAPTER} PRIVATE
     "src/trash.cpp"
 )
 
-# set(PRIVATE_INCLUDE_DIRECTORIES
-# "${UTILS_DIR}/include"
-# )
-
 set(PUBLIC_INCLUDE_DIRECTORIES
     "${UTILS_DIR}/include"
     "include"

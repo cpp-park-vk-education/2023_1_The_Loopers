@@ -1,38 +1,45 @@
 #pragma once
 
-#include "idb_adapter.h"
+#include "storage_db_adapter.h"
 
 #include <filesystem>
-#include <string>
+#include <memory>
 
 namespace inklink::db_controller
 {
 class IStorageDbController
 {
 public:
-    virtual void SetAdapter(DbAdapterBase& adapter) = 0;
+    using DbRow = std::vector<std::string>;
+    using DbTable = std::vector<DbRow>;
+    using StorageDbAdapter = db_adapter::StorageDbAdapter;
+
+public:
+    virtual void SetAdapter(std::shared_ptr<StorageDbAdapter> adapter) = 0;
 
     virtual void Run(const std::string& connectionString) = 0;
 
-    virtual [[nodiscard]] std::filesystem::path GetFilePath(const std::string& fileName,
+    [[nodiscard]] virtual std::filesystem::path GetFilePath(const std::string& fileName,
                                                             const std::string& login) const = 0;
 
     // root - is the file that created session
-    virtual [[nodiscard]] std::string GetGraphArcs(const std::string& rootFileName, const std::string& vertexFileName,
+    [[nodiscard]] virtual std::string GetGraphArcs(const std::string& rootFileName, const std::string& vertexFileName,
                                                    const std::string& login) const = 0;
-    virtual [[nodiscard]] std::string GetAllFilesForUser(std::string& login) const = 0;
+
+    [[nodiscard]] virtual std::string GetAllFilesForUser(const std::string& login) const = 0;
 
     virtual void InsertRootFile(const std::string& fileName, const std::string& login,
                                 const std::filesystem::path& filePath) const = 0;
-    virtual void InsertGraphArc(const std::string& rootFileName, const std::string& fromFileName,
-                                const std::string& toFileName) const = 0;
 
-    virtual void InsertNonRootFile(const std::string& rootFileName, const std::string& fileName,
-                                   const std::string& login, const std::filesystem::path& filePath) const;
+    virtual void InsertGraphArc(const std::string& login, const std::string& rootFileName,
+                                const std::string& fromFileName, const std::string& toFileName) const = 0;
+
+    virtual void InsertNonRootFile(const std::string& fileName, const std::string& login,
+                                   const std::filesystem::path& filePath) const;
 
     virtual void SetFileDeleted(const std::string& fileName, const std::string& login) const = 0;
 
-private:
-    DbAdapterBase& m_adapter;
+protected:
+    std::shared_ptr<StorageDbAdapter> m_adapter;
 };
-} // namespace inklink::db_controller
+} // namespace inklink::db_controlle

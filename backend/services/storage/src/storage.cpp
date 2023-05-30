@@ -1,12 +1,23 @@
 #include "storage.h"
 
+#include <websocket_session_factory.h>
+#include <inklink/chassis_configurators/base_websocket_configurator.h>
+#include <json_serializer.h>
+
 #include <boost/asio/io_context.hpp>
+#include <boost/system/error_code.hpp>
 
 #include <filesystem>
 
 namespace
 {
-constexpr std::filesystem::path kLogPath = "inklink/storage/storage_.txt";
+const std::filesystem::path kLogPath = "inklink / storage / storage_.txt ";
+
+using InternalSessionsManager = inklink::base_service_chassis::InternalSessionsManager;
+using IAuthorizer = inklink::authorizer::IAuthorizer;
+using IServiceSession = inklink::server_network::IServiceSession;
+using DataContainer = inklink::serializer::DataContainer;
+using JsonSerializer = inklink::serializer::JsonSerializer;
 }
 
 namespace inklink::storage
@@ -15,6 +26,8 @@ int Storage::Run(int port)
 {
     try
     {
+        m_port = port;
+
         boost::asio::io_context ioContext;
 
 
@@ -27,13 +40,10 @@ int Storage::Run(int port)
         auto authorizer = std::make_shared<IAuthorizer>();
 
          auto onReadFunctor = [this](const std::string& str, error_code ec, IServiceSession* iss)
-        { DoOnRead(str, ec, iss); };
-        auto onConnectFunctor = [this](error_code ec, IServiceSession* iss) { DoOnConnect(ec, iss); };
-        auto onWriteFunctor = [this](error_code ec, IServiceSession* iss) { DoOnWrite(ec, iss); };
+        { DoOnRead(ec, str, iss); };
 
-        auto factory = std::make_unique<server_network::WebsocketSessionsFactory<
-                decltype(onReadFunctor), decltype(onConnectFunctor), decltype(onWriteFunctor)>>(
-                manager, authorizer, onReadFunctor, onConnectFunctor, onWriteFunctor);
+        auto factory = std::make_unique<server_network::WebsocketSessionsFactory<decltype(onReadFunctor)>>(
+                 manager, authorizer, onReadFunctor);
 
         m_serviceChassis->baseServiceChassis =
                 chassis_configurator::BaseChassisWebsocketConfigurator::CreateAndInitializeFullChassis(
@@ -44,7 +54,6 @@ int Storage::Run(int port)
                         [this](const std::string& msgBody) { DoOnSignal(msgBody); });
 
         m_serviceChassis->baseServiceChassis->logger->LogInfo("Storage service is initted");
-        std::cout << "Storage is initted" << __LINE__ << std::endl;
 
         ioContext.run();
         return 0;
@@ -58,7 +67,7 @@ int Storage::Run(int port)
 
 bool Storage::DoOnRead(error_code errocCode, const std::string& msg, IServiceSession* serviceSession)
 {
-    if (ec)
+    if (errocCode)
     {
         m_serviceChassis->logger->LogDebug(std::string("Got error while reading from '...'. Error: ") + ec.what());
     }
@@ -132,9 +141,9 @@ void Storage::SaveGraphArc(const std::string& rootFileName, const std::string& f
     }
 }
 
-void DeleteFile(const std::string& fileName, const std::string& login) const
+void Storage::DeleteFile(const std::string& fileName, const std::string& login) const
 {
-    m_dbController.SetFileDeleted(fileName, login);
+    m_dbController->SetFileDeleted(fileName, login);
 }
 
 void Storage::SetChassis(std::shared_ptr<IExternalServiceChassis> serviceChassis)
@@ -156,11 +165,17 @@ void Storage::SetFileHolder(std::shared_ptr<IFileHolder> fileHolder)
     m_fileWorker = fileHolder;
 }
 
-
-[[nodiscard]] bool Storage::Create(const std::string & fileName, std::string & login)
+ bool Storage::Create(const std::string& fileName, const std::string& login, const std::string& rootFileName) const
 {
     std::filesystem::path filePath = "files/" + login + "/" + fileName + ".txt";
 
-    m_dbController->InsertFile(fileName, login, filePath);
+    if (fileName == rootFileName)
+    {
+        m_dbController->InsertRootFile(fileName, login, filePath);
+    }
+    else
+    {
+        m_dbController->InsertNonRootFile(fileName, login, filePath);
+    }
 }
 } // namespace inklink: storage

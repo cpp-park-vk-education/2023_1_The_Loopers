@@ -3,11 +3,13 @@
 
 #include "ifile_holder.h"
 
-
-namespace inklink_file_holder
+namespace inklink::file_holder
 {
 class FileHolder final: public IFileHolder
 {
+public:
+    using ReadFileResult = std::tuple<std::string, bool>;
+
 public:
     [[nodiscard]] bool Save(const std::filesystem::path& filePath, const std::string& fileChanges) const override;
 
