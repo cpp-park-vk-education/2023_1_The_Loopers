@@ -2,6 +2,7 @@
 
 #include <websocket_client_session.h>
 #include <data_container.h>
+#include "json_serializer.h"
 
 #include <boost/asio.hpp>
 #include <boost/system/error_code.hpp>
@@ -61,7 +62,7 @@ private:
 
     std::thread m_thread_ioContext;
 
-    std::mutex m_tokenMutex;
+    mutable std::mutex m_tokenMutex;
     std::string m_token;
     std::string m_login;
 };
