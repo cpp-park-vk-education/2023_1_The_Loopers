@@ -43,7 +43,7 @@ public:
 
     void ConnectSignals()
     {
-//        connect(m_menu, &menu::MenuView::AuthClicked, &InklinkMainWindow::OnAuthBtnClicked);
+        connect(m_menu, &menu::MenuView::AuthClicked, this,&InklinkMainWindow::OnAuthBtnClicked);
     }
 
     ~InklinkMainWindow() = default;

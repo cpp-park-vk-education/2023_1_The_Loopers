@@ -8,7 +8,9 @@
 #include <QGraphicsView>
 #include <QMouseEvent>
 
-#include <iostream>
+namespace{
+constexpr QColor k_currentColor(255,255,255);
+}
 
 namespace inklink::draw
 {
@@ -36,7 +38,7 @@ void DrawingView::mouseReleaseEvent(QMouseEvent* event)
     {
         endPoint = mapToScene(event->pos());
         QGraphicsLineItem* line = new QGraphicsLineItem(QLineF(startPoint, endPoint));
-        line->setPen(QPen(Qt::red));
+        line->setPen(QPen(k_currentColor));
         m_scene->addItem(line);
         drawing = false;
     }
@@ -50,7 +52,7 @@ void DrawingView::mouseMoveEvent(QMouseEvent* event)
         startPoint = endPoint;
         endPoint = mapToScene(event->pos());
         QGraphicsLineItem* tempLine = new QGraphicsLineItem(QLineF(startPoint, endPoint));
-        tempLine->setPen(QPen(Qt::red));
+        tempLine->setPen(QPen(k_currentColor));
         m_scene->addItem(tempLine);
     }
     QGraphicsView::mouseMoveEvent(event);
