@@ -21,7 +21,8 @@ public:
 private:
     void OnRegisterButtonClicked();
     void OnEnterButtonClicked();
-    void NotifyGotResultFromNetwork(bool result) void DoOnGotResultFromNetwork(bool result);
+    void NotifyGotResultFromNetwork(bool result);
+    void DoOnGotResultFromNetwork(bool result);
 signals:
     void GotResultFromNetwork(bool result);
 

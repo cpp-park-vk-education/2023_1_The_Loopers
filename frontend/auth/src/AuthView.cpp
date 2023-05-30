@@ -79,7 +79,7 @@ void AuthDialog::OnCreateButtonClicked()
     }
     else
     {
-        const auto message = m_model->RegParseToSend(login, password);
+        const auto message = m_model->RegParseToSend(username, password);
         m_model->RegSend(message);
     }
 }

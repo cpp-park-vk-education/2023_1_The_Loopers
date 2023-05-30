@@ -50,7 +50,7 @@ LoginDialog::LoginDialog(QWidget* parent) : QWidget(parent)
 
     setLayout(mainLayout);
 
-    connect(this, &AuthView::GotResultFromNetwork, this, &AuthView::DoOnGotResultFromNetwork);
+    connect(this, &LoginDialog::GotResultFromNetwork, this, &LoginDialog::DoOnGotResultFromNetwork);
 }
 void LoginDialog::OnRegisterButtonClicked()
 {
@@ -81,7 +81,7 @@ void LoginDialog::OnEnterButtonClicked()
     }
     else
     {
-        const auto message = m_model->LoginParseToSend(login, password);
+        const auto message = m_model->LoginParseToSend(username, password);
         m_model->LoginSend(message);
     }
 }
