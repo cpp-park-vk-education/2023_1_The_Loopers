@@ -3,6 +3,8 @@
 #include "auth_error.h"
 #include "encrypter.h"
 
+#include <iauth_db_controller.h>
+
 #include <memory>
 
 namespace inklink::auth_handler
