@@ -1,6 +1,7 @@
 #pragma once
 
 // #include "DrawView.h"
+#include "AuthView.hpp"
 #include "DrawUsingQGraphicsView.h"
 #include "MenuView.h"
 
@@ -10,7 +11,7 @@ namespace inklink::general
 {
 class InklinkMainWindow : public QMainWindow
 {
-    // Q_OBJECT
+    Q_OBJECT
 
 public:
     InklinkMainWindow(QWidget* parent = nullptr) : QMainWindow{parent}
@@ -24,7 +25,7 @@ public:
         QHBoxLayout* layout = new QHBoxLayout(centralWidget);
         centralWidget->setLayout(layout);
 
-        m_menu = new inklink::menu::MenuView;
+        m_menu = new menu::MenuView;
         m_menu->setMaximumSize(200, 2000);
         m_drawView = new inklink::draw::DrawingView;
         m_menu->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -36,7 +37,19 @@ public:
         setWindowTitle("InkLink");
     }
 
+    void ConnectSignals()
+    {
+        connect(m_menu, &menu::MenuView::AuthClicked, &InklinkMainWindow::OnAuthBtnClicked);
+    }
+
     ~InklinkMainWindow() = default;
+
+private:
+    void OnAuthBtnClicked(bool)
+    {
+        auth::AuthDialog dialog(this);
+        dialog.exec();
+    }
 
 private:
     inklink::menu::MenuView* m_menu;

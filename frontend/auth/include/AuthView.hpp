@@ -2,10 +2,11 @@
 
 #include "AuthModel.hpp"
 
+#include <QDialog>
 #include <QGraphicsView>
 #include <QLineEdit>
 #include <QString>
-#include <QWidget>
+
 
 // forward declaration
 namespace inklink::auth
@@ -15,7 +16,7 @@ class AuthModel;
 
 namespace inklink::auth
 {
-class AuthDialog : public QWidget
+class AuthDialog : public QDialog
 {
     Q_OBJECT
 

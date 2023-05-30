@@ -25,4 +25,6 @@ qt_add_library(${MENU}
 
 target_include_directories(${MENU} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
 
-target_link_libraries(${MENU} PRIVATE ${REQUIRED_LIBS_QUALIFIED})
+target_link_libraries(${MENU} PRIVATE 
+        ${REQUIRED_LIBS_QUALIFIED}
+)
