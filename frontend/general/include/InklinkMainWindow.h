@@ -1,7 +1,7 @@
 #pragma once
 
 // #include "DrawView.h"
-#include "AuthView.hpp"
+#include "AuthView.h"
 #include "DrawUsingQGraphicsView.h"
 #include "MenuView.h"
 #include "ToolBox.h"

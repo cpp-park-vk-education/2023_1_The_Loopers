@@ -1,14 +1,17 @@
-#include "AuthModel.hpp"
+#include "AuthModel.h"
 
-#include "AuthView.hpp"
-#include "LoginView.hpp"
+#include "AuthView.h"
+#include "LoginView.h"
+
+#include <json_serializer.h>
+
 
 namespace
 {
 using DataContainer = inklink::serializer::DataContainer;
 using JsonSerializer = inklink::serializer::JsonSerializer;
 using ConnectType = inklink::client_connector::ConnectType;
-}
+} // namespace
 
 namespace inklink::auth
 {
@@ -34,7 +37,8 @@ AuthModel::AuthModel()
             return;
         }
     };
-    auto session = std::make_shared<inklink::client_connector::WebsocketClientSession<decltype(lamOnAccept), decltype(lamOnRead)>>(
+    auto session = std::make_shared<
+            inklink::client_connector::WebsocketClientSession<decltype(lamOnAccept), decltype(lamOnRead)>>(
             m_ioContext, lamOnAccept, lamOnRead);
     session->RunAsync("127.0.0.1", 3994);
     m_session = session;
@@ -94,7 +98,8 @@ void AuthModel::LoginSend(const std::string& message)
     {
         auto lamOnAccept = [this](ConnectType, error_code ec, IClientSession*) { ; };
         auto lamOnRead = [this](const std::string& str, error_code ec, IClientSession*) { this->LoginParseToGet(str); };
-        session = std::make_shared<inklink::client_connector::WebsocketClientSession<decltype(lamOnAccept), decltype(lamOnRead)>>(
+        session = std::make_shared<
+                inklink::client_connector::WebsocketClientSession<decltype(lamOnAccept), decltype(lamOnRead)>>(
                 m_ioContext, lamOnAccept, lamOnRead);
 
         session->RunAsync("127.0.0.1", 3994);
@@ -109,7 +114,8 @@ void AuthModel::RegSend(const std::string& message)
     {
         auto lamOnAccept = [this](ConnectType, error_code ec, IClientSession*) { ; };
         auto lamOnRead = [this](const std::string& str, error_code ec, IClientSession*) { this->RegParseToGet(str); };
-        session = std::make_shared<inklink::client_connector::WebsocketClientSession<decltype(lamOnAccept), decltype(lamOnRead)>>(
+        session = std::make_shared<
+                inklink::client_connector::WebsocketClientSession<decltype(lamOnAccept), decltype(lamOnRead)>>(
                 m_ioContext, lamOnAccept, lamOnRead);
 
         session->RunAsync("127.0.0.1", 3994);

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "AuthModel.hpp"
+#include "AuthModel.h"
 
 #include <QDialog>
 #include <QGraphicsView>
