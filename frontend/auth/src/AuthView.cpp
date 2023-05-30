@@ -80,13 +80,13 @@ void AuthDialog::OnCreateButtonClicked()
         m_model->RegSend(message);
     }
 }
-void AuthDialog::NotifyGotResultFromNetwork(bool result)
+void AuthDialog::NotifyGotResultFromNetwork(int result)
 {
     emit GotResultFromNetwork(result);
 }
-void AuthDialog::DoOnGotResultFromNetwork(bool result)
+void AuthDialog::DoOnGotResultFromNetwork(int result)
 {
-    if (!result)
+    if (result == 0)
     {
         QMessageBox::warning(this, "usernameEnter", "Existing username");
     }
