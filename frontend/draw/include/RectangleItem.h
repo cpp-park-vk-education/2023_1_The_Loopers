@@ -1,3 +1,5 @@
+#include "DataContainer.h"
+
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -74,6 +76,27 @@ protected:
     {
         if (event->button() == Qt::LeftButton)
         {
+            // Create a DataContainer object to store the rectangle information
+            DataContainer rectangleData;
+
+            // Populate the DataContainer with the rectangle information
+            rectangleData["number of angles"] = 4;
+
+            // Create an array to store the angle coordinates
+            std::vector<DataContainer> angleCoordinates;
+
+            // Add the vertex coordinates to the array
+            angleCoordinates.push_back(createPointData(topLeft()));
+            angleCoordinates.push_back(createPointData(topRight()));
+            angleCoordinates.push_back(createPointData(bottomRight()));
+            angleCoordinates.push_back(createPointData(bottomLeft()));
+
+            // Add the array of point coordinates to the DataContainer
+            rectangleData["angles coordinates"] = angleCoordinates;
+
+            // Print the DataContainer for debugging
+            std::cout << "RectangleInfo: " << rectangleData.serialize() << std::endl;
+
             m_isResizing = false;
             event->accept();
         }
@@ -81,6 +104,7 @@ protected:
         {
             event->ignore();
         }
+        QGraphicsObject::mouseReleaseEvent(event);
     }
 
     bool isVertexPressed(const QPointF& pos) const
@@ -103,6 +127,14 @@ protected:
     }
 
 private:
+    DataContainer createPointData(const QPointF& point)
+    {
+        DataContainer pointData;
+        pointData["xPosition"] = point.x();
+        pointData["yPosition"] = point.y();
+        return pointData;
+    }
+
     QRectF m_rect;
     QPointF m_lastPos;
     bool m_isResizing = false;
