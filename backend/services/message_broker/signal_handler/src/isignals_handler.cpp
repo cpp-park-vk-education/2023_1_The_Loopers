@@ -41,7 +41,7 @@ void ISignalsHandler::Send(const Endpoint& endpoint, const std::string& msg)
     auto session = m_serviceChassis.internalSessionsManager->GetSession(endpoint);
     if (session.expired())
     {
-        continue;
+        return;
     }
     auto sessionLocked = session.lock();
     if (sessionLocked)

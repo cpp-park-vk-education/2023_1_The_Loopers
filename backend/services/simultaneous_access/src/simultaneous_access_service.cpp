@@ -345,10 +345,6 @@ void SimultaneousAccessService::HandleText(const DataContainer& msgData, IServic
         auto sessionLocked = session.lock();
         if (sessionLocked)
         {
-            sessionLocked->Send(msg);
-        }
-        if (sessionLocked)
-        {
             sessionLocked->Send(JsonSerializer::SerializeAsString(sendData));
         }
     }

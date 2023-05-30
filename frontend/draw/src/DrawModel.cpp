@@ -125,7 +125,7 @@ void DrawModel::Send(std::string& message)
     {
         auto lambdaOnAccept = [this](ConnectType, error_code ec, IClientSession*) { ; };
         auto lambdaOnRead = [this](const std::string& str, error_code ec, IClientSession*) { this->Deserialize(str); };
-        AccessSession = std::make_shared<WebsocketClientSession<decltype(lambdaOnAccept), decltype(lambdaOnRead)>>(
+        auto AccessSession = std::make_shared<WebsocketClientSession<decltype(lambdaOnAccept), decltype(lambdaOnRead)>>(
                 m_ioContext, lambdaOnAccept, lambdaOnRead);
         AccessSession->RunAsync("127.0.0.1", simultaneousAccess);
         m_accessSession = AccessSession;

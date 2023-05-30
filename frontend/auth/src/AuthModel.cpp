@@ -111,7 +111,7 @@ void AuthModel::LoginSend(const std::string& message)
     {
         auto lamOnAccept = [this](ConnectType, error_code ec, IClientSession*) { ; };
         auto lamOnRead = [this](const std::string& str, error_code ec, IClientSession*) { this->LoginParseToGet(str); };
-        session = std::make_shared<
+        auto session = std::make_shared<
                 inklink::client_connector::WebsocketClientSession<decltype(lamOnAccept), decltype(lamOnRead)>>(
                 m_ioContext, lamOnAccept, lamOnRead);
 
@@ -128,7 +128,7 @@ void AuthModel::RegSend(const std::string& message)
     {
         auto lamOnAccept = [this](ConnectType, error_code ec, IClientSession*) { ; };
         auto lamOnRead = [this](const std::string& str, error_code ec, IClientSession*) { this->RegParseToGet(str); };
-        session = std::make_shared<
+        auto session = std::make_shared<
                 inklink::client_connector::WebsocketClientSession<decltype(lamOnAccept), decltype(lamOnRead)>>(
                 m_ioContext, lamOnAccept, lamOnRead);
 
