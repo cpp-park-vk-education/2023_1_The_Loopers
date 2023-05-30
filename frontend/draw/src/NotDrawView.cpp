@@ -1,4 +1,4 @@
-#include "DrawView.h"
+#include "NotDrawView.h"
 
 #include <QPainter>
 #include <QWidget>
@@ -13,18 +13,18 @@ constexpr int kDotsWidth = 3;
 
 namespace inklink::draw
 {
-DrawView::DrawView(QWidget* parent) : QWidget(parent)
+NotDrawView::NotDrawView(QWidget* parent) : QWidget(parent)
 {
     resize(1280, 720);
     setAutoFillBackground(true);
 }
 
-void DrawView::NotifyGotResultFromNetwork(bool result)
+void NotDrawView::NotifyGotResultFromNetwork(bool result)
 {
     emit GotResultFromNetwork(result);
 }
 
-void DrawView::mousePressEvent(QMouseEvent* event)
+void NotDrawView::mousePressEvent(QMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton)
     {
@@ -45,7 +45,7 @@ void DrawView::mousePressEvent(QMouseEvent* event)
     }
 }
 
-void DrawView::mouseMoveEvent(QMouseEvent* event)
+void NotDrawView::mouseMoveEvent(QMouseEvent* event)
 {
     if (event->buttons() & Qt::LeftButton)
     {
@@ -59,7 +59,7 @@ void DrawView::mouseMoveEvent(QMouseEvent* event)
     }
 }
 
-void DrawView::mouseReleaseEvent(QMouseEvent* event)
+void NotDrawView::mouseReleaseEvent(QMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton)
     {
@@ -76,7 +76,7 @@ void DrawView::mouseReleaseEvent(QMouseEvent* event)
     }
 }
 
-void DrawView::paintEvent(QPaintEvent* event)
+void NotDrawView::paintEvent(QPaintEvent* event)
 {
     Q_UNUSED(event);
 
