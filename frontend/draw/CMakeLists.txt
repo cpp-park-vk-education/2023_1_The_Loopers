@@ -2,8 +2,6 @@
 
 set(SOURCES
         "src/temp.cpp"
-        "src/NotDrawView.cpp"
-        "src/NotDrawModel.cpp"
         "src/DrawSceneModel.cpp"
         "src/GraphicsDrawView.cpp"
         "src/IObject.cpp"
