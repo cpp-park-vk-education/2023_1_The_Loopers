@@ -14,6 +14,7 @@ public:
 
 public:
     int Run(int port) override;
+
     bool DoOnRead(error_code errocCode, const std::string& request, IServiceSession* serviceSession) override;
     void DoOnSignal(const std::string& msg) override;
     void DoOnNotified(int eventType, const std::string&, Endpoint from) override;
