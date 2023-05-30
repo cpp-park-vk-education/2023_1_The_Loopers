@@ -19,8 +19,9 @@ class IClientSession;
 
 namespace inklink::draw
 {
-class DrawingView;
+
 class ObjectWithAttributes;
+class GraphicsDrawView;
 } // namespace inklink::draw
 
 using namespace boost::asio;
@@ -78,7 +79,7 @@ private:
 
     std::mt19937_64 m_gen;
     std::uniform_int_distribution<int> m_dis{std::numeric_limits<int>::min(), std::numeric_limits<int>::max()};
-    DrawingView* m_view = nullptr;
+    GraphicsDrawView* m_view = nullptr;
 
     io_context m_ioContext;
     any_io_executor m_ioContextExecutor;

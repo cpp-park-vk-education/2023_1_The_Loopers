@@ -1,7 +1,12 @@
 #include "DrawSceneModel.h"
 
+<<<<<<< Updated upstream
 #include "DrawView.h"
 #include "all_items"
+=======
+#include "IObject.h"
+#include "GraphicsDrawView.h"
+>>>>>>> Stashed changes
 
 #include <data_container.h>
 #include <websocket_client_session.h> // Sasha Novak says it should be in <> scopes, but i don't really know
