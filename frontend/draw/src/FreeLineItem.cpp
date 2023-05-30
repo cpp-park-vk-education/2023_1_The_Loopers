@@ -6,7 +6,7 @@ FreeLineItem::FreeLineItem(QGraphicsItem *parent) : ObjectWithAttributes(parent)
     setAcceptHoverEvents(true);
 }
 
-QRectF FreeLineItem::boundingRect() const override
+QRectF FreeLineItem::boundingRect() const
 {
     qreal maxX = -std::numeric_limits<qreal>::max();
     qreal maxY = -std::numeric_limits<qreal>::max();
@@ -25,7 +25,7 @@ QRectF FreeLineItem::boundingRect() const override
     return QRectF(minX - adjust, minY - adjust, maxX - minX + 2 * adjust, maxY - minY + 2 * adjust);
 }
 
-void FreeLineItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override
+void FreeLineItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     Q_UNUSED(widget);
 
@@ -39,7 +39,7 @@ void FreeLineItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
     painter->drawPolyline(m_points.data(), m_points.size());
 }
 
-void FreeLineItem::mousePressEvent(QGraphicsSceneMouseEvent *event) override
+void FreeLineItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
     {
@@ -67,7 +67,7 @@ void FreeLineItem::mousePressEvent(QGraphicsSceneMouseEvent *event) override
     }
 }
 
-void FreeLineItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event) override
+void FreeLineItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     if (m_selected)
     {
@@ -77,7 +77,7 @@ void FreeLineItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event) override
     }
 }
 
-void FreeLineItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override
+void FreeLineItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
         m_selected = false;
