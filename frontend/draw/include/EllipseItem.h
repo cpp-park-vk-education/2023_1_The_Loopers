@@ -3,15 +3,15 @@
 #include "DataContainer.h"
 
 #include <QGraphicsObject>
+#include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
-#include <QGraphicsSceneMouseEvent>
+
 
 class EllipseItem : public QGraphicsObject
 {
 public:
-    EllipseItem(QGraphicsItem *parent = nullptr)
-            : QGraphicsObject(parent), m_size(100), m_selected(false)
+    EllipseItem(QGraphicsItem *parent = nullptr) : QGraphicsObject(parent), m_size(100), m_selected(false)
     {
         setFlag(ItemIsSelectable);
         setAcceptHoverEvents(true);
@@ -71,8 +71,6 @@ public:
         int yRadius = m_size / 2;
         ellipseInfo["x_radius"] = xRadius;
         ellipseInfo["y_radius"] = yRadius;
-
-//        std::cout << ellipseInfo << std::endl;
     }
 
 private:

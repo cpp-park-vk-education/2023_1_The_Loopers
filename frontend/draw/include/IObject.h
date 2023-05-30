@@ -30,7 +30,9 @@ signals:
     void Changed(const char *);
 
 public:
-    ObjectWithAttributes() : QGraphicsObject{}, m_gen{static_cast<unsigned long>(std::chrono::system_clock::now().time_since_epoch().count())}
+    ObjectWithAttributes()
+            : QGraphicsObject{},
+              m_gen{static_cast<unsigned long>(std::chrono::system_clock::now().time_since_epoch().count())}
     {
         setFlags(flags() | QGraphicsItem::ItemIsSelectable);
         GenerateID();
@@ -91,56 +93,59 @@ public:
     }
 };
 
-class TextBox : public ObjectWithAttributes
-{
-public:
-    std::string serialize() override;
-    void parse(const DataContainer &) override;
+// class TextBox : public ObjectWithAttributes
+// {
+// public:
+//     std::string serialize() override;
+//     void parse(const DataContainer &) override;
 
-    // private:
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
-    void
-    mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override; // signal changed: pass all changes for this "session"
+//     // private:
+//     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
+//     void
+//     mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override; // signal changed: pass all changes for this
+//     "session"
 
-                                                                 // private:
-    std::string m_objectType;
-    std::string m_textContent;
-    Point m_topLeftCorner;
-    int m_width;
-};
+//                                                                  // private:
+//     std::string m_objectType;
+//     std::string m_textContent;
+//     Point m_topLeftCorner;
+//     int m_width;
+// };
 
-class Polygon : public ObjectWithAttributes
-{
-public:
-    std::string serialize() override;
-    void parse(const DataContainer &) override;
+// class Polygon : public ObjectWithAttributes
+// {
+// public:
+//     std::string serialize() override;
+//     void parse(const DataContainer &) override;
 
-    // private:
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
-    void
-    mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override; // signal changed: pass all changes for this "session"
+//     // private:
+//     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
+//     void
+//     mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override; // signal changed: pass all changes for this
+//     "session"
 
-                                                                 // private:
-    std::string m_objectType;
-    int m_numberOfVertex;
-    std::vector<Point> m_arrayOfVertexCoordinates;
-};
+//                                                                  // private:
+//     std::string m_objectType;
+//     int m_numberOfVertex;
+//     std::vector<Point> m_arrayOfVertexCoordinates;
+// };
 
-class Ellipse : public ObjectWithAttributes
-{
-public:
-    std::string serialize() override;
-    void parse(const DataContainer &) override;
+// class Ellipse : public ObjectWithAttributes
+// {
+// public:
+//     std::string serialize() override;
+//     void parse(const DataContainer &) override;
 
-    // private:
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
-    void
-    mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override; // signal changed: pass all changes for this "session"
+//     // private:
+//     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
+//     void
+//     mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override; // signal changed: pass all changes for this
+//     "session"
 
-                                                                 // private:
-    std::string m_objectType;
-    Point m_center;
-    int m_xRadius;
-    int m_yRadius;
-};
+//                                                                  // private:
+//     std::string m_objectType;
+//     Point m_center;
+//     int m_xRadius;
+//     int m_yRadius;
+// };
 } // namespace inklink::draw
