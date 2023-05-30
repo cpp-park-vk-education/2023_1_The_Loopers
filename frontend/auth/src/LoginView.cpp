@@ -3,7 +3,6 @@
 #include "AuthModel.hpp"
 #include "AuthView.hpp"
 
-#include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
@@ -13,8 +12,10 @@
 
 namespace inklink::auth
 {
-LoginDialog::LoginDialog(QWidget* parent) : QDialog(parent)
+LoginDialog::LoginDialog(QWidget* parent) : QWidget(parent)
 {
+    connect(this, &LoginDialog::GotResultFromNetwork, this, &LoginDialog::DoOnGotResultFromNetwork);
+
     setWindowTitle("Login");
 
     setFixedSize(300, 200);
@@ -48,15 +49,15 @@ LoginDialog::LoginDialog(QWidget* parent) : QDialog(parent)
     mainLayout->addLayout(buttonsLayout);
 
     setLayout(mainLayout);
-}
 
+    connect(this, &LoginDialog::GotResultFromNetwork, this, &LoginDialog::DoOnGotResultFromNetwork);
+}
 void LoginDialog::OnRegisterButtonClicked()
 {
     auto* registration = new AuthDialog(this);
     close();
     registration->show();
 }
-
 void LoginDialog::OnEnterButtonClicked()
 {
     std::string username;
@@ -78,7 +79,19 @@ void LoginDialog::OnEnterButtonClicked()
     {
         QMessageBox::warning(this, passwordEnter, "Enter password");
     }
-    else if (!authModel->Login(username, password))
+    else
+    {
+        const auto message = m_model->LoginParseToSend(username, password);
+        m_model->LoginSend(message);
+    }
+}
+void NotifyGotResultFromNetwork(bool result)
+{
+    emit GotResultFromNetwork(result);
+}
+void DoOnGotResultFromNetwork(bool result)
+{
+    if (!result)
     {
         QMessageBox::warning(this, usernameEnter, "Uncorrect username or password");
     }

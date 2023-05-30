@@ -3,7 +3,6 @@
 #include "AuthModel.hpp"
 #include "LoginView.hpp"
 
-#include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
@@ -13,8 +12,10 @@
 
 namespace inklink::auth
 {
-AuthDialog::AuthDialog(QWidget* parent) : QDialog(parent)
+AuthDialog::AuthDialog(QWidget* parent) : QWidget(parent)
 {
+    connect(this, &AuthDialog::GotResultFromNetwork, this, &AuthDialog::DoOnGotResultFromNetwork);
+
     setWindowTitle("Registration");
 
     setFixedSize(300, 200);
@@ -49,14 +50,12 @@ AuthDialog::AuthDialog(QWidget* parent) : QDialog(parent)
 
     setLayout(mainLayout);
 }
-
 void AuthDialog::OnLoginButtonClicked()
 {
     auto* login = new LoginDialog(this);
     close();
     login->show();
 }
-
 void AuthDialog::OnCreateButtonClicked()
 {
     std::string username;
@@ -78,7 +77,19 @@ void AuthDialog::OnCreateButtonClicked()
     {
         QMessageBox::warning(this, passwordEnter, "Enter password");
     }
-    else if (!authModel->CreateUser(username, password))
+    else
+    {
+        const auto message = m_model->RegParseToSend(username, password);
+        m_model->RegSend(message);
+    }
+}
+void NotifyGotResultFromNetwork(bool result)
+{
+    emit GotResultFromNetwork(result);
+}
+void DoOnGotResultFromNetwork(bool result)
+{
+    if (!result)
     {
         QMessageBox::warning(this, usernameEnter, "Existing username");
     }
@@ -86,5 +97,6 @@ void AuthDialog::OnCreateButtonClicked()
     {
         close();
     }
+}
 }
 } // namespace inklink::auth
