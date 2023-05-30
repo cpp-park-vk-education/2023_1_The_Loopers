@@ -38,10 +38,15 @@ bool ISignalsHandler::Handle(const DataContainer& msgData, const Endpoint& sende
 
 void ISignalsHandler::Send(const Endpoint& endpoint, const std::string& msg)
 {
-    auto session = m_serviceChassis.internalSessionsManager->GetSession(endpoint).lock();
-    if (session)
+    auto session = m_serviceChassis.internalSessionsManager->GetSession(endpoint);
+    if (session.expired())
     {
-        session->Send(msg);
+        continue;
+    }
+    auto sessionLocked = session.lock();
+    if (sessionLocked)
+    {
+        sessionLocked->Send(msg);
     }
 }
 

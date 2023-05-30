@@ -8,6 +8,8 @@
 
 #include <QMainWindow>
 
+#include <iostream>
+
 namespace inklink::general
 {
 class InklinkMainWindow : public QMainWindow
@@ -41,11 +43,13 @@ public:
 
         setCentralWidget(centralWidget);
         setWindowTitle("InkLink");
+
+        ConnectSignals();
     }
 
     void ConnectSignals()
     {
-        connect(m_menu, &menu::MenuView::AuthClicked, this,&InklinkMainWindow::OnAuthBtnClicked);
+        connect(m_menu, &menu::MenuView::AuthClicked, this, &InklinkMainWindow::OnAuthBtnClicked);
     }
 
     ~InklinkMainWindow() = default;

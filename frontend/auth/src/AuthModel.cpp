@@ -4,7 +4,10 @@
 #include "LoginView.h"
 
 #include <websocket_client_session.h>
+
 #include <json_serializer.h>
+
+#include <iostream>
 
 namespace
 {
@@ -43,38 +46,47 @@ AuthModel::AuthModel()
     session->RunAsync("127.0.0.1", 3994);
     m_session = session;
 
+    std::cout << "AuthModel     " << __LINE__ << std::endl;
+
     m_ioContextExecutor =
             boost::asio::require(m_ioContext.get_executor(), boost::asio::execution::outstanding_work.tracked);
 
     m_thread_ioContext = std::thread([this]() { this->m_ioContext.run(); });
 }
+
 AuthModel::~AuthModel()
 {
     m_ioContext.stop();
 
     m_thread_ioContext.join();
 }
+
 void AuthModel::Exit()
 {
 }
+
 const std::string AuthModel::GetLogin() const
 {
     return m_login;
 }
+
 const std::string AuthModel::GetToken() const
 {
     std::lock_guard<std::mutex> lock(m_tokenMutex);
     return m_token;
 }
+
 void AuthModel::SetLogin(const std::string& login)
 {
     m_login = login;
 }
+
 void AuthModel::SetToken(const std::string& token)
 {
     std::lock_guard<std::mutex> lock(m_tokenMutex);
     m_token = token;
 }
+
 std::string AuthModel::LoginParseToSend(const std::string& login, const std::string& password)
 {
     DataContainer sendContainer{};
@@ -83,6 +95,7 @@ std::string AuthModel::LoginParseToSend(const std::string& login, const std::str
     sendContainer["password"] = password;
     return JsonSerializer::SerializeAsString(sendContainer);
 }
+
 std::string AuthModel::RegParseToSend(const std::string& login, const std::string& password)
 {
     DataContainer sendContainer{};
@@ -91,10 +104,10 @@ std::string AuthModel::RegParseToSend(const std::string& login, const std::strin
     sendContainer["password"] = std::move(password);
     return JsonSerializer::SerializeAsString(sendContainer);
 }
+
 void AuthModel::LoginSend(const std::string& message)
 {
-    std::shared_ptr<IClientSession> session = m_session.lock();
-    if (!session) [[unlikely]]
+    if (m_session.expired()) [[unlikely]]
     {
         auto lamOnAccept = [this](ConnectType, error_code ec, IClientSession*) { ; };
         auto lamOnRead = [this](const std::string& str, error_code ec, IClientSession*) { this->LoginParseToGet(str); };
@@ -105,12 +118,13 @@ void AuthModel::LoginSend(const std::string& message)
         session->RunAsync("127.0.0.1", 3994);
         m_session = session;
     }
+    std::shared_ptr<IClientSession> session = m_session.lock();
     session->Send(message);
 }
+
 void AuthModel::RegSend(const std::string& message)
 {
-    std::shared_ptr<IClientSession> session = m_session.lock();
-    if (!session) [[unlikely]]
+    if (m_session.expired()) [[unlikely]]
     {
         auto lamOnAccept = [this](ConnectType, error_code ec, IClientSession*) { ; };
         auto lamOnRead = [this](const std::string& str, error_code ec, IClientSession*) { this->RegParseToGet(str); };
@@ -121,8 +135,10 @@ void AuthModel::RegSend(const std::string& message)
         session->RunAsync("127.0.0.1", 3994);
         m_session = session;
     }
+    std::shared_ptr<IClientSession> session = m_session.lock();
     session->Send(message);
 }
+
 void AuthModel::LoginParseToGet(const std::string& webSocketData)
 {
     DataContainer getContainer{};
@@ -130,6 +146,7 @@ void AuthModel::LoginParseToGet(const std::string& webSocketData)
     m_loginview->NotifyGotResultFromNetwork(true);
     return;
 }
+
 void AuthModel::RegParseToGet(const std::string& webSocketData)
 {
     DataContainer getContainer{};
@@ -137,6 +154,7 @@ void AuthModel::RegParseToGet(const std::string& webSocketData)
     m_authview->NotifyGotResultFromNetwork(true);
     return;
 }
+
 void AuthModel::SaveTokenEtcForFutureUse(const DataContainer& data)
 {
     if (data.AsInt("error"))

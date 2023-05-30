@@ -35,9 +35,9 @@ void WebsocketCommonConnection::ChangeConnection(ServiceType type, const Endpoin
     m_endpointSelf = self;
     m_endpointOther = other;
 
-    auto sessionOld = m_session.lock();
-    if (sessionOld) [[likely]]
+    if (!m_session.expired()) [[likely]]
     {
+        auto sessionOld = m_session.lock();
         sessionOld->Close();
     }
 
@@ -74,6 +74,10 @@ void WebsocketCommonConnection::ChangeConnection(ServiceType type, const Endpoin
 
 std::shared_ptr<IClientSession> WebsocketCommonConnection::GetSession() const noexcept
 {
+    if (m_session.expired())
+    {
+        return nullptr;
+    }
     return m_session.lock();
 }
 

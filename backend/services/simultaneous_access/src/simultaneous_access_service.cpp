@@ -299,6 +299,10 @@ void SimultaneousAccessService::HandleDraw(const DataContainer& msgData, IServic
 
     for (const auto& session : sessions)
     {
+        if (session.expired())
+        {
+            continue;
+        }
         auto sessionLocked = session.lock();
         if (sessionLocked)
         {
@@ -334,7 +338,15 @@ void SimultaneousAccessService::HandleText(const DataContainer& msgData, IServic
 
     for (const auto& session : sessions)
     {
+        if (session.expired())
+        {
+            continue;
+        }
         auto sessionLocked = session.lock();
+        if (sessionLocked)
+        {
+            sessionLocked->Send(msg);
+        }
         if (sessionLocked)
         {
             sessionLocked->Send(JsonSerializer::SerializeAsString(sendData));

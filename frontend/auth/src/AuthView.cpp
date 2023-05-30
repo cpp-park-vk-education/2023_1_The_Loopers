@@ -1,6 +1,6 @@
 #include "AuthView.h"
 
-#include "AuthModel.cpp"
+#include "AuthModel.h"
 #include "LoginView.h"
 
 #include <QLabel>
@@ -9,6 +9,8 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QWidget>
+
+#include <iostream>
 
 namespace inklink::auth
 {
@@ -50,12 +52,14 @@ AuthDialog::AuthDialog(QWidget* parent) : QDialog(parent)
 
     setLayout(mainLayout);
 }
+
 void AuthDialog::OnLoginButtonClicked()
 {
     auto* login = new LoginDialog(this);
     close();
     login->show();
 }
+
 void AuthDialog::OnCreateButtonClicked()
 {
     std::string username;
@@ -81,10 +85,12 @@ void AuthDialog::OnCreateButtonClicked()
         m_model->RegSend(message);
     }
 }
+
 void AuthDialog::NotifyGotResultFromNetwork(int result)
 {
     emit GotResultFromNetwork(result);
 }
+
 void AuthDialog::DoOnGotResultFromNetwork(int result)
 {
     if (result == 0)

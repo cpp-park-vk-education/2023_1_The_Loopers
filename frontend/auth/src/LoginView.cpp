@@ -1,6 +1,6 @@
 #include "LoginView.h"
 
-#include "AuthModel.cpp"
+#include "AuthModel.h"
 #include "AuthView.h"
 
 #include <QLabel>

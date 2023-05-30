@@ -61,10 +61,15 @@ void IEventsHandler::SendEvent(int eventType, const std::string& msg)
 {
     for (const auto& subscriber : m_subscribers[eventType])
     {
-        auto session = m_serviceChassis.internalSessionsManager->GetSession(subscriber).lock();
-        if (session)
+        auto session = m_serviceChassis.internalSessionsManager->GetSession(subscriber);
+        if (session.expired())
         {
-            session->Send(msg);
+            continue;
+        }
+        auto sessionLocked = session.lock();
+        if (sessionLocked)
+        {
+            sessionLocked->Send(msg);
         }
     }
 }

@@ -216,9 +216,7 @@ void WebsocketServiceRegistrator::GetEndpoints(ServiceType desiredServicesType, 
 
 std::shared_ptr<IClientSession> WebsocketServiceRegistrator::InitSending(const std::string& errorMsg, bool critical)
 {
-    auto session = m_connectionToRegistry.lock();
-
-    if (!session) [[unlikely]]
+    if (m_connectionToRegistry.expired()) [[unlikely]]
     {
         if (!critical)
         {
@@ -230,6 +228,8 @@ std::shared_ptr<IClientSession> WebsocketServiceRegistrator::InitSending(const s
             throw std::runtime_error(errorMsg);
         }
     }
+
+    auto session = m_connectionToRegistry.lock();
 
     m_newMsg = false;
     m_msg.clear();

@@ -48,7 +48,8 @@ enum actionInfoTypes
 namespace inklink::draw
 {
 DrawModel::DrawModel(QObject* parent)
-        : QObject{parent}, m_gen{static_cast<unsigned long>(std::chrono::system_clock::now().time_since_epoch().count())}
+        : QObject{parent},
+          m_gen{static_cast<unsigned long>(std::chrono::system_clock::now().time_since_epoch().count())}
 {
     auto lambdaOnAccept = [this](ConnectType, error_code ec, IClientSession*) { ; };
     auto lambdaOnRead = [this](const std::string& str, error_code ec, IClientSession*) { this->Deserialize(str); };
@@ -120,8 +121,7 @@ DrawModel::~DrawModel()
 
 void DrawModel::Send(std::string& message)
 {
-    std::shared_ptr<IClientSession> AccessSession = m_accessSession.lock();
-    if (!AccessSession) [[unlikely]]
+    if (m_accessSession.expired() || !m_accessSession.lock()) [[unlikely]]
     {
         auto lambdaOnAccept = [this](ConnectType, error_code ec, IClientSession*) { ; };
         auto lambdaOnRead = [this](const std::string& str, error_code ec, IClientSession*) { this->Deserialize(str); };
@@ -130,6 +130,8 @@ void DrawModel::Send(std::string& message)
         AccessSession->RunAsync("127.0.0.1", simultaneousAccess);
         m_accessSession = AccessSession;
     }
+
+    std::shared_ptr<IClientSession> AccessSession = m_accessSession.lock();
     AccessSession->Send(message);
 }
 
