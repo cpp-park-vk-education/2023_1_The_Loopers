@@ -7,6 +7,8 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
+#include <iostream>
+
 namespace inklink::menu
 {
 class MenuView : public QWidget
@@ -30,7 +32,7 @@ signals:
 private:
     void InitUi()
     {
-        setGeometry(0, 0, 262, 600);
+        setGeometry(0, 0, 200, 600);
         setWindowTitle("Widget");
 
         QVBoxLayout* verticalLayout = new QVBoxLayout(this);
@@ -53,6 +55,10 @@ private:
         pushButton = createButton("Create new", this);
         verticalLayout->addWidget(pushButton);
         connect(pushButton, &QPushButton::clicked, this, &MenuView::NewClicked);
+
+        pushButton = createButton("Auth", this);
+        verticalLayout->addWidget(pushButton);
+        connect(pushButton, &QPushButton::clicked, this, &MenuView::AuthClicked);
 
         pushButton = createButton("Quit", this);
         verticalLayout->addWidget(pushButton);
@@ -81,46 +87,6 @@ private:
         )";
 
         button->setStyleSheet(styleSheet);
-
-        // QPalette buttonPalette = button->palette();
-        // buttonPalette.setColor(QPalette::Button, QColor(25, 25, 25));
-        // buttonPalette.setColor(QPalette::ButtonText, Qt::white);
-        // buttonPalette.setColor(QPalette::Highlight, QColor(60, 60, 60));
-        // button->setPalette(buttonPalette);
-
-        // connect(button, &QPushButton::pressed, this,
-        //         [button]()
-        //         {
-        //             QPalette pressedPalette = button->palette();
-        //             pressedPalette.setColor(QPalette::Button, Qt::white);
-        //             pressedPalette.setColor(QPalette::ButtonText, QColor(25, 25, 25));
-        //             pressedPalette.setColor(QPalette::Highlight, QColor(200, 200, 200));
-        //             button->setPalette(pressedPalette);
-        //         });
-
-        // connect(button, &QPushButton::released, this,
-        //         [button]()
-        //         {
-        //             QPalette releasedPalette = button->palette();
-        //             releasedPalette.setColor(QPalette::Button, QColor(25, 25, 25));
-        //             releasedPalette.setColor(QPalette::ButtonText, Qt::white);
-        //             releasedPalette.setColor(QPalette::Highlight, QColor(60, 60, 60));
-        //             button->setPalette(releasedPalette);
-        //         });
-
-        // button->setStyleSheet(
-        //         "QPushButton {"
-        //         "    background-color: white;"
-        //         "    color: rgb(25, 25, 25);"
-        //         "}"
-        //         "QPushButton:hover {"
-        //         "    background-color: rgb(200, 200, 200);"
-        //         "}"
-        //         "QPushButton:pressed {"
-        //         "    background-color: white;"
-        //         "    color: rgb(25, 25, 25);"
-        //         "    border-style: inset;"
-        //         "}");
 
         return button;
     }

@@ -19,6 +19,7 @@ DrawingView::DrawingView(QWidget* parent) : QGraphicsView(parent), drawing(false
 {
     m_scene = new DrawSceneModel(this);
     setScene(m_scene);
+    setGeometry(0, 0, 600, 600);
 }
 
 void DrawingView::mousePressEvent(QMouseEvent* event)
