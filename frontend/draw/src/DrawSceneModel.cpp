@@ -169,6 +169,39 @@ void DrawSceneModel::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
     QGraphicsScene::mouseDoubleClickEvent(event);
 }
 
+ObjectWithAttributes* DrawSceneModel::CreateNewItem()
+{
+    ObjectWithAttributes* newItem = nullptr;
+
+    // Create the appropriate item based on the current mode
+    switch (m_mode)
+    {
+    case Mode::kMove:
+        // No item to create for move mode
+        break;
+    case Mode::kLine:
+        newItem = new LineItem;
+        break;
+    case Mode::kFreeLine:
+        newItem = new FreeLineItem;
+        break;
+    case Mode::kRectangle:
+        newItem = new RectangleItem;
+        break;
+    case Mode::kEllipse:
+        newItem = new EllipseItem;
+        break;
+    }
+
+    if (newItem)
+    {
+        addItem(newItem);
+        m_itemsById[newItem->getID()] = newItem;
+    }
+
+    return newItem;
+}
+
 void DrawSceneModel::Deserialize(const std::string& message)
 {
     DataContainer gotData = JsonSerializer::ParseFromString(message);

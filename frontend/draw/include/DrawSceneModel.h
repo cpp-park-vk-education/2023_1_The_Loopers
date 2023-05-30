@@ -9,6 +9,7 @@
 #include <random>
 #include <string>
 #include <thread>
+#include <unordered_map>
 #include <vector>
 
 namespace inklink::client_connector
@@ -73,10 +74,10 @@ private:
     [[nodiscard]] int GenerateRandomNumber();
 
     Mode m_currMode;
+    std::unordered_map<std::string /*figure_id*/, ObjectWithAttributes*> m_itemsById;
 
     std::mt19937_64 m_gen;
     std::uniform_int_distribution<int> m_dis{std::numeric_limits<int>::min(), std::numeric_limits<int>::max()};
-
     DrawingView* m_view = nullptr;
 
     io_context m_ioContext;
