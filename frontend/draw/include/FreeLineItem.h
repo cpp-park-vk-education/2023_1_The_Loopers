@@ -1,3 +1,5 @@
+#include "DataContainer.h"
+
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsObject>
 #include <QPainter>
@@ -49,7 +51,29 @@ public:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override
     {
         if (event->button() == Qt::LeftButton)
-            m_selected = true;
+        {
+            m_selected = false;
+
+            DataContainer polygonInfo;
+
+            polygonInfo["number of angles"] = m_points.size();
+
+            std::vector<DataContainer> anglesArray;
+
+            for (const QPointF& point : m_points)
+            {
+                DataContainer pointContainer;
+
+                pointContainer["x"] = point.x();
+                pointContainer["y"] = point.y();
+
+                anglesArray.push_back(pointContainer);
+            }
+
+            polygonInfo["angles coordinates"] = anglesArray;
+
+            std::cout << polygonInfo << std::endl;
+        }
     }
 
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override
