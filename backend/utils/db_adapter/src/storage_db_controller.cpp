@@ -105,7 +105,7 @@ void StorageDbController::InsertRootFile(const std::string& fileName, const std:
         return;
     }
 
-    m_adapter->Insert("InsertFile", fileName, login, filePath);
+    m_adapter->Insert("InsertFile", fileName, login, filePath.string());
     m_adapter->Insert("InsertNewSession", login, fileName);
 }
 
@@ -117,7 +117,7 @@ void StorageDbController::InsertNonRootFile(const std::string& fileName,
         return;
     }
 
-    m_adapter->Insert("InsertFile", fileName, login, filePath);
+    m_adapter->Insert("InsertFile", fileName, login, filePath.string());
 }
 
 void StorageDbController::InsertGraphArc(const std::string& login, const std::string& rootFileName,
