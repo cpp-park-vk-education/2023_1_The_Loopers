@@ -14,6 +14,6 @@ using ReadFileResult = std::tuple<std::string, bool>;
 public:
     [[nodiscard]] ReadFileResult GetFile(const std::filesystem::path& filePath) const noexcept;
 };
-}  // namespace inklink_file_holder
+}  // namespace inklink::file_holder
 
 #endif  // _BACK_SERVICES_STORAGE_INCLUDE_READ_FILE_H_

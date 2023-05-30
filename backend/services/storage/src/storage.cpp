@@ -1,9 +1,11 @@
 #include "storage.h"
 
-#include <websocket_session_factory.h>
+#include <data_container.h>
+
 #include <inklink/chassis_configurators/base_websocket_configurator.h>
 #include <json_serializer.h>
-
+#include <websocket_session_factory.h>
+#include <iauthorizer.h>
 #include <boost/asio/io_context.hpp>
 #include <boost/system/error_code.hpp>
 
@@ -219,4 +221,4 @@ void Storage::SetFileHolder(std::shared_ptr<IFileHolder> fileHolder)
         m_dbController->InsertNonRootFile(fileName, login, filePath);
     }
 }
-} // namespace inklink: storage
+} // namespace inklink::storage

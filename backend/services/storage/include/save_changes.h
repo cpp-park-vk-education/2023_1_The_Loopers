@@ -11,6 +11,6 @@ class FileChangesSaver final
 public:
     bool SaveFile(const std::filesystem::path& filePath, const std::string& changes) const noexcept;
 };
-}  // namespace inklink_file_holder
+}  // namespace inklink::file_holder
 
 #endif  // _BACK_SERVICES_STORAGE_INCLUDE_SAVE_CHANGES_H_

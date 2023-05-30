@@ -11,4 +11,4 @@ FileHolder::ReadFileResult FileHolder::Get(const std::filesystem::path& filePath
 {
     return m_fileReader.GetFile(filePath);
 }
-}  // namespace inklink_file_holder
+}  // namespace inklink::file_holder

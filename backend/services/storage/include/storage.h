@@ -8,9 +8,9 @@ namespace inklink::storage
 class Storage final : public IStorage
 {
 public:
-    using IFileHolder = file_holder::IFileHolder;
-    using IStorageDbController = db_controller::IStorageDbController;
-    using IExternalServiceChassis = external_service_chassis::IExternalServiceChassis;
+    using IFileHolder = inklink::file_holder::IFileHolder;
+    using IStorageDbController = inklink::db_controller::IStorageDbController;
+    using IExternalServiceChassis = inklink::external_service_chassis::IExternalServiceChassis;
 
 public:
     int Run(int port) override;

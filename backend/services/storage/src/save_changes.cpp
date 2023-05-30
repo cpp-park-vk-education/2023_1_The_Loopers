@@ -17,4 +17,4 @@ bool FileChangesSaver::SaveFile(const std::filesystem::path& filePath, const std
 
     return true;
 }
-}  // namespace inklink_file_holder
+}  // namespace inklink::file_holder

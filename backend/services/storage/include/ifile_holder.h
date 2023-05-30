@@ -22,6 +22,6 @@ protected:
     FileChangesSaver m_changesSaver;
     FileReader m_fileReader;
 };
-} // namespace inklink_file_holder
+} // namespace inklink::file_holder
 
 #endif // _BACK_SERVICES_STORAGE_INCLUDE_IFILE_HOLDER_H_

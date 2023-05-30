@@ -19,4 +19,4 @@ FileReader::ReadFileResult FileReader::GetFile(const std::filesystem::path& file
     
     return {stringFile.str(), true};
 }
-}  // namespace inklink_file_holder
+}  // namespace inklink::file_holder
