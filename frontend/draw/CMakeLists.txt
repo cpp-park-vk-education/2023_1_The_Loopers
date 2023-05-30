@@ -5,7 +5,11 @@ set(SOURCES
         "src/DrawSceneModel.cpp"
         "src/GraphicsDrawView.cpp"
         "src/IObject.cpp"
-        )
+        "src/RectangleItem.cpp"
+        "src/LineItem.cpp"
+        "src/FreeLineItem.cpp"
+        "src/EllipseItem.cpp"
+)
 
 set(PUBLIC_INCLUDE_DIRECTORIES
         "include"
