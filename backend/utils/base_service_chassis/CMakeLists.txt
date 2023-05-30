@@ -13,7 +13,7 @@ set(PUBLIC_INCLUDE_DIRECTORIES
     "local_service_registry/include"
     "logger_adapter/include"
     "message_broker_connector/include"
-    "service_registator/include"
+    "service_registrator/include"
 )
 
 target_include_directories(${BASE_SERVICE_CHASSIS} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
