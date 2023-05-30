@@ -17,14 +17,14 @@ public:
 
     virtual void Run(const std::string& connectionString) = 0;
 
-    virtual [[nodiscard]] std::filesystem::path GetFilePath(const std::string& fileName,
+    [[nodiscard]] virtual std::filesystem::path GetFilePath(const std::string& fileName,
                                                             const std::string& login) const = 0;
 
     //root - is the file that created session
-    virtual [[nodiscard]] std::string GetGraphArcs(const std::string& rootFileName, const std::string& vertexFileName,
-                                                   const std::string& login) const = 0;
+    [[nodiscard]] virtualstd::string GetGraphArcs(const std::string& rootFileName, const std::string& vertexFileName,
+                                                  const std::string& login) const = 0;
 
-    virtual [[nodiscard]] std::string GetAllFilesForUser(const std::string& login) const = 0;
+    [[nodiscard]] virtual std::string GetAllFilesForUser(const std::string& login) const = 0;
 
     virtual void InsertRootFile(const std::string& fileName, const std::string& login,
                             const std::filesystem::path& filePath) const = 0;

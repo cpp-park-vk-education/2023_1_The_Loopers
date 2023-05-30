@@ -51,7 +51,7 @@ std::filesystem::path StorageDbController::GetFilePath(const std::string& fileNa
 {
     if (fileName.empty() || login.empty())
     {
-        return "";
+        return {};
     }
 
     DbTable filePath = m_adapter.Select("GetFilePath", fileName, login);
@@ -64,7 +64,7 @@ std::string StorageDbController::GetGraphArcs(const std::string& rootFileName, c
 {
     if (vertexName.empty() || rootFileName.empty() || login.empty())
     {
-        return "";
+        return {};
     }
 
     DbTable graphNodeNeighboringNodes = m_adapter.Select("GetGraphArcs", vertexFileName, login, rootFileName);
@@ -82,7 +82,7 @@ std::string StorageDbController::GetAllFilesForUser(const std::string& login) co
 {
     if (login.empty())
     {
-        return "";
+        return {};
     }
 
     DbTable allFiles = m_adapter.Select("GetAllFilesForUser", login);
@@ -100,7 +100,7 @@ std::string StorageDbController::GetAllFilesForUser(const std::string& login) co
 void StorageDbController::InsertRootFile(const std::string& fileName, const std::string& login,
                                      const std::filesystem::path& filePath) const
 {
-    if (fileName.empty() || login.empty() || !filePath.empty())
+    if (fileName.empty() || login.empty() || filePath.empty())
     {
         return;
     }
