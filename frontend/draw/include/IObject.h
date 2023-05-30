@@ -7,8 +7,8 @@ namespace inklink::draw
 {
 struct Point
 {
-    std::size_t xPosition;
-    std::size_t yPosition;
+    int xPosition;
+    int yPosition;
 };
 
 class ObjectWithAttributes
@@ -16,52 +16,55 @@ class ObjectWithAttributes
 public:
     virtual ~ObjectWithAttributes() = default;
 
-    virtual size_t getID() = 0;
-    virtual void setID(std::size_t ID) = 0;
+    virtual int getID() = 0;
+    virtual void setID(int ID) = 0;
     virtual std::string serialize() = 0;
+
+//private:
+    int m_ID;
 };
 
 class TextBox : public ObjectWithAttributes
 {
 public:
-    size_t getID() override;
-    void setID(std::size_t ID) override;
+    int getID() override;
+    void setID(int ID) override;
     std::string serialize() override;
 
-private:
-    size_t m_ID;
+//private:
+    int m_ID;
     std::string m_objectType;
     std::string m_textContent;
     Point m_topLeftCorner;
-    size_t m_width;
+    int m_width;
 };
 
 class Polygon : public ObjectWithAttributes
 {
 public:
-    size_t getID() override;
-    void setID(std::size_t ID) override;
+    int getID() override;
+    void setID(int ID) override;
     std::string serialize() override;
 
-private:
-    size_t m_ID;
+//private:
+    int m_ID;
     std::string m_objectType;
-    size_t m_numberOfVertex;
+    int m_numberOfVertex;
     std::vector<Point> m_arrayOfVertexCoordinates;
 };
 
 class Ellipse : public ObjectWithAttributes
 {
 public:
-    size_t getID() override;
-    void setID(std::size_t ID) override;
+    int getID() override;
+    void setID(int ID) override;
     std::string serialize() override;
 
-private:
-    size_t m_ID;
+//private:
+    int m_ID;
     std::string m_objectType;
     Point m_center;
-    size_t m_xRadius;
-    size_t m_yRadius;
+    int m_xRadius;
+    int m_yRadius;
 };
 } // namespace inklink::draw
