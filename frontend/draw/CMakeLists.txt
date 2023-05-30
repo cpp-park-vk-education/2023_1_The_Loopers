@@ -1,15 +1,39 @@
-add_library(${DRAW} STATIC "")
+# add_library(${DRAW} STATIC "")
 
-target_sources(${DRAW} PRIVATE
+set(SOURCES
         "src/temp.cpp"
+        "src/DrawView.cpp"
+        "src/DrawModel.cpp"
+        "src/DrawSceneModel.cpp"
+        "src/DrawUsingQGraphicsView.cpp"
+        "src/IObject.cpp"
         )
 
 set(PUBLIC_INCLUDE_DIRECTORIES
         "include"
-        "itool/include"
+        "Itool/include"
         "tool_box/include"
         )
 
+file(GLOB HEADER_FILES include/*.h)
+
+qt_wrap_cpp(SOURCES 
+        ${HEADER_FILES}
+        tool_box/include/ToolBox.h
+)
+
+qt_add_library(${DRAW}
+        STATIC
+        "${SOURCES}"
+)
+
 target_include_directories(${DRAW} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
 
-target_link_libraries(${DRAW} PRIVATE ${REQUIRED_LIBS_QUALIFIED})
+set(PRIVATE_LINK_LIBRARIES
+        "${REQUIRED_LIBS_QUALIFIED}"
+        "${SERIALIZER}"
+        "${CLIENT_NETWORK}"
+        "${NETWORK_ADAPTER}"
+        )
+
+target_link_libraries(${DRAW} PRIVATE ${PRIVATE_LINK_LIBRARIES})

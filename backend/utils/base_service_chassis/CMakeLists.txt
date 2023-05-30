@@ -1,9 +1,15 @@
 add_library(${BASE_SERVICE_CHASSIS} STATIC "")
 
 target_sources(${BASE_SERVICE_CHASSIS} PRIVATE
-    "src/trash.cpp"
+    "internal_sessions_manager/src/internal_sessions_manager.cpp"
     "logger_adapter/src/ilogger.cpp"
     "logger_adapter/src/spdlog_adapter.cpp"
+    "local_service_registry/src/local_service_registry.cpp"
+    "message_broker_connector/src/icommon_connection.cpp"
+    "message_broker_connector/src/websocket_common_connection.cpp"
+    "message_broker_connector/src/message_broker_event.cpp"
+    "message_broker_connector/src/message_broker_signal.cpp"
+    "service_registrator/src/websocket_service_registrator.cpp"
 )
 
 set(PUBLIC_INCLUDE_DIRECTORIES
@@ -13,7 +19,7 @@ set(PUBLIC_INCLUDE_DIRECTORIES
     "local_service_registry/include"
     "logger_adapter/include"
     "message_broker_connector/include"
-    "service_registator/include"
+    "service_registrator/include"
 )
 
 target_include_directories(${BASE_SERVICE_CHASSIS} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
@@ -40,6 +46,7 @@ target_link_libraries(${BASE_SERVICE_CHASSIS} PRIVATE ${PRIVATE_LINK_LIBRARIES})
 set(PUBLIC_LINK_LIBRARIES 
     "${SERVER_NETWORK}"
     "${CLIENT_NETWORK}"
+    "${SERIALIZER}"
 )
 
 target_link_libraries(${BASE_SERVICE_CHASSIS} PUBLIC ${PUBLIC_LINK_LIBRARIES})

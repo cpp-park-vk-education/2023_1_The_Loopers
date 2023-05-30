@@ -1,0 +1,76 @@
+template <typename T>
+concept AllowedSimpleType = std::same_as<T, int> || std::same_as<T, std::string> || std::same_as<T, double>;
+
+template <typename T>
+concept AllowedVectorType = std::same_as<T, std::vector<int>> || std::same_as<T, std::vector<std::string>> ||
+                            std::same_as<T, std::vector<double>>;
+
+class DataContainer
+{
+public:
+    using ObjectsContainer = std::unordered_map<std::string, std::shared_ptr<DataContainer>>;
+
+public:
+DataContainer() = default;
+~DataContainer() = default;
+
+template <AllowedSimpleType T>
+/*implicit*/ DataContainer(T value);
+template <AllowedVectorType T>
+/*implicit*/ DataContainer(T vector);
+/*implicit*/ DataContainer(std::vector<DataContainer> vector);
+
+DataContainer( DataContainer&);
+DataContainer(DataContainer&&) noexcept;
+
+DataContainer& operator=( DataContainer&);
+DataContainer& operator=(DataContainer&&) noexcept;
+
+template <AllowedSimpleType T>
+DataContainer& operator=(T value);
+DataContainer& operator=(const char* value);
+template <AllowedVectorType T>
+DataContainer& operator=(T vector);
+DataContainer& operator=(std::vector<DataContainer> vector);
+std::vector<DataContainer>& CreateArray();
+
+std::string& AsString();
+bool IsString() ;
+
+int& AsInt();
+bool IsInt() ;
+
+double& AsDouble();
+bool IsDouble() ;
+
+std::vector<DataContainer>& AsArray();
+bool IsArray() ;
+
+ObjectsContainer& AsObjectsContainer();
+bool IsObjectsContainer() ;
+
+// for childs (if current is ObjectsContainer)
+std::string& AsString( std::string&);
+bool IsString(std::string) ;
+
+int& AsInt(std::string key);
+bool IsInt(std::string key);
+
+double& AsDouble(std::string key);
+bool IsDouble(std::string key);
+
+std::vector<DataContainer>& AsArray(std::string key);
+bool IsArray(std::string key);
+
+ObjectsContainer& AsObjectsContainer(std::string key);
+bool IsObjectsContainer(std::string key);
+
+bool Has(std::string key);
+
+void Clear();
+
+DataContainer& operator[](std::string key);
+DataContainer& operator[](std::string key);
+DataContainer& At(std::string key);
+DataContainer& At(std::string key);
+};

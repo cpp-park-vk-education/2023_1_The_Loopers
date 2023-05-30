@@ -10,6 +10,7 @@ namespace inklink::base_service_chassis
 {
 void SpdlogAdapter::LogDebug(const std::string& message) const noexcept
 {
+    std::cout << "Debug " << message << " " << __LINE__ << std::endl;
     if (m_logger)
     {
         m_logger->debug(message);
@@ -22,6 +23,7 @@ void SpdlogAdapter::LogDebug(const std::string& message) const noexcept
 
 void SpdlogAdapter::LogInfo(const std::string& message) const noexcept
 {
+    std::cout << "LogInfo " << message << " " << __LINE__ << std::endl;
     if (m_logger)
     {
         m_logger->info(message);
@@ -34,6 +36,7 @@ void SpdlogAdapter::LogInfo(const std::string& message) const noexcept
 
 void SpdlogAdapter::LogWarning(const std::string& message) const noexcept
 {
+    std::cout << "LogWarning " << message << " " << __LINE__ << std::endl;
     if (m_logger)
     {
         m_logger->warn(message);
@@ -46,6 +49,7 @@ void SpdlogAdapter::LogWarning(const std::string& message) const noexcept
 
 void SpdlogAdapter::LogCritical(const std::string& message) const noexcept
 {
+    std::cout << "LogCritical " << message << " " << __LINE__ << std::endl;
     if (m_logger)
     {
         m_logger->critical(message);

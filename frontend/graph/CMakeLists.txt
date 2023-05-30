@@ -1,7 +1,14 @@
 add_library(${GRAPH} STATIC "")
 
+set_target_properties(${GRAPH} PROPERTIES AUTOMOC TRUE)
+
 target_sources(${GRAPH} PRIVATE
-        "src/temp.cpp"
+        "src/GraphView.cpp"
+        "src/VertexView.cpp"
+        "src/EdgeView.cpp"
+        "src/Edge.cpp"
+        "src/GraphModel.cpp"
+        "src/Vertex.cpp"
         )
 
 set(PUBLIC_INCLUDE_DIRECTORIES

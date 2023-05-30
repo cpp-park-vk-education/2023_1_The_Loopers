@@ -2,6 +2,8 @@
 
 #include "inklink_global.h"
 
+#include <data_container.h>
+
 #include <chrono>
 #include <map>
 #include <memory>
@@ -9,29 +11,24 @@
 #include <tuple>
 #include <vector>
 
-namespace inklink::serializer
-{
-class IData;
-}
-
 namespace inklink::service_simultaneous_access
 {
 struct DrawAction
 {
-    using IData = serializer::IData;
+    using DataContainer = serializer::DataContainer;
 
     ResolverActionType type;
     std::string figureId;
     Endpoint endpoint;
     std::chrono::time_point<std::chrono::system_clock> time;
-    IData* data;
+    DataContainer data;
 
-    constexpr bool operator==(const DrawAction& other) const noexcept
+    [[nodiscard]] constexpr bool operator==(const DrawAction& other) const noexcept
     {
-        return std::tie(type, figureId, endpoint, time, data) ==
-               std::tie(other.type, other.figureId, other.endpoint, other.time, other.data);
+        return std::tie(type, figureId, endpoint, time) ==
+               std::tie(other.type, other.figureId, other.endpoint, other.time);
     }
-    bool operator!=(const DrawAction& other) const
+    [[nodiscard]] constexpr bool operator!=(const DrawAction& other) const noexcept
     {
         return !(*this == other);
     }
@@ -39,9 +36,19 @@ struct DrawAction
 
 class IDrawConflictResolver
 {
+    using time_point = std::chrono::time_point<std::chrono::system_clock>;
+
 public:
     virtual ~IDrawConflictResolver() = default;
 
-    virtual std::vector<DrawAction> resolve(std::vector<DrawAction>) = 0;
+    // vector by value because a lot of implementation will change it => no additional copies from const&
+    virtual void Resolve(std::vector<DrawAction>&) = 0;
+    [[nodiscard]] std::vector<DrawAction> GetHistory() const
+    {
+        return m_history;
+    }
+
+protected:
+    std::vector<DrawAction> m_history;
 };
 } // namespace inklink::service_simultaneous_access

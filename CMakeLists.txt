@@ -33,8 +33,12 @@ include(cmake/apply_options.cmake)
 # services
 set(MESSAGE_BROKER_SERVICE service_${PROJECT_NAME}_message_broker)
 set(SIMULTANEOUS_ACCESS_SERVICE service_${PROJECT_NAME}_simultaneous_access)
+<<<<<<< HEAD
 set(STORAGE_SERVICE service_${PROJECT_NAME}_storage_service)
 
+=======
+set(SERVICE_REGISTRY service_${PROJECT_NAME}_service_registry)
+>>>>>>> 4b2812f08a77063d2216124b452301cd62c94b59
 # backend utils
 set(AUTHORIZER ${PROJECT_NAME}_authorizer)
 set(BASE_SERVICE_CHASSIS ${PROJECT_NAME}_base_service_chassis)

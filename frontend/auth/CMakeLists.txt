@@ -1,13 +1,38 @@
-add_library(${AUTH} STATIC "")
+#add_library(${AUTH} STATIC "")
 
-target_sources(${AUTH} PRIVATE
-        "src/temp.cpp"
-        )
+set(SOURCES
+        "src/AuthView.cpp"
+        "src/LoginView.cpp"
+        "src/AuthModel.cpp"
+)
+
+# target_include_libs(${AUTH} PRIVATE
+#         "${SERIALIZER}"
+#         }
 
 set(PUBLIC_INCLUDE_DIRECTORIES
         "include"
         )
 
+file(GLOB HEADER_FILES include/*.h include/AuthModel.h)
+
+qt_wrap_cpp(SOURCES
+        ${HEADER_FILES}
+        )
+
+qt_add_library(${AUTH}
+        STATIC
+        "${SOURCES}"
+        )
+
 target_include_directories(${AUTH} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
 
-target_link_libraries(${AUTH} PRIVATE ${REQUIRED_LIBS_QUALIFIED})
+set(PRIVATE_LINK_LIBRARIES
+        "${REQUIRED_LIBS_QUALIFIED}"
+        "${SERIALIZER}"
+        "${CLIENT_NETWORK}"
+        "${NETWORK_ADAPTER}"
+        )
+
+target_link_libraries(${AUTH} PRIVATE ${PRIVATE_LINK_LIBRARIES})
+

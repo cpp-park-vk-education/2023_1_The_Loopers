@@ -1,16 +1,15 @@
 #pragma once
 
-#include "idraw_conflict_resolver.h"
-#include "itext_conflict_resolver.h"
+#include "iresolvers_factory.h"
 
 namespace inklink::service_simultaneous_access
 {
-class IResolversFactory
+class BlockingResolversFactory final : public IResolversFactory
 {
 public:
-    virtual ~IResolversFactory() = default;
+    ~BlockingResolversFactory() override = default;
 
-    virtual ITextConflictResolver* GetTextConflictResolver() = 0;
-    virtual IDrawConflictResolver* GetDrawConflictResolver() = 0;
+    [[nodiscard]] ITextConflictResolver* GetTextConflictResolver() const override;
+    [[nodiscard]] IDrawConflictResolver* GetDrawConflictResolver() const override;
 };
 } // namespace inklink::service_simultaneous_access

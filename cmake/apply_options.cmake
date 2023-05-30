@@ -75,7 +75,24 @@ else()
 
     if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC") 
         set(WARNINGS_FLAGS
-            "-Wall"
+            # "-W2"
+
+            # all below are for qt
+            "-Zc:rvalueCast"
+            "-Zc:inline"
+            "-Zc:strictStrings" 
+            "-Zc:throwingNew" 
+            "-permissive-" 
+            "-Zc:__cplusplus" 
+            "-Zc:externConstexpr" 
+            "-utf-8" 
+            "-w34100" 
+            "-w34189" 
+            "-w44996" 
+            "-w44456" 
+            "-w44457" 
+            "-w44458"
+            "/bigobj"
         )
     else()
         set(WARNINGS_FLAGS
@@ -85,7 +102,11 @@ else()
             "-Wpedantic"
             "-Wno-error=return-type"
             "-Wno-error=unused-parameter"
+            # "-Wno-error=nested-anon-types"
         )
+        if (WIN32)
+            list(APPEND ${WARNINGS_FLAGS} "-Wno-error=nested-anon-types") # boost/winapi/file_management.hpp
+        endif()
         if(NOT ENABLE_CLANG_TIDY)
             list(APPEND ${WARNINGS_FLAGS} "-Wabi=${CMAKE_CXX_STANDARD}")
         endif()
