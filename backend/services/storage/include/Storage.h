@@ -19,7 +19,8 @@ public:
     void DoOnNotified(int eventType, const std::string&, Endpoint from) override;
 
     [[nodiscard]] std::string GetFile(const std::string& fileName, const std::string& login) const override;
-    [[nodiscard]] bool Update(const std::string& fileName, const std::string& login, const std::string& fileChanges) const override;
+    [[nodiscard]] bool Update(const std::string rootFileName, const std::string& fileName, const std::string& login,
+                              const std::string& fileChanges) const override;
 
     void SetChassis(std::shared_ptr<IExternalServiceChassis> serviceChassis)  override;
     void SetDbController(std::shared_ptr<IStorageDbController> dbController, int port) override;

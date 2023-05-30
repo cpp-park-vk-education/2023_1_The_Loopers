@@ -33,7 +33,8 @@ public:
     virtual void DoOnNotified(int eventType, const std::string&, Endpoint from);
 
     [[nodiscard]] virtual std::string GetFile(const std::string& fileName, const std::string& login) const = 0;
-    [[nodiscard]] virtual bool Update(const std::string& fileName, const std::string& login, const std::string& fileChanges) const = 0;
+    [[nodiscard]] virtual bool Update(const std::string rootFileName, const std::string& fileName,
+                                      const std::string& login, const std::string& fileChanges) const = 0;
 
 
     virtual void SetChassis(std::shared_ptr<IExternalServiceChassis> serviceChassis) = 0;

@@ -60,7 +60,8 @@ int Storage::Run(int port)
     }
     catch (const std::exception& ec)
     {
-        m_serviceChassis->baseServiceChassis->logger->LogDebug(std::string("Got error in initialazing. Error: " + ec.message());
+        m_serviceChassis->baseServiceChassis->logger->LogDebug(
+                std::string("Got error in initialazing. Error: ") + ec.what());
         return -1;
     }
 }
@@ -69,24 +70,37 @@ bool Storage::DoOnRead(error_code errocCode, const std::string& msg, IServiceSes
 {
     if (errocCode)
     {
-        m_serviceChassis->logger->LogDebug(std::string("Got error while reading from '...'. Error: ") + ec.what());
+        m_serviceChassis->baseServiceChassis->logger->LogDebug(
+                std::string("Got error while reading from '...'. Error: ") + errocCode.what());
     }
 
     auto msgData = JsonSerializer::ParseString(msg);
     try
     {
     }
-    catch (const std::exception&)
+    catch (const std::exception& ec)
     {
+        m_serviceChassis->baseServiceChassis->logger->LogDebug(
+                std::string("Got error while reading from '...'. Error: ") + ec.what());
     }
 }
 
 std::string Storage::GetFile(const std::string& fileName, const std::string& login) const
 {
-    auto[file, isCorrect] = m_fileWorker->Get(m_dbController->GetFilePath(fileName, login));
-    if (isCorrect)
+    try
     {
-        return file;
+        auto [file, isCorrect] = m_fileWorker->Get(m_dbController->GetFilePath(fileName, login));
+        if (isCorrect)
+        {
+            DataContainer sendContainer{};
+
+            sendContainer["file"] = file;
+        }
+    }
+    catch (const std::exception& ec)
+    {
+        m_serviceChassis->baseServiceChassis->logger->LogDebug(
+                std::string("Got error while reading from '...'. Error: ") + ec.what());
     }
 }
 
@@ -94,26 +108,34 @@ std::string Storage::GetAllFilesNames(const std::string& login) const
 {
     try
     {
-        return m_dbController->GetAllFilesForUser(login);
+         std::string allFiles = m_dbController->GetAllFilesForUser(login);
+
+         DataContainer sendContainer{};
+
+         sendContainer["files"] = allFiles;
     }
-    catch (const std::exception&)
+    catch (const std::exception& ec)
     {
+         m_serviceChassis->baseServiceChassis->logger->LogDebug(
+                 std::string("Got error while reading from '...'. Error: ") + ec.what());
     }
 }
 
-bool Storage::Update(const std::string& fileName, const std::string& login, const std::string& fileChanges) const
+bool Storage::Update(const std::string rootFileName, const std::string& fileName, const std::string& login, const std::string& fileChanges) const
 {
     try
     {
         if (m_dbController->GetFilePath(fileName, login).string().empty())
         {
-            Create(fileName, login);
+            Create(fileName, login, rootFileName);
         }
 
         m_fileWorker->Save(m_dbController->GetFilePath(fileName, login), fileChanges);
     }
-    catch (const std::exception&)
+    catch (const std::exception& ec)
     {
+        m_serviceChassis->baseServiceChassis->logger->LogDebug(
+                std::string("Got error while reading from '...'. Error: ") + ec.what());
     }
 }
 
@@ -123,10 +145,16 @@ std::string Storage::GetGraphArcsForOneVertex(const std::string& rootFileName, c
 {
     try
     {
-        return m_dbController->GetGraphArcs(rootFileName, vertexFileName, login);
+        std::string graphArcs = m_dbController->GetGraphArcs(rootFileName, vertexFileName, login);
+
+        DataContainer sendContainer{};
+
+        sendContainer["graph"] = graphArcs;
     }
-    catch (const std::exception&)
+    catch (const std::exception& ec)
     {
+        m_serviceChassis->baseServiceChassis->logger->LogDebug(
+                std::string("Got error while reading from '...'. Error: ") + ec.what());
     }
 }
 
@@ -136,14 +164,24 @@ void Storage::SaveGraphArc(const std::string& rootFileName, const std::string& f
     {
         m_dbController->InsertGraphArc(rootFileName, fromFileName, toFileName);
     }
-    catch (const std::exception&)
+    catch (const std::exception& ec)
     {
+        m_serviceChassis->baseServiceChassis->logger->LogDebug(
+                std::string("Got error while reading from '...'. Error: ") + ec.what());
     }
 }
 
 void Storage::DeleteFile(const std::string& fileName, const std::string& login) const
 {
-    m_dbController->SetFileDeleted(fileName, login);
+    try
+    {
+        m_dbController->SetFileDeleted(fileName, login);
+    }
+    catch (const std::exception& ec)
+    {
+        m_serviceChassis->baseServiceChassis->logger->LogDebug(
+                std::string("Got error while reading from '...'. Error: ") + ec.what());
+    }
 }
 
 void Storage::SetChassis(std::shared_ptr<IExternalServiceChassis> serviceChassis)
