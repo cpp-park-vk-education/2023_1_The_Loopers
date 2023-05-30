@@ -2,13 +2,12 @@
 
 #include "IObject.h"
 
-#include <DataContainer.h>
+#include <data_container.h>
 
 #include <QGraphicsObject>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
-
 
 class EllipseItem : public ObjectWithAttributes
 {

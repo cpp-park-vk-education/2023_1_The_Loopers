@@ -2,7 +2,7 @@
 
 #include "IObject.h"
 
-#include <DataContainer.h>
+#include <data_container.h>
 
 #include <QGraphicsObject>
 #include <QGraphicsSceneMouseEvent>
