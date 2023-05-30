@@ -1,7 +1,5 @@
 #pragma once
 
-#include "AuthModel.h"
-
 #include <QDialog>
 #include <QGraphicsView>
 #include <QLineEdit>

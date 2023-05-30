@@ -24,7 +24,7 @@ qt_wrap_cpp(SOURCES
 
 qt_add_library(${DRAW}
         STATIC
-    "${SOURCES}"
+        "${SOURCES}"
 )
 
 target_include_directories(${DRAW} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
