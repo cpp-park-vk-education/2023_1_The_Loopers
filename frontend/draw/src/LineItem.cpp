@@ -2,7 +2,7 @@
 
 namespace inklink::draw
 {
-LineItem::LineItem(QGraphicsItem *parent) : ObjectWithAttributes(parent), m_selected(false), m_selectedPoint(-1)
+LineItem::LineItem(QGraphicsItem* parent) : ObjectWithAttributes(parent), m_selected(false), m_selectedPoint(-1)
 {
     setFlag(ItemIsSelectable);
     setAcceptHoverEvents(true);
@@ -14,7 +14,7 @@ QRectF LineItem::boundingRect() const
     return m_line.boundingRect();
 }
 
-void LineItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void LineItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
     Q_UNUSED(widget);
 
@@ -29,7 +29,7 @@ void LineItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     drawPoints(painter);
 }
 
-void LineItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void LineItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton)
     {
@@ -57,7 +57,7 @@ void LineItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
     }
 }
 
-void LineItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+void LineItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
     if (m_selected)
     {
@@ -80,7 +80,7 @@ void LineItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     }
 }
 
-void LineItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void LineItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton)
     {
@@ -121,7 +121,7 @@ QPainterPath LineItem::shape() const
     return path;
 }
 
-void LineItem::drawPoints(QPainter *painter) const
+void LineItem::drawPoints(QPainter* painter) const
 {
     painter->setPen(Qt::NoPen);
     painter->setBrush(Qt::black);
