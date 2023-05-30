@@ -19,6 +19,7 @@ file(GLOB HEADER_FILES include/*.h)
 
 qt_wrap_cpp(SOURCES 
         ${HEADER_FILES}
+        tool_box/include/ToolBox.h
 )
 
 qt_add_library(${DRAW}
