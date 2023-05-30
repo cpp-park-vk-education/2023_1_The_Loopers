@@ -12,19 +12,9 @@
 
 #include <iostream>
 
-namespace inklink::auth
+namespace
 {
-AuthDialog::AuthDialog(QWidget* parent) : QDialog(parent)
-{
-    m_model = new AuthModel;
-
-    connect(this, &AuthDialog::GotResultFromNetwork, this, &AuthDialog::DoOnGotResultFromNetwork);
-
-    setWindowTitle("Registration");
-
-    setFixedSize(300, 200);
-
-    QString styleSheet = R"(
+QString myStyleSheet = R"(
             #customButton {
                 background-color: rgb(25, 25, 25);
                 color: white;
@@ -38,6 +28,19 @@ AuthDialog::AuthDialog(QWidget* parent) : QDialog(parent)
                 color: rgb(25, 25, 25);
             }
         )";
+} // namespace
+
+namespace inklink::auth
+{
+AuthDialog::AuthDialog(QWidget* parent) : QDialog(parent)
+{
+    m_model = new AuthModel;
+
+    connect(this, &AuthDialog::GotResultFromNetwork, this, &AuthDialog::DoOnGotResultFromNetwork);
+
+    setWindowTitle("Registration");
+
+    setFixedSize(300, 200);
 
     m_usernameLine = new QLineEdit(this);
     m_passwordLine = new QLineEdit(this);
@@ -47,12 +50,12 @@ AuthDialog::AuthDialog(QWidget* parent) : QDialog(parent)
 
     auto* createButton = new QPushButton(tr("Register"), this);
     createButton->setFlat(true);
-    createButton->setStyleSheet(styleSheet);
+    createButton->setStyleSheet(myStyleSheet);
     connect(createButton, &QPushButton::clicked, this, &AuthDialog::OnCreateButtonClicked);
 
     auto* loginButton = new QPushButton(tr("Log in"), this);
     loginButton->setFlat(true);
-    loginButton->setStyleSheet(styleSheet);
+    loginButton->setStyleSheet(myStyleSheet);
     connect(loginButton, &QPushButton::clicked, this, &AuthDialog::OnLoginButtonClicked);
 
     auto* buttonsLayout = new QHBoxLayout;
@@ -90,13 +93,16 @@ void AuthDialog::OnCreateButtonClicked()
     username = usernameEnter.toStdString();
     password = passwordEnter.toStdString();
 
+    QMessageBox warningBox;
+    warningBox.setStyleSheet(myStyleSheet);
+
     if (username.empty())
     {
-        QMessageBox::warning(this, "error", "Enter username");
+        warningBox.warning(this, "error", "Enter username");
     }
     else if (password.empty())
     {
-        QMessageBox::warning(this, "error", "Enter password");
+        warningBox.warning(this, "error", "Enter password");
     }
     else
     {
@@ -114,7 +120,9 @@ void AuthDialog::DoOnGotResultFromNetwork(int result)
 {
     if (result == 0)
     {
-        QMessageBox::warning(this, "usernameEnter", "Existing username");
+        QMessageBox warningBox;
+        warningBox.setStyleSheet(myStyleSheet);
+        warningBox.warning(this, "usernameEnter", "Existing username");
     }
     else
     {
