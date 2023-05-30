@@ -85,15 +85,15 @@ void LoginDialog::OnEnterButtonClicked()
         m_model->LoginSend(message);
     }
 }
-void NotifyGotResultFromNetwork(bool result)
+void LoginDialog::NotifyGotResultFromNetwork(bool result)
 {
     emit GotResultFromNetwork(result);
 }
-void DoOnGotResultFromNetwork(bool result)
+void LoginDialog::DoOnGotResultFromNetwork(bool result)
 {
     if (!result)
     {
-        QMessageBox::warning(this, usernameEnter, "Uncorrect username or password");
+        QMessageBox::warning(this, "UsernameEnter", "Uncorrect username or password");
     }
     else
     {

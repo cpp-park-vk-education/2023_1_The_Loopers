@@ -1,8 +1,9 @@
 #pragma once
 
-#include <websocket_client_session.h>
-#include <data_container.h>
 #include "json_serializer.h"
+
+#include <data_container.h>
+#include <websocket_client_session.h>
 
 #include <boost/asio.hpp>
 #include <boost/system/error_code.hpp>
@@ -40,16 +41,16 @@ public:
     void Exit();
     const std::string GetLogin() const;
     const std::string GetToken() const;
-    std::string LoginParseToSend(std::string& login, std::string& password);
-    std::string RegParseToSend(std::string login, std::string password);
-    void LoginSend(std::string message);
-    void RegSend(std::string message);
+    std::string LoginParseToSend(const std::string& login, const std::string& password);
+    std::string RegParseToSend(const std::string& login, const std::string& password);
+    void LoginSend(const std::string& message);
+    void RegSend(const std::string& message);
 
 private:
     void SetLogin(const std::string& login);
     void SetToken(const std::string& token);
-    void LoginParseToGet(std::string& webSocketData);
-    void RegParseToGet(std::string& webSocketData);
+    void LoginParseToGet(const std::string& webSocketData);
+    void RegParseToGet(const std::string& webSocketData);
     void SaveTokenEtcForFutureUse(const serializer::DataContainer& data);
 
 private:

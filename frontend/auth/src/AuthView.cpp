@@ -20,8 +20,8 @@ AuthDialog::AuthDialog(QWidget* parent) : QWidget(parent)
 
     setFixedSize(300, 200);
 
-    usernameLine = new QLineEdit(this);
-    passwordLine = new QLineEdit(this);
+    m_usernameLine = new QLineEdit(this);
+    m_passwordLine = new QLineEdit(this);
 
     auto* usernameLabel = new QLabel(tr("Username"), this);
     auto* passwordLabel = new QLabel(tr("Password"), this);
@@ -41,10 +41,10 @@ AuthDialog::AuthDialog(QWidget* parent) : QWidget(parent)
 
     auto* mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(usernameLabel);
-    mainLayout->addWidget(usernameLine);
+    mainLayout->addWidget(m_usernameLine);
 
     mainLayout->addWidget(passwordLabel);
-    mainLayout->addWidget(passwordLine);
+    mainLayout->addWidget(m_passwordLine);
 
     mainLayout->addLayout(buttonsLayout);
 
@@ -61,8 +61,8 @@ void AuthDialog::OnCreateButtonClicked()
     std::string username;
     std::string password;
 
-    const QString usernameEnter = usernameLine->text();
-    const QString passwordEnter = passwordLine->text();
+    const QString usernameEnter = m_usernameLine->text();
+    const QString passwordEnter = m_passwordLine->text();
 
     username = usernameEnter.toStdString();
     password = passwordEnter.toStdString();
@@ -83,20 +83,19 @@ void AuthDialog::OnCreateButtonClicked()
         m_model->RegSend(message);
     }
 }
-void NotifyGotResultFromNetwork(bool result)
+void AuthDialog::NotifyGotResultFromNetwork(bool result)
 {
     emit GotResultFromNetwork(result);
 }
-void DoOnGotResultFromNetwork(bool result)
+void AuthDialog::DoOnGotResultFromNetwork(bool result)
 {
     if (!result)
     {
-        QMessageBox::warning(this, usernameEnter, "Existing username");
+        QMessageBox::warning(this, "usernameEnter", "Existing username");
     }
     else
     {
         close();
     }
-}
 }
 } // namespace inklink::auth
