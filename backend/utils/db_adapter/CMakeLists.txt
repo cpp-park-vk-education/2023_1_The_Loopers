@@ -1,8 +1,8 @@
 add_library(${DB_ADAPTER} STATIC "")
 
-#target_sources(${DB_ADAPTER} PRIVATE
-#    "src/storage_db_controller.cpp"
-#)
+target_sources(${DB_ADAPTER} PRIVATE
+    "src/storage_db_controller.cpp"
+)
 
 # set(PRIVATE_INCLUDE_DIRECTORIES
 # "${UTILS_DIR}/include"
