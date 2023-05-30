@@ -11,7 +11,7 @@
 
 namespace inklink::auth
 {
-AuthDialog::AuthDialog(QWidget* parent) : QWidget(parent)
+AuthDialog::AuthDialog(QWidget* parent) : QDialog(parent)
 {
     connect(this, &AuthDialog::GotResultFromNetwork, this, &AuthDialog::DoOnGotResultFromNetwork);
 
