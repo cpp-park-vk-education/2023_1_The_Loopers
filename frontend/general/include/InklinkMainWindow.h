@@ -2,7 +2,7 @@
 
 // #include "DrawView.h"
 #include "AuthView.h"
-#include "DrawUsingQGraphicsView.h"
+#include "GraphicsDrawView.h"
 #include "MenuView.h"
 #include "ToolBox.h"
 
@@ -30,7 +30,7 @@ public:
 
         m_menu = new menu::MenuView;
         m_menu->setMaximumWidth(200);
-        m_drawView = new inklink::draw::DrawingView;
+        m_drawView = new inklink::draw::GraphicsDrawView;
         m_toolBox = new inklink::draw::ToolBox;
 
         m_menu->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -61,7 +61,7 @@ private:
 
 private:
     inklink::menu::MenuView* m_menu;
-    inklink::draw::DrawingView* m_drawView;
+    inklink::draw::GraphicsDrawView* m_drawView;
     inklink::draw::ToolBox* m_toolBox;
 };
 } // namespace inklink::general

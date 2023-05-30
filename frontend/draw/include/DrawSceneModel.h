@@ -18,8 +18,12 @@ class IClientSession;
 
 namespace inklink::draw
 {
+<<<<<<< Updated upstream
 class DrawingView;
 class ObjectWithAttributes;
+=======
+class GraphicsDrawView;
+>>>>>>> Stashed changes
 } // namespace inklink::draw
 
 using namespace boost::asio;
@@ -77,8 +81,12 @@ private:
     std::mt19937_64 m_gen;
     std::uniform_int_distribution<int> m_dis{std::numeric_limits<int>::min(), std::numeric_limits<int>::max()};
 
+<<<<<<< Updated upstream
     DrawingView* m_view = nullptr;
 
+=======
+    GraphicsDrawView* m_view = nullptr;
+>>>>>>> Stashed changes
     io_context m_ioContext;
     any_io_executor m_ioContextExecutor;
     std::thread m_threadIoContext;

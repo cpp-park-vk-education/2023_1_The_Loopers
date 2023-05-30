@@ -2,10 +2,10 @@
 
 set(SOURCES
         "src/temp.cpp"
-        "src/DrawView.cpp"
-        "src/DrawModel.cpp"
+        "src/NotDrawView.cpp"
+        "src/NotDrawModel.cpp"
         "src/DrawSceneModel.cpp"
-        "src/DrawUsingQGraphicsView.cpp"
+        "src/GraphicsDrawView.cpp"
         "src/IObject.cpp"
         )
 
