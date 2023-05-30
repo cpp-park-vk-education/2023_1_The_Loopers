@@ -3,6 +3,7 @@
 // #include "DrawView.h"
 #include "DrawUsingQGraphicsView.h"
 #include "MenuView.h"
+#include "ToolBox.h"
 
 #include <QMainWindow>
 
@@ -27,10 +28,13 @@ public:
         m_menu = new inklink::menu::MenuView;
         m_menu->setMaximumSize(200, 2000);
         m_drawView = new inklink::draw::DrawingView;
+        m_toolBox = new inklink::draw::ToolBox;
+
         m_menu->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
         layout->addWidget(m_menu);
         layout->addWidget(m_drawView);
+        layout->addWidget(m_toolBox);
 
         setCentralWidget(centralWidget);
         setWindowTitle("InkLink");
@@ -41,5 +45,6 @@ public:
 private:
     inklink::menu::MenuView* m_menu;
     inklink::draw::DrawingView* m_drawView;
+    inklink::draw::ToolBox* m_toolBox;
 };
 } // namespace inklink::general
