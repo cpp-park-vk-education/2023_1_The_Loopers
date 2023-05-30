@@ -7,8 +7,6 @@
 
 #include <json_serializer.h>
 
-#include <iostream>
-
 namespace
 {
 using DataContainer = inklink::serializer::DataContainer;
@@ -45,8 +43,6 @@ AuthModel::AuthModel()
             m_ioContext, lamOnAccept, lamOnRead);
     session->RunAsync("127.0.0.1", 3994);
     m_session = session;
-
-    std::cout << "AuthModel     " << __LINE__ << std::endl;
 
     m_ioContextExecutor =
             boost::asio::require(m_ioContext.get_executor(), boost::asio::execution::outstanding_work.tracked);

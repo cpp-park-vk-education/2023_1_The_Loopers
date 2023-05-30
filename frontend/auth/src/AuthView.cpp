@@ -16,6 +16,8 @@ namespace inklink::auth
 {
 AuthDialog::AuthDialog(QWidget* parent) : QDialog(parent)
 {
+    m_model = new AuthModel;
+
     connect(this, &AuthDialog::GotResultFromNetwork, this, &AuthDialog::DoOnGotResultFromNetwork);
 
     setWindowTitle("Registration");
