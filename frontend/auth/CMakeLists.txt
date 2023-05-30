@@ -31,6 +31,8 @@ target_include_directories(${AUTH} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
 
 target_link_libraries(${AUTH} PRIVATE 
         ${REQUIRED_LIBS_QUALIFIED}
+        ${CLIENT_NETWORK}
+        ${NETWORK_ADAPTER}
         ${SERIALIZER}
         ${CLIENT_NETWORK}
 )

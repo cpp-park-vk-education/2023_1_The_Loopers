@@ -11,8 +11,12 @@
 #include <string>
 #include <thread>
 
+// forward declaration
+namespace inklink::auth
+{
 class AuthDialog;
 class LoginDialog;
+} // namespace inklink::auth
 
 namespace
 {
