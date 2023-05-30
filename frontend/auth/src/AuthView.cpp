@@ -24,6 +24,21 @@ AuthDialog::AuthDialog(QWidget* parent) : QDialog(parent)
 
     setFixedSize(300, 200);
 
+    QString styleSheet = R"(
+            #customButton {
+                background-color: rgb(25, 25, 25);
+                color: white;
+            }
+            #customButton:hover {
+                background-color: rgb(200, 200, 200);
+                color: rgb(25, 25, 25);
+            }
+            #customButton:pressed {
+                background-color: white;
+                color: rgb(25, 25, 25);
+            }
+        )";
+
     m_usernameLine = new QLineEdit(this);
     m_passwordLine = new QLineEdit(this);
 
@@ -31,11 +46,13 @@ AuthDialog::AuthDialog(QWidget* parent) : QDialog(parent)
     auto* passwordLabel = new QLabel(tr("Password"), this);
 
     auto* createButton = new QPushButton(tr("Register"), this);
-    createButton->setAutoDefault(false);
+    createButton->setFlat(true);
+    createButton->setStyleSheet(styleSheet);
     connect(createButton, &QPushButton::clicked, this, &AuthDialog::OnCreateButtonClicked);
 
     auto* loginButton = new QPushButton(tr("Log in"), this);
-    loginButton->setAutoDefault(false);
+    loginButton->setFlat(true);
+    loginButton->setStyleSheet(styleSheet);
     connect(loginButton, &QPushButton::clicked, this, &AuthDialog::OnLoginButtonClicked);
 
     auto* buttonsLayout = new QHBoxLayout;
@@ -75,11 +92,11 @@ void AuthDialog::OnCreateButtonClicked()
 
     if (username.empty())
     {
-        QMessageBox::warning(this, usernameEnter, "Enter username");
+        QMessageBox::warning(this, "error", "Enter username");
     }
     else if (password.empty())
     {
-        QMessageBox::warning(this, passwordEnter, "Enter password");
+        QMessageBox::warning(this, "error", "Enter password");
     }
     else
     {
