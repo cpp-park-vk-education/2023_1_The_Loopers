@@ -2,8 +2,7 @@
 
 #include <fstream>
 
-
-namespace inklink_file_holder
+namespace inklink::file_holder
 {
 bool FileChangesSaver::SaveFile(const std::filesystem::path& filePath, const std::string& changes) const noexcept
 {

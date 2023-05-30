@@ -3,21 +3,20 @@
 #include <fstream>
 #include <sstream>
 
-
-namespace inklink_file_holder
+namespace inklink::file_holder
 {
-ReadFileResult FileReader::GetFile(const std::filesystem::path& filePath) const noexcept
+FileReader::ReadFileResult FileReader::GetFile(const std::filesystem::path& filePath) const noexcept
 {
     std::ifstream fileRead(filePath);
     std::stringstream stringFile;
 
     if (!fileRead.is_open())
     {
-        return {stringFile, false};
+        return {stringFile.str(), false};
     }
 
     stringFile << fileRead.rdbuf();
-
-    return {stringFile, true};
+    
+    return {stringFile.str(), true};
 }
 }  // namespace inklink_file_holder
