@@ -1,6 +1,7 @@
 #pragma once
 
 #include <websocket_client_session.h>
+#include <data_container.h>
 
 #include <boost/asio.hpp>
 #include <boost/system/error_code.hpp>

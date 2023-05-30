@@ -13,7 +13,8 @@ namespace inklink::auth
 AuthModel::AuthModel()
 {
     auto lamOnAccept = [this](ConnectType, error_code ec, IClientSession*) { ; };
-    auto lamOnRead = [this](const std::string& str, error_code ec, IClientSession*) { this->ParseToGet(str); };
+    auto lamOnRead = [this](const std::string& str, error_code ec, IClientSession*) {
+        this->ParseToGet(str); };
     auto session = std::make_shared<WebsocketClientSession<decltype(lamOnAccept), decltype(lamOnRead)>>(
             m_ioContext, lamOnAccept, lamOnRead);
     session->RunAsync("127.0.0.1", 3994);
