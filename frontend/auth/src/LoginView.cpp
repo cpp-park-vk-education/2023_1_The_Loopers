@@ -1,6 +1,5 @@
 #include "LoginView.hpp"
 
-#include "AuthModel.hpp"
 #include "AuthView.hpp"
 
 #include <QLabel>
@@ -68,8 +67,6 @@ void LoginDialog::OnEnterButtonClicked()
 
     username = usernameEnter.toStdString();
     password = passwordEnter.toStdString();
-
-    auto* authModel = new AuthModel;
 
     if (username.empty())
     {
