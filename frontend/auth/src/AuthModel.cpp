@@ -13,8 +13,25 @@ namespace inklink::auth
 AuthModel::AuthModel()
 {
     auto lamOnAccept = [this](ConnectType, error_code ec, IClientSession*) { ; };
-    auto lamOnRead = [this](const std::string& str, error_code ec, IClientSession*) {
-        this->ParseToGet(str); };
+    auto lamOnRead = [this](const std::string& str, error_code ec, IClientSession*)
+    {
+        DataContainer data = JsonSerializer::ParseFromString(str);
+        if (!data.Has("new"))
+        {
+            return;
+        }
+        switch (data.AsInt("new"))
+        {
+        case 0:
+            this->RegParseToGet(str);
+            break;
+        case 1:
+            this->LoginParseToGet(str);
+            break;
+        default:
+            return;
+        }
+    };
     auto session = std::make_shared<WebsocketClientSession<decltype(lamOnAccept), decltype(lamOnRead)>>(
             m_ioContext, lamOnAccept, lamOnRead);
     session->RunAsync("127.0.0.1", 3994);
@@ -52,7 +69,7 @@ void AuthModel::SetToken(const std::string& token)
     std::lock_guard<std::mutex> lock(m_tokenMutex);
     m_token = token;
 }
-std::string LoginParseToSend(std::string& login, std::string& password)
+std::string AuthModel::LoginParseToSend(std::string& login, std::string& password)
 {
     DataContainer sendContainer{};
     sendContainer["new"] = 0;
@@ -60,7 +77,7 @@ std::string LoginParseToSend(std::string& login, std::string& password)
     sendContainer["password"] = password;
     return JsonSerializer::SerializeAsString(sendContainer);
 }
-std::string RegParseToSend(std::string login, std::string password)
+std::string AuthModel::RegParseToSend(std::string login, std::string password)
 {
     DataContainer sendContainer{};
     sendContainer["new"] = 1;
@@ -68,55 +85,55 @@ std::string RegParseToSend(std::string login, std::string password)
     sendContainer["password"] = std::move(password);
     return JsonSerializer::SerializeAsString(sendContainer);
 }
-void LoginSend(std::string message)
+void AuthModel::LoginSend(const std::string& message)
 {
     std::shared_ptr<IClientSession> session = m_session.lock();
     if (!session) [[unlikely]]
     {
         auto lamOnAccept = [this](ConnectType, error_code ec, IClientSession*) { ; };
-        auto lamOnRead = [this](const std::string& str, error_code ec, IClientSession*) { this->LoginParseToGet(str); };
+        auto lamOnRead = [this](const std::string& str, error_code ec, IClientSession*) { this->LoginParseToGet(message); };
         session = std::make_shared<WebsocketClientSession<decltype(lamOnAccept), decltype(lamOnRead)>>(
                 m_ioContext, lamOnAccept, lamOnRead);
 
         session->RunAsync("127.0.0.1", 3994);
         m_session = session;
     }
-    session->LoginSend(msg);
+    session->Send(message);
 }
-void RegSend(std::string message)
+void AuthModel::RegSend(const std::string& message)
 {
     std::shared_ptr<IClientSession> session = m_session.lock();
     if (!session) [[unlikely]]
     {
         auto lamOnAccept = [this](ConnectType, error_code ec, IClientSession*) { ; };
-        auto lamOnRead = [this](const std::string& str, error_code ec, IClientSession*) { this->RegParseToGet(str); };
+        auto lamOnRead = [this](const std::string& str, error_code ec, IClientSession*) { this->RegParseToGet(message); };
         session = std::make_shared<WebsocketClientSession<decltype(lamOnAccept), decltype(lamOnRead)>>(
                 m_ioContext, lamOnAccept, lamOnRead);
 
         session->RunAsync("127.0.0.1", 3994);
         m_session = session;
     }
-    session->RegSend(message);
+    session->Send(message);
 }
-void LoginParseToGet(std::string& webSocketData)
+void AuthModel::LoginParseToGet(std::string& webSocketData)
 {
     DataContainer getContainer{};
     getContainer = JsonSerializer::ParseFromString(webSocketData);
     m_loginview->NotifyGotResultFromNetwork(true);
     return;
 }
-void RegParseToGet(std::string& webSocketData)
+void AuthModel::RegParseToGet(std::string& webSocketData)
 {
     DataContainer getContainer{};
     getContainer = JsonSerializer::ParseFromString(webSocketData);
     m_authview->NotifyGotResultFromNetwork(true);
     return;
 }
-void SaveTokenEtcForFutureUse(const DataContainer& data)
+void AuthModel::SaveTokenEtcForFutureUse(const DataContainer& data)
 {
     if (data.AsInt("error"))
     {
-        // handle error
+        return;
     }
     SetToken(data.AsString("token"));
 }
