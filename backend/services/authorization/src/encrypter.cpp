@@ -1,5 +1,13 @@
 #include "encrypter.h"
 
+#include <openssl/sha.h>
+
+namespace
+{
+int kAlphabet = 26;
+int kMaxSizePasswordWithSalt = 40;
+}
+
 namespace inklink::auth_handler
 {
 Encrypter::HashAndSalt Encrypter::Encrypt(const std::string& password) const
@@ -40,17 +48,17 @@ std::string Encrypter::EncryptWithSalt(const std::string& password, const std::s
 }
 
 
-std::string Encrypter::DinamicSault(int passwordLenght)
+std::string Encrypter::DynamicSalt(size_t passwordLenght)
 {
     std::string salt{};
 
-    auto saltLength = 20 - passwordLenght;
+    auto saltLength = kMaxSizePasswordWithSalt - passwordLenght;
 
     srand(time(NULL));
 
     for (int i = 0; i < saltLength; i++)
     {
-        auto ch = 'a' + rand() % 26;
+        auto ch = 'a' + rand() % kAlphabet;
         salt.push_back(ch);
     }
 

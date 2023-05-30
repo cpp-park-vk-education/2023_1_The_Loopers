@@ -3,6 +3,8 @@
 #include "auth_error.h"
 #include "encrypter.h"
 
+#include <memory>
+
 namespace inklink::auth_handler
 {
 class AuthHandler
@@ -12,17 +14,19 @@ public:
     using ITokenGenerator = inklink::token_generator::ITokenGenerator;
 
 public:
-    AuthError GetLastError() const;
+    [[nodiscard]] AuthError GetLastError() const;
     void SetLastError(const std::string& errorMsg);
 
-    void SetDbController(const IAuthDbController& dbController);
-    void SetTokenGenerator(const ITokenGenerator& tokenGenerator);
+    void SetDbController(const std::shared_ptr<IAuthDbController> dbController);
+    void SetTokenGenerator(const std::shared_ptr<ITokenGenerator> tokenGenerator);
 
-    virtual bool Handle(const std::string& login, const std::string& password) const = 0;
+    virtual bool handleCredentials(const std::string& login, const std::string& password) const = 0;
+
+    virtual ~AuthHandler() = 0;
 
 protected:
-    IAuthDbController m_dbController;
-    ITokenGenerator m_tokenGenerator; 
+    std::shared_ptr<IAuthDbController> m_dbController;
+    std::shared_ptr<ITokenGenerator> m_tokenGenerator; 
     Encrypter m_encrypter;
 
 private:

@@ -2,25 +2,21 @@
 
 namespace inklink::auth_handler
 {
-bool CreateHandler::Handle(const std::string& login, const std::string& password) const
+bool CreateHandler::handleCredentials(const std::string& login, const std::string& password) const
 {
-    if (CheckDuplicate(login))
+    if (!CheckIfUnique(login))
     {
         return false;
     }
 
     HashAndSalt hashAndSalt = m_encrypter.Encrypt(password);
 
-    m_dbController.InsertUser(login, hashAndSalt.first, hashAndSalt.second);
+    m_dbController->InsertUser(login, hashAndSalt.hash, hashAndSalt.salt);
     return true;
 }
 
-bool CreateHandler::CheckDuplicate(const std::string& login) const
+bool CreateHandler::CheckIfUnique(const std::string& login) const
 {
-    if (m_dbController.GetPassword(login).string().empty())
-    {
-        return false;
-    }
-    return true;
+    return m_dbController->FindUser(login).string().empty();
 }
 } // namespace inklink::auth_handler

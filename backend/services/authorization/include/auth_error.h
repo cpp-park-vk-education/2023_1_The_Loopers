@@ -2,10 +2,9 @@
 
 #include <string>
 
-
 namespace inklink::auth_handler
 {
-class AuthError
+struct AuthError
 {
 public:
     operator bool()

@@ -1,31 +1,14 @@
+#include "hash_and_salt.h"
 #include "log_in_handler.h"
 
 namespace inklink::auth_handler
 {
-bool LogInHandler::Handle(const std::string& login, const std::string& password) const {
-    std::string saltAndPassword = m_dbController.GetPassword(login);
-    std::string passwordInDb{};
-    std::string saltInDb{};
+bool LogInHandler::handleCredentials(const std::string& login, const std::string& password) const
+{
+    HashAndSalt hashAndSalt = m_dbController->GetPassword(login);
 
-    int i = 0;
-    while (saltAndPassword[i] != " ")
-    {
-        saltInDb += saltAndPassword[i];
-        ++i;
-    }
+    std::string hashedPassword = m_encrypter.EncryptWithSalt(password, hashAndSalt.salt);
 
-    while (i < saltAndPassword.size())
-    {
-        passwordInDb += saltAndPassword[i];
-        ++i;
-    }
-    std::string hashedPassword = m_encrypter.EncryptWithSalt(password, saltInDb);
-
-    if (hashedPassword == passwordInDb)
-    {
-        return true;
-    }
-
-    return false;
+    return hashedPassword == hashAndSalt.hash;
 }
 } // namespace inklink::auth_handler

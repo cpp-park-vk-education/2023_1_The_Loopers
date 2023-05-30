@@ -6,7 +6,7 @@
 
 namespace inklink::auth_handler
 {
-enum HandlerType
+enum class HandlerType
 {
     kLogIn,
     kCreate

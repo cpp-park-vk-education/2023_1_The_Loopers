@@ -12,7 +12,8 @@ class AuthDbController : public IAuthDbController
 public:
     using DbRow = std::vector<std::string>;
     using DbTable = std::vector<DbRow>;
-    
+    using HashAndSalt = inklink::auth_handler::HashAndSalt;
+
 public:
     void SetAdapter(const DbAdapterBase& adapter) override;
 
@@ -20,6 +21,8 @@ public:
 
     bool InsertUser(const std::string& login, const std::string& password) const override;
 
-    [[nodiscard]] std::string GetPassword(const std::string& login) const override;
+    [[nodiscard]] HashAndSalt GetPasswordAndSalt(const std::string& login) const override;
+
+    [[nodiscard]] std::string FindUser(const std::string& login) const override;
 };
 } // namespace inklink::db_controller
