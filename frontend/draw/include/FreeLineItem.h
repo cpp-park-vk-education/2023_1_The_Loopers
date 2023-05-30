@@ -72,7 +72,7 @@ public:
 
             polygonInfo["angles coordinates"] = anglesArray;
 
-            std::cout << polygonInfo << std::endl;
+//            std::cout << polygonInfo << std::endl;
         }
     }
 

@@ -3,7 +3,7 @@
 #include <QGraphicsObject>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
-#include <QMouseEvent>
+#include <QGraphicsSceneMouseEvent>
 
 class LineItem : public QGraphicsObject
 {
@@ -93,6 +93,30 @@ public:
         {
             m_selected = false;
             m_selectedPoint = -1;
+
+            DataContainer polygonInfo;
+
+            polygonInfo["number of angles"] = 2;
+
+            std::vector<DataContainer> anglesArray;
+
+            QPointF startPoint = m_line.p1();
+            QPointF endPoint = m_line.p2();
+
+            DataContainer startPointContainer;
+            startPointContainer["x"] = startPoint.x();
+            startPointContainer["y"] = startPoint.y();
+
+            DataContainer endPointContainer;
+            endPointContainer["x"] = endPoint.x();
+            endPointContainer["y"] = endPoint.y();
+
+            anglesArray.push_back(startPointContainer);
+            anglesArray.push_back(endPointContainer);
+
+            polygonInfo["angles coordinates"] = anglesArray;
+
+//            std::cout << polygonInfo << std::endl;
         }
     }
 
