@@ -1,6 +1,6 @@
 #include "EllipseItem.h"
 
-EllipseItem::EllipseItem(QGraphicsItem *parent = nullptr) : QGraphicsObject(parent), m_size(100), m_selected(false)
+EllipseItem::EllipseItem(QGraphicsItem *parent = nullptr) : ObjectWithAttributes(parent), m_size(100), m_selected(false)
 {
     setFlag(ItemIsSelectable);
     setAcceptHoverEvents(true);

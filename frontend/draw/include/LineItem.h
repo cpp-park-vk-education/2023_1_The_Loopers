@@ -1,14 +1,15 @@
 #pragma once
 
-#include "DataContainer.h"
+#include "IObject.h"
+
+#include <DataContainer.h>
 
 #include <QGraphicsObject>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
-
-class LineItem : public QGraphicsObject
+class LineItem : public ObjectWithAttributes
 {
 public:
     LineItem(QGraphicsItem *parent = nullptr);

@@ -1,6 +1,6 @@
 #include "LineItem.h"
 
-LineItem::LineItem(QGraphicsItem *parent) : QGraphicsObject(parent), m_selected(false), m_selectedPoint(-1)
+LineItem::LineItem(QGraphicsItem *parent) : ObjectWithAttributes(parent), m_selected(false), m_selectedPoint(-1)
 {
     setFlag(ItemIsSelectable);
     setAcceptHoverEvents(true);

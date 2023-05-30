@@ -1,6 +1,8 @@
 #pragma once
 
-#include "DataContainer.h"
+#include "IObject.h"
+
+#include <DataContainer.h>
 
 #include <QGraphicsObject>
 #include <QGraphicsSceneMouseEvent>
@@ -8,8 +10,7 @@
 #include <QStyleOptionGraphicsItem>
 #include <QVector>
 
-
-class FreeLineItem : public QGraphicsObject
+class FreeLineItem : public ObjectWithAttributes
 {
 public:
     FreeLineItem(QGraphicsItem *parent = nullptr) : QGraphicsObject(parent), m_selected(false)

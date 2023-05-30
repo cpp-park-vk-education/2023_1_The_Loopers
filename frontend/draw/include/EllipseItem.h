@@ -1,13 +1,16 @@
 #pragma once
 
-#include "DataContainer.h"
+#include "IObject.h"
+
+#include <DataContainer.h>
 
 #include <QGraphicsObject>
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
-class EllipseItem : public QGraphicsObject
+
+class EllipseItem : public ObjectWithAttributes
 {
 public:
     EllipseItem(QGraphicsItem *parent = nullptr);

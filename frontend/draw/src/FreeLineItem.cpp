@@ -1,6 +1,6 @@
 #include "FreeLineItem.h"
 
-FreeLineItem::FreeLineItem(QGraphicsItem *parent) : QGraphicsObject(parent), m_selected(false)
+FreeLineItem::FreeLineItem(QGraphicsItem *parent) : ObjectWithAttributes(parent), m_selected(false)
 {
     setFlag(ItemIsSelectable);
     setAcceptHoverEvents(true);
