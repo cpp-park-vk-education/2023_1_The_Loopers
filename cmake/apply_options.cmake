@@ -102,7 +102,7 @@ else()
             "-Wpedantic"
             "-Wno-error=return-type"
             "-Wno-error=unused-parameter"
-            # "-Wno-error=nested-anon-types"
+            "-Wno-error=nested-anon-types"
         )
         if (WIN32)
             list(APPEND ${WARNINGS_FLAGS} "-Wno-error=nested-anon-types") # boost/winapi/file_management.hpp

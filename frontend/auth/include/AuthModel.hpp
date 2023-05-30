@@ -21,7 +21,6 @@ class LoginDialog;
 namespace
 {
 using namespace std::chrono_literals;
-using namespace inklink::client_connector;
 using error_code = boost::system::error_code;
 } // namespace
 
@@ -29,6 +28,9 @@ namespace inklink::auth
 {
 class AuthModel
 {
+public:
+    using IClientSession = inklink::client_connector::IClientSession;
+
 public:
     AuthModel();
     ~AuthModel();
@@ -47,7 +49,7 @@ private:
     void SetToken(const std::string& token);
     void LoginParseToGet(std::string& webSocketData);
     void RegParseToGet(std::string& webSocketData);
-    void SaveTokenEtcForFutureUse(const DataContainer& data);
+    void SaveTokenEtcForFutureUse(const serializer::DataContainer& data);
 
 private:
     AuthDialog* m_authview;

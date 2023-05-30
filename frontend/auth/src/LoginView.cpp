@@ -20,8 +20,8 @@ LoginDialog::LoginDialog(QWidget* parent) : QWidget(parent)
 
     setFixedSize(300, 200);
 
-    usernameLine = new QLineEdit(this);
-    passwordLine = new QLineEdit(this);
+    m_usernameLine = new QLineEdit(this);
+    m_passwordLine = new QLineEdit(this);
 
     auto* usernameLabel = new QLabel(tr("Username"), this);
     auto* passwordLabel = new QLabel(tr("Password"), this);
@@ -41,10 +41,10 @@ LoginDialog::LoginDialog(QWidget* parent) : QWidget(parent)
 
     auto* mainLayout = new QVBoxLayout(this);
     mainLayout->addWidget(usernameLabel);
-    mainLayout->addWidget(usernameLine);
+    mainLayout->addWidget(m_usernameLine);
 
     mainLayout->addWidget(passwordLabel);
-    mainLayout->addWidget(passwordLine);
+    mainLayout->addWidget(m_passwordLine);
 
     mainLayout->addLayout(buttonsLayout);
 
@@ -63,8 +63,8 @@ void LoginDialog::OnEnterButtonClicked()
     std::string username;
     std::string password;
 
-    const QString usernameEnter = usernameLine->text();
-    const QString passwordEnter = passwordLine->text();
+    const QString usernameEnter = m_usernameLine->text();
+    const QString passwordEnter = m_passwordLine->text();
 
     username = usernameEnter.toStdString();
     password = passwordEnter.toStdString();
