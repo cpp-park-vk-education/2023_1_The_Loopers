@@ -154,7 +154,7 @@ void DrawSceneModel::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
     if (event->button() == Qt::LeftButton)
     {
         // Create a new QGraphicsItem
-        CustomGraphicsItem* newItem = createNewItem();
+        ObjectWithAttributes* newItem = createNewItem();
 
         // Add the new item to the scene
         addItem(newItem);
