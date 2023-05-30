@@ -6,12 +6,12 @@ RectangleItem::RectangleItem(QGraphicsItem* parent) : ObjectWithAttributes(paren
     setAcceptHoverEvents(true);
 }
 
-QRectF RectangleItem::boundingRect() const override
+QRectF RectangleItem::boundingRect() const
 {
     return m_rect;
 }
 
-void RectangleItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override
+void RectangleItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
     Q_UNUSED(option);
     Q_UNUSED(widget);
@@ -21,7 +21,7 @@ void RectangleItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* opt
     painter->drawRect(m_rect);
 }
 
-void RectangleItem::mousePressEvent(QGraphicsSceneMouseEvent* event) override
+void RectangleItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton)
     {
@@ -35,7 +35,7 @@ void RectangleItem::mousePressEvent(QGraphicsSceneMouseEvent* event) override
     }
 }
 
-void RectangleItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event) override
+void RectangleItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
     if (event->buttons() & Qt::LeftButton)
     {
@@ -62,7 +62,7 @@ void RectangleItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event) override
     }
 }
 
-void RectangleItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override
+void RectangleItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton)
     {

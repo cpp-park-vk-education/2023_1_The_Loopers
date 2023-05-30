@@ -1,16 +1,18 @@
+#pragma once
+
 #include "DataContainer.h"
 
-#include <QGraphicsSceneMouseEvent>
 #include <QGraphicsObject>
+#include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QVector>
 
+
 class FreeLineItem : public QGraphicsObject
 {
 public:
-    FreeLineItem(QGraphicsItem *parent = nullptr)
-            : QGraphicsObject(parent), m_selected(false)
+    FreeLineItem(QGraphicsItem *parent = nullptr) : QGraphicsObject(parent), m_selected(false)
     {
         setFlag(ItemIsSelectable);
         setAcceptHoverEvents(true);
@@ -23,7 +25,8 @@ public:
         qreal minX = std::numeric_limits<qreal>::max();
         qreal minY = std::numeric_limits<qreal>::max();
 
-        for (const QPointF& point : m_points) {
+        for (const QPointF &point : m_points)
+        {
             maxX = std::max(maxX, point.x());
             maxY = std::max(maxY, point.y());
             minX = std::min(minX, point.x());
@@ -60,7 +63,7 @@ public:
 
             std::vector<DataContainer> anglesArray;
 
-            for (const QPointF& point : m_points)
+            for (const QPointF &point : m_points)
             {
                 DataContainer pointContainer;
 
@@ -72,7 +75,7 @@ public:
 
             polygonInfo["angles coordinates"] = anglesArray;
 
-//            std::cout << polygonInfo << std::endl;
+            //            std::cout << polygonInfo << std::endl;
         }
     }
 

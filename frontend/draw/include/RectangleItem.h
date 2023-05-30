@@ -1,3 +1,5 @@
+#pragma once
+
 #include "IObject.h"
 
 #include <DataContainer.h>
