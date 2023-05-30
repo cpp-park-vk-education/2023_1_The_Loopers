@@ -5,7 +5,7 @@ namespace inklink::auth_handler
 {
 bool LogInHandler::handleCredentials(const std::string& login, const std::string& password) const
 {
-    HashAndSalt hashAndSalt = m_dbController->GetPassword(login);
+    HashAndSalt hashAndSalt = m_dbController->GetPasswordAndSalt(login);
 
     std::string hashedPassword = m_encrypter.EncryptWithSalt(password, hashAndSalt.salt);
 

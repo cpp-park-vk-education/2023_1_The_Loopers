@@ -13,6 +13,6 @@ public:
     [[nodiscard]] std::string EncryptWithSalt(const std::string& password, const std::string& salt) const;
 
 private:
-    std::string DynamicSalt(size_t passwordLenght);
+    [[nodiscard]] std::string DynamicSalt(size_t passwordLenght) const;
 };
 } // namespace inklink::auth_handler

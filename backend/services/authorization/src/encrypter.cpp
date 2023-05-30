@@ -10,9 +10,9 @@ int kMaxSizePasswordWithSalt = 40;
 
 namespace inklink::auth_handler
 {
-Encrypter::HashAndSalt Encrypter::Encrypt(const std::string& password) const
+HashAndSalt Encrypter::Encrypt(const std::string& password) const
 {
-    std::string salt = DinamicSault(password.size());
+    std::string salt = DynamicSalt(password.size());
 
     unsigned char hash[SHA256_DIGEST_LENGTH];
     SHA256_CTX sha256;
@@ -48,7 +48,7 @@ std::string Encrypter::EncryptWithSalt(const std::string& password, const std::s
 }
 
 
-std::string Encrypter::DynamicSalt(size_t passwordLenght)
+std::string Encrypter::DynamicSalt(size_t passwordLenght) const
 {
     std::string salt{};
 

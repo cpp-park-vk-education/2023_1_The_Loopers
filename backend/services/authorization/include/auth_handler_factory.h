@@ -6,14 +6,14 @@
 
 namespace inklink::auth_handler
 {
-enum class HandlerType
-{
-    kLogIn,
-    kCreate
-};
-
 class AuthHandlerFactory
 {
+    enum class HandlerType
+    {
+        kLogIn,
+        kCreate
+    };
+
 public:
     [[nodiscard]] std::shared_ptr<AuthHandler> GetHandler(HandlerType type) const;
 };

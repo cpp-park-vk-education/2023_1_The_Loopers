@@ -4,6 +4,7 @@
 #include "encrypter.h"
 
 #include <iauth_db_controller.h>
+#include <itoken_generator.h>
 
 #include <memory>
 
@@ -12,8 +13,8 @@ namespace inklink::auth_handler
 class AuthHandler
 {
 public:
-    using IAuthDbController = inklink::db_controller::IAuthDbController;
-    using ITokenGenerator = inklink::token_generator::ITokenGenerator;
+    using IAuthDbController = db_controller::IAuthDbController;
+    using ITokenGenerator = token_generator::ITokenGenerator;
 
 public:
     [[nodiscard]] AuthError GetLastError() const;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "iauth_db_controller.h"
+#include "hash_and_salt.h"
 
 #include <string>
 
@@ -15,11 +16,11 @@ public:
     using HashAndSalt = inklink::auth_handler::HashAndSalt;
 
 public:
-    void SetAdapter(const DbAdapterBase& adapter) override;
+    void SetAdapter(const std::shared_ptr<AuthDbAdapter>& adapter) override;
 
     void Run(const std::string& connectionString) override;
 
-    bool InsertUser(const std::string& login, const std::string& password) const override;
+    bool InsertUser(const std::string& login, const std::string& password, const std::string& salt) const override;
 
     [[nodiscard]] HashAndSalt GetPasswordAndSalt(const std::string& login) const override;
 

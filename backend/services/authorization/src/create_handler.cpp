@@ -17,6 +17,6 @@ bool CreateHandler::handleCredentials(const std::string& login, const std::strin
 
 bool CreateHandler::CheckIfUnique(const std::string& login) const
 {
-    return m_dbController->FindUser(login).string().empty();
+    return m_dbController->FindUser(login).empty();
 }
 } // namespace inklink::auth_handler
