@@ -10,10 +10,30 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
+namespace
+{
+QString myStyleSheet = R"(
+            #customButton {
+                background-color: rgb(25, 25, 25);
+                color: white;
+            }
+            #customButton:hover {
+                background-color: rgb(200, 200, 200);
+                color: rgb(25, 25, 25);
+            }
+            #customButton:pressed {
+                background-color: white;
+                color: rgb(25, 25, 25);
+            }
+        )";
+} // namespace
+
 namespace inklink::auth
 {
-LoginDialog::LoginDialog(QWidget* parent) : QWidget(parent)
+LoginDialog::LoginDialog(QWidget* parent) : QDialog(parent)
 {
+    m_model = new AuthModel;
+
     connect(this, &LoginDialog::GotResultFromNetwork, this, &LoginDialog::DoOnGotResultFromNetwork);
 
     setWindowTitle("Login");
@@ -27,11 +47,13 @@ LoginDialog::LoginDialog(QWidget* parent) : QWidget(parent)
     auto* passwordLabel = new QLabel(tr("Password"), this);
 
     auto* enterButton = new QPushButton(tr("Login"), this);
-    enterButton->setAutoDefault(false);
+    enterButton->setFlat(true);
+    enterButton->setStyleSheet(myStyleSheet);
     connect(enterButton, &QPushButton::clicked, this, &LoginDialog::OnEnterButtonClicked);
 
     auto* registrationButton = new QPushButton(tr("Register"), this);
-    registrationButton->setAutoDefault(false);
+    registrationButton->setFlat(true);
+    registrationButton->setStyleSheet(myStyleSheet);
     connect(registrationButton, &QPushButton::clicked, this, &LoginDialog::OnRegisterButtonClicked);
 
     auto* buttonsLayout = new QHBoxLayout;
@@ -49,8 +71,6 @@ LoginDialog::LoginDialog(QWidget* parent) : QWidget(parent)
     mainLayout->addLayout(buttonsLayout);
 
     setLayout(mainLayout);
-
-    connect(this, &LoginDialog::GotResultFromNetwork, this, &LoginDialog::DoOnGotResultFromNetwork);
 }
 void LoginDialog::OnRegisterButtonClicked()
 {
@@ -69,13 +89,16 @@ void LoginDialog::OnEnterButtonClicked()
     username = usernameEnter.toStdString();
     password = passwordEnter.toStdString();
 
+    QMessageBox warningBox;
+    warningBox.setStyleSheet(myStyleSheet);
+
     if (username.empty())
     {
-        QMessageBox::warning(this, usernameEnter, "Enter username");
+        warningBox.warning(this, "error", "Enter username");
     }
     else if (password.empty())
     {
-        QMessageBox::warning(this, passwordEnter, "Enter password");
+        warningBox.warning(this, "error", "Enter password");
     }
     else
     {
@@ -91,7 +114,9 @@ void LoginDialog::DoOnGotResultFromNetwork(int result)
 {
     if (result == 0)
     {
-        QMessageBox::warning(this, "UsernameEnter", "Uncorrect username or password");
+        QMessageBox warningBox;
+        warningBox.setStyleSheet(myStyleSheet);
+        warningBox.warning(this, "usernameEnter", "Uncorrect username or password");
     }
     else
     {

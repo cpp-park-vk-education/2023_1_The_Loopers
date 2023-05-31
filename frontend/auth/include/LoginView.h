@@ -1,9 +1,9 @@
 #pragma once
 
+#include <QDialog>
 #include <QGraphicsView>
 #include <QLineEdit>
 #include <QString>
-#include <QWidget>
 
 // forward declaration
 namespace inklink::auth
@@ -13,7 +13,7 @@ class AuthModel;
 
 namespace inklink::auth
 {
-class LoginDialog : public QWidget
+class LoginDialog : public QDialog
 {
     Q_OBJECT
 
