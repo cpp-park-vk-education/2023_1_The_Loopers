@@ -1,11 +1,14 @@
+#include "file_holder.h"
 #include "storage.h"
 
-#include <data_container.h>
 
+#include <data_container.h>
+#include <iauthorizer.h>
 #include <inklink/chassis_configurators/base_websocket_configurator.h>
 #include <json_serializer.h>
+#include <storage_db_controller.h>
 #include <websocket_session_factory.h>
-#include <iauthorizer.h>
+
 #include <boost/asio/io_context.hpp>
 #include <boost/system/error_code.hpp>
 
@@ -20,6 +23,8 @@ using IAuthorizer = inklink::authorizer::IAuthorizer;
 using IServiceSession = inklink::server_network::IServiceSession;
 using DataContainer = inklink::serializer::DataContainer;
 using JsonSerializer = inklink::serializer::JsonSerializer;
+using StorageDbController = inklink::db_controller::StorageDbController;
+using FileHolder = inklink::file_holder::FileHolder;
 }
 
 namespace inklink::storage
@@ -34,8 +39,8 @@ int Storage::Run(int port)
 
 
         SetChassis(std::make_unique<IExternalServiceChassis>());
-        SetDbController(std::make_shared<IStorageDbController>(), port);
-        SetFileHolder(std::shared_ptr<IFileHolder>());
+        SetDbController(std::make_shared<StorageDbController>(), port);
+        SetFileHolder(std::shared_ptr<FileHolder>());
 
 
         auto manager = std::make_shared<InternalSessionsManager>();
