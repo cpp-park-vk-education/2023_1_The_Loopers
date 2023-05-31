@@ -11,7 +11,7 @@ LineItem::LineItem(QGraphicsItem* parent) : ObjectWithAttributes(parent), m_sele
 
 QRectF LineItem::boundingRect() const
 {
-    return m_line.boundingRect();
+    return {m_line.p1(), m_line.p2()};
 }
 
 void LineItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)

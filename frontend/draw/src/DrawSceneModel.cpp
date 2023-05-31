@@ -20,7 +20,6 @@
 #include <string>
 #include <thread>
 
-
 namespace
 {
 constexpr int simultaneousAccess = 3997;
@@ -98,24 +97,24 @@ std::string DrawSceneModel::Serialize(int actionType, int figureId, int type)
     }
     if (type == kPolygon)
     {
-        auto currentPolygon = dynamic_cast<Polygon*>(m_objects[figureId]);
-        actionInfo["number_of_angles"] = static_cast<int>(currentPolygon->m_arrayOfVertexCoordinates.size());
-        auto& anglesArray = actionInfo["angles_coordinates"].CreateArray();
-        DataContainer vertex;
-        for (auto values : currentPolygon->m_arrayOfVertexCoordinates)
-        {
-            vertex["x"] = values.xPosition;
-            vertex["y"] = values.yPosition;
-            anglesArray.push_back(vertex);
-        }
+        // auto currentPolygon = dynamic_cast<Polygon*>(m_objects[figureId]);
+        // actionInfo["number_of_angles"] = static_cast<int>(currentPolygon->m_arrayOfVertexCoordinates.size());
+        // auto& anglesArray = actionInfo["angles_coordinates"].CreateArray();
+        // DataContainer vertex;
+        // for (auto values : currentPolygon->m_arrayOfVertexCoordinates)
+        // {
+        //     vertex["x"] = values.xPosition;
+        //     vertex["y"] = values.yPosition;
+        //     anglesArray.push_back(vertex);
+        // }
     }
     if (type == kEllipse)
     {
-        auto currentEllipse = dynamic_cast<Ellipse*>(m_objects[figureId]);
-        actionInfo["center"]["x"] = currentEllipse->m_center.xPosition;
-        actionInfo["center"]["y"] = currentEllipse->m_center.yPosition;
-        actionInfo["x_radius"] = currentEllipse->m_xRadius;
-        actionInfo["y_radius"] = currentEllipse->m_yRadius;
+        // auto currentEllipse = dynamic_cast<Ellipse*>(m_objects[figureId]);
+        // actionInfo["center"]["x"] = currentEllipse->m_center.xPosition;
+        // actionInfo["center"]["y"] = currentEllipse->m_center.yPosition;
+        // actionInfo["x_radius"] = currentEllipse->m_xRadius;
+        // actionInfo["y_radius"] = currentEllipse->m_yRadius;
     }
     // currently working not properly, i think
 
@@ -156,7 +155,7 @@ void DrawSceneModel::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
     if (event->button() == Qt::LeftButton)
     {
         // Create a new QGraphicsItem
-        ObjectWithAttributes* newItem = createNewItem();
+        ObjectWithAttributes* newItem = CreateNewItem();
 
         // Add the new item to the scene
         addItem(newItem);
@@ -176,7 +175,7 @@ ObjectWithAttributes* DrawSceneModel::CreateNewItem()
     ObjectWithAttributes* newItem = nullptr;
 
     // Create the appropriate item based on the current mode
-    switch (m_mode)
+    switch (m_currMode)
     {
     case Mode::kMove:
         // No item to create for move mode
