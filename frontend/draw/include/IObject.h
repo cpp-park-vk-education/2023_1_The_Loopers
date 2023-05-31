@@ -89,7 +89,7 @@ public:
 
     virtual void GenerateID()
     {
-        if (m_ID.empty())
+        if (!m_ID.empty())
         {
             return;
         }

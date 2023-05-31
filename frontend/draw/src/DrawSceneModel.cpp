@@ -14,10 +14,12 @@
 #include <boost/system/error_code.hpp>
 
 #include <chrono>
+#include <iostream>
 #include <memory>
 #include <mutex>
 #include <string>
 #include <thread>
+
 
 namespace
 {
@@ -50,8 +52,8 @@ enum actionInfoTypes
 namespace inklink::draw
 {
 DrawSceneModel::DrawSceneModel(QObject* parent)
-        : QGraphicsScene(parent), m_gen{static_cast<unsigned long>(
-                                          std::chrono::system_clock::now().time_since_epoch().count())}
+        : QGraphicsScene(parent),
+          m_gen{static_cast<unsigned long>(std::chrono::system_clock::now().time_since_epoch().count())}
 {
     {
         auto lambdaOnAccept = [this](ConnectType, error_code ec, IClientSession*) { ; };
@@ -171,6 +173,7 @@ void DrawSceneModel::SetFilename(std::string& filename)
 
 void DrawSceneModel::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 {
+    std::cout << "mouseDoubleClickEvent " << __LINE__ << std::endl;
     if (event->button() == Qt::LeftButton)
     {
         // Create a new QGraphicsItem
