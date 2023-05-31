@@ -1,5 +1,6 @@
-#include "DrawSceneModel.h"
 #include "GraphicsDrawView.h"
+
+#include "DrawSceneModel.h"
 
 #include <QApplication>
 #include <QGraphicsLineItem>
@@ -7,21 +8,23 @@
 #include <QGraphicsView>
 #include <QMouseEvent>
 
-namespace{
-constexpr QColor k_currentColor(255,255,255);
+
+namespace
+{
+constexpr QColor k_currentColor(255, 255, 255);
 }
 
 namespace inklink::draw
 {
 
-DrawingView::DrawingView(QWidget* parent) : QGraphicsView(parent), drawing(false)
+GraphicsDrawView::GraphicsDrawView(QWidget* parent) : QGraphicsView(parent), drawing(false)
 {
     m_scene = new DrawSceneModel(this);
     setScene(m_scene);
     setGeometry(0, 0, 600, 600);
 }
 
-void DrawingView::mousePressEvent(QMouseEvent* event)
+void GraphicsDrawView::mousePressEvent(QMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton)
     {
@@ -32,7 +35,7 @@ void DrawingView::mousePressEvent(QMouseEvent* event)
     QGraphicsView::mousePressEvent(event);
 }
 
-void DrawingView::mouseReleaseEvent(QMouseEvent* event)
+void GraphicsDrawView::mouseReleaseEvent(QMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton && drawing)
     {
@@ -45,7 +48,7 @@ void DrawingView::mouseReleaseEvent(QMouseEvent* event)
     QGraphicsView::mouseReleaseEvent(event);
 }
 
-void DrawingView::mouseMoveEvent(QMouseEvent* event)
+void GraphicsDrawView::mouseMoveEvent(QMouseEvent* event)
 {
     if (drawing)
     {
