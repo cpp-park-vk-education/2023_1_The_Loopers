@@ -38,6 +38,8 @@ LoginDialog::LoginDialog(QWidget* parent) : QDialog(parent)
 
     setWindowTitle("Login");
 
+    setWindowFlags(Qt::CoverWindow | Qt::WindowTitleHint);
+
     setFixedSize(300, 200);
 
     m_usernameLine = new QLineEdit(this);
