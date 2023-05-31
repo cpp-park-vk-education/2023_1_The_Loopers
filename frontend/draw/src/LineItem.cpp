@@ -24,9 +24,13 @@ void LineItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
     painter->setRenderHint(QPainter::Antialiasing);
 
     if (option->state & QStyle::State_Selected)
+    {
         painter->setPen(Qt::red);
+    }
     else
+    {
         painter->setPen(Qt::black);
+    }
 
     painter->drawLine(m_line);
     drawPoints(painter);

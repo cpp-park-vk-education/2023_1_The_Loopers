@@ -24,9 +24,13 @@ void EllipseItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* optio
     painter->setRenderHint(QPainter::Antialiasing);
 
     if (option->state & QStyle::State_Selected)
+    {
         painter->setPen(Qt::red);
+    }
     else
+    {
         painter->setPen(Qt::black);
+    }
 
     painter->drawEllipse(-m_size / 2, -m_size / 2, m_size, m_size);
 }

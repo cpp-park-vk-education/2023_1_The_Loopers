@@ -111,16 +111,24 @@ bool RectangleItem::isVertexPressed(const QPointF& pos) const
     qreal tolerance = 5.0;
 
     if (qAbs(pos.x() - m_rect.left()) <= tolerance && qAbs(pos.y() - m_rect.top()) <= tolerance)
+    {
         return true;
+    }
 
     if (qAbs(pos.x() - m_rect.right()) <= tolerance && qAbs(pos.y() - m_rect.top()) <= tolerance)
+    {
         return true;
+    }
 
     if (qAbs(pos.x() - m_rect.left()) <= tolerance && qAbs(pos.y() - m_rect.bottom()) <= tolerance)
+    {
         return true;
+    }
 
     if (qAbs(pos.x() - m_rect.right()) <= tolerance && qAbs(pos.y() - m_rect.bottom()) <= tolerance)
+    {
         return true;
+    }
 
     return false;
 }

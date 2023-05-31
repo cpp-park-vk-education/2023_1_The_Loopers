@@ -37,9 +37,13 @@ void FreeLineItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* opti
     painter->setRenderHint(QPainter::Antialiasing);
 
     if (option->state & QStyle::State_Selected)
+    {
         painter->setPen(Qt::red);
+    }
     else
+    {
         painter->setPen(Qt::black);
+    }
 
     painter->drawPolyline(m_points.data(), m_points.size());
 }
