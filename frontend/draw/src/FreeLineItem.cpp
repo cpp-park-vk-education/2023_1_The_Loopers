@@ -49,7 +49,7 @@ void FreeLineItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
         DataContainer polygonInfo;
 
-        polygonInfo["number of angles"] = m_points.size();
+        polygonInfo["number of angles"] = static_cast<int>(m_points.size());
 
         std::vector<DataContainer> anglesArray;
 

@@ -1,5 +1,13 @@
 #include "RectangleItem.h"
 
+#include <json_serializer.h>
+
+namespace
+{
+using JsonSerializer = inklink::serializer::JsonSerializer;
+using DataContainer = inklink::serializer::DataContainer;
+} // namespace
+
 namespace inklink::draw
 {
 RectangleItem::RectangleItem(QGraphicsItem* parent) : ObjectWithAttributes(parent), m_rect(QRectF(0, 0, 100, 100))
@@ -68,20 +76,22 @@ void RectangleItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton)
     {
-        DataContainer rectangleData;
+        DataContainer rectangleData{};
 
         rectangleData["number of angles"] = 4;
 
         std::vector<DataContainer> angleCoordinates;
 
-        angleCoordinates.push_back(createPointData(topLeft()));
-        angleCoordinates.push_back(createPointData(topRight()));
-        angleCoordinates.push_back(createPointData(bottomRight()));
-        angleCoordinates.push_back(createPointData(bottomLeft()));
+        angleCoordinates.push_back(createPointData(m_rect.topLeft()));
+        angleCoordinates.push_back(createPointData(m_rect.topRight()));
+        angleCoordinates.push_back(createPointData(m_rect.bottomRight()));
+        angleCoordinates.push_back(createPointData(m_rect.bottomLeft()));
 
         rectangleData["angles coordinates"] = angleCoordinates;
 
-        std::cout << "RectangleInfo: " << rectangleData.serialize() << std::endl;
+        // std::cout << "RectangleInfo: " << rectangleData.serialize() << std::endl;
+
+        auto msg = JsonSerializer::SerializeAsString(rectangleData);
 
         m_isResizing = false;
         event->accept();
