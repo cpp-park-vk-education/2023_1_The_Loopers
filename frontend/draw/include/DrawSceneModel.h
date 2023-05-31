@@ -48,6 +48,7 @@ public:
     ~DrawSceneModel();
 
     void SetMode(Mode mode);
+
     void SetEllipseMode();
     void SetFreeLineMode();
     void SetLineMode();

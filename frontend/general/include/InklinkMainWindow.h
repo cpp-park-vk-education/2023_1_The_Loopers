@@ -1,11 +1,12 @@
 #pragma once
 
 // #include "DrawView.h"
-#include "AuthView.h"
+#include <AuthView.h>
 // #include "DrawSceneModel.h"
-#include "GraphicsDrawView.h"
-#include "MenuView.h"
+// #include "GraphicsDrawView.h"
 #include "ToolBox.h"
+
+#include <MenuView.h>
 
 #include <QMainWindow>
 
@@ -14,7 +15,8 @@
 namespace inklink::draw
 {
 class DrawSceneModel;
-}
+class GraphicsDrawView;
+} // namespace inklink::draw
 
 namespace inklink::general
 {
