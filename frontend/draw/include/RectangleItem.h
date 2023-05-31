@@ -35,15 +35,22 @@ protected:
     void mouseMoveEvent(QGraphicsSceneMouseEvent* event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
 
-    bool isVertexPressed(const QPointF& pos) const;
-
 private:
+    enum class VertexState
+    {
+        kTopLeft,
+        kTopRight,
+        kBottomRight,
+        kBottomLeft,
+        kNone
+    };
+
+    VertexState isVertexPressed(const QPointF& pos) const;
     DataContainer createPointData(const QPointF& point);
 
     DrawSceneModel* m_model;
-
     QRectF m_rect;
     QPointF m_lastPos;
-    bool m_isResizing = false;
+    VertexState m_pressedVertex;
 };
 } // namespace inklink::draw

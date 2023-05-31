@@ -6,6 +6,8 @@
 
 namespace
 {
+constexpr qreal kTolerance = 10;
+
 using JsonSerializer = inklink::serializer::JsonSerializer;
 using DataContainer = inklink::serializer::DataContainer;
 } // namespace
@@ -13,7 +15,7 @@ using DataContainer = inklink::serializer::DataContainer;
 namespace inklink::draw
 {
 RectangleItem::RectangleItem(DrawSceneModel* model, QGraphicsItem* parent)
-        : ObjectWithAttributes(parent), m_model{model}, m_rect(QRectF(0, 0, 100, 100))
+        : ObjectWithAttributes(parent), m_model{model}, m_rect(QRectF(0, 0, 100, 100)), m_pressedVertex(VertexState::kNone)
 {
     setFlag(ItemIsSelectable);
     setAcceptHoverEvents(true);
@@ -26,19 +28,20 @@ QRectF RectangleItem::boundingRect() const
 
 void RectangleItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
-    Q_UNUSED(option);
     Q_UNUSED(widget);
 
     painter->setPen(QPen(Qt::black, 2));
-    painter->setBrush(isSelected() ? Qt::red : Qt::blue);
+    painter->setBrush(option->state & QStyle::State_Sunken ? Qt::red : Qt::blue);
     painter->drawRect(m_rect);
+
+    update();
 }
 
 void RectangleItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton)
     {
-        m_isResizing = isVertexPressed(event->pos());
+        m_pressedVertex = isVertexPressed(event->pos());
         m_lastPos = event->scenePos();
         event->accept();
     }
@@ -46,17 +49,36 @@ void RectangleItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
     {
         event->ignore();
     }
+
+    update();
 }
 
 void RectangleItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
     if (event->buttons() & Qt::LeftButton)
     {
-        if (m_isResizing)
+        if (m_pressedVertex != VertexState::kNone)
         {
             qreal dx = event->scenePos().x() - m_lastPos.x();
             qreal dy = event->scenePos().y() - m_lastPos.y();
-            m_rect.adjust(0, 0, dx, dy);
+
+            switch (m_pressedVertex) {
+            case VertexState::kTopLeft:
+                m_rect.setTopLeft(m_rect.topLeft() + QPointF(dx, dy));
+                break;
+            case VertexState::kTopRight:
+                m_rect.setTopRight(m_rect.topRight() + QPointF(dx, dy));
+                break;
+            case VertexState::kBottomRight:
+                m_rect.setBottomRight(m_rect.bottomRight() + QPointF(dx, dy));
+                break;
+            case VertexState::kBottomLeft:
+                m_rect.setBottomLeft(m_rect.bottomLeft() + QPointF(dx, dy));
+                break;
+            default:
+                break;
+            }
+
             prepareGeometryChange();
         }
         else
@@ -73,6 +95,8 @@ void RectangleItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
     {
         event->ignore();
     }
+
+    update();
 }
 
 void RectangleItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
@@ -96,7 +120,7 @@ void RectangleItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 
         auto msg = JsonSerializer::SerializeAsString(rectangleData);
 
-        m_isResizing = false;
+        m_pressedVertex = VertexState::kNone;
         event->accept();
     }
     else
@@ -104,33 +128,33 @@ void RectangleItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         event->ignore();
     }
     QGraphicsObject::mouseReleaseEvent(event);
+
+    update();
 }
 
-bool RectangleItem::isVertexPressed(const QPointF& pos) const
+RectangleItem::VertexState RectangleItem::isVertexPressed(const QPointF& pos) const
 {
-    qreal tolerance = 5.0;
-
-    if (qAbs(pos.x() - m_rect.left()) <= tolerance && qAbs(pos.y() - m_rect.top()) <= tolerance)
+    if (qAbs(pos.x() - m_rect.left()) <= kTolerance && qAbs(pos.y() - m_rect.top()) <= kTolerance)
     {
-        return true;
+        return VertexState::kTopLeft;
     }
 
-    if (qAbs(pos.x() - m_rect.right()) <= tolerance && qAbs(pos.y() - m_rect.top()) <= tolerance)
+    if (qAbs(pos.x() - m_rect.right()) <= kTolerance && qAbs(pos.y() - m_rect.top()) <= kTolerance)
     {
-        return true;
+        return VertexState::kTopRight;
     }
 
-    if (qAbs(pos.x() - m_rect.left()) <= tolerance && qAbs(pos.y() - m_rect.bottom()) <= tolerance)
+    if (qAbs(pos.x() - m_rect.right()) <= kTolerance && qAbs(pos.y() - m_rect.bottom()) <= kTolerance)
     {
-        return true;
+        return VertexState::kBottomRight;
     }
 
-    if (qAbs(pos.x() - m_rect.right()) <= tolerance && qAbs(pos.y() - m_rect.bottom()) <= tolerance)
+    if (qAbs(pos.x() - m_rect.left()) <= kTolerance && qAbs(pos.y() - m_rect.bottom()) <= kTolerance)
     {
-        return true;
+        return VertexState::kBottomLeft;
     }
 
-    return false;
+    return VertexState::kNone;
 }
 
 DataContainer RectangleItem::createPointData(const QPointF& point)
