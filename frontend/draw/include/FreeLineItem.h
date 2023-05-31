@@ -22,6 +22,7 @@ public:
 
     std::string serialize() override
     {
+        return "";
     }
     void parse(const DataContainer &) override
     {
