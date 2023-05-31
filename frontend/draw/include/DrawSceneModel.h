@@ -48,6 +48,10 @@ public:
     ~DrawSceneModel();
 
     void SetMode(Mode mode);
+    void SetEllipseMode();
+    void SetFreeLineMode();
+    void SetLineMode();
+    void SetRectangleMode();
 
     std::string Serialize(int actionType, int figureId, int type);
     void Send(std::string& message);

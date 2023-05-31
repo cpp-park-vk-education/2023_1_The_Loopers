@@ -51,8 +51,8 @@ enum actionInfoTypes
 namespace inklink::draw
 {
 DrawSceneModel::DrawSceneModel(QObject* parent)
-        : QGraphicsScene(parent),
-          m_gen{static_cast<unsigned long>(std::chrono::system_clock::now().time_since_epoch().count())}
+        : QGraphicsScene(parent), m_gen{static_cast<unsigned long>(
+                                          std::chrono::system_clock::now().time_since_epoch().count())}
 {
     {
         auto lambdaOnAccept = [this](ConnectType, error_code ec, IClientSession*) { ; };
@@ -78,6 +78,26 @@ DrawSceneModel::DrawSceneModel(QObject* parent)
 void DrawSceneModel::SetMode(DrawSceneModel::Mode mode)
 {
     m_currMode = mode;
+}
+
+void DrawSceneModel::SetLineMode()
+{
+    SetMode(Mode::kLine);
+}
+
+void DrawSceneModel::SetFreeLineMode()
+{
+    SetMode(Mode::kFreeLine);
+}
+
+void DrawSceneModel::SetEllipseMode()
+{
+    SetMode(Mode::kEllipse);
+}
+
+void DrawSceneModel::SetRectangleMode()
+{
+    SetMode(Mode::kRectangle);
 }
 
 std::string DrawSceneModel::Serialize(int actionType, int figureId, int type)

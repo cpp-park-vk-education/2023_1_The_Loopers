@@ -3,6 +3,7 @@
 // #include "DrawView.h"
 #include "AuthView.h"
 #include "GraphicsDrawView.h"
+#include "DrawSceneModel.h"
 #include "MenuView.h"
 #include "ToolBox.h"
 
@@ -48,6 +49,10 @@ public:
     void ConnectSignals()
     {
         connect(m_menu, &menu::MenuView::AuthClicked, this, &InklinkMainWindow::OnAuthBtnClicked);
+        connect(m_toolBox, &draw::ToolBox::LineClicked, draw::DrawSceneModel, &draw::DrawSceneModel::SetLineMode);
+        connect(m_toolBox, &draw::ToolBox::FreeLineClicked, draw::DrawSceneModel, &draw::DrawSceneModel::SetFreeLineMode);
+        connect(m_toolBox, &draw::ToolBox::EllipseClicked, draw::DrawSceneModel, &draw::DrawSceneModel::SetEllipseMode);
+        connect(m_toolBox, &draw::ToolBox::RectangleClicked, draw::DrawSceneModel, &draw::DrawSceneModel::SetRectangleMode);
     }
 
     ~InklinkMainWindow() = default;
