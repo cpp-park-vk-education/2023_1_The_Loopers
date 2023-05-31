@@ -21,7 +21,7 @@ public:
 
 signals:
     void LineClicked(bool);
-    void FreeLIneClicked(bool);
+    void FreeLineClicked(bool);
     void RectangleClicked(bool);
     void EllipseClicked(bool);
 
@@ -39,7 +39,7 @@ private:
 
         pushButton = createButton("FreeLine", this);
         verticalLayout->addWidget(pushButton);
-        connect(pushButton, &QPushButton::clicked, this, &ToolBox::FreeLIneClicked);
+        connect(pushButton, &QPushButton::clicked, this, &ToolBox::FreeLineClicked);
 
         pushButton = createButton("Rectangle", this);
         verticalLayout->addWidget(pushButton);
