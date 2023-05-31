@@ -201,16 +201,16 @@ ObjectWithAttributes* DrawSceneModel::CreateNewItem()
         // No item to create for move mode
         break;
     case Mode::kLine:
-        newItem = new LineItem;
+        newItem = new LineItem(this);
         break;
     case Mode::kFreeLine:
-        newItem = new FreeLineItem;
+        newItem = new FreeLineItem(this);
         break;
     case Mode::kRectangle:
-        newItem = new RectangleItem;
+        newItem = new RectangleItem(this);
         break;
     case Mode::kEllipse:
-        newItem = new EllipseItem;
+        newItem = new EllipseItem(this);
         break;
     }
 

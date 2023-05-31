@@ -2,7 +2,7 @@
 
 // #include "DrawView.h"
 #include "AuthView.h"
-#include "DrawSceneModel.h"
+// #include "DrawSceneModel.h"
 #include "GraphicsDrawView.h"
 #include "MenuView.h"
 #include "ToolBox.h"
@@ -11,6 +11,11 @@
 
 #include <iostream>
 
+namespace inklink::draw
+{
+class DrawSceneModel;
+}
+
 namespace inklink::general
 {
 class InklinkMainWindow : public QMainWindow
@@ -18,52 +23,16 @@ class InklinkMainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    InklinkMainWindow(QWidget* parent = nullptr) : QMainWindow{parent}
-    {
-        InitUi();
-    }
+    InklinkMainWindow(QWidget* parent = nullptr);
 
-    void InitUi()
-    {
-        QWidget* centralWidget = new QWidget;
-        QHBoxLayout* layout = new QHBoxLayout(centralWidget);
-        centralWidget->setLayout(layout);
+    void InitUi();
 
-        m_menu = new menu::MenuView;
-        m_menu->setMaximumWidth(200);
-        m_drawView = new inklink::draw::GraphicsDrawView;
-        m_model = m_drawView->GetSceneModel();
-        m_toolBox = new inklink::draw::ToolBox;
-
-        m_menu->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-
-        layout->addWidget(m_menu);
-        layout->addWidget(m_drawView);
-        layout->addWidget(m_toolBox);
-
-        setCentralWidget(centralWidget);
-        setWindowTitle("InkLink");
-
-        ConnectSignals();
-    }
-
-    void ConnectSignals()
-    {
-        connect(m_menu, &menu::MenuView::AuthClicked, this, &InklinkMainWindow::OnAuthBtnClicked);
-        connect(m_toolBox, &draw::ToolBox::LineClicked, m_model, &draw::DrawSceneModel::SetLineMode);
-        connect(m_toolBox, &draw::ToolBox::FreeLineClicked, m_model, &draw::DrawSceneModel::SetFreeLineMode);
-        connect(m_toolBox, &draw::ToolBox::EllipseClicked, m_model, &draw::DrawSceneModel::SetEllipseMode);
-        connect(m_toolBox, &draw::ToolBox::RectangleClicked, m_model, &draw::DrawSceneModel::SetRectangleMode);
-    }
+    void ConnectSignals();
 
     ~InklinkMainWindow() = default;
 
 private:
-    void OnAuthBtnClicked(bool)
-    {
-        auth::AuthDialog dialog(this);
-        dialog.exec();
-    }
+    void OnAuthBtnClicked(bool);
 
 private:
     inklink::menu::MenuView* m_menu;
