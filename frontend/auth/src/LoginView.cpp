@@ -54,8 +54,8 @@ LoginDialog::LoginDialog(QWidget* parent) : QWidget(parent)
 }
 void LoginDialog::OnRegisterButtonClicked()
 {
-    auto* registration = new AuthDialog(this);
     close();
+    auto* registration = new AuthDialog();
     registration->show();
 }
 void LoginDialog::OnEnterButtonClicked()

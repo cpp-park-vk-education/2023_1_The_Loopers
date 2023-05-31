@@ -77,8 +77,8 @@ AuthDialog::AuthDialog(QWidget* parent) : QDialog(parent)
 
 void AuthDialog::OnLoginButtonClicked()
 {
-    auto* login = new LoginDialog(this);
     close();
+    auto* login = new LoginDialog();
     login->show();
 }
 
