@@ -1,7 +1,6 @@
 #include "DrawSceneModel.h"
 
 #include "GraphicsDrawView.h"
-#include "IObject.h"
 #include "all_items"
 
 #include <data_container.h>

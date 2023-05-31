@@ -19,7 +19,6 @@ class IClientSession;
 
 namespace inklink::draw
 {
-
 class ObjectWithAttributes;
 class GraphicsDrawView;
 } // namespace inklink::draw

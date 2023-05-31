@@ -1,11 +1,8 @@
 #pragma once
 
-// #include "DrawView.h"
-#include <AuthView.h>
-// #include "DrawSceneModel.h"
-// #include "GraphicsDrawView.h"
 #include "ToolBox.h"
 
+#include <AuthView.h>
 #include <MenuView.h>
 
 #include <QMainWindow>

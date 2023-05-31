@@ -31,11 +31,11 @@ qt_add_library(${DRAW}
 
 target_include_directories(${DRAW} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
 
-set(PRIVATE_LINK_LIBRARIES
+set(PUBLIC_LINK_LIBRARIES
         "${REQUIRED_LIBS_QUALIFIED}"
         "${SERIALIZER}"
         "${CLIENT_NETWORK}"
         "${NETWORK_ADAPTER}"
         )
 
-target_link_libraries(${DRAW} PRIVATE ${PRIVATE_LINK_LIBRARIES})
+target_link_libraries(${DRAW} PUBLIC ${PUBLIC_LINK_LIBRARIES})
