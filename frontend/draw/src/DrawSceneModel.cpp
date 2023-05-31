@@ -20,7 +20,6 @@
 #include <string>
 #include <thread>
 
-
 namespace
 {
 constexpr int simultaneousAccess = 3997;
@@ -173,7 +172,6 @@ void DrawSceneModel::SetFilename(std::string& filename)
 
 void DrawSceneModel::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 {
-    std::cout << "mouseDoubleClickEvent " << __LINE__ << std::endl;
     if (event->button() == Qt::LeftButton)
     {
         // Create a new QGraphicsItem
@@ -186,7 +184,7 @@ void DrawSceneModel::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
         }
 
         // Add the new item to the scene
-        addItem(newItem);
+        // addItem(newItem);
 
         // Simulate a mouse press event on the newly created item
         QGraphicsSceneMouseEvent pressEvent(QEvent::GraphicsSceneMousePress);
@@ -209,6 +207,8 @@ ObjectWithAttributes* DrawSceneModel::CreateNewItem()
         // No item to create for move mode
         break;
     case Mode::kLine:
+        std::cout << "Line mode " << std::endl;
+
         newItem = new LineItem(this);
         break;
     case Mode::kFreeLine:
@@ -224,6 +224,7 @@ ObjectWithAttributes* DrawSceneModel::CreateNewItem()
 
     if (newItem)
     {
+        std::cout << newItem << std::endl;
         addItem(newItem);
         m_itemsById[newItem->getID()] = newItem;
     }
