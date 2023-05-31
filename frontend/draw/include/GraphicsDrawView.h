@@ -22,10 +22,10 @@ public:
         return m_scene;
     }
 
-protected:
-    void mousePressEvent(QMouseEvent* event) override;
-    void mouseReleaseEvent(QMouseEvent* event) override;
-    void mouseMoveEvent(QMouseEvent* event) override;
+    // protected:
+    //     void mousePressEvent(QMouseEvent* event) override;
+    //     void mouseReleaseEvent(QMouseEvent* event) override;
+    //     void mouseMoveEvent(QMouseEvent* event) override;
 
 private:
     DrawSceneModel* m_scene;

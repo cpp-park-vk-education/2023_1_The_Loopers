@@ -177,6 +177,12 @@ void DrawSceneModel::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
         // Create a new QGraphicsItem
         ObjectWithAttributes* newItem = CreateNewItem();
 
+        if (!newItem)
+        {
+            QGraphicsScene::mouseDoubleClickEvent(event);
+            return;
+        }
+
         // Add the new item to the scene
         addItem(newItem);
 
