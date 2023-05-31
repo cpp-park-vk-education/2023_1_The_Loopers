@@ -41,10 +41,10 @@ void InklinkMainWindow::InitUi()
 void InklinkMainWindow::ConnectSignals()
 {
     connect(m_menu, &menu::MenuView::AuthClicked, this, &InklinkMainWindow::OnAuthBtnClicked);
-    // connect(m_toolBox, &draw::ToolBox::LineClicked, m_model, &draw::DrawSceneModel::SetLineMode);
-    // connect(m_toolBox, &draw::ToolBox::FreeLineClicked, m_model, &draw::DrawSceneModel::SetFreeLineMode);
-    // connect(m_toolBox, &draw::ToolBox::EllipseClicked, m_model, &draw::DrawSceneModel::SetEllipseMode);
-    // connect(m_toolBox, &draw::ToolBox::RectangleClicked, m_model, &draw::DrawSceneModel::SetRectangleMode);
+    connect(m_toolBox, &draw::ToolBox::LineClicked, m_model, &draw::DrawSceneModel::SetLineMode);
+    connect(m_toolBox, &draw::ToolBox::FreeLineClicked, m_model, &draw::DrawSceneModel::SetFreeLineMode);
+    connect(m_toolBox, &draw::ToolBox::EllipseClicked, m_model, &draw::DrawSceneModel::SetEllipseMode);
+    connect(m_toolBox, &draw::ToolBox::RectangleClicked, m_model, &draw::DrawSceneModel::SetRectangleMode);
 }
 
 void InklinkMainWindow::OnAuthBtnClicked(bool)

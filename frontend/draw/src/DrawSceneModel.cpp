@@ -14,6 +14,7 @@
 #include <boost/system/error_code.hpp>
 
 #include <chrono>
+#include <iostream>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -50,8 +51,8 @@ enum actionInfoTypes
 namespace inklink::draw
 {
 DrawSceneModel::DrawSceneModel(QObject* parent)
-        : QGraphicsScene(parent), m_gen{static_cast<unsigned long>(
-                                          std::chrono::system_clock::now().time_since_epoch().count())}
+        : QGraphicsScene(parent),
+          m_gen{static_cast<unsigned long>(std::chrono::system_clock::now().time_since_epoch().count())}
 {
     {
         auto lambdaOnAccept = [this](ConnectType, error_code ec, IClientSession*) { ; };
@@ -183,7 +184,7 @@ void DrawSceneModel::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
         }
 
         // Add the new item to the scene
-        addItem(newItem);
+        // addItem(newItem);
 
         // Simulate a mouse press event on the newly created item
         QGraphicsSceneMouseEvent pressEvent(QEvent::GraphicsSceneMousePress);
@@ -206,6 +207,8 @@ ObjectWithAttributes* DrawSceneModel::CreateNewItem()
         // No item to create for move mode
         break;
     case Mode::kLine:
+        std::cout << "Line mode " << std::endl;
+
         newItem = new LineItem(this);
         break;
     case Mode::kFreeLine:
@@ -221,6 +224,7 @@ ObjectWithAttributes* DrawSceneModel::CreateNewItem()
 
     if (newItem)
     {
+        std::cout << newItem << std::endl;
         addItem(newItem);
         m_itemsById[newItem->getID()] = newItem;
     }
