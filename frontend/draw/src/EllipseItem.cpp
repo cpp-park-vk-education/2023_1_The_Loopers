@@ -2,7 +2,7 @@
 
 namespace inklink::draw
 {
-EllipseItem::EllipseItem(QGraphicsItem *parent = nullptr) : ObjectWithAttributes(parent), m_size(100), m_selected(false)
+EllipseItem::EllipseItem(QGraphicsItem* parent) : ObjectWithAttributes(parent), m_size(100), m_selected(false)
 {
     setFlag(ItemIsSelectable);
     setAcceptHoverEvents(true);
@@ -38,8 +38,9 @@ void EllipseItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     if (m_selected)
     {
-        setPos(mapToParent(event->pos()));
-        m_size += event->delta().y();
+        QPointF delta = event->pos() - event->lastPos();
+        setPos(mapToParent(delta));
+        m_size += delta.y();
         prepareGeometryChange();
         update();
     }
