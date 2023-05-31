@@ -20,11 +20,16 @@ public:
 
     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 
+    std::string serialize() override
+    {
+    }
+    void parse(const DataContainer&) override
+    {
+    }
+
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
-
     void mouseMoveEvent(QGraphicsSceneMouseEvent* event) override;
-
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
 
     bool isVertexPressed(const QPointF& pos) const;
