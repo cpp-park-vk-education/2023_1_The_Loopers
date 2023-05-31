@@ -2,8 +2,8 @@
 
 // #include "DrawView.h"
 #include "AuthView.h"
-#include "GraphicsDrawView.h"
 #include "DrawSceneModel.h"
+#include "GraphicsDrawView.h"
 #include "MenuView.h"
 #include "ToolBox.h"
 
@@ -32,6 +32,7 @@ public:
         m_menu = new menu::MenuView;
         m_menu->setMaximumWidth(200);
         m_drawView = new inklink::draw::GraphicsDrawView;
+        m_model = m_drawView->GetSceneModel();
         m_toolBox = new inklink::draw::ToolBox;
 
         m_menu->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -49,10 +50,10 @@ public:
     void ConnectSignals()
     {
         connect(m_menu, &menu::MenuView::AuthClicked, this, &InklinkMainWindow::OnAuthBtnClicked);
-        connect(m_toolBox, &draw::ToolBox::LineClicked, draw::DrawSceneModel, &draw::DrawSceneModel::SetLineMode);
-        connect(m_toolBox, &draw::ToolBox::FreeLineClicked, draw::DrawSceneModel, &draw::DrawSceneModel::SetFreeLineMode);
-        connect(m_toolBox, &draw::ToolBox::EllipseClicked, draw::DrawSceneModel, &draw::DrawSceneModel::SetEllipseMode);
-        connect(m_toolBox, &draw::ToolBox::RectangleClicked, draw::DrawSceneModel, &draw::DrawSceneModel::SetRectangleMode);
+        connect(m_toolBox, &draw::ToolBox::LineClicked, m_model, &draw::DrawSceneModel::SetLineMode);
+        connect(m_toolBox, &draw::ToolBox::FreeLineClicked, m_model, &draw::DrawSceneModel::SetFreeLineMode);
+        connect(m_toolBox, &draw::ToolBox::EllipseClicked, m_model, &draw::DrawSceneModel::SetEllipseMode);
+        connect(m_toolBox, &draw::ToolBox::RectangleClicked, m_model, &draw::DrawSceneModel::SetRectangleMode);
     }
 
     ~InklinkMainWindow() = default;
@@ -67,6 +68,7 @@ private:
 private:
     inklink::menu::MenuView* m_menu;
     inklink::draw::GraphicsDrawView* m_drawView;
+    inklink::draw::DrawSceneModel* m_model;
     inklink::draw::ToolBox* m_toolBox;
 };
 } // namespace inklink::general

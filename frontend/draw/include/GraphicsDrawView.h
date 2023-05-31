@@ -17,6 +17,11 @@ class GraphicsDrawView : public QGraphicsView
 public:
     GraphicsDrawView(QWidget* parent = nullptr);
 
+    DrawSceneModel* GetSceneModel()
+    {
+        return m_scene;
+    }
+
 protected:
     void mousePressEvent(QMouseEvent* event) override;
     void mouseReleaseEvent(QMouseEvent* event) override;
