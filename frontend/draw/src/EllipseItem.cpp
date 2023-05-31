@@ -1,8 +1,11 @@
 #include "EllipseItem.h"
 
+#include "DrawSceneModel.h"
+
 namespace inklink::draw
 {
-EllipseItem::EllipseItem(QGraphicsItem* parent) : ObjectWithAttributes(parent), m_size(100), m_selected(false)
+EllipseItem::EllipseItem(DrawSceneModel* model, QGraphicsItem* parent)
+        : ObjectWithAttributes(parent), m_model{model}, m_size(100), m_selected(false)
 {
     setFlag(ItemIsSelectable);
     setAcceptHoverEvents(true);
@@ -14,7 +17,7 @@ QRectF EllipseItem::boundingRect() const
     return QRectF(-m_size / 2 - adjust, -m_size / 2 - adjust, m_size + adjust, m_size + adjust);
 }
 
-void EllipseItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void EllipseItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
     Q_UNUSED(widget);
 
@@ -28,13 +31,13 @@ void EllipseItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     painter->drawEllipse(-m_size / 2, -m_size / 2, m_size, m_size);
 }
 
-void EllipseItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void EllipseItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton)
         m_selected = true;
 }
 
-void EllipseItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+void EllipseItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
     if (m_selected)
     {
@@ -46,7 +49,7 @@ void EllipseItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     }
 }
 
-void EllipseItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void EllipseItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton)
         m_selected = false;

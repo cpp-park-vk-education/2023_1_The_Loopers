@@ -1,8 +1,11 @@
 #include "LineItem.h"
 
+#include "DrawSceneModel.h"
+
 namespace inklink::draw
 {
-LineItem::LineItem(QGraphicsItem* parent) : ObjectWithAttributes(parent), m_selected(false), m_selectedPoint(-1)
+LineItem::LineItem(DrawSceneModel* model, QGraphicsItem* parent)
+        : ObjectWithAttributes(parent), m_model{model}, m_selected(false), m_selectedPoint(-1)
 {
     setFlag(ItemIsSelectable);
     setAcceptHoverEvents(true);

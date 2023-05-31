@@ -11,10 +11,12 @@
 
 namespace inklink::draw
 {
+class DrawSceneModel;
+
 class RectangleItem : public ObjectWithAttributes
 {
 public:
-    RectangleItem(QGraphicsItem* parent = nullptr);
+    RectangleItem(DrawSceneModel*, QGraphicsItem* parent = nullptr);
 
     QRectF boundingRect() const override;
 
@@ -41,5 +43,7 @@ private:
     QRectF m_rect;
     QPointF m_lastPos;
     bool m_isResizing = false;
+
+    DrawSceneModel* m_model;
 };
 } // namespace inklink::draw

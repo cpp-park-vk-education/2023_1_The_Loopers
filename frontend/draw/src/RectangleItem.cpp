@@ -1,5 +1,7 @@
 #include "RectangleItem.h"
 
+#include "DrawSceneModel.h"
+
 #include <json_serializer.h>
 
 namespace
@@ -10,7 +12,8 @@ using DataContainer = inklink::serializer::DataContainer;
 
 namespace inklink::draw
 {
-RectangleItem::RectangleItem(QGraphicsItem* parent) : ObjectWithAttributes(parent), m_rect(QRectF(0, 0, 100, 100))
+RectangleItem::RectangleItem(DrawSceneModel* model, QGraphicsItem* parent)
+        : ObjectWithAttributes(parent), m_model{model}, m_rect(QRectF(0, 0, 100, 100))
 {
     setFlag(ItemIsSelectable);
     setAcceptHoverEvents(true);

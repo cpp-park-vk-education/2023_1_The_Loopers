@@ -1,8 +1,11 @@
 #include "FreeLineItem.h"
 
+#include "DrawSceneModel.h"
+
 namespace inklink::draw
 {
-FreeLineItem::FreeLineItem(QGraphicsItem *parent) : ObjectWithAttributes(parent), m_selected(false)
+FreeLineItem::FreeLineItem(DrawSceneModel* model, QGraphicsItem* parent)
+        : ObjectWithAttributes(parent), m_model{model}, m_selected(false)
 {
     setFlag(ItemIsSelectable);
     setAcceptHoverEvents(true);
@@ -15,7 +18,7 @@ QRectF FreeLineItem::boundingRect() const
     qreal minX = std::numeric_limits<qreal>::max();
     qreal minY = std::numeric_limits<qreal>::max();
 
-    for (const QPointF &point : m_points)
+    for (const QPointF& point : m_points)
     {
         maxX = std::max(maxX, point.x());
         maxY = std::max(maxY, point.y());
@@ -27,7 +30,7 @@ QRectF FreeLineItem::boundingRect() const
     return QRectF(minX - adjust, minY - adjust, maxX - minX + 2 * adjust, maxY - minY + 2 * adjust);
 }
 
-void FreeLineItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void FreeLineItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
     Q_UNUSED(widget);
 
@@ -41,7 +44,7 @@ void FreeLineItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
     painter->drawPolyline(m_points.data(), m_points.size());
 }
 
-void FreeLineItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void FreeLineItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton)
     {
@@ -53,7 +56,7 @@ void FreeLineItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
         std::vector<DataContainer> anglesArray;
 
-        for (const QPointF &point : m_points)
+        for (const QPointF& point : m_points)
         {
             DataContainer pointContainer;
 
@@ -69,7 +72,7 @@ void FreeLineItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
     }
 }
 
-void FreeLineItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+void FreeLineItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
     if (m_selected)
     {
@@ -79,7 +82,7 @@ void FreeLineItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     }
 }
 
-void FreeLineItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void FreeLineItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton)
         m_selected = false;
