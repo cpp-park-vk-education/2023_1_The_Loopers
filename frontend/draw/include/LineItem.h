@@ -39,11 +39,11 @@ private:
 
     void drawPoints(QPainter* painter) const;
 
+    DrawSceneModel* m_model;
+
     QLineF m_line;
     bool m_selected;
     int m_selectedPoint;
     const qreal m_pointSize = 8.0;
-
-    DrawSceneModel* m_model;
 };
 } // namespace inklink::draw

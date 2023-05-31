@@ -40,10 +40,10 @@ protected:
 private:
     DataContainer createPointData(const QPointF& point);
 
+    DrawSceneModel* m_model;
+
     QRectF m_rect;
     QPointF m_lastPos;
     bool m_isResizing = false;
-
-    DrawSceneModel* m_model;
 };
 } // namespace inklink::draw

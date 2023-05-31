@@ -36,9 +36,9 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
 
 private:
+    DrawSceneModel* m_model;
+
     int m_size;
     bool m_selected;
-
-    DrawSceneModel* m_model;
 };
 } // namespace inklink::draw
