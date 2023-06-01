@@ -1,7 +1,6 @@
 #include "AuthView.h"
 
 #include "AuthModel.h"
-#include "LoginView.h"
 
 #include <QLabel>
 #include <QLineEdit>
