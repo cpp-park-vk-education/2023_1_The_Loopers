@@ -57,7 +57,6 @@ private:
 
 private:
     AuthDialog* m_authview;
-    LoginDialog* m_loginview;
 
     std::weak_ptr<IClientSession> m_session;
 

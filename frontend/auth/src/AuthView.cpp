@@ -38,7 +38,7 @@ AuthDialog::AuthDialog(QWidget* parent) : QDialog(parent)
 
     connect(this, &AuthDialog::GotResultFromNetwork, this, &AuthDialog::DoOnGotResultFromNetwork);
 
-    setWindowTitle("Registration");
+    setWindowTitle("Authentication");
 
     setWindowFlags(Qt::CoverWindow | Qt::WindowTitleHint);
 
@@ -79,9 +79,31 @@ AuthDialog::AuthDialog(QWidget* parent) : QDialog(parent)
 
 void AuthDialog::OnLoginButtonClicked()
 {
-    close();
-    auto* login = new LoginDialog();
-    login->show();
+    std::string username;
+    std::string password;
+
+    const QString usernameEnter = m_usernameLine->text();
+    const QString passwordEnter = m_passwordLine->text();
+
+    username = usernameEnter.toStdString();
+    password = passwordEnter.toStdString();
+
+    QMessageBox warningBox;
+    warningBox.setStyleSheet(myStyleSheet);
+
+    if (username.empty())
+    {
+        warningBox.warning(this, "error", "Enter username");
+    }
+    else if (password.empty())
+    {
+        warningBox.warning(this, "error", "Enter password");
+    }
+    else
+    {
+        const auto message = m_model->LoginParseToSend(username, password);
+        m_model->LoginSend(message);
+    }
 }
 
 void AuthDialog::OnCreateButtonClicked()
@@ -124,7 +146,7 @@ void AuthDialog::DoOnGotResultFromNetwork(int result)
     {
         QMessageBox warningBox;
         warningBox.setStyleSheet(myStyleSheet);
-        warningBox.warning(this, "usernameEnter", "Existing username");
+        warningBox.warning(this, "usernameEnter", "Uncorrect username or password");
     }
     else
     {

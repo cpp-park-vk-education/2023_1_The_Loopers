@@ -139,7 +139,7 @@ void AuthModel::LoginParseToGet(const std::string& webSocketData)
 {
     DataContainer getContainer{};
     getContainer = JsonSerializer::ParseFromString(webSocketData);
-    m_loginview->NotifyGotResultFromNetwork(true);
+    m_authview->NotifyGotResultFromNetwork(true);
     return;
 }
 
