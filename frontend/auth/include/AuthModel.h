@@ -19,7 +19,6 @@ class IClientSession;
 namespace inklink::auth
 {
 class AuthDialog;
-class LoginDialog;
 } // namespace inklink::auth
 
 namespace

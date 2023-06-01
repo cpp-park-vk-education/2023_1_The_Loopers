@@ -1,7 +1,6 @@
 #include "AuthModel.h"
 
 #include "AuthView.h"
-#include "LoginView.h"
 
 #include <websocket_client_session.h>
 
