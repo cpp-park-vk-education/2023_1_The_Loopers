@@ -9,8 +9,17 @@ set(PUBLIC_INCLUDE_DIRECTORIES
     "include"
 )
 
-target_include_directories(${DB_ADAPTER} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
+FetchContent_Declare(
+libpqxx
+GIT_REPOSITORY https://github.com/jtv/libpqxx.git
+GIT_TAG a6b1d60e74c1427c8ac2324b85cd4a0dc2068332
+)
+set(PQXX_LIBRARIES pqxx_static)
 
+FetchContent_MakeAvailable(libpqxx)
+
+target_include_directories(${DB_ADAPTER} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
+target_link_libraries(${DB_ADAPTER} "${PQXX_LIBRARIES}")
 # find_package(spdlog)
 
 # if(${spdlog_FOUND})
