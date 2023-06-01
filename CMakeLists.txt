@@ -28,7 +28,7 @@ option(ENABLE_SANITIZER "Set to \"ON\" to enable sanitizer in debug build" OFF)
 
 set(UTILS_DIR "${PROJECT_SOURCE_DIR}/utils")
 
-include(cmake/apply_options.cmake)
+#include(cmake/apply_options.cmake)
 
 # services
 set(MESSAGE_BROKER_SERVICE service_${PROJECT_NAME}_message_broker)
