@@ -13,7 +13,7 @@
 namespace inklink::server_network
 {
 class IServiceSession;
-}
+}  // namespace inklink::server_network
 
 namespace inklink::storage
 {
@@ -27,10 +27,12 @@ public:
     using IExternalServiceChassis = external_service_chassis::IExternalServiceChassis;
 
 public:
+    virtual ~IStorage() = default;
+
     virtual int Run(int port) = 0;
     virtual bool DoOnRead(error_code errocCode, const std::string& request, IServiceSession* serviceSession) = 0;
     virtual void DoOnSignal(const std::string& msg) = 0;
-    virtual void DoOnNotified(int eventType, const std::string&, Endpoint from);
+    virtual void DoOnNotified(int eventType, const std::string&, Endpoint from) = 0;
 
     [[nodiscard]] virtual std::string GetFile(const std::string& fileName, const std::string& login) const = 0;
     [[nodiscard]] virtual bool Update(const std::string rootFileName, const std::string& fileName,

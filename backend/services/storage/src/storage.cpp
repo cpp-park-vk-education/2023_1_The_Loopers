@@ -57,8 +57,8 @@ int Storage::Run(int port)
                         "storage", kLogPath, ioContext, std::move(factory), manager, ServiceType::kFileStorage,
                         {.address = m_address, .port = m_port},
                         [this](int eventType, const std::string& msgBody, Endpoint from)
-                        { DoOnNotified(eventType, msgBody, from); },
-                        [this](const std::string& msgBody) { DoOnSignal(msgBody); });
+                        { Storage::DoOnNotified(eventType, msgBody, from); },
+                        [this](const std::string& msgBody) { Storage::DoOnSignal(msgBody); });
 
         m_serviceChassis->baseServiceChassis->logger->LogInfo("Storage service is initted");
 
