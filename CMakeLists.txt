@@ -16,7 +16,7 @@ option(ENABLE_FRONTEND "Set to \"OFF\" to build front" OFF)
 
 option(CLEAR_CACHE "Set to \"ON\" to clear cache" ON)
 
-option(ENABLE_TEST "Set to \"OFF\" for test build" OFF)
+option(ENABLE_TEST "Set to \"ON\" for test build" ON)
 
 option(ENABLE_CLANG_FORMAT "Set to \"ON\" to add clang-format build target" OFF)
 

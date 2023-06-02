@@ -177,6 +177,8 @@ std::string Storage::GetGraphArcsForOneVertex(const std::string& rootFileName, c
         DataContainer sendContainer{};
 
         sendContainer["graph"] = graphArcs;
+
+        return JsonSerializer::SerializeAsString(sendContainer);
     }
     catch (const std::exception& ec)
     {
