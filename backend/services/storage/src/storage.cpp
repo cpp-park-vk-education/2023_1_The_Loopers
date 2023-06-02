@@ -121,11 +121,22 @@ std::string Storage::GetAllFilesNames(const std::string& login) const
 {
     try
     {
-         std::string allFiles = m_dbController->GetAllFilesForUser(login);
+        std::stringstream allFiles(m_dbController->GetAllFilesForUser(login));
+        std::string file;
+        DataContainer sendContainer{};
+        std::vector<DataContainer> filesToSend;
+         
+        while (std::getline(allFiles, file))
+        {
+            DataContainer fileDataContainer{};
 
-         DataContainer sendContainer{};
+            fileDataContainer["file"] = file;
+            filesToSend.push_back(fileDataContainer);
+        }
 
-         sendContainer["files"] = allFiles;
+        sendContainer["files"] = filesToSend;
+
+        return JsonSerializer::SerializeAsString(sendContainer);
     }
     catch (const std::exception& ec)
     {
