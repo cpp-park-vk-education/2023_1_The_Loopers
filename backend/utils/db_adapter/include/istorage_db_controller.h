@@ -15,7 +15,7 @@ public:
     using StorageDbAdapter = db_adapter::StorageDbAdapter;
 
 public:
-    virtual ~IStorageDbController() = 0;
+    virtual ~IStorageDbController() = default;
 
     virtual void SetAdapter(std::shared_ptr<StorageDbAdapter> adapter) = 0;
 
