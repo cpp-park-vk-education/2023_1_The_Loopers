@@ -19,7 +19,6 @@ class IClientSession;
 namespace inklink::auth
 {
 class AuthDialog;
-class LoginDialog;
 } // namespace inklink::auth
 
 namespace
@@ -57,7 +56,6 @@ private:
 
 private:
     AuthDialog* m_authview;
-    LoginDialog* m_loginview;
 
     std::weak_ptr<IClientSession> m_session;
 

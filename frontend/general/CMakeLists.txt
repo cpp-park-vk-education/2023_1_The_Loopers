@@ -1,5 +1,6 @@
 set(SOURCES
         "src/main.cpp"
+        "src/InklinkMainWindow.cpp"
         )
 
 set(PRIVATE_INCLUDE_DIRECTORIES

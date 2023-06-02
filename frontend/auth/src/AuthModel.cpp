@@ -1,7 +1,6 @@
 #include "AuthModel.h"
 
 #include "AuthView.h"
-#include "LoginView.h"
 
 #include <websocket_client_session.h>
 
@@ -139,7 +138,7 @@ void AuthModel::LoginParseToGet(const std::string& webSocketData)
 {
     DataContainer getContainer{};
     getContainer = JsonSerializer::ParseFromString(webSocketData);
-    m_loginview->NotifyGotResultFromNetwork(true);
+    m_authview->NotifyGotResultFromNetwork(true);
     return;
 }
 

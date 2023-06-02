@@ -2,7 +2,6 @@
 
 set(SOURCES
         "src/AuthView.cpp"
-        "src/LoginView.cpp"
         "src/AuthModel.cpp"
 )
 

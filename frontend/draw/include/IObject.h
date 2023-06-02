@@ -8,6 +8,7 @@
 #include <limits>
 #include <random>
 #include <string>
+#include <sstream>
 #include <unordered_map>
 #include <vector>
 
@@ -27,10 +28,20 @@ public:
     using DataContainer = serializer::DataContainer;
 
 signals:
-    void Changed(const char *);
+    void Changed(const char*);
 
 public:
-    ObjectWithAttributes() : QGraphicsObject{}, m_gen{static_cast<unsigned long>(std::chrono::system_clock::now().time_since_epoch().count())}
+    ObjectWithAttributes(QGraphicsItem* parent = nullptr)
+            : QGraphicsObject{parent},
+              m_gen{static_cast<unsigned long>(std::chrono::system_clock::now().time_since_epoch().count())}
+    {
+        setFlags(flags() | QGraphicsItem::ItemIsSelectable);
+        GenerateID();
+    }
+
+    ObjectWithAttributes()
+            : QGraphicsObject{},
+              m_gen{static_cast<unsigned long>(std::chrono::system_clock::now().time_since_epoch().count())}
     {
         setFlags(flags() | QGraphicsItem::ItemIsSelectable);
         GenerateID();
@@ -48,14 +59,14 @@ public:
     virtual std::string serialize() = 0; // now should be // protected
     // parse should be called from "main thread", not where DoOnRead were in model was called (therefore, send a signal
     // in model to itself and do everything there)
-    virtual void parse(const DataContainer &) = 0;
+    virtual void parse(const DataContainer&) = 0;
 
     // protected:
     // did not send it yet: because still in progress
     // All changes will be improved on server, because blocking
     std::unordered_map<std::string /*action id*/, DataContainer /*changes*/> m_notSent;
 
-    bool isMsgValid(const DataContainer &msgData)
+    bool isMsgValid(const DataContainer& msgData)
     {
         if (!msgData.Has("action_type"))
             return false;
@@ -74,11 +85,11 @@ public:
     bool m_selected{false};
 
     // private:
-    void mousePressEvent(QGraphicsSceneMouseEvent *event) override; // signal changed: selected then wait until answer
+    void mousePressEvent(QGraphicsSceneMouseEvent* event) override; // signal changed: selected then wait until answer
 
     virtual void GenerateID()
     {
-        if (m_ID.empty())
+        if (!m_ID.empty())
         {
             return;
         }
@@ -91,56 +102,59 @@ public:
     }
 };
 
-class TextBox : public ObjectWithAttributes
-{
-public:
-    std::string serialize() override;
-    void parse(const DataContainer &) override;
+// class TextBox : public ObjectWithAttributes
+// {
+// public:
+//     std::string serialize() override;
+//     void parse(const DataContainer& ) override;
 
-    // private:
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
-    void
-    mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override; // signal changed: pass all changes for this "session"
+//     // private:
+//     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
+//     void
+//     mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override; // signal changed: pass all changes for this
+//     "session"
 
-                                                                 // private:
-    std::string m_objectType;
-    std::string m_textContent;
-    Point m_topLeftCorner;
-    int m_width;
-};
+//                                                                  // private:
+//     std::string m_objectType;
+//     std::string m_textContent;
+//     Point m_topLeftCorner;
+//     int m_width;
+// };
 
-class Polygon : public ObjectWithAttributes
-{
-public:
-    std::string serialize() override;
-    void parse(const DataContainer &) override;
+// class Polygon : public ObjectWithAttributes
+// {
+// public:
+//     std::string serialize() override;
+//     void parse(const DataContainer& ) override;
 
-    // private:
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
-    void
-    mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override; // signal changed: pass all changes for this "session"
+//     // private:
+//     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
+//     void
+//     mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override; // signal changed: pass all changes for this
+//     "session"
 
-                                                                 // private:
-    std::string m_objectType;
-    int m_numberOfVertex;
-    std::vector<Point> m_arrayOfVertexCoordinates;
-};
+//                                                                  // private:
+//     std::string m_objectType;
+//     int m_numberOfVertex;
+//     std::vector<Point> m_arrayOfVertexCoordinates;
+// };
 
-class Ellipse : public ObjectWithAttributes
-{
-public:
-    std::string serialize() override;
-    void parse(const DataContainer &) override;
+// class Ellipse : public ObjectWithAttributes
+// {
+// public:
+//     std::string serialize() override;
+//     void parse(const DataContainer& ) override;
 
-    // private:
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
-    void
-    mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override; // signal changed: pass all changes for this "session"
+//     // private:
+//     void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = nullptr) override;
+//     void
+//     mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override; // signal changed: pass all changes for this
+//     "session"
 
-                                                                 // private:
-    std::string m_objectType;
-    Point m_center;
-    int m_xRadius;
-    int m_yRadius;
-};
+//                                                                  // private:
+//     std::string m_objectType;
+//     Point m_center;
+//     int m_xRadius;
+//     int m_yRadius;
+// };
 } // namespace inklink::draw

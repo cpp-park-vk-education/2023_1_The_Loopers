@@ -1,7 +1,6 @@
 #include "AuthView.h"
 
 #include "AuthModel.h"
-#include "LoginView.h"
 
 #include <QLabel>
 #include <QLineEdit>
@@ -12,6 +11,24 @@
 
 #include <iostream>
 
+namespace
+{
+QString myStyleSheet = R"(
+            #customButton {
+                background-color: rgb(25, 25, 25);
+                color: white;
+            }
+            #customButton:hover {
+                background-color: rgb(200, 200, 200);
+                color: rgb(25, 25, 25);
+            }
+            #customButton:pressed {
+                background-color: white;
+                color: rgb(25, 25, 25);
+            }
+        )";
+} // namespace
+
 namespace inklink::auth
 {
 AuthDialog::AuthDialog(QWidget* parent) : QDialog(parent)
@@ -20,7 +37,9 @@ AuthDialog::AuthDialog(QWidget* parent) : QDialog(parent)
 
     connect(this, &AuthDialog::GotResultFromNetwork, this, &AuthDialog::DoOnGotResultFromNetwork);
 
-    setWindowTitle("Registration");
+    setWindowTitle("Authentication");
+
+    setWindowFlags(Qt::CoverWindow | Qt::WindowTitleHint);
 
     setFixedSize(300, 200);
 
@@ -31,11 +50,13 @@ AuthDialog::AuthDialog(QWidget* parent) : QDialog(parent)
     auto* passwordLabel = new QLabel(tr("Password"), this);
 
     auto* createButton = new QPushButton(tr("Register"), this);
-    createButton->setAutoDefault(false);
+    createButton->setFlat(true);
+    createButton->setStyleSheet(myStyleSheet);
     connect(createButton, &QPushButton::clicked, this, &AuthDialog::OnCreateButtonClicked);
 
     auto* loginButton = new QPushButton(tr("Log in"), this);
-    loginButton->setAutoDefault(false);
+    loginButton->setFlat(true);
+    loginButton->setStyleSheet(myStyleSheet);
     connect(loginButton, &QPushButton::clicked, this, &AuthDialog::OnLoginButtonClicked);
 
     auto* buttonsLayout = new QHBoxLayout;
@@ -57,9 +78,31 @@ AuthDialog::AuthDialog(QWidget* parent) : QDialog(parent)
 
 void AuthDialog::OnLoginButtonClicked()
 {
-    auto* login = new LoginDialog(this);
-    close();
-    login->show();
+    std::string username;
+    std::string password;
+
+    const QString usernameEnter = m_usernameLine->text();
+    const QString passwordEnter = m_passwordLine->text();
+
+    username = usernameEnter.toStdString();
+    password = passwordEnter.toStdString();
+
+    QMessageBox warningBox;
+    warningBox.setStyleSheet(myStyleSheet);
+
+    if (username.empty())
+    {
+        warningBox.warning(this, "error", "Enter username");
+    }
+    else if (password.empty())
+    {
+        warningBox.warning(this, "error", "Enter password");
+    }
+    else
+    {
+        const auto message = m_model->LoginParseToSend(username, password);
+        m_model->LoginSend(message);
+    }
 }
 
 void AuthDialog::OnCreateButtonClicked()
@@ -73,13 +116,16 @@ void AuthDialog::OnCreateButtonClicked()
     username = usernameEnter.toStdString();
     password = passwordEnter.toStdString();
 
+    QMessageBox warningBox;
+    warningBox.setStyleSheet(myStyleSheet);
+
     if (username.empty())
     {
-        QMessageBox::warning(this, usernameEnter, "Enter username");
+        warningBox.warning(this, "error", "Enter username");
     }
     else if (password.empty())
     {
-        QMessageBox::warning(this, passwordEnter, "Enter password");
+        warningBox.warning(this, "error", "Enter password");
     }
     else
     {
@@ -97,7 +143,9 @@ void AuthDialog::DoOnGotResultFromNetwork(int result)
 {
     if (result == 0)
     {
-        QMessageBox::warning(this, "usernameEnter", "Existing username");
+        QMessageBox warningBox;
+        warningBox.setStyleSheet(myStyleSheet);
+        warningBox.warning(this, "usernameEnter", "Uncorrect username or password");
     }
     else
     {

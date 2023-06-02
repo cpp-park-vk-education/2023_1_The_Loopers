@@ -2,12 +2,14 @@
 
 set(SOURCES
         "src/temp.cpp"
-        "src/DrawView.cpp"
-        "src/DrawModel.cpp"
         "src/DrawSceneModel.cpp"
-        "src/DrawUsingQGraphicsView.cpp"
+        "src/GraphicsDrawView.cpp"
         "src/IObject.cpp"
-        )
+        "src/RectangleItem.cpp"
+        "src/LineItem.cpp"
+        "src/FreeLineItem.cpp"
+        "src/EllipseItem.cpp"
+)
 
 set(PUBLIC_INCLUDE_DIRECTORIES
         "include"
@@ -29,11 +31,11 @@ qt_add_library(${DRAW}
 
 target_include_directories(${DRAW} PUBLIC ${PUBLIC_INCLUDE_DIRECTORIES})
 
-set(PRIVATE_LINK_LIBRARIES
+set(PUBLIC_LINK_LIBRARIES
         "${REQUIRED_LIBS_QUALIFIED}"
         "${SERIALIZER}"
         "${CLIENT_NETWORK}"
         "${NETWORK_ADAPTER}"
         )
 
-target_link_libraries(${DRAW} PRIVATE ${PRIVATE_LINK_LIBRARIES})
+target_link_libraries(${DRAW} PUBLIC ${PUBLIC_LINK_LIBRARIES})

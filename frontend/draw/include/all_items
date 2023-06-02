@@ -1,0 +1,7 @@
+#pragma once
+
+#include "EllipseItem.h"
+#include "FreeLineItem.h"
+#include "IObject.h"
+#include "LineItem.h"
+#include "RectangleItem.h"

@@ -1,17 +1,20 @@
 #include "DrawSceneModel.h"
 
-#include "DrawView.h"
-#include "IObject.h"
+#include "GraphicsDrawView.h"
+#include "all_items"
 
 #include <data_container.h>
 #include <websocket_client_session.h> // Sasha Novak says it should be in <> scopes, but i don't really know
 
 #include <json_serializer.h>
 
+#include <QGraphicsSceneMouseEvent>
+
 #include <boost/asio.hpp>
 #include <boost/system/error_code.hpp>
 
 #include <chrono>
+#include <iostream>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -48,8 +51,8 @@ enum actionInfoTypes
 namespace inklink::draw
 {
 DrawSceneModel::DrawSceneModel(QObject* parent)
-        : QGraphicsScene(parent),
-          m_gen{static_cast<unsigned long>(std::chrono::system_clock::now().time_since_epoch().count())}
+        : QGraphicsScene(parent), m_gen{static_cast<unsigned long>(
+                                          std::chrono::system_clock::now().time_since_epoch().count())}
 {
     {
         auto lambdaOnAccept = [this](ConnectType, error_code ec, IClientSession*) { ; };
@@ -72,6 +75,31 @@ DrawSceneModel::DrawSceneModel(QObject* parent)
     }
 }
 
+void DrawSceneModel::SetMode(DrawSceneModel::Mode mode)
+{
+    m_currMode = mode;
+}
+
+void DrawSceneModel::SetLineMode()
+{
+    SetMode(Mode::kLine);
+}
+
+void DrawSceneModel::SetFreeLineMode()
+{
+    SetMode(Mode::kFreeLine);
+}
+
+void DrawSceneModel::SetEllipseMode()
+{
+    SetMode(Mode::kEllipse);
+}
+
+void DrawSceneModel::SetRectangleMode()
+{
+    SetMode(Mode::kRectangle);
+}
+
 std::string DrawSceneModel::Serialize(int actionType, int figureId, int type)
 {
     DataContainer sendContainer{};
@@ -89,28 +117,12 @@ std::string DrawSceneModel::Serialize(int actionType, int figureId, int type)
     }
     if (type == kPolygon)
     {
-        auto currentPolygon = dynamic_cast<Polygon*>(m_objects[figureId]);
-        actionInfo["number_of_angles"] = static_cast<int>(currentPolygon->m_arrayOfVertexCoordinates.size());
-        auto& anglesArray = actionInfo["angles_coordinates"].CreateArray();
-        DataContainer vertex;
-        for (auto values : currentPolygon->m_arrayOfVertexCoordinates)
-        {
-            vertex["x"] = values.xPosition;
-            vertex["y"] = values.yPosition;
-            anglesArray.push_back(vertex);
-        }
     }
     if (type == kEllipse)
     {
-        auto currentEllipse = dynamic_cast<Ellipse*>(m_objects[figureId]);
-        actionInfo["center"]["x"] = currentEllipse->m_center.xPosition;
-        actionInfo["center"]["y"] = currentEllipse->m_center.yPosition;
-        actionInfo["x_radius"] = currentEllipse->m_xRadius;
-        actionInfo["y_radius"] = currentEllipse->m_yRadius;
     }
-    // currently working not properly, i think
 
-    sendContainer["time"] = "now"; // for now time is not working
+    sendContainer["time"] = "now";
     sendContainer["figure_id"] = figureId;
     return JsonSerializer::SerializeAsString(sendContainer);
 }
@@ -140,6 +152,63 @@ void DrawSceneModel::Send(std::string& message)
 void DrawSceneModel::SetFilename(std::string& filename)
 {
     m_filename = filename;
+}
+
+void DrawSceneModel::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
+{
+    if (event->button() == Qt::LeftButton)
+    {
+        ObjectWithAttributes* newItem = CreateNewItem();
+
+        if (!newItem)
+        {
+            QGraphicsScene::mouseDoubleClickEvent(event);
+            return;
+        }
+
+        newItem->setPos(event->scenePos());
+
+        QGraphicsSceneMouseEvent pressEvent(QEvent::GraphicsSceneMousePress);
+        pressEvent.setScenePos(event->scenePos());
+        pressEvent.setButton(Qt::LeftButton);
+        newItem->mousePressEvent(&pressEvent);
+    }
+
+    QGraphicsScene::mouseDoubleClickEvent(event);
+}
+
+ObjectWithAttributes* DrawSceneModel::CreateNewItem()
+{
+    ObjectWithAttributes* newItem = nullptr;
+
+    switch (m_currMode)
+    {
+    case Mode::kMove:
+        break;
+    case Mode::kLine:
+        std::cout << "Line mode " << std::endl;
+
+        newItem = new LineItem(this);
+        break;
+    case Mode::kFreeLine:
+        newItem = new FreeLineItem(this);
+        break;
+    case Mode::kRectangle:
+        newItem = new RectangleItem(this);
+        break;
+    case Mode::kEllipse:
+        newItem = new EllipseItem(this);
+        break;
+    }
+
+    if (newItem)
+    {
+        std::cout << newItem << std::endl;
+        addItem(newItem);
+        m_itemsById[newItem->getID()] = newItem;
+    }
+
+    return newItem;
 }
 
 void DrawSceneModel::Deserialize(const std::string& message)

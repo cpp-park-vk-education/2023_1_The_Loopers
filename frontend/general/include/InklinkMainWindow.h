@@ -1,14 +1,19 @@
 #pragma once
 
-// #include "DrawView.h"
-#include "AuthView.h"
-#include "DrawUsingQGraphicsView.h"
-#include "MenuView.h"
 #include "ToolBox.h"
+
+#include <AuthView.h>
+#include <MenuView.h>
 
 #include <QMainWindow>
 
 #include <iostream>
+
+namespace inklink::draw
+{
+class DrawSceneModel;
+class GraphicsDrawView;
+} // namespace inklink::draw
 
 namespace inklink::general
 {
@@ -17,51 +22,21 @@ class InklinkMainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    InklinkMainWindow(QWidget* parent = nullptr) : QMainWindow{parent}
-    {
-        InitUi();
-    }
+    InklinkMainWindow(QWidget* parent = nullptr);
 
-    void InitUi()
-    {
-        QWidget* centralWidget = new QWidget;
-        QHBoxLayout* layout = new QHBoxLayout(centralWidget);
-        centralWidget->setLayout(layout);
+    void InitUi();
 
-        m_menu = new menu::MenuView;
-        m_menu->setMaximumWidth(200);
-        m_drawView = new inklink::draw::DrawingView;
-        m_toolBox = new inklink::draw::ToolBox;
-
-        m_menu->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-
-        layout->addWidget(m_menu);
-        layout->addWidget(m_drawView);
-        layout->addWidget(m_toolBox);
-
-        setCentralWidget(centralWidget);
-        setWindowTitle("InkLink");
-
-        ConnectSignals();
-    }
-
-    void ConnectSignals()
-    {
-        connect(m_menu, &menu::MenuView::AuthClicked, this, &InklinkMainWindow::OnAuthBtnClicked);
-    }
+    void ConnectSignals();
 
     ~InklinkMainWindow() = default;
 
 private:
-    void OnAuthBtnClicked(bool)
-    {
-        auth::AuthDialog dialog(this);
-        dialog.exec();
-    }
+    void OnAuthBtnClicked(bool);
 
 private:
     inklink::menu::MenuView* m_menu;
-    inklink::draw::DrawingView* m_drawView;
+    inklink::draw::GraphicsDrawView* m_drawView;
+    inklink::draw::DrawSceneModel* m_model;
     inklink::draw::ToolBox* m_toolBox;
 };
 } // namespace inklink::general

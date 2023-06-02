@@ -5,12 +5,12 @@
 
 namespace inklink::draw
 {
-class DrawView : public QWidget
+class NotDrawView : public QWidget
 {
     Q_OBJECT
 
 public:
-    DrawView(QWidget* parent = nullptr);
+    NotDrawView(QWidget* parent = nullptr);
 
     void NotifyGotResultFromNetwork(bool result);
 

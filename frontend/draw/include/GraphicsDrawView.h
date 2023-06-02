@@ -10,19 +10,22 @@ namespace inklink::draw
 {
 class DrawSceneModel;
 
-class DrawingView : public QGraphicsView
+class GraphicsDrawView : public QGraphicsView
 {
     Q_OBJECT
 
 public:
-    DrawingView(QWidget* parent = nullptr);
+    GraphicsDrawView(QWidget* parent = nullptr);
 
-protected:
-    void mousePressEvent(QMouseEvent* event) override;
+    DrawSceneModel* GetSceneModel()
+    {
+        return m_scene;
+    }
 
-    void mouseReleaseEvent(QMouseEvent* event) override;
-
-    void mouseMoveEvent(QMouseEvent* event) override;
+    // protected:
+    //     void mousePressEvent(QMouseEvent* event) override;
+    //     void mouseReleaseEvent(QMouseEvent* event) override;
+    //     void mouseMoveEvent(QMouseEvent* event) override;
 
 private:
     DrawSceneModel* m_scene;

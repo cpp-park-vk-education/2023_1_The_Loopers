@@ -1,81 +1,44 @@
-#pragma onceonce
+#pragma once
 
-#include "DataContainer.h"
+#include "IObject.h"
+
+#include <data_container.h>
 
 #include <QGraphicsObject>
+#include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
-#include <QGraphicsSceneMouseEvent>
 
-class EllipseItem : public QGraphicsObject
+namespace inklink::draw
+{
+class DrawSceneModel;
+
+class EllipseItem : public ObjectWithAttributes
 {
 public:
-    EllipseItem(QGraphicsItem *parent = nullptr)
-            : QGraphicsObject(parent), m_size(100), m_selected(false)
+    EllipseItem(DrawSceneModel*, QGraphicsItem* parent = nullptr);
+
+    QRectF boundingRect() const override;
+
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
+
+    std::string serialize() override
     {
-        setFlag(ItemIsSelectable);
-        setAcceptHoverEvents(true);
+        return "";
+    }
+    void parse(const DataContainer&) override
+    {
     }
 
-    QRectF boundingRect() const override
-    {
-        qreal adjust = 1.0;
-        return QRectF(-m_size / 2 - adjust, -m_size / 2 - adjust, m_size + adjust, m_size + adjust);
-    }
-
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override
-    {
-        Q_UNUSED(widget);
-
-        painter->setRenderHint(QPainter::Antialiasing);
-
-        if (option->state & QStyle::State_Selected)
-            painter->setPen(Qt::red);
-        else
-            painter->setPen(Qt::black);
-
-        painter->drawEllipse(-m_size / 2, -m_size / 2, m_size, m_size);
-    }
-
-    void mousePressEvent(QGraphicsSceneMouseEvent *event) override
-    {
-        if (event->button() == Qt::LeftButton)
-            m_selected = true;
-    }
-
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override
-    {
-        if (m_selected)
-        {
-            setPos(mapToParent(event->pos()));
-            m_size += event->delta().y();
-            prepareGeometryChange();
-            update();
-        }
-    }
-
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override
-    {
-        if (event->button() == Qt::LeftButton)
-            m_selected = false;
-
-        DataContainer ellipseInfo;
-
-        QPointF center = mapToParent(event->pos());
-        DataContainer centerContainer;
-        centerContainer["x"] = center.x();
-        centerContainer["y"] = center.y();
-        ellipseInfo["center"] = centerContainer;
-
-        int xRadius = m_size / 2;
-        int yRadius = m_size / 2;
-        ellipseInfo["x_radius"] = xRadius;
-        ellipseInfo["y_radius"] = yRadius;
-
-//        std::cout << ellipseInfo << std::endl;
-    }
+protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
+    void mouseMoveEvent(QGraphicsSceneMouseEvent* event) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
 
 private:
+    DrawSceneModel* m_model;
+
     int m_size;
     bool m_selected;
 };
+} // namespace inklink::draw
