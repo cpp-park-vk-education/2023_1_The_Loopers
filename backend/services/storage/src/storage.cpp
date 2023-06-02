@@ -84,6 +84,10 @@ bool Storage::DoOnRead(error_code errocCode, const std::string& msg, IServiceSes
     auto msgData = JsonSerializer::ParseFromString(msg);
     try
     {
+        std::string sendString{};
+
+
+        serviceSession->Send(sendString);
     }
     catch (const std::exception& ec)
     {
@@ -102,6 +106,8 @@ std::string Storage::GetFile(const std::string& fileName, const std::string& log
             DataContainer sendContainer{};
 
             sendContainer["file"] = file;
+
+            return JsonSerializer::SerializeAsString(sendContainer);
         }
     }
     catch (const std::exception& ec)
