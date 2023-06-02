@@ -213,7 +213,17 @@ void Storage::SetFileHolder(std::shared_ptr<IFileHolder> fileHolder)
     m_fileWorker = fileHolder;
 }
 
- bool Storage::Create(const std::string& fileName, const std::string& login, const std::string& rootFileName) const
+void Storage::DoOnNotified(int, const std::string&, Endpoint)
+{
+    return; // no known events to handle
+}
+
+void Storage::DoOnSignal(const std::string&)
+{
+    return; // no known signals to handle
+}
+
+bool Storage::Create(const std::string& fileName, const std::string& login, const std::string& rootFileName) const
 {
     std::filesystem::path filePath = "files/" + login + "/" + fileName + ".txt";
 

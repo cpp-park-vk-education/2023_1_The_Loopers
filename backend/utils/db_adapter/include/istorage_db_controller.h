@@ -37,7 +37,7 @@ public:
                                 const std::string& fromFileName, const std::string& toFileName) const = 0;
 
     virtual void InsertNonRootFile(const std::string& fileName, const std::string& login,
-                                   const std::filesystem::path& filePath) const;
+                                   const std::filesystem::path& filePath) const = 0;
 
     virtual void SetFileDeleted(const std::string& fileName, const std::string& login) const = 0;
 
