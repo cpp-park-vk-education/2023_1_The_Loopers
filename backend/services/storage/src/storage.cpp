@@ -84,6 +84,7 @@ bool Storage::DoOnRead(error_code errocCode, const std::string& msg, IServiceSes
     auto msgData = JsonSerializer::ParseFromString(msg);
     try
     {
+        if(!msgData.Has("action_id"), !msgData.Has("file_name"), !msgData.Has("")
         std::string sendString{};
 
 
