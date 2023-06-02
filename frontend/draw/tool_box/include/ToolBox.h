@@ -2,8 +2,9 @@
 
 #include <QListView>
 #include <QPalette>
-#include <QPushButton>
+//#include <QToolButton>
 #include <QStyleFactory>
+#include <QToolButton>
 #include <QVBoxLayout>
 #include <QWidget>
 
@@ -33,27 +34,29 @@ private:
 
         QVBoxLayout* verticalLayout = new QVBoxLayout(this);
 
-        QPushButton* pushButton = createButton("Line", this);
-        verticalLayout->addWidget(pushButton);
-        connect(pushButton, &QPushButton::clicked, this, &ToolBox::LineClicked);
+        QToolButton* freeLineButton = createToolButton(tr("Pen"), QIcon("../pen.svg") , this);
+        verticalLayout->addWidget(freeLineButton);
+        connect(freeLineButton, &QToolButton::clicked, this, &ToolBox::FreeLineClicked);
 
-        pushButton = createButton("FreeLine", this);
-        verticalLayout->addWidget(pushButton);
-        connect(pushButton, &QPushButton::clicked, this, &ToolBox::FreeLineClicked);
+        QToolButton* lineButton = createToolButton(tr("Line"), QIcon("../line.svg") , this);
+        verticalLayout->addWidget(lineButton);
+        connect(lineButton, &QToolButton::clicked, this, &ToolBox::LineClicked);
 
-        pushButton = createButton("Rectangle", this);
-        verticalLayout->addWidget(pushButton);
-        connect(pushButton, &QPushButton::clicked, this, &ToolBox::RectangleClicked);
+        QToolButton* rectangleButton = createToolButton(tr("Rectangle"), QIcon("../rectangle.svg") , this);
+        verticalLayout->addWidget(rectangleButton);
+        connect(rectangleButton, &QToolButton::clicked, this, &ToolBox::RectangleClicked);
 
-        pushButton = createButton("Ellipse", this);
-        verticalLayout->addWidget(pushButton);
-        connect(pushButton, &QPushButton::clicked, this, &ToolBox::EllipseClicked);
+        QToolButton* ellipseButton = createToolButton(tr("Ellipse"), QIcon("../ellipse.svg") , this);
+        verticalLayout->addWidget(ellipseButton);
+        connect(ellipseButton, &QToolButton::clicked, this, &ToolBox::EllipseClicked);
     }
 
-    QPushButton* createButton(const QString& text, QWidget* parent)
+    QToolButton* createToolButton(const QString &toolTip, const QIcon &icon, QWidget* parent)
     {
-        QPushButton* button = new QPushButton(text, parent);
-        button->setFlat(true);
+        QToolButton *button = new QToolButton(parent);
+        button->setToolTip(toolTip);
+        button->setIcon(icon);
+        button->setIconSize(QSize(32, 32));
         button->setObjectName("customButton");
 
         QString styleSheet = R"(

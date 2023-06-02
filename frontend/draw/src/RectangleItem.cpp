@@ -128,8 +128,6 @@ void RectangleItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         event->ignore();
     }
     QGraphicsObject::mouseReleaseEvent(event);
-
-    update();
 }
 
 RectangleItem::VertexState RectangleItem::isVertexPressed(const QPointF& pos) const

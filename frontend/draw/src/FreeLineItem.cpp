@@ -74,6 +74,9 @@ void FreeLineItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
 
         //            std::cout << polygonInfo << std::endl;
     }
+
+//    m_points.clear();
+    m_points << mapToParent(event->pos());
 }
 
 void FreeLineItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
